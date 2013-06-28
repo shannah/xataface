@@ -1,0 +1,45 @@
+<h1>Using the Update Records Form</h1>
+
+<p>The update records form allows you to update multiple records at once.  You can set
+the values of particular fields to be constant across all records in a found set.  You can 
+alternatively provide an expression or formula to be applied to fields of records in the
+found set.</p>
+
+<h2>Setting a Constant Value to All Records</h2>
+
+<p>If you want to set a constant value to a particular field in all records of the found
+set, you can simply select the field that you want to update from the field select list,
+then enter the value that you wish to set to this field on all found records.</p>
+
+<p>Suppose for example you wanted to change the <em>first_name</em> of all people in a found
+set to "Mike".  You would then select <em>first_name</em> from the select list.  This should make a
+"First Name" text field appear in the update form.  Entering "Mike" in this field would cause
+all records in the found set to have their <em>first_name</em> set to "Mike".</p>
+
+<h2>Using Expressions</h2>
+
+<p>Suppose you want to increase the price of all goods by 5%, or you want rename all of the 
+records in the found set to "Copy of xxx" where xxx is the current name of the record.  In
+these cases it isn't sufficient to simply provide a constant string to update all of the 
+records in the found set.  You need to use an expression to tell Xataface how to generate
+a new value for each record.</p>
+
+<p>If you prefix your entry in the update field with an equals sign (i.e. "="), Xataface will
+treat the remainder of the value as an expression that needs to be evaluated on each
+record on the found set to determine the new value.  For numeric fields your expression can
+contain all of the major arithmetic opertors and numbers.  For string fields expressions are
+treated as mere pattern replacement.  For dates, you can use simple date differential operations
+like "+1 day" or "-20 minutes".</p>
+
+<p>Some example expressions are:</p>
+
+<ol>
+	<li><em>=*1.05</em>  -  Increases values by 5% (i.e. multiplies them by 1.05).</li>
+	<li><em>=-5</em>  - Subtracts 5 from all records.</li>
+	<li><em>=(134.5+$$)*(12-$$)</em> - Uses the placeholder $$ to represent the old value.
+		If the old value was 10, then this would be evaluated as (134.5+10)*(12-10) which works 
+		out to be 289.</li>
+	<li><em>=Copy of $$</em> - For a varchar field, prefixes "Copy of " to the field for 
+		all records.</li>
+	<li><em>=+1 day</em> - Only for date, time, datetime, and timestamp fields.  Increases date by one day.</li>
+</ol>

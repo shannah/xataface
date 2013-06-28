@@ -1,0 +1,44 @@
+{use_macro file="Dataface_Main_Template.html"}
+
+	{fill_slot name="main_section"}
+		<h2>Build Index</h2>
+		<div class="formHelp">
+			<p>This form allows you to index the tables in your database so that
+			   they will be searchable using Dataface's full-text natural language
+			   search.
+			</p>
+			<p>Generally you only want tables that you consider to be entities to be 
+			searchable.  You usually won't want to index your join tables, nor will
+			you want to index supplementary tables like Dataface's __history tables.
+			</p>
+			<p>Before you can index your tables, you must enable indexing in the 
+			conf.ini file and indicate there which tables are allowed to be indexed.
+			You can do this by adding an [_index] section to your conf.ini file as
+			follows:
+			</p>
+			<p>
+				<code><pre>
+[_index]
+People=1
+Users=1
+News=1
+				</pre></code>
+			</p>
+			<p>The above example would enable indexing on the People, Users, and News
+			tables.</p>
+				
+		</div>
+		<form action="{$ENV.DATAFACE_SITE_HREF}" method="post">
+		<label>Select tables to be indexed:<select size="20" name="--tables[]" multiple>
+		{foreach from=$tables item="table"}
+			<option value="{$table}">{$table}</option>
+		{/foreach}
+		</select></label>
+		<label>Clear then rebuild<input type="checkbox" name="--clear"/></label>
+		<input type="submit" name="--submit-now" value="Rebuild index now"/>
+		<input type="hidden" name="--build-index" value="1"/>
+		<input type="hidden" name="-action" value="manage_build_index"/>
+		</form>
+		
+	{/fill_slot}
+{/use_macro}

@@ -1,0 +1,16 @@
+{* This template is used by Dataface_FormTool to produce a single field
+   form template.  The nice thing about this form is that it will automatically
+   submit when the field loses focus.  It also doesn't use a label.  It is
+   intended to be used with AJAX setups where a user clicks on some text
+   to change it.  The text should then be replaced with this simple 
+   form.  The user edits the contents of the field then clicks 'tab' or 
+   'enter' to save their changes.
+*}
+
+<form{$form_data.attributes}>
+
+{$form_data.hidden}
+{$form_data.javascript}
+	{$singleField->toHtml()}
+	{if $singleField->getType() == 'file'}<input type="submit" value="update"/>{/if}
+</form>

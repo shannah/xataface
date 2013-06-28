@@ -1,0 +1,90 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{if $field.Type|strtolower == 'text' || $field.Type|strtolower == 'longtext' || $field.Type|strtolower == 'tinytext' || $field.Type|strtolower=='mediumtext' || $field.widget.type == 'portal'}
+	{assign var="isText" value=1}
+{else}
+	{assign var="isText" value=0}
+{/if}
+<tr>
+<td {if $isText}colspan="2" class="Dataface_QuickForm-textarea-label-cell"{/if} valign="top" {if !$isText}align="right" class="Dataface_QuickForm-label-cell"{/if}>
+<div class="field {if $error}error{/if}" id="{$field.tablename}-{$field.name}-wrapper">
+
+	<label>{$field.widget.label}</label>
+
+	{if $required}
+		<span style="color: #ff0000" class="fieldRequired" title="required">&nbsp;</span>
+	{/if}
+{if !$isText}
+</div>
+</td>
+<td class="Dataface_QuickForm-widget-cell{if $isText} Dataface_QuickForm-textarea-widget-cell{/if}">
+<div class="field {if $error}error{/if}" id="{$field.tablename}-{$field.name}-wrapper">
+{/if}
+	{if $error}
+		<div class="fieldError" style="color: #ff0000">{$error}</div>
+	{/if}
+{if $isText}
+	{if !$frozen}
+	<div class="formHelp">{$field.widget.description}</div>
+	{/if}
+{/if}
+	
+	{if $properties.image_preview}
+	<img src="{$smarty.server.HOST_URI}{$properties.image_preview}" style="display: block; max-height: 200px" alt="{$field.name} preview image"/>
+	{/if}
+	{if $properties.preview}
+	<a href="{$smarty.server.HOST_URI}{$properties.preview}" target="_blank">{translate id="scripts.GLOBAL.MESSAGE_VIEW_FIELD_CONTENT"}View Field Content in new Window{/translate}</a>
+	{/if}
+
+	<div>
+	{if $field.widget.question}
+	<div class="formHelp">{$field.widget.question}</div>
+	{/if}
+	{$element}
+	{if $field.widget.type == 'select' and $field.widget.editvalues}
+	    <script language="javascript"><!--
+	    require('{$ENV.DATAFACE_URL}/js/ajax.js');
+	    makeSelectEditable('{$field.tablename}', '{$field.vocabulary}', document.getElementById('{$field.name}'));
+	    //--></script>
+	{/if}
+	
+	{if $properties.link}
+		<a href="{$properties.link}">Go</a>
+	{/if}
+	{if $field.actions}
+		{actions_menu class="field_actions" id="field_actions-`$field.name`"  category=$field.actions var="actions"}
+	{/if}
+	
+	</div>
+{if !$isText}
+	{if !$frozen}
+	<div class="formHelp">{$field.widget.description}</div>
+	{/if}
+{/if}
+	{if $field.widget.focus}
+	<script language="javascript" type="text/javascript"><!--
+	try{literal}{{/literal}quickForm.setFocus('{$field.name}');{literal}} catch(err){}{/literal}
+	//--></script>
+	
+	
+	{/if}
+</div>
+</td>
+</tr>

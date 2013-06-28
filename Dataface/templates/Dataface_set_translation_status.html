@@ -1,0 +1,46 @@
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="main_section"}
+		{if $ENV.prefs.show_result_controller}
+		{block name="before_details_controller"}
+		<div id="details-controller">{include file="Dataface_Details_Controller.html"}</div>
+		{block name="after_details_controller"}
+		{/if}
+		
+		<h1>{translate id="templates.Dataface_set_translation_status.HEADING_SET_TRANSLATION_STATUS"}Set Translation Status{/translate}</h1>
+		<p>{translate id="templates.Dataface_set_translation_status.INSTRUCTIONS"}
+		Select the translation and status below to set the status of all found
+		   record's translations to that status.  For example, if you want to set
+		   the french translation status of all of the records in the current found set
+		   to "Approved", you would select "French" from the <em>Translation</em> 
+		   menu, and "Approved" from the <em>Status</em> menu.{/translate}
+		</p>
+		
+		<div style="height: 10em; overflow: scroll">
+			<table class="listing">
+			<thead>
+			<tr>
+				<th>{translate id="templates.Dataface_set_translation_status.LABEL_RECORD"}
+				Record
+				{/translate}</th>
+			{foreach from=$translations key="translation_key" item="translation_value"}
+				<th>{$translation_value}</th>{*<th></th>*}
+			{/foreach}
+			</tr>
+			</thead>
+			<tbody>
+			{foreach from=$records item=record}
+				<tr><td>{$record->getTitle()}</td>
+				{foreach from=$translations item="translation_value" key="translation_key"}
+					
+					
+					<td>{$context->printTranslationStatus($record, $translation_key, $translationTool)}</td>
+				{/foreach}
+				{*<td>{$translationTool->printTranslationStatusAlert($record, $translation_key)}</td>*}
+				</tr>
+			{/foreach}
+			</tbody>
+			</table>
+		</div>
+		{$form}
+	{/fill_slot}
+{/use_macro}

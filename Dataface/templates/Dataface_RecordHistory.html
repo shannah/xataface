@@ -1,0 +1,247 @@
+{use_macro file="Dataface_Record_Template.html"}
+	{fill_slot name="record_content"}
+		{if !$error}
+	    <script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL}/js/ajax.js"></script>
+
+		<script language="javascript"><!--
+		
+			var currentTable = '{$ENV.table}';
+			//var DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF}';
+			{literal}
+			function HistoryToolClient(){
+				
+			}
+			
+			function expandHistoryRecord(id, td){
+				this.showHistoryRecord(id);
+				var img = document.getElementById('history-'+id+'-collapse-image');
+				img.src = DATAFACE_URL+'/images/treeExpanded.gif';
+				td.onclick = function(){ historyToolClient.collapseHistoryRecord(id, td); };
+				//alert(td.className);
+				
+			}
+			HistoryToolClient.prototype.expandHistoryRecord = expandHistoryRecord;
+			
+			function collapseHistoryRecord(id, td){
+				var row = document.getElementById('history-'+id+'-row');
+				row.style.display = "none";
+				var img = document.getElementById('history-'+id+'-collapse-image');
+				img.src = DATAFACE_URL+'/images/treeCollapsed.gif';
+				td.onclick = function(){historyToolClient.expandHistoryRecord(id, td);};
+			}
+			HistoryToolClient.prototype.collapseHistoryRecord = collapseHistoryRecord;
+			
+			function showHistoryRecord(id){
+				var row = document.getElementById('history-'+id+'-row');
+				var cell = document.getElementById('history-'+id+'-details-content');
+				
+				if ( !cell.record_content ){
+					{/literal}cell.innerHTML = "{translate id="templates.Dataface_RecordHistory.MESSAGE_LOADING"}Loading ... Please wait ...{/translate}";{literal}
+					this.loadHistoryRecord(id,false);
+				} else {
+					cell.innerHTML = cell.record_content;
+					var menu  = document.getElementById('history-'+id+'-viewtabs');
+					var detailsTab = document.getElementById('history-'+id+'-viewtabs-details');
+					var changesTab = document.getElementById('history-'+id+'-viewtabs-changes');
+					var fromcurrentTab = document.getElementById('history-'+id+'-viewtabs-fromcurrent');
+					//alert(changesTab);
+					changesTab.className = "unselectedTab";
+					detailsTab.className = "selectedTab";
+					fromcurrentTab.className = "unselectedTab";
+					
+					fromcurrentTab.onclick = function(){ historyToolClient.showFromCurrent(id);};
+					changesTab.onclick = function(){ historyToolClient.showChanges(id);};
+					detailsTab.onclick = null;
+				}
+				//row.style.display = 'table-row';
+				row.style.display = '';
+				
+				
+				
+				
+			}
+			HistoryToolClient.prototype.showHistoryRecord = showHistoryRecord;
+			
+			function loadHistoryRecord(id, changes, fromcurrent){
+				var row = document.getElementById('history-'+id+'-row');
+				var cell = document.getElementById('history-'+id+'-details-content');
+				
+				var url = '?{/literal}{$current_record_qstr}{literal}&-action=view_history_record_details&-table='+currentTable+'&history__id='+id;
+				if ( changes ) url += '&-show_changes=1';
+				if ( fromcurrent ) url += '&-fromcurrent=1';
+				//alert(url);
+				this.http = getHTTPObject();
+				this.http.open('GET', url);
+				this.cell = cell;
+				this.row = row;
+				this.id = id;
+				this.changes = changes;
+				this.fromcurrent = fromcurrent;
+				this.http.onreadystatechange = this.handleLoadHistoryRecord;
+				HistoryToolClient.prototype.currentRequest = this;
+				this.http.send(null);
+			}
+			HistoryToolClient.prototype.loadHistoryRecord = loadHistoryRecord;
+			
+			function handleLoadHistoryRecord(){
+				//var client = historyToolClient;
+				//alert(client);
+				if ( historyToolClient.http.readyState == 4 ){
+					//alert(historyToolClient.changes);
+					if ( historyToolClient.changes ){
+						historyToolClient.cell.record_content_changes = historyToolClient.http.responseText;
+						historyToolClient.showChanges(historyToolClient.id);
+					} else if ( historyToolClient.fromcurrent ){
+						historyToolClient.cell.record_content_fromcurrent = historyToolClient.http.responseText;
+						historyToolClient.showFromCurrent(historyToolClient.id);
+					} else {
+						historyToolClient.cell.record_content = historyToolClient.http.responseText;
+						historyToolClient.showHistoryRecord(historyToolClient.id);
+					}
+					//alert(historyToolClient.http.responseText);
+					
+				}
+			}
+			HistoryToolClient.prototype.handleLoadHistoryRecord = handleLoadHistoryRecord;
+			
+			function showChanges(id){
+				var cell = document.getElementById('history-'+id+'-details-content');
+				if ( !cell.record_content_changes ){
+					cell.innerHTML = "Loading ... Please wait ...";
+					this.loadHistoryRecord(id, true);
+				} else {
+				
+					cell.innerHTML = cell.record_content_changes;
+					var menu  = document.getElementById('history-'+id+'-viewtabs');
+					var detailsTab = document.getElementById('history-'+id+'-viewtabs-details');
+					var changesTab = document.getElementById('history-'+id+'-viewtabs-changes');
+					var fromcurrentTab = document.getElementById('history-'+id+'-viewtabs-fromcurrent');
+					//alert(changesTab);
+					changesTab.className = "selectedTab";
+					detailsTab.className = "unselectedTab";
+					fromcurrentTab.className = 'unselectedTab';
+					fromcurrentTab.onclick = function(){ historyToolClient.showFromCurrent(id);};
+					changesTab.onclick = null;
+					detailsTab.onclick = function(){ historyToolClient.showHistoryRecord(id);};
+					
+					
+				}
+				
+			}
+			
+			HistoryToolClient.prototype.showChanges = showChanges;
+			
+			
+			function showFromCurrent(id){
+				var cell = document.getElementById('history-'+id+'-details-content');
+				if ( !cell.record_content_fromcurrent ){
+					cell.innerHTML = "Loading ... Please wait ...";
+					this.loadHistoryRecord(id, false, true);
+				} else {
+				
+					cell.innerHTML = cell.record_content_fromcurrent;
+					var menu  = document.getElementById('history-'+id+'-viewtabs');
+					var detailsTab = document.getElementById('history-'+id+'-viewtabs-details');
+					var changesTab = document.getElementById('history-'+id+'-viewtabs-changes');
+					var fromcurrentTab = document.getElementById('history-'+id+'-viewtabs-fromcurrent');
+					
+					//alert(changesTab);
+					changesTab.className = "unselectedTab";
+					detailsTab.className = "unselectedTab";
+					fromcurrentTab.className = 'selectedTab';
+					fromcurrentTab.onclick = null;
+					changesTab.onclick = function(){ historyToolClient.showChanges(id);};
+					detailsTab.onclick = function(){ historyToolClient.showHistoryRecord(id);};
+					
+					
+				}
+				
+			}
+			HistoryToolClient.prototype.showFromCurrent = showFromCurrent;
+			
+			
+			function restoreRecord(id){
+				{/literal}var res = confirm({translate id="templates.Dataface_RecordHistory.JS_STRING_CONFIRM_RESTORE"}'Are you sure you want to restore the current record to the history snap shot with id '+id+'?'{/translate});{literal}
+				if ( !res ) return false;
+				var form = document.getElementById('history-restore-form');
+				form.history__id.value = id;
+				form.submit();
+				
+			}
+			HistoryToolClient.prototype.restoreRecord = restoreRecord;
+			
+			
+			
+			
+			var historyToolClient = new HistoryToolClient();
+		
+		//--></script>
+		{/literal}
+		{load_record var="source_record"}
+		<form id="history-restore-form" action="{$ENV.DATAFACE_SITE_HREF}" method="POST">
+			<input type="hidden" name="-table" value="{$ENV.table|escape}"/>
+			<input type="hidden" name="-action" value="history_restore_record"/>
+			<input type="hidden" name="history__id"/>
+			<input type="hidden" name="-fieldname"/>
+			{foreach from=$source_record->_table->keys() item="keyfield"}
+				<input type="hidden" name="--__keys__[{$keyfield.name|escape}]" value="{$source_record->strval($keyfield.name)|escape}"/>
+			{/foreach}
+			<input type="hidden" name="-locationid" value="{$ENV.APPLICATION_OBJECT->encodeLocation($smarty.server.QUERY_STRING)|escape}"/>
+		</form>
+		<table class="listing">
+			<thead>
+			   <tr>
+				<th><!-- Actions --></th>
+				<th>{translate id="templates.Dataface_RecordHistory.LABEL_ID"}ID{/translate}</th>
+				<th>{translate id="templates.Dataface_RecordHistory.LABEL_DATE"}Date{/translate}</th>
+				<th>{translate id="templates.Dataface_RecordHistory.LABEL_LANGUAGE"}Language{/translate}</th>
+				<th>{translate id="templates.Dataface_RecordHistory.LABEL_USER"}User{/translate}</th>
+				<th>{translate id="templates.Dataface_RecordHistory.LABEL_COMMENTS"}Comments{/translate}</th>
+			    </tr>
+			</thead>
+			<tbody>
+			{foreach from=$log item="logitem"}
+				<tr>
+					<td><!-- Actions -->
+					{actions var="actions" category="history_record_actions" history__id=$logitem.history__id}
+					<ul class="row-item-actions-menu">
+						{foreach from=$actions item="action"}
+						<li><a href="{$action.url|escape}" title="{$action.description|escape}" {if $action.onmouseover}onmouseover="{$action.onmouseover|escape}"{/if}>{if $action.icon}<img src="{$action.icon|escape}" alt="{$action.label|escape}"/>{else}{$action.label|escape}{/if}</a></li>
+						{/foreach}
+					</ul>
+					
+					</td>
+					<td onclick="historyToolClient.expandHistoryRecord('{$logitem.history__id|escape}', this)"><img src="{$ENV.DATAFACE_URL}/images/treeCollapsed.gif" alt="Show details" id="history-{$logitem.history__id|escape}-collapse-image" />&nbsp;{$logitem.history__id|escape}</td>
+					<td>{$logitem.history__modified|escape}</td>
+					<td>{$logitem.history__language|escape}</td>
+					<td>{$logitem.history__user|escape}</td>
+					<td>{$logitem.history__comments|escape}</td>
+				</tr>
+				<tr style="display: none" id="history-{$logitem.history__id|escape}-row">
+					<td></td>
+					<td></td>
+					<td colspan="4" class="history_details_cell" id="history-{$logitem.history__id|escape}-cell">
+					
+					<!--This cell is to display the contents of this history record.  It will be loaded with AJAX -->
+						<ul id="history-{$logitem.history__id|escape}-viewtabs" class="history-tabs">
+							<li id="history-{$logitem.history__id|escape}-viewtabs-details" class="selectedTab">{translate id="templates.Dataface_RecordHistory.LABEL_DETAILS"}Details{/translate}</li>
+							<li id="history-{$logitem.history__id|escape}-viewtabs-changes" class="unselectedTab" onclick="historyToolClient.showChanges('{$logitem.history__id|escape}')">{translate id="templates.Dataface_RecordHistory.LABEL_CHANGES"}Changes{/translate}</li>
+							<li id="history-{$logitem.history__id|escape}-viewtabs-fromcurrent" class="unselectedTab" onclick="historyToolClient.showFromCurrent('{$logitem.history__id|escape}')">{translate id="templates.Dataface_RecordHistory.LABEL_FROM_CURRENT"}Vs. Current{/translate}</li>
+						</ul>
+						<div id="history-{$logitem.history__id|escape}-details-content" class="history-details-pane">
+						
+						</div>
+					
+					</td>
+				</tr>
+			{/foreach}
+			
+			
+			</tbody>
+		</table>
+		{else}
+			<div class="portalMessage">{$error->getMessage()|escape:"html"}</div>
+		{/if}
+	{/fill_slot}
+
+{/use_macro}

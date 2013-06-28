@@ -1,0 +1,109 @@
+{block name="before_search_form_header"}
+{define_slot name="search_form_header"}
+<a class="search-instructions-link">
+	<span>
+		{translate id="actions.find.show_search_instructions_link"}Show Search Instructions{/translate}
+	</span>
+</a>
+<h2>{$tableLabel} &raquo; {translate id="actions.find.advanced_search_heading"}Advanced Search{/translate}</h2>
+			
+<div class="formHelp">
+	{define_slot name="find_form_help"}
+	{translate id="actions.find.short_help_blurb"}Enter your search terms in the fields below and click "Find"{/translate}
+	{/define_slot}
+</div>
+<div id="search-instructions" style="display:none">
+{block name="before_search_instructions"}
+{define_slot name="search_instructions"}
+
+	<div class="accordion search-instruction-items">
+		{block name="before_seach_instruction_items"}
+		{define_slot name="search_instruction_items"}
+			<h6>
+				<a href="#">
+					{translate id="actions.find.instructions.simple_searches.heading"}Simple Searches{/translate}
+				</a>
+			</h6>
+				
+			<div>
+				{translate id="actions.find.instructions.simple_searches_body"}Enter the values into the appropriate fields and click the "Find" button to find records the contain the specified patterns.
+				<br/> e.g., If you enter "Dog" in one of the fields, it will match records that contain the phrase &quot;Dog&quot;.  This includes &quot;madog&quot; &quot;doggy;&quot; etc...{/translate}
+			</div>
+			<h6>
+				<a href="#">
+					{translate id="actions.find.instructions.boolean_searches.heading"}Boolean Searches{/translate}
+				</a>
+			</h6>
+			<div>
+				{translate id="actions.find.instructions.boolean_searches.body"}If you enter criteria into more than one field, they will match only those records that match BOTH criteria.{/translate}
+			</div>
+			<h6>
+				<a href="#">
+					{translate id="actions.find.instructions.exact_matches.heading"}Exact Matches{/translate}
+				</a>
+			</h6>
+			
+			<div>
+				{translate id="actions.find.instructions.exact_matches.body"}Prepend an equals sign ("=") to any criteria to force exact matching.<br/>
+			e.g., Searching for "=dog" in a field  will match records where that field contains &quot;dog&quot; (and not "doggy";){/translate}
+			</div>
+			
+			<h6>
+				<a href="#">
+					{translate id="actions.find.instructions.less_than_greater_than.heading"}Less Than / Greater Than Searches{/translate}
+				</a>
+			</h6>
+			<div>
+				{translate id="actions.find.instructions.less_than_greater_than.body"}Prepending a less than (&quot;&lt;&quot;) or greater than (&quot;&gt;&quot;) sign to a  will match records where the field has a value LESS THAN (respectively GREATER THAN) the specified value.
+				<br/>e.g., Entering &quot;&gt;200&quot; in the Price field will match records with price greater than 200.{/translate} 
+			</div>
+			
+			<h6>
+				<a href="#">
+					{translate id="actions.find.instructions.range_searches.heading"}Range Searches{/translate}
+				</a>
+			</h6>
+			
+			<div>
+				{translate id="actions.find.instructions.range_searches.body"}To match records containing values in a range, use &quot;&lt;LowerRange&gt; .. &lt;UpperRange&gt;&quot; where &lt;LowerRange&gt; is the lower bound on matches and &lt;UpperRange&gt; is the upper bound on matches.
+				<br/>e.g., To find records where Price is between 200 and 500 enter &quot;200..500&quot; in the Price field.{/translate}
+			</div>
+			
+			
+			<h6>
+				<a href="#">
+					{translate id="actions.find.instructions.wildcard_searches.heading"}Wildcard Searches{/translate}
+				</a>
+			</h6>
+			
+			<div>
+				{translate id="actions.find.instructions.wildcard_searches.body"}
+				<p>
+					To perform wildcard searches, prefix your query with a tilde ("~"), then include one of the supported wildcard characters in your query.
+				</p>
+				<p><b>Supported Wildcards</b>:</p>
+				<ul>
+					<li><b>%</b> : Matches any string of length 0 or more characters.</li>
+					<li><b>_</b> : Matches a single character.</li>
+				</ul>
+				
+				<p>Examples:</p>
+				<ul>
+					<li>"~J%y" will match only if the field value begins with "J" and ends with "y".  E.g. It will match both "January" and "Joy", but not "Joyous" or "AJoy"</li>
+					<li>"~B%" will match any rows where the field value begins with "B"</li>
+					<li>"~B_b" will match any rows beginning and ending with "b" and is 3 characters long.  This would match "bib" and "bob" but not "boob"</li>
+				</ul>
+				{/translate}
+			</div>
+		{/define_slot}
+		
+		{block name="after_search_instruction_items"}
+	
+	</div>
+
+{/define_slot}
+{block name="after_search_instructions"}
+</div>
+
+{/define_slot}
+{block name="after_search_form_header"}

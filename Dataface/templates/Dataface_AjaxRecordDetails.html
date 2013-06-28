@@ -1,0 +1,69 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{*
+ * This template basically serves as a rolodex card for a particular record.
+ * It shows the record details in a two column table with the first half (roughly)
+ * of the fields displayed in the left column, and the last half in the right 
+ * column.
+ * This is a much more compact view of a record than is displayed in the 
+ * View tab.  It is intended to be used when attempting to preview a record
+ * in list view.
+ *
+ * @author Steve Hannah (shananh@sfu.ca)
+ * @created September 20, 2006
+ *}
+{block name="before_ajax_record_details" record=$record}
+{define_slot name="ajax_record_details" record=$record}
+<table class="details_table_wrapper">
+	<tr>
+		<td>
+			<table class="details_table">
+				
+
+{foreach from=$fields item="field"}
+	{if $field.name == $first_field_second_col}
+	</table></td><td><table class="details_table">
+	{/if}
+	{if $field.visibility.browse == 'visible'}
+	{if_allowed permission="view" record=$record field=$field.name}
+	<tr>
+		<td {if $table->isText($field.name)}colspan="2" {/if}class="details_label_cell">
+			<label>
+				{$field.widget.label}:
+			</label>
+		</td>
+		{if $table->isText($field.name)}</tr><tr>{/if}
+		<td id="ajax-details-{$record->getId()}#{$field.name}" {if $table->isText($field.name)}colspan="2" {/if}class="details_value_cell df__editable df__editable_wrapper {if $table->isText($field.name)}max-10-rows{/if}">
+
+			{$record->htmlValue($field.name)}
+			
+		</td>
+	</tr>
+	{/if_allowed}
+	{/if}
+	
+	
+{/foreach}
+			</table>
+		</td>
+	</tr>
+</table>
+{/define_slot}
+{block name="after_ajax_record_details" record=$record}

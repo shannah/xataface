@@ -1,0 +1,127 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<title>{$title}</title>
+		<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL}/plone.css"/>
+		
+		<!-- Common Plone ECMAScripts -->
+	
+		<!-- Pull-down ECMAScript menu, only active if logged in -->
+		<script type="text/javascript"
+				src="{$ENV.DATAFACE_URL}/plone_menu.js">
+		</script>
+	
+		<!-- Define dynamic server-side variables for javascripts in this one  -->
+		<script type="text/javascript"
+				src="{$ENV.DATAFACE_URL}/plone_javascript_variables.js.php">
+		</script>
+	
+		<script type="text/javascript"
+				src="{$ENV.DATAFACE_URL}/plone_javascripts.js">
+		</script>
+		{include file="head_slot.html"}
+
+
+	</head>
+	<body>
+	{include file="global_header.html"}
+	<table width="100%" border="0" cellpadding="5" id="table-wrapper">
+	<tr>
+	<td width="150" valign="top" id="table-wrapper-left">
+	<div class="visualPadding"/>
+	<div style="text-align:center; margin-bottom: 3em;">
+	{$logo}
+	</div>
+	{$blocks.left}
+	{$applicationMenu}
+	{include file="left_slot.html"}
+	</td>
+	<td valign="top" id="table-wrapper-main">
+	
+	{if $back and !$ENV.APPLICATION.hide_back}
+	<div class="browser_nav_bar">
+		<a href="{$back.link}" title="Back">&lt;&lt; Go Back</a>
+	</div>
+	{/if}
+	{if !$ENV.APPLICATION.hide_table_result_stats} 
+	<div style="float: left; width: 80%" class="result-stats" id="top-result-stats">
+		<b>Found</b> {$result.found} of {$result.cardinality} Records in table <i>{$table}</i>.
+		{if $action == "browse"}<br/><b>Now showing</b> {$result.cursor+1} of {$result.found}{/if}
+	</div>
+	{/if}
+	
+	{if !$ENV.APPLICATION.hide_result_controller}
+	{$controller}
+	{/if}
+	<div class="horizontalDivider"/>
+	
+	{if !$ENV.APPLICATION.hide_search}
+	<div class="search_form" style="float: right" id="top-search-form">
+		<form method="GET">
+		<label>Search:</label>
+		<input type="hidden" name="-table" value="{$ENV.APPLICATION_OBJECT->_currentTable}"/>
+		<input type="hidden" name="-action" value="list"/>
+		<input type="text" name="-search" value=""/>
+		<input type="submit" name="-submit" value="Submit" id="search_submit_button" />
+		</form>
+	
+	</div>
+	<div style="clear:both"/>
+	{/if}
+	
+    {if !$ENV.APPLICATION.hide_view_tabs} 
+   
+		{*$tabs*}
+		{actions_menu id="table_tabs" class="contentViews" category="table_tabs" selected_action=$ENV.action}
+		{*$menus*}
+		{include file="Dataface_TableView_menus.html"}
+	<div class="documentContent" id="region-content" style="border: 1px solid gray">
+	{/if}
+		{if $history and !$ENV.APPLICATION.hide_history}
+		<div id="recentlyViewed">
+			<b>Recent Records:</b><select name="recentRecords" onchange="javascript:window.location=this.options[this.selectedIndex].value;" >
+				{section loop=$history name=i}
+				<option value="{$history[i].link}" {if $title == $history[i].recordTitle}selected{/if}>{$history[i].recordTitle}</option>
+				{/section}
+				</select>
+		</div>
+		{/if}
+		<div style="clear:both">
+			{if $message}
+			<div class="portalMessage">
+			{$message|nl2br}
+			</div>
+			{/if}
+
+			{$body}
+	
+		</div>
+	{if !$ENV.APPLICATION.hide_view_tabs}
+	</div>
+	{/if}
+	</td>
+	</tr>
+	</table>
+	{$fineprint}
+	{include file="global_footer.html"}
+
+	</body>
+</html>

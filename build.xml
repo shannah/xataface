@@ -1,0 +1,148 @@
+<project name="dataface" default="prodn" basedir=".">
+
+   <taskdef 
+   		name="jsdoctoolkit" 
+   		classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit" 
+   		classpath="./build_tools/jsdoc/java/classes/jsdoc-toolkit-ant-task-1.1.2.jar:./build_tools/jsdoc/java/classes/js.jar"
+   	/>
+   <target name="init">
+   	  <property name="sourceDir" value="."/>
+      <property name="libDir" value="lib"/>
+      <property name="outputDir" value="/tmp/dataface-build" />
+      <property name="docsDir" value="docs" />
+      <property name="testsDir" value="tests" />
+      <property name="tablesDir" value="tables" />
+      <property name="casOutputDir" value="/tmp/dataface_cas_module" />
+      <property name="sourceGuardianEncode5" value="/usr/local/php5/sg6/bin/encode5"/>
+      <property name="feedburnerOutputDir" value="/tmp/dataface_feedburner_module" />
+   </target>
+
+   <target name="clean" depends="init">
+   	  <delete dir="${casOutputDir}" />
+   	  <delete file="{$casOutputDir}.tar.gz" />
+      <deltree dir="${outputDir}" />
+      <delete file="${outputDir}.tar.gz" />
+   </target>
+
+   <target name="prepare" depends="clean">
+      <mkdir dir="${outputDir}" />
+   </target>
+   
+
+
+   <target name="devel" depends="prepare">
+     <copydir src="${sourceDir}" dest="${outputDir}" />
+     <delete dir="${outputDir}/Dataface/templates_c"/>
+     <mkdir dir="${outputDir}/Dataface/templates_c"/>
+   </target>
+   <target name="prodn" depends="devel">
+     <deltree dir="./doc"/>
+     <deltree dir="./doc_output"/>
+     <deltree dir="./build_tools"/>
+     <deltree dir="${outputDir}/${docsDir}"/>
+     <deltree dir="${outputDir}/${testsDir}"/>
+     <deltree dir="${outputDir}/${tablesDir}"/>
+     <deltree dir="${outputDir}/lib/Auth"/>
+     <deltree dir="${outputDir}/lib/Cache"/>
+     <deltree dir="${outputDir}/lib/DB"/>
+     <delete file="${outputDir}/lib/DB.php"/>
+     <deltree dir="${outputDir}/lib/Event"/>
+     <delete file="${outputDir}/lib/excel.php"/>
+     
+     <deltree dir="${outputDir}/lib/FX"/>
+     <delete file="${outputDir}/lib/LiveUser.php"/>
+     <deltree dir="${outputDir}/lib/PHPUnit"/>
+     <delete file="${outputDir}/lib/PHPUnit.php"/>
+     <deltree dir="${outputDir}/lib/Perm"/>
+     <deltree dir="${outputDir}/lib/Var_Dump"/>
+     <delete file="${outputDir}/lib/Var_Dump.php"/>
+     <deltree dir="${outputDir}/lib/docs"/>
+     <deltree dir="${outputDir}/lib/phpThumb"/>
+     <deltree dir="${outputDir}/lib/simpletest"/>
+	 <deltree dir="${outputDir}/modules/Auth"/>
+	 <deltree dir="${outputDir}/modules/Feedburner"/>
+     <delete file="${outputDir}/Dataface/QueryTranslator.php"/>
+     <deltree dir="{$outputDir}/lib/dhtmlxGrid/samples" />
+     <deltree dir="{$outputDir}/lib/dhtmlxGrid/src" />
+     <deltree dir="{$outputDir}/lib/dhtmlxGrid/doc" />
+     <delete file="{$outputDir}/lib/dhtmlxGrid/dhtmlxGrid.zip" />
+     
+   </target>
+   
+   <target name="tarball">
+   		
+     <exec dir="/tmp" executable="tar">
+     	<arg value="cvf"/>
+     	<arg path="${outputDir}.tar"/>
+     	<arg path="${outputDir}"/>
+     </exec>
+     <exec dir="/tmp" executable="gzip">
+     	<arg path="${outputDir}.tar"/>
+     </exec>
+   </target>
+   
+   <target name="prodn-tarball" depends="prodn">
+   		<antcall target="tarball"/>
+   </target>
+   
+   <target name="lite" depends="prodn">
+   	<deltree dir="${outputDir}/lib/FCKeditor"/>
+   	<deltree dir="${outputDir}/lib/HTTP"/>
+   	<deltree dir="${outputDir}/lib/phpThumb"/>
+   	<deltree dir="${outputDir}/lib/tiny_mce"/>
+   	
+   </target>
+   
+   <target name="lite-tarball" depends="lite">
+   		<antcall target="tarball"/>
+   </target>
+   
+   <target name="oem" depends="lite">
+   	 <deltree dir="${outputDir}/install"/>
+   	 <delete file="${outputDir}/installer.php"/>
+   </target>
+   
+   <target name="oem-tarball" depends="oem">
+   		<antcall target="tarball"/>
+   </target>
+   
+   <target name="oem_lite" depends="lite">
+   		<deltree dir="${outputDir}/install"/>
+   	 	<delete file="${outputDir}/installer.php"/>
+   </target>
+   
+   <target name="oem_lite-tarball" depends="oem_lite">
+   		<antcall target="tarball" />
+   </target>
+   
+   <target name="cas_module" depends="clean">
+   	  <mkdir dir="${casOutputDir}" />
+      <mkdir dir="${casOutputDir}/modules" />
+      <mkdir dir="${casOutputDir}/modules/Auth" />
+      
+   	  <copydir src="${sourceDir}/modules/Auth/cas" dest="${casOutputDir}/modules/Auth/cas" />
+   </target>
+    <target name="feedburner_module" depends="clean">
+   	  <mkdir dir="${feedburnerOutputDir}" />
+      <mkdir dir="${feedburnerOutputDir}/modules" />
+      
+   	  <copydir src="${sourceDir}/modules/Feedburner" dest="${casOutputDir}/modules/Feedburner" />
+   </target>
+   
+   <target name="jsdoc">
+		<jsdoctoolkit 
+			jsdochome="./build_tools/jsdoc/" 
+			template="jsdoc" 
+			outputdir="./doc_output/jsdoc/" 
+			>
+   			<fileset dir="./js/">
+   				<include name="**/*.js"/>
+   			</fileset>
+   			<fileset dir="./modules/XataJax/js/">
+   				<include name="**/*.js"/>
+   			</fileset>
+   		</jsdoctoolkit>
+   </target>
+   
+
+</project>

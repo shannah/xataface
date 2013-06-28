@@ -1,0 +1,18 @@
+{*
+ * Renders a collection of rows of a tree table.
+ * @see actions_ajax_load_tree_table_rows
+ *}
+{foreach from=$rows item=row key=rowid}
+<tr id="{$rowid}">
+	<td>{$row->getTitle()}</td>
+	{foreach from=$columns item=col}
+	<td>{if $row->_table->hasField($col) }
+		{$row->preview($col)}
+		{else}
+		--
+		{/if}
+	</td>
+	{/foreach}
+
+</td>
+{/foreach}

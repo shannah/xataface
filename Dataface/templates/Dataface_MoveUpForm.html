@@ -1,0 +1,27 @@
+{literal}
+<script language="javscript" type="text/javascript"><!--
+
+function moveUp(id){
+	var form = document.moveRecordForm;
+	form.elements['-reorder:index'].value = id;
+	form.elements['-reorder:direction'].value = 'up';
+	form.submit();
+}
+
+function moveDown(id){
+	var form = document.moveRecordForm;
+	form.elements['-reorder:index'].value = id;
+	form.elements['-reorder:direction'].value = 'down';
+	form.submit();
+}
+
+//--></script>
+
+
+
+{/literal}
+<form style="display: none" name="moveRecordForm" method="POST" action="{$ENV.APPLICATION_OBJECT->url('-action=reorder_related_records')}">
+	<input type="hidden" name="-redirect" value="{$ENV.SERVER.PHP_SELF}?{$ENV.SERVER.QUERY_STRING}"/>
+	<input type="hidden" name="-reorder:index"/>
+	<input type="hidden" name="-reorder:direction"/>
+</form>

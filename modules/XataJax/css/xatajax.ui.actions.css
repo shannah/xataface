@@ -1,0 +1,21 @@
+.xatajax-ui-actions-hoverPanel {
+	position: absolute;
+	border: 1px solid #ccc;
+	border-right: none;
+	background-color: #eaeaea;
+	width: 49px;
+	height: 30px;
+	border-top-left-radius: 7px;
+	border-bottom-left-radius: 7px;
+}
+
+.xatajax-ui-actions-actionBtn {
+	width: 16px;
+	height: 16px;
+	background-repeat: no-repeat;
+	
+	border: 1px solid #666;
+	float: left;
+	display: block;
+	margin: 2px;
+}

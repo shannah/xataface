@@ -1,0 +1,159 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">//require &lt;xatajax.core.js></span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="COMM">//require &lt;jquery.packed.js></span><span class="WHIT">
+<span class='line'>  3</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">$</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jQuery</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  5</span> </span><span class="WHIT">	
+<span class='line'>  6</span> 	</span><span class="COMM">/**
+<span class='line'>  7</span> 	 * @class 
+<span class='line'>  8</span> 	 * @name util
+<span class='line'>  9</span> 	 * @memberOf XataJax
+<span class='line'> 10</span> 	 * @description A class that includes utility methods that are needed for 
+<span class='line'> 11</span> 	 * loading scripts and manipulating the environment.
+<span class='line'> 12</span> 	 * 
+<span class='line'> 13</span> 	 */</span><span class="WHIT">
+<span class='line'> 14</span> </span><span class="WHIT">	</span><span class="NAME">XataJax.util</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 15</span> </span><span class="WHIT">	</span><span class="NAME">XataJax.util.getSiteURL</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">getSiteURL</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="WHIT">	</span><span class="NAME">XataJax.util.getSiteHref</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">getSiteHref</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">	</span><span class="NAME">XataJax.util.getRequestParams</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">getRequestParams</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">	</span><span class="NAME">XataJax.util.url</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">url</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="WHIT">	</span><span class="NAME">XataJax.util.loadScript</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">loadScript</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">	
+<span class='line'> 21</span> 	
+<span class='line'> 22</span> 	</span><span class="COMM">/**
+<span class='line'> 23</span> 	 * @function
+<span class='line'> 24</span>    	 * @memberOf XataJax.util
+<span class='line'> 25</span>    	 * 
+<span class='line'> 26</span> 	 * @description Returns the URL to the site (not including the actual file).  This is a wrapper
+<span class='line'> 27</span> 	 * for the DATAFACE_SITE_URL variable that should be set in the template using
+<span class='line'> 28</span> 	 * PHP/Smarty.
+<span class='line'> 29</span> 	 *
+<span class='line'> 30</span> 	 * @returns {String} The base URL to the site.
+<span class='line'> 31</span> 	 */</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getSiteURL</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">DATAFACE_SITE_URL</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">	
+<span class='line'> 36</span> 	
+<span class='line'> 37</span> 	</span><span class="COMM">/**
+<span class='line'> 38</span> 	 * @function
+<span class='line'> 39</span> 	 * @memberOf XataJax.util
+<span class='line'> 40</span> 	 * 
+<span class='line'> 41</span> 	 *  @description Returns the full path to the script (including index.php).  This 
+<span class='line'> 42</span> 	 * is a wrapper for the DATAFACE_SITE_HREF variable that should be 
+<span class='line'> 43</span> 	 * set in the template via PHP/Smarty.
+<span class='line'> 44</span> 	 * @returns {String}
+<span class='line'> 45</span> 	 */</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getSiteHref</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">DATAFACE_SITE_HREF</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">	
+<span class='line'> 50</span> 	</span><span class="COMM">/**
+<span class='line'> 51</span> 	 * @function
+<span class='line'> 52</span> 	 * @memberOf
+<span class='line'> 53</span> 	 * 
+<span class='line'> 54</span> 	 * @description Returns the URL to the xataface directory.  This essentially returns
+<span class='line'> 55</span> 	 * the value of the DATAFACE_URL variable which should be set in PHP
+<span class='line'> 56</span> 	 * in the template.
+<span class='line'> 57</span> 	 *
+<span class='line'> 58</span> 	 * @returns {String} The URL to the Xataface directory.
+<span class='line'> 59</span> 	 */</span><span class="WHIT"> 
+<span class='line'> 60</span> 	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getXatafaceURL</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">DATAFACE_URL</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">	
+<span class='line'> 64</span> 	
+<span class='line'> 65</span> 	</span><span class="COMM">/**
+<span class='line'> 66</span> 	 * @function
+<span class='line'> 67</span> 	 * @memberOf XataJax.util
+<span class='line'> 68</span> 	 * @description Gets the query parameters for the current request.
+<span class='line'> 69</span> 	 * @returns {Object} The key-value pairs of GET variables.
+<span class='line'> 70</span> 	 *
+<span class='line'> 71</span> 	 */</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getRequestParams</span><span class="PUNC">(</span><span class="NAME">url</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">		
+<span class='line'> 74</span> 		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">search</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">window.location.search</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">url</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">pos</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">url.indexOf</span><span class="PUNC">(</span><span class="STRN">'?'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">pos</span><span class="WHIT"> </span><span class="PUNC">>=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 78</span> </span><span class="WHIT">				</span><span class="NAME">search</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">url.substr</span><span class="PUNC">(</span><span class="NAME">pos</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 79</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">				</span><span class="NAME">search</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">		
+<span class='line'> 84</span> 		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">search.indexOf</span><span class="PUNC">(</span><span class="STRN">'?'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">			</span><span class="NAME">search</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">search.substr</span><span class="PUNC">(</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">params</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">search.split</span><span class="PUNC">(</span><span class="STRN">'&'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 88</span> 
+<span class='line'> 89</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">out</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 90</span> 
+<span class='line'> 91</span> </span><span class="WHIT">		</span><span class="NAME">$.each</span><span class="PUNC">(</span><span class="NAME">params</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">parts</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.split</span><span class="PUNC">(</span><span class="STRN">'='</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">			</span><span class="NAME">out</span><span class="PUNC">[</span><span class="NAME">decodeURIComponent</span><span class="PUNC">(</span><span class="NAME">parts</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">replace</span><span class="PUNC">(</span><span class="REGX">/\+/g</span><span class="PUNC">,</span><span class="STRN">' '</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">decodeURIComponent</span><span class="PUNC">(</span><span class="NAME">parts</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">replace</span><span class="PUNC">(</span><span class="REGX">/\+/g</span><span class="PUNC">,</span><span class="STRN">' '</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">		
+<span class='line'> 96</span> 		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">out</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">		
+<span class='line'> 98</span> 	
+<span class='line'> 99</span> 	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">	
+<span class='line'>101</span> 	</span><span class="COMM">/**
+<span class='line'>102</span> 	 * @function
+<span class='line'>103</span> 	 * @memberOf XataJax.util
+<span class='line'>104</span> 	 * @description Converts the specified query parameters into a URL with proper 
+<span class='line'>105</span> 	 * url encoding.
+<span class='line'>106</span> 	 * @param {Object} params Key-value pairs of GET parameters to include.
+<span class='line'>107</span> 	 * @returns {String} A URL
+<span class='line'>108</span> 	 */</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">url</span><span class="PUNC">(</span><span class="NAME">params</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">out</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="WHIT">		</span><span class="NAME">$.each</span><span class="PUNC">(</span><span class="NAME">params</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="NAME">val</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">			</span><span class="NAME">out.push</span><span class="PUNC">(</span><span class="NAME">encodeURIComponent</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="PUNC">+</span><span class="STRN">'='</span><span class="PUNC">+</span><span class="NAME">encodeURIComponent</span><span class="PUNC">(</span><span class="NAME">val</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">getSiteHref</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">+</span><span class="STRN">'?'</span><span class="PUNC">+</span><span class="NAME">out.join</span><span class="PUNC">(</span><span class="STRN">'&'</span><span class="PUNC">)</span><span class="PUNC">+</span><span class="NAME">window.location.hash</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>115</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>116</span> </span><span class="WHIT">	
+<span class='line'>117</span> 	</span><span class="COMM">/**
+<span class='line'>118</span> 	 * @function
+<span class='line'>119</span> 	 * @memberOf XataJax.util
+<span class='line'>120</span> 	 * @description Dynamically loads a script by the script's path.
+<span class='line'>121</span> 	 *
+<span class='line'>122</span> 	 * Note that only scripts located in the Xataface Javascript include paths
+<span class='line'>123</span> 	 * can be loaded with this method.  
+<span class='line'>124</span> 	 
+<span class='line'>125</span> 	 * @see &lt;a href="http://xataface.com/dox/core/latest/class_dataface___javascript_tool.html">Dataface_JavascriptTool&lt;/a> for information
+<span class='line'>126</span> 	 * about javascript include paths and how to set them up.
+<span class='line'>127</span> 	 * @see &lt;a href="http://xataface.com/dox/core/latest/classdataface__actions__load__script.html">The Xataface load_script action&lt;/a> for information on how to manipulate
+<span class='line'>128</span> 	 * the include path on a per request basis. In particular you may find it useful to implement a handler for the beforeLoadScript event (@see The registerEventListener() method in &lt;a href="http://xataface.com/dox/core/latest/class_dataface___application.html">Dataface_Application&lt;/a>
+<span class='line'>129</span> 	 * @param {String} path The path to the script to load.  This should be the 
+<span class='line'>130</span> 	 *  same format as the require directive takes.
+<span class='line'>131</span> 	 * @param {Function} callback A callback function to be called after the script
+<span class='line'>132</span> 	 * 	has been loaded. 
+<span class='line'>133</span> 	 * @example
+<span class='line'>134</span> 	 * //require &lt;xatajax.util.js&gt;
+<span class='line'>135</span> 	 * var loadScript = XataJax.load('XataJax.util.loadScript');
+<span class='line'>136</span> 	 * loadScript('xataface/IO.js', function(){
+<span class='line'>137</span> 	 *     // Now IO.js should be loaded.
+<span class='line'>138</span> 	 *     var IO = XataJax.load('xataface.IO');
+<span class='line'>139</span> 	 *     IO.load('people?person_id=1', function(res){
+<span class='line'>140</span> 	 *         alert('First Name: '+res.first_name);
+<span class='line'>141</span> 	 *     });
+<span class='line'>142</span> 	 * });
+<span class='line'>143</span> 	 */</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">loadScript</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">		</span><span class="NAME">$.getScript</span><span class="PUNC">(</span><span class="NAME">DATAFACE_SITE_HREF</span><span class="PUNC">+</span><span class="STRN">'?-action=load_script&--script='</span><span class="PUNC">+</span><span class="NAME">encodeURIComponent</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">			</span><span class="NAME">callback</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">		</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">		
+<span class='line'>149</span> 	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">	
+<span class='line'>151</span> 	
+<span class='line'>152</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

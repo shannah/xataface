@@ -1,0 +1,202 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">//require &lt;xatajax.ui.tk/Component.js></span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="COMM">//require &lt;xatajax.ui.tk/Button.js></span><span class="WHIT">
+<span class='line'>  3</span> </span><span class="COMM">//require &lt;xatajax.ui.tk/layout/FlowLayout.js></span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="COMM">//require-css &lt;jquery-ui/jquery-ui.css></span><span class="WHIT">
+<span class='line'>  5</span> </span><span class="COMM">//require-css &lt;xatajax.ui.tk/ButtonGroup.css></span><span class="WHIT">
+<span class='line'>  6</span> 
+<span class='line'>  7</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  8</span> </span><span class="WHIT">	
+<span class='line'>  9</span> 	
+<span class='line'> 10</span> 	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">$</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jQuery</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 11</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">Component</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">XataJax.ui.tk.Component</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 12</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">Button</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">XataJax.ui.tk.Button</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 13</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">FlowLayout</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">XataJax.ui.tk.layout.FlowLayout</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 14</span> </span><span class="WHIT">	
+<span class='line'> 15</span> 	
+<span class='line'> 16</span> 	</span><span class="NAME">XataJax.ui.tk.ButtonGroup</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">ButtonGroup</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">	
+<span class='line'> 18</span> 	
+<span class='line'> 19</span> 	</span><span class="COMM">/**
+<span class='line'> 20</span> 	 * A ButtonGroup component that is handy building a toolbar.  The concept 
+<span class='line'> 21</span> 	 * for this button group is borrowed from Filament Group:
+<span class='line'> 22</span> 	 * &lt;a href="http://www.filamentgroup.com/lab/styling_buttons_and_toolbars_with_the_jquery_ui_css_framework/">Here&lt;/a>.
+<span class='line'> 23</span> 	 *
+<span class='line'> 24</span> 	 * @constructor
+<span class='line'> 25</span> 	 */</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">ButtonGroup</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">	
+<span class='line'> 28</span> 	
+<span class='line'> 29</span> 		</span><span class="COMM">/**
+<span class='line'> 30</span> 		 * A setting to decide whether this button group allows only a single select.
+<span class='line'> 31</span> 		 *
+<span class='line'> 32</span> 		 * @type {boolean}
+<span class='line'> 33</span> 		 */</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">singleSelect</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">	
+<span class='line'> 36</span> 		</span><span class="NAME">XataJax.extend</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Component</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">		</span><span class="NAME">XataJax.publicAPI</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">			</span><span class="NAME">setSingleSelect</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">setSingleSelect</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 39</span> </span><span class="WHIT">			</span><span class="NAME">isSingleSelect</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">isSingleSelect</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="WHIT">			</span><span class="NAME">decorateElement</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">decorateElement</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 41</span> </span><span class="WHIT">			</span><span class="NAME">add</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">add</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">			</span><span class="NAME">remove</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">remove</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">		
+<span class='line'> 45</span> 		</span><span class="NAME">this.setLayout</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">FlowLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">		
+<span class='line'> 47</span> 		
+<span class='line'> 48</span> 		</span><span class="COMM">/**
+<span class='line'> 49</span> 		 * Sets whether this group allows only single selection.
+<span class='line'> 50</span> 		 *
+<span class='line'> 51</span> 		 * @param {boolean} s
+<span class='line'> 52</span> 		 * @returns {ButtonGroup} Self for chaining.
+<span class='line'> 53</span> 		 */</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">setSingleSelect</span><span class="PUNC">(</span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">		
+<span class='line'> 56</span> 			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">s</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">singleSelect</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">				</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">old</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">singleSelect</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">				</span><span class="NAME">singleSelect</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">s</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">					</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">						</span><span class="PUNC">.</span><span class="NAME">removeClass</span><span class="PUNC">(</span><span class="STRN">'xatajax-buttonset-multi'</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">						</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">'xatajax-buttonset-single'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">					</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">						</span><span class="PUNC">.</span><span class="NAME">removeClass</span><span class="PUNC">(</span><span class="STRN">'xatajax-buttonset-single'</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">						</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">'xatajax-buttonset-multi'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">				</span><span class="NAME">this.firePropertyChange</span><span class="PUNC">(</span><span class="STRN">'singleSelect'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">old</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">		
+<span class='line'> 73</span> 		</span><span class="COMM">/**
+<span class='line'> 74</span> 		 * Checks if this group allows only single selection.
+<span class='line'> 75</span> 		 * @returns {boolean}
+<span class='line'> 76</span> 		 */</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">isSingleSelect</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 78</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">singleSelect</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 79</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">		
+<span class='line'> 81</span> 		</span><span class="COMM">/**
+<span class='line'> 82</span> 		 * Decorates the buttongroup's element.
+<span class='line'> 83</span> 		 * @override
+<span class='line'> 84</span> 		 * @param {HTMLElement} e The element for this component.
+<span class='line'> 85</span> 		 * @returns {ButtonGroup} Self for chaining.
+<span class='line'> 86</span> 		 */</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">decorateElement</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 88</span> </span><span class="WHIT">			</span><span class="NAME">this.getSuper</span><span class="PUNC">(</span><span class="NAME">Component</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">decorateElement</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">			</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">'xatajax-buttonset'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">				
+<span class='line'> 91</span> 			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">singleSelect</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">				</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">'xatajax-buttonset-single'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">				</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">'xatajax-buttonset-multi'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 96</span> </span><span class="WHIT">			
+<span class='line'> 97</span> 			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">		
+<span class='line'>100</span> 		
+<span class='line'>101</span> 		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">buttonMouseDown</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">hasClass</span><span class="PUNC">(</span><span class="STRN">'ui-state-disabled'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">				</span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">					</span><span class="PUNC">.</span><span class="NAME">parents</span><span class="PUNC">(</span><span class="STRN">'.xatajax-buttonset-single'</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">first</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">						</span><span class="PUNC">.</span><span class="NAME">find</span><span class="PUNC">(</span><span class="STRN">".xatajax-button.ui-state-active"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">							</span><span class="PUNC">.</span><span class="NAME">removeClass</span><span class="PUNC">(</span><span class="STRN">"ui-state-active"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">is</span><span class="PUNC">(</span><span class="STRN">'.xatajax-buttonset-multi .ui-state-active'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT"> 
+<span class='line'>108</span> 					</span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">removeClass</span><span class="PUNC">(</span><span class="STRN">"ui-state-active"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> 
+<span class='line'>109</span> 				</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> 
+<span class='line'>110</span> 					</span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">"ui-state-active"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> 
+<span class='line'>111</span> 				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>115</span> </span><span class="WHIT">		
+<span class='line'>116</span> 		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">buttonMouseUp</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>117</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">hasClass</span><span class="PUNC">(</span><span class="STRN">'ui-state-disabled'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">			
+<span class='line'>119</span> 				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">is</span><span class="PUNC">(</span><span class="STRN">'.xatajax-buttonset-single .xatajax-button,  .xatajax-buttonset-multi .xatajax-button'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">					</span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">removeClass</span><span class="PUNC">(</span><span class="STRN">"ui-state-active"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">			
+<span class='line'>123</span> 			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">		
+<span class='line'>126</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">		
+<span class='line'>128</span> 		</span><span class="COMM">/**
+<span class='line'>129</span> 		 * Adds a button to this button group.  It overrides the 
+<span class='line'>130</span> 		 * standard Component add method by adding some additional
+<span class='line'>131</span> 		 * event handlers to the button.  Although this can be used
+<span class='line'>132</span> 		 * to add other types of elements to the buttongroup, it
+<span class='line'>133</span> 		 * isn't advisable and will yield undefined results.
+<span class='line'>134</span> 		 * @override
+<span class='line'>135</span> 		 * 
+<span class='line'>136</span> 		 * @param {Button} c The button to add.
+<span class='line'>137</span> 		 * @param {mixed} param
+<span class='line'>138</span> 		 * @returns {ButtonGroup} Self for chaining.
+<span class='line'>139</span> 		 *
+<span class='line'>140</span> 		 */</span><span class="WHIT">
+<span class='line'>141</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">add</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">param</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">			</span><span class="NAME">this.getSuper</span><span class="PUNC">(</span><span class="NAME">Component</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">add</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">param</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">XataJax.instanceOf</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">Button</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">				</span><span class="NAME">decorateButton</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">		
+<span class='line'>149</span> 		</span><span class="COMM">/**
+<span class='line'>150</span> 		 * Removes a button from this group.  It overrides the Component
+<span class='line'>151</span> 		 * remove method by also removing event handlers that had been
+<span class='line'>152</span> 		 * added on add.
+<span class='line'>153</span> 		 * 
+<span class='line'>154</span> 		 * @param {Button} c The button to add to the group.
+<span class='line'>155</span> 		 * @param {boolean} repack Whether to repack the layout (not used in ButtonGroup).
+<span class='line'>156</span> 		 * @returns {ButtonGroup} Self for chaining.
+<span class='line'>157</span> 		 */</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">remove</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">repack</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">			</span><span class="NAME">this.getSuper</span><span class="PUNC">(</span><span class="NAME">Component</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">remove</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">repack</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>160</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">XataJax.instanceOf</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">Button</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>161</span> </span><span class="WHIT">				</span><span class="NAME">undecorateButton</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>163</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>164</span> </span><span class="WHIT">		
+<span class='line'>165</span> 		</span><span class="COMM">/**
+<span class='line'>166</span> 		 * Decorates a button element.  This adds necessary event handlers
+<span class='line'>167</span> 		 * to make the button work nicely in this button group.
+<span class='line'>168</span> 		 *
+<span class='line'>169</span> 		 * @private
+<span class='line'>170</span> 		 * @param {Button} btn The button component to decorate.
+<span class='line'>171</span> 		 *
+<span class='line'>172</span> 		 */</span><span class="WHIT">
+<span class='line'>173</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">decorateButton</span><span class="PUNC">(</span><span class="NAME">btn</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>174</span> </span><span class="WHIT">			</span><span class="COMM">//return;</span><span class="WHIT">
+<span class='line'>175</span> </span><span class="WHIT">			</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">btn.getElement</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>176</span> </span><span class="WHIT">				</span><span class="PUNC">.</span><span class="NAME">bind</span><span class="PUNC">(</span><span class="STRN">'mousedown.ButtonGroup'</span><span class="PUNC">,</span><span class="NAME">buttonMouseDown</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>177</span> </span><span class="WHIT">				</span><span class="PUNC">.</span><span class="NAME">bind</span><span class="PUNC">(</span><span class="STRN">'mouseup.ButtonGroup'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">buttonMouseUp</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>178</span> </span><span class="WHIT">			
+<span class='line'>179</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>180</span> </span><span class="WHIT">		
+<span class='line'>181</span> 		</span><span class="COMM">/**
+<span class='line'>182</span> 		 * Undecorates a button.  This removes the event handlers that were added
+<span class='line'>183</span> 		 * by decorateButton.
+<span class='line'>184</span> 		 *
+<span class='line'>185</span> 		 * @private
+<span class='line'>186</span> 		 * @param {Button} btn Teh button to undecorate.
+<span class='line'>187</span> 		 */</span><span class="WHIT">
+<span class='line'>188</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">undecorateButton</span><span class="PUNC">(</span><span class="NAME">btn</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>189</span> </span><span class="WHIT">			</span><span class="COMM">//return;</span><span class="WHIT">
+<span class='line'>190</span> </span><span class="WHIT">			</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">btn.getElement</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>191</span> </span><span class="WHIT">				</span><span class="PUNC">.</span><span class="NAME">unbind</span><span class="PUNC">(</span><span class="STRN">'mousedown.ButtonGroup'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">buttonMouseDown</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>192</span> </span><span class="WHIT">				</span><span class="PUNC">.</span><span class="NAME">unbind</span><span class="PUNC">(</span><span class="STRN">'mouseup.ButtonGroup'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">buttonMouseUp</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>193</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>194</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

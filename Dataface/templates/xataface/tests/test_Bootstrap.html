@@ -1,0 +1,20 @@
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="html_body"}
+	
+		<div class="xf-application" data-xf-controller="xataface.tests.BootstrapTestApp">
+			<h1>Test Application</h1>
+			
+			<p>This is a test application</p>
+			
+			<div data-kvc="comments" id="some-content"></div>
+			
+			<h3>A Test Form</h3>
+			<form id="testform" method="post" data-xf-controller="xataface.tests.BootstrapTestApp.TestForm">
+				<label>Edit Comments</label>
+				<textarea name="comments"></textarea>
+				
+				<input type="submit" value="Save"/>
+			</form>
+		</div>
+	{/fill_slot}
+{/use_macro}

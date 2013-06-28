@@ -1,0 +1,40 @@
+{use_macro file="Dataface_Main_Template.html"}
+
+	{fill_slot name="main_column"}
+		<h2>{translate id="Manage output cache"}Manage output cache{/translate}</h2>
+		<p>{translate id="manage_output_cache.description_paragraph"}The Dataface output cache stores copies of the pages of this application as they
+		are presented to the user.  Each time a page is requested, Dataface first checks the 
+		output cache to see if the page has already been generated.  If it has, then that page
+		is returned to the user.  If the requested page is not found in the cache, then
+		Dataface will generate the page as normal, save it to the cache, and present it to the
+		user.{/translate}</p>
+		<h3>{translate id="Cache Status"}Cache Status{/translate}</h3>
+		<ul>
+			{if !$enabled}
+				<li><p>{translate id="manage_output_cache.disabled.instructions"}The output cache is currently disabled.  To enable the output cache,
+				       please add the following to the end of your conf.ini file{/translate}:</p>
+				    <p><code><pre>[_output_cache]<br/>enabled=1</code></pre></p>
+				</li>
+			{else}
+				<li>{translate id="manage_output_cache.enabled_status" numrows=$numrows}The output cache is currently enabled, and contains {$numrows} pages in the cache.{/translate}</li>
+			{/if}
+		</ul>
+		{if $enabled}
+		<h3>{translate id="Options"}Options{/translate}</h3>
+		<ul>
+			<li><h4>{translate id="Empty the Cache"}Empty the Cache{/translate}</h4>
+				<p>{translate id="manage_output_cache.empty_cache.instructions"}If you make changes to the database, the cache will automatically be 
+				   refreshed.  However if you make changes to the source files on the file system
+				   (e.g. the fields.ini files or delegate classes), you will need to empty the
+				   cache manually using this option{/translate}:</p>
+				<p><form action="{$smarty.server.PHP_SELF}" method="post">
+					<input type="hidden" name="-action" value="manage_output_cache"/>
+					<input type="hidden" name="--clear-cache" value="1"/>
+					<input type="submit" name="Clear" value="{translate id="Clear Cache Now"}Clear Cache Now{/translate}"/>
+					</form>
+				</p>
+			</li>
+		</ul>
+		{/if}
+	{/fill_slot}
+{/use_macro}

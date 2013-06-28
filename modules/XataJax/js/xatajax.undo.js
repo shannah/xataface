@@ -1,0 +1,6 @@
+(function(){
+	/**
+	 * @package
+	 */
+	XataJax.undo = {};
+})();

@@ -1,0 +1,14 @@
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="main_column"}
+		<h2>Administration Control Panel</h2>
+		<p>This page allows you to manage various aspects of this application.  Select one of the options below.</p>
+		
+		{actions var=actions category="management_actions"}
+		<dl>
+		{foreach from=$actions key=name item=action}
+			<dt><a href="{$action.url|escape}" {if $action.target}target="{$action.target|escape}"{/if}>{$action.label|escape}</a></dt>
+			<dd>{$action.description|escape}</dd>
+		{/foreach}
+		</dl>
+	{/fill_slot}
+{/use_macro}

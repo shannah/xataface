@@ -1,0 +1,105 @@
+#header-section {
+	
+	width: auto;
+	margin-left: 10%;
+	margin-right: 10%;
+	height: 45px;
+	padding: 0;
+	margin-bottom: 0;
+	
+}
+
+#header-section h1 {
+	color: #174198;
+	font-size: 24px;
+	font-style: italic;
+	font-family: helvetica,sans-serif;
+	border-left: 50px solid #172D69;
+	font-weight: normal;
+	line-height: 35px;
+	padding:0;
+	margin:0;
+
+
+}
+
+#main-section {
+	width: auto;
+	margin-left: 10%;
+	margin-right: 10%;
+	border: 1px solid #B4B8CE;
+	padding: 50px;
+	border-left: 50px solid #B4B8Ce;
+	padding-top: 0;
+	
+}
+
+#main-section h2 {
+	font-family: helvetica,sans-serif;
+	font-size: 18px;
+	background-color: #172D69;
+	color: white;
+	margin-top:0;
+	padding-top:0;
+	position:relative;
+	left: -50px;
+	padding-left: 30px;
+	border-right: 70px solid #172D69;
+	border-bottom: 1px solid #666;
+	
+	font-weight: normal;
+	width:100%;
+}
+
+#main-section p,
+#main-section li,
+#main-section table {
+	font-family: sans-serif;
+	font-size: 11pt;
+	line-height: 200%;
+}
+
+#main-section h3 {
+	color: #172D69;
+	position: relative;
+	left: -10px;
+	font-family: sans-serif;
+}
+
+#main-section a {
+	font-family: sans-serif;
+}
+
+a.test-button {
+	border: 1px solid #444;
+	text-decoration: none;
+	display: block;
+	padding: 5px;
+	width: 200px;
+}
+
+ol.main-menu li a {
+	text-decoration: none;
+	display: block;
+	color: inherit;
+}
+
+ol.main-menu li a p {
+	color: #444;
+	font-size: 90%;
+}
+
+ol.main-menu li a h3:hover {
+	color: blue;
+}
+
+.instructions {
+	font-size: 11px;
+	color: #999;
+	line-height: 13px;
+}
+
+.instructions:hover {
+	color: black;
+	font-size: 12px;
+}

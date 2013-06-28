@@ -1,0 +1,13 @@
+{use_macro file="Dataface_Related_Records_List.html"}
+	{fill_slot name="related_records_list"}
+		{block name="before_related_`$ENV.relationship`_records_checkboxes"}
+		{block name="before_related_records_checkboxes"}
+		{define_slot name="related_`$ENV.relationship`_records_checkbox_form"}
+			{define_slot name="related_records_checkbox_form"}
+				{$form}
+			{/define_slot}
+		{/define_slot}
+		{block name="after_related_records_checkboxes"}
+		{block name="after_related_`$ENV.relationship`_records_checkboxes"}
+	{/fill_slot}
+{/use_macro}

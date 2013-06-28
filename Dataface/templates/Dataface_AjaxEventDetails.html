@@ -1,0 +1,13 @@
+{block name="before_event_details"}
+{define_slot name="event_details"}
+<table class="record-view-table"><tbody>
+{foreach from=$fields item=field}
+
+	<tr><th>{$field.fielddef.widget.label|escape}</th><td id="{$field.tdid}" class="{$field.tdclass}">{$field.value}</td></tr>
+
+{/foreach}
+</tbody></table>
+{actions_menu category="event_actions" record=$event}
+{/define_slot}
+{block name="after_event_details"}
+		

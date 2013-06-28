@@ -1,0 +1,92 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{if $ENV.resultSet->found() > 0 }
+	{use_macro file="Dataface_Record_Template.html"}
+	
+		{fill_slot name="record_content"}
+			<script type="text/javascript" src="{$ENV.DATAFACE_URL}/js/jquery.packed.js"></script>
+			<script type="text/javascript" src="http://www.google.com/jsapi">
+			</script>
+			<script type="text/javascript">
+
+			 google.load("language", "1");
+			 
+				{literal}
+			  jQuery(document).ready(function($){
+			  	
+			  	$('td.translation-destination-cell').each(function(){
+			  		var td = this;
+			  		var tr = $(this).parent('tr').get(0);
+			  		var srcCell = $('td.translation-source-cell', tr).get(0);
+			  		var input = $('input', this);
+			  		if ( input.length == 0 ){
+			  			input = $('textarea', this);
+			  		}
+			  		
+			  		if ( input.length == 0 ) return;
+			  		if ( input.attr('type') == 'hidden' || input.attr('type') == 'submit' ) return;
+			  		
+			  		// add a link
+			  		var imgPath = DATAFACE_URL+'/images/babelfish.gif';
+			  		var linkHtml = '<a href="#" class="translate-field-link" title="Machine Translate This"><img src="'+imgPath+'" alt="Translate"/><'+'/a>';
+			  		//alert(linkHtml);
+			  		input.after(linkHtml);
+			  		$('a.translate-field-link', this).click(function(){
+			  			var srcText = $('div', srcCell).html();
+			  			var srcLang = '{/literal}{$formObj->getGoogleLanguage($formObj->sourceLanguage)}{literal}';
+			  			var destLang = '{/literal}{$formObj->getGoogleLanguage($formObj->destinationLanguage)}{literal}';
+			  			//alert("Tryng to translate '"+srcText+"' from "+srcLang+" to "+destLang);
+			  			google.language.translate(srcText, srcLang,destLang, function(result){
+			  				if ( !result.error ){
+			  					input.val(result.translation);
+			  				} else {
+			  					alert(result.error.message);
+			  					
+			  				}
+			  			});
+			  			return false;
+			  			
+			  		});
+			  	});
+			  });
+			  {/literal}
+			</script>
+		
+			<div class="sourceLanguageSelect">{translate id="scripts.Dataface.TranslationForm.LABEL_SOURCE_TRANSLATION"}Source Language{/translate}: 
+				{language_selector selected=$formObj->sourceLanguage var="-sourceLanguage" autosubmit="true" table=$formObj->_table->tablename lang=$ENV.language}</div>
+			<div class="destLanguageSelect">{translate id="scripts.Dataface.TranslationForm.LABEL_DESTINATION_TRANSLATION"}Destination Language{/translate}: 
+				{language_selector selected=$formObj->destinationLanguage var="-destinationLanguage" autosubmit="true" table=$formObj->_table->tablename lang=$ENV.language}</div>
+			<div style="clear:both">&nbsp;</div>
+			{$form}
+			<div id="branding"></div>
+			<script type="text/javascript">
+			google.language.getBranding('branding');
+			</script>
+		{/fill_slot}
+	
+	{/use_macro}
+{else}
+	{use_macro file="Dataface_Main_Template.html"}
+		{fill_slot name="main_section"}
+			{translate id="scripts.GLOBAL.NO_RECORDS_MATCHED_REQUEST"}No records matched the request{/translate}
+		{/fill_slot}
+	{/use_macro}
+
+{/if}

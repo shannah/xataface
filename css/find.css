@@ -1,0 +1,21 @@
+.search-instructions .accordion div {
+	font-size: 10px;
+}
+
+.search-instructions li {
+	padding: 0;
+	margin: 0;
+}
+
+.search-instructions-link {
+	display: block;
+	float: right;
+	border: 1px solid #8aa9b8;
+	padding: 4px;
+	padding-left: 24px;
+	margin: 4px;
+	cursor: pointer;
+	background-image: url(../images/help.png);
+	background-repeat: no-repeat;
+	background-position: 4px 4px;
+}

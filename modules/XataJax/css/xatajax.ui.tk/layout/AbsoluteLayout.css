@@ -1,0 +1,7 @@
+.xatajax-ui-layout-absolutelayout {
+	position: relative;
+}
+
+.xatajax-ui-layout-absolutelayout > .xatajax-component {
+	position: absolute;
+}

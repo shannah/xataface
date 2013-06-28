@@ -1,0 +1,46 @@
+{use_macro file="Dataface_Main_Template.html"}
+
+	{fill_slot name="main_section"}
+	
+		<h1>{translate id="templates.actions_manage_migrate.HEADING_MIGRATION_MANAGER"}
+			Migration Manager
+			{/translate}
+		</h1>
+		<p>{translate id="templates.actions_manage_migrate.INSTRUCTIONS"}This page allows you to migrate data from old versions of Dataface to your current version.  
+		Select the migrations you wish to perform below and submit the form.{/translate}</p>
+		<hr/>
+		{if $migrations|@count > 0 }
+			<form method="post" action="{$ENV.DATAFACE_SITE_HREF}">
+			<input type="hidden" name="-action" value="manage_migrate" />
+			<dl>
+			{foreach from=$migrations item="migration" key="key"}
+				<dt><input type="checkbox" name="modules[{$key}]" value="1" checked />{$key}:</dt><dd>{$migration}</dd>
+			{/foreach}
+			</dl>
+			
+			<input type="submit" value="{translate id="templates.actions_manage_migrate.LABEL_PERFORM_MIGRATIONS"}Perform selected migrations{/translate}" />
+			</form>
+		{else}
+			<p>{translate id="templates.actions_manage_migrate.MESSAGE_NO_MIGRATIONS"}
+				There are currently no migrations to be performed.
+			{/translate}</p>
+		{/if}
+		
+		{if $log|@count > 0 }
+			<h2>Migration Results</h2>
+			<dl>
+			{foreach from=$log item="entry" key="key"}
+				<dt>{$key}</dt>
+				<dd>
+					<ul>
+					{foreach from=$entry item="lineitem"}
+						<li>{$lineitem}</li>
+					{/foreach}
+					</ul>
+				</dd>
+			{/foreach}
+			</dl>
+		{/if}
+	{/fill_slot}
+
+{/use_macro}

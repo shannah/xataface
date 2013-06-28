@@ -1,0 +1,15 @@
+<div class="result-stats related-result-stats">
+	
+	{translate id="scripts.Dataface.RelatedList.toHtml.MESSAGE_FOUND" num=$num_related_records relationship=$relationship_name}
+		<b>Found</b> {$num_related_records|escape} Records in relationship <i>{$relationship_name|escape}</i>
+	{/translate}
+	<br/>
+	{translate id="scripts.Dataface.RelatedList.toHtml.MESSAGE_NOW_SHOWING" start=$now_showing_start finish=$now_showing_finish}
+		<b>Now Showing</b> {$now_showing_start|escape} to {$now_showing_finish|escape}
+	{/translate}
+</div>
+<div class=\"limit-field\">
+	{$limit_field}
+</div>
+<div class="prev-link">{$back_link}</div>
+<div class="next-link">{$next_link}</div>

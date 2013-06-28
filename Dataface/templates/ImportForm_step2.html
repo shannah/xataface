@@ -1,0 +1,33 @@
+{literal}
+<script language="javascript"><!--
+function expandImportData(){
+	var a = document.getElementById('preview-import-data-a');
+	var imgs = a.getElementsByTagName('img');
+{/literal}	imgs[0].src = '{$ENV.DATAFACE_URL}/images/treeExpanded.gif';{literal}
+	a.onclick = collapseImportData;
+	var spans = a.getElementsByTagName('span');
+	spans[0].innerHTML = 'Hide Import Data';
+	var div = document.getElementById('preview-import-data-div');
+	div.style.display = '';
+	return false;
+}
+
+function collapseImportData(){
+	var a = document.getElementById('preview-import-data-a');
+	var imgs = a.getElementsByTagName('img');
+{/literal}	imgs[0].src = '{$ENV.DATAFACE_URL}/images/treeCollapsed.gif';{literal}
+	a.onclick = expandImportData;
+	var spans = a.getElementsByTagName('span');
+	spans[0].innerHTML = 'Preview Import Data';
+	var div = document.getElementById('preview-import-data-div');
+	div.style.display = 'none';
+	return false;
+
+}
+//--></script>
+{/literal}
+<h4>{translate id="templates.ImportForm_step2.HEADING_FOUND_RECORDS" num=$num_records}Found {$num_records} records to import.{/translate}</h4>
+<a id="preview-import-data-a" title="{translate id="templates.ImportForm_step2.LABEL_PREVIEW"}Preview Import Data{/translate}" href="#" onclick="expandImportData(); return false;"><img src="{$ENV.DATAFACE_URL}/images/treeCollapsed.gif"> <span>{translate id="templates.ImportForm_step2.LABEL_PREVIEW"}Preview Import Data{/translate}</span></a>
+<div id="preview-import-data-div" style="display: none">
+{$preview_data}
+</div>

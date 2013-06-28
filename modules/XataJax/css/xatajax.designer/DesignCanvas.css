@@ -1,0 +1,24 @@
+.xatajax-ui-designer-selected {
+	
+}
+
+.xatajax-ui-designer-hovered {
+
+}
+
+.xatajax-component-moving-silhouette {
+	position: absolute;
+	border: 1px solid gray;
+}
+
+.xatajax-ui-designer-droptarget {
+	border: 1px solid green;
+}
+
+.xatajax-designer-draghandle {
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	z-index: 1000;
+	border: 1px dotted gray;
+}

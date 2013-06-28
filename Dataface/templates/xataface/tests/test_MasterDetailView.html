@@ -1,0 +1,85 @@
+{use_macro file="Dataface_Main_Template.html"}
+
+	{fill_slot name="html_body"}
+		
+		<h1>Table View Test</h1>
+		
+		
+		<div id="detail-tpl">
+			<table>
+			
+				<tr>
+					<td>
+						<span>First Name</span>
+					</td>
+					<td>
+						<span data-kvc="firstName">John</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>Last Name</span>
+					</td>
+					<td>
+						<span data-kvc="lastName">Smith</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>Age</span>
+					</td>
+					<td>
+						<span data-kvc="age">34</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>Language</span>
+					</td>
+					<td>
+						<span data-kvc="language">English</span>
+					</td>
+				</tr>
+				
+			</table>
+		
+		</div>
+		
+		<div id="master-tpl">
+			<table class="template">
+				<thead>
+					<tr>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Age</th>
+						<th>Language</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<span data-kvc="firstName">John</span>
+						</td>
+						<td>
+							<span data-kvc="lastName">Smith</span>
+						</td>
+						<td>
+							<span data-kvc="age">34</span>
+						</td>
+						<td>
+							<span data-kvc="language">English</span>
+						</td>
+					</tr>
+				</tbody>
+				
+			</table>
+		
+		</div>
+		
+		<div id="wrapper1">
+		
+		
+		</div>
+	
+	{/fill_slot}
+{/use_macro}

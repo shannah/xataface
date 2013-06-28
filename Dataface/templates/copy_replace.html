@@ -1,0 +1,69 @@
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="main_section"}
+
+	<h2>{$title}</h2>
+	<p>{$message}</p>
+	<div id="selected-records-list">
+	<h3>{translate id="templates.copy_replace.HEADING_SELECTED_RECORDS"}
+		Selected records:
+		{/translate}
+	</h3>
+	   <table class="listing scrollable" id="preview-table">
+	   <thead>
+	   	<tr>
+	   		<th>{translate id="templates.copy_replace.th_title"}Title{/translate}</th>
+	   		{foreach from=$columns item="column"}
+	   			<th>{$column.widget.label}</th>
+	   		{/foreach}
+	   	</tr>
+	   </thead>
+	   <tbody>
+	  {foreach from=$records item=record}
+	  	<tr><td>{$record->getTitle()}</td>
+	  	{foreach from=$columns item="column"}
+	  		<td>{$record->preview($column.name)}</td>
+	  	{/foreach}
+	  	</tr>
+	  	
+	  {/foreach}
+	  </tbody>
+	  </table>
+	</div>
+	{literal}
+	<script language="javascript"><!--
+		function updateForm(select){
+			var selected = select.options[select.selectedIndex].value;
+			var formRow = document.getElementById('copy-replace-field-'+selected+'-row');
+			formRow.style.display = '';
+			select.options[select.selectedIndex] = null;
+			var form = document.getElementById('copy_replace_form');
+			var fields= form.elements['-copy_replace:fields'];
+			if ( fields.value ) fields.value += '-'+selected;
+			else fields.value = selected;
+		}
+	//--></script>
+	{/literal}
+	<!--
+	<div class="floating-palette">
+		<h3>Help</h3>
+		<p>Click here for help</p>
+	</div>
+	-->
+	<div id="copy_replace-select-field">
+	<h3 style="display: inline">{translate id="templates.copy_replace.label.add_field"}Add Field to update{/translate}: </h3>
+	<select id="xf-copy-replace-fields-select" onchange="updateForm(this);">
+	{html_options options=$field_options}
+	</select>
+	<button id="df-copy-replace-help-button"><span>{translate id="help"}Help{/translate}</span></button>
+	</div>
+	
+	<div id="copy_replace-form">
+	
+	{$form}
+	<p><img src="{$ENV.DATAFACE_URL}/images/exclamation.gif"/>{$warning}</p>
+	
+	</div>
+	
+	
+	{/fill_slot}
+{/use_macro}

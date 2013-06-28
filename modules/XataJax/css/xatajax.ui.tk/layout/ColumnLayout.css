@@ -1,0 +1,9 @@
+.xatajax-ui-layout-columnlayout table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid black;
+}
+
+.xatajax-ui-layout-columnlayout table td {
+	border: 1px solid red;
+}

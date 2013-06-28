@@ -1,0 +1,4 @@
+/**
+ * @package
+ */
+var xatadoc = {};

@@ -1,0 +1,371 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">//require &lt;xatacard/layout/__init__.js></span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="COMM">//require &lt;xatacard/layout/Record.js></span><span class="WHIT">
+<span class='line'>  3</span> </span><span class="COMM">//require &lt;xatacard/layout/DataSource.js></span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="COMM">//require &lt;xatacard/layout/RecordSetEvent.js></span><span class="WHIT">
+<span class='line'>  5</span> </span><span class="COMM">//require &lt;xatajax.beans/PropertyChangeSupport.js></span><span class="WHIT">
+<span class='line'>  6</span> </span><span class="COMM">//require &lt;xatajax.beans/Subscribable.js></span><span class="WHIT">
+<span class='line'>  7</span> 
+<span class='line'>  8</span> 
+<span class='line'>  9</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 10</span> 
+<span class='line'> 11</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">,</span><span class="WHIT"> 
+<span class='line'> 12</span> 		</span><span class="NAME">Record</span><span class="PUNC">,</span><span class="WHIT"> 
+<span class='line'> 13</span> 		</span><span class="NAME">DataSource</span><span class="PUNC">,</span><span class="WHIT"> 
+<span class='line'> 14</span> 		</span><span class="NAME">RecordSetEvent</span><span class="PUNC">,</span><span class="WHIT"> 
+<span class='line'> 15</span> 		</span><span class="NAME">PropertyChangeSupport</span><span class="PUNC">,</span><span class="WHIT"> 
+<span class='line'> 16</span> 		</span><span class="NAME">PropertyChangeListener</span><span class="PUNC">,</span><span class="WHIT"> 
+<span class='line'> 17</span> 		</span><span class="NAME">Subscribable</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">		
+<span class='line'> 19</span> 	</span><span class="NAME">XataJax.ready</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">		</span><span class="NAME">$</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jQuery</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 21</span> </span><span class="WHIT">		</span><span class="NAME">Record</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">xatacard.layout.Record</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 22</span> </span><span class="WHIT">		</span><span class="NAME">DataSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">xatacard.layout.DataSource</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 23</span> </span><span class="WHIT">		</span><span class="NAME">RecordSetEvent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">xatacard.layout.RecordSetEvent</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 24</span> </span><span class="WHIT">		</span><span class="NAME">PropertyChangeSupport</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">XataJax.beans.PropertyChangeSupport</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="WHIT">		</span><span class="NAME">PropertyChangeListener</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">XataJax.beans.PropertyChangeListener</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">		</span><span class="NAME">Subscribable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">XataJax.beans.Subscribable</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">	</span><span class="NAME">xatacard.layout.RecordSet</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">RecordSet</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 29</span> </span><span class="WHIT">	
+<span class='line'> 30</span> 	
+<span class='line'> 31</span> 	</span><span class="COMM">/**
+<span class='line'> 32</span> 	 * Base class for sets of records.  This class should be extended by more specific
+<span class='line'> 33</span> 	 * classes for different types of schemas.  The load() method can be overridden
+<span class='line'> 34</span> 	 * to load records from the datasource.
+<span class='line'> 35</span> 	 *
+<span class='line'> 36</span> 	 * @constructor
+<span class='line'> 37</span> 	 *
+<span class='line'> 38</span> 	 * @event {RecordSetEvent} beforeLoad  Fired before records are loaded into set.
+<span class='line'> 39</span> 	 * @event {RecordSetEvent} afterLoad Fired after records are loaded into set.
+<span class='line'> 40</span> 	 * @event {RecordSetEvent} beforeUpdate Fired before update.
+<span class='line'> 41</span> 	 * @event {RecordSetEvent} afterUpdate Fired after update.
+<span class='line'> 42</span> 	 * @event {RecordSetEvent} beforeRemoveRecord Fired before a record is removed.
+<span class='line'> 43</span> 	 * @event {RecordSetEvent} afterRemoveRecord Fired after a record is removed.
+<span class='line'> 44</span> 	 */</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">RecordSet</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">	
+<span class='line'> 47</span> 		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">self</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">	
+<span class='line'> 49</span> 		</span><span class="COMM">/**
+<span class='line'> 50</span> 		 * @type {DataSource}
+<span class='line'> 51</span> 		 */</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">dataSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">		
+<span class='line'> 54</span> 		
+<span class='line'> 55</span> 		</span><span class="COMM">/**
+<span class='line'> 56</span> 		 * @type {dict Record} Currently loaded records.
+<span class='line'> 57</span> 		 */</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">records</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">		
+<span class='line'> 60</span> 		</span><span class="COMM">/**
+<span class='line'> 61</span> 		 * @type {int}
+<span class='line'> 62</span> 		 */</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cardinality</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">		
+<span class='line'> 65</span> 		
+<span class='line'> 66</span> 		</span><span class="NAME">XataJax.extend</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">PropertyChangeSupport</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">		</span><span class="NAME">XataJax.extend</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Subscribable</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">		</span><span class="NAME">XataJax.publicAPI</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">		
+<span class='line'> 70</span> 			</span><span class="NAME">setCardinality</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">setCardinality</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">			</span><span class="NAME">getCardinality</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">getCardinality</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">			</span><span class="NAME">load</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">load</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">			</span><span class="NAME">decorateLoadRequest</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">decorateLoadRequest</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">			</span><span class="NAME">handleLoad</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">handleLoad</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">			</span><span class="NAME">setRecordAt</span><span class="PUNC">:</span><span class="NAME">setRecordAt</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">			</span><span class="NAME">getRecordAt</span><span class="PUNC">:</span><span class="NAME">getRecordAt</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">			</span><span class="NAME">removeRecord</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">removeRecord</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 78</span> </span><span class="WHIT">			</span><span class="NAME">decorateRecord</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">decorateRecord</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 79</span> </span><span class="WHIT">			</span><span class="NAME">undecorateRecord</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">undecorateRecord</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">			</span><span class="NAME">clear</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">clear</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">			</span><span class="NAME">indexIsLoaded</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">indexIsLoaded</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">			
+<span class='line'> 83</span> 		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">		
+<span class='line'> 85</span> 		
+<span class='line'> 86</span> 		
+<span class='line'> 87</span> 		</span><span class="COMM">/**
+<span class='line'> 88</span> 		 * @returns {int} The total number of records in this result set (that could be loaded
+<span class='line'> 89</span> 		 * from the server but may not necessarily be loaded yet).
+<span class='line'> 90</span> 		 */</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getCardinality</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">cardinality</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">		
+<span class='line'> 95</span> 		
+<span class='line'> 96</span> 		</span><span class="COMM">/**
+<span class='line'> 97</span> 		* @param {int} c The cardinality of the result set.
+<span class='line'> 98</span> 		* @returns {RecordSet} Self for chaining.
+<span class='line'> 99</span> 		*/</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">setCardinality</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">c</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">cardinality</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">				</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">old</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">cardinality</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">				</span><span class="NAME">cardinality</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">c</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">				</span><span class="NAME">this.firePropertyChange</span><span class="PUNC">(</span><span class="STRN">'cardinality'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">old</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">c</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">		
+<span class='line'>109</span> 		
+<span class='line'>110</span> 		
+<span class='line'>111</span> 		</span><span class="COMM">/**
+<span class='line'>112</span> 		 * Loads a segment of this record set.  This method should be overridden by 
+<span class='line'>113</span> 		 * subclasses to actually perform the load.  The default implementation
+<span class='line'>114</span> 		 * just sets the cardinality to 0 and all start/end values to -1.
+<span class='line'>115</span> 		 *
+<span class='line'>116</span> 		 * @param {int} start The index of the first record that should be loaded. (0-based).
+<span class='line'>117</span> 		 * @param {int} end The index of the last record to be loaded.  (0-based).
+<span class='line'>118</span> 		 * @returns {RecordSet} Self for chaining.
+<span class='line'>119</span> 		 */</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">load</span><span class="PUNC">(</span><span class="NAME">start</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">end</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">self</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">req</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RecordRequest</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">			</span><span class="NAME">req.setAction</span><span class="PUNC">(</span><span class="STRN">'load'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">			</span><span class="NAME">req.setRecordSet</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">			</span><span class="NAME">req.setParameter</span><span class="PUNC">(</span><span class="STRN">'start'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">start</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">			</span><span class="NAME">req.setParameter</span><span class="PUNC">(</span><span class="STRN">'end'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">end</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">			</span><span class="NAME">req.bind</span><span class="PUNC">(</span><span class="STRN">'complete'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">response</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">response.getCode</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">RecordResponse.SUCCESS</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">response.getCode</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">RecordResponse.ALL_SUCCESS</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">					</span><span class="NAME">self.handleLoad</span><span class="PUNC">(</span><span class="NAME">response.getRecords</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">start</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'function'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">					</span><span class="NAME">callback</span><span class="PUNC">(</span><span class="NAME">response</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>135</span> </span><span class="WHIT">			</span><span class="NAME">this.decorateLoadRequest</span><span class="PUNC">(</span><span class="NAME">start</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">end</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">req</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>136</span> </span><span class="WHIT">			
+<span class='line'>137</span> 			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">dataSource</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Exception</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="WHIT">					</span><span class="NAME">message</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'Null datasource.  Cannot load record set.'</span><span class="WHIT">
+<span class='line'>140</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>141</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">			
+<span class='line'>143</span> 			</span><span class="NAME">dataSource.sendRequest</span><span class="PUNC">(</span><span class="NAME">req</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">			
+<span class='line'>145</span> 			
+<span class='line'>146</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">		
+<span class='line'>148</span> 		
+<span class='line'>149</span> 		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">decorateLoadRequest</span><span class="PUNC">(</span><span class="NAME">start</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">end</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">req</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">		
+<span class='line'>151</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">		
+<span class='line'>153</span> 		
+<span class='line'>154</span> 		
+<span class='line'>155</span> 		
+<span class='line'>156</span> 		
+<span class='line'>157</span> 		
+<span class='line'>158</span> 		
+<span class='line'>159</span> 		
+<span class='line'>160</span> 		
+<span class='line'>161</span> 		
+<span class='line'>162</span> 		
+<span class='line'>163</span> 		</span><span class="COMM">/**
+<span class='line'>164</span> 		 * Handles the loading of a set of records.
+<span class='line'>165</span> 		 * This should be called by the load() method after the loading is 
+<span class='line'>166</span> 		 * completed - usually inside a callback.
+<span class='line'>167</span> 		 *
+<span class='line'>168</span> 		 * @param {array Record} recs The array of records to load.
+<span class='line'>169</span> 		 * @param {int} index The start index where they should be inserted.
+<span class='line'>170</span> 		 *
+<span class='line'>171</span> 		 * @returns {RecordSet} Self for chaining.
+<span class='line'>172</span> 		 */</span><span class="WHIT">
+<span class='line'>173</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">handleLoad</span><span class="PUNC">(</span><span class="NAME">recs</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">index</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>174</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">recs.length</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>175</span> </span><span class="WHIT">			
+<span class='line'>176</span> 			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">lStart</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">index</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>177</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">lEnd</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">index</span><span class="PUNC">+</span><span class="NAME">records.length</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>178</span> </span><span class="WHIT">			
+<span class='line'>179</span> 			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">event</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RecordSetEvent</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>180</span> </span><span class="WHIT">				</span><span class="NAME">recordSet</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>181</span> </span><span class="WHIT">				</span><span class="NAME">action</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'load'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>182</span> </span><span class="WHIT">				</span><span class="NAME">records</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">recs</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>183</span> </span><span class="WHIT">				</span><span class="NAME">startIndex</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">lStart</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>184</span> </span><span class="WHIT">				</span><span class="NAME">endIndex</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">lEnd</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="WHIT">
+<span class='line'>185</span> </span><span class="WHIT">				
+<span class='line'>186</span> 			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>187</span> </span><span class="WHIT">			
+<span class='line'>188</span> 			</span><span class="NAME">this.trigger</span><span class="PUNC">(</span><span class="STRN">'beforeLoad'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>189</span> </span><span class="WHIT">			
+<span class='line'>190</span> 			
+<span class='line'>191</span> 			</span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NAME">lStart</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">lEnd</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>192</span> </span><span class="WHIT">				</span><span class="NAME">this.setRecordAt</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">recs</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">-</span><span class="NAME">lStart</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>193</span> </span><span class="WHIT">				
+<span class='line'>194</span> 			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="WHIT">			
+<span class='line'>196</span> 			</span><span class="NAME">this.trigger</span><span class="PUNC">(</span><span class="STRN">'afterLoad'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>197</span> </span><span class="WHIT">			
+<span class='line'>198</span> 			
+<span class='line'>199</span> 			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>200</span> </span><span class="WHIT">			
+<span class='line'>201</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>202</span> </span><span class="WHIT">		
+<span class='line'>203</span> 		
+<span class='line'>204</span> 		
+<span class='line'>205</span> 		</span><span class="COMM">/**
+<span class='line'>206</span> 		 * Sets the record at a specific position in this result set.  This does not imply
+<span class='line'>207</span> 		 * that the record was added to the result set in the underlying data source - this is just a housekeeping method
+<span class='line'>208</span> 		 * to be able to set the record at a particular index of the result set during the 
+<span class='line'>209</span> 		 * loading of it.
+<span class='line'>210</span> 		 *
+<span class='line'>211</span> 		 * This fires an indexd PropertyChangeEvent for the 'records' property.
+<span class='line'>212</span> 		 *
+<span class='line'>213</span> 		 * @param {int} index The index within the result set that this record should be added.
+<span class='line'>214</span> 		 * @param {Record} record The record that is being inserted.
+<span class='line'>215</span> 		 */</span><span class="WHIT">
+<span class='line'>216</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">setRecordAt</span><span class="PUNC">(</span><span class="NAME">index</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>217</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">self</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>218</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">records</span><span class="PUNC">[</span><span class="NAME">index</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>219</span> </span><span class="WHIT">				</span><span class="NAME">records</span><span class="PUNC">[</span><span class="NAME">index</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>220</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>221</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">old</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">records</span><span class="PUNC">[</span><span class="NAME">index</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>222</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">old</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>223</span> </span><span class="WHIT">				
+<span class='line'>224</span> 				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">XataJax.instanceOf</span><span class="PUNC">(</span><span class="NAME">old</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">Record</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>225</span> </span><span class="WHIT">					</span><span class="NAME">this.undecorateRecord</span><span class="PUNC">(</span><span class="NAME">old</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>226</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>227</span> </span><span class="WHIT">				
+<span class='line'>228</span> 				</span><span class="NAME">records</span><span class="PUNC">[</span><span class="NAME">index</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">record</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>229</span> </span><span class="WHIT">				</span><span class="NAME">this.decorateRecord</span><span class="PUNC">(</span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>230</span> </span><span class="WHIT">				
+<span class='line'>231</span> 				
+<span class='line'>232</span> 				</span><span class="NAME">this.firePropertyChange</span><span class="PUNC">(</span><span class="STRN">'records'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">old</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">record</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">index</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>233</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>234</span> </span><span class="WHIT">			
+<span class='line'>235</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>236</span> </span><span class="WHIT">		
+<span class='line'>237</span> 		</span><span class="COMM">/**
+<span class='line'>238</span> 		 * Decorates a record that has just been added to this record set.  This 
+<span class='line'>239</span> 		 * adds the necessary listeners to be able to respond when the record is
+<span class='line'>240</span> 		 * deleted (so that it can be removed from the record set) etc..
+<span class='line'>241</span> 		 *
+<span class='line'>242</span> 		 * @param {Record} record The record that is to be decorated.
+<span class='line'>243</span> 		 * @returns {RecordSet} Self for chaining.
+<span class='line'>244</span> 		 */</span><span class="WHIT">
+<span class='line'>245</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">decorateRecord</span><span class="PUNC">(</span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>246</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">self</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>247</span> </span><span class="WHIT">			</span><span class="NAME">record.bind</span><span class="PUNC">(</span><span class="STRN">'afterDelete.updateRecordSet'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>248</span> </span><span class="WHIT">				</span><span class="NAME">self.removeRecord</span><span class="PUNC">(</span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>249</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>250</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>251</span> </span><span class="WHIT">	
+<span class='line'>252</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>253</span> </span><span class="WHIT">		
+<span class='line'>254</span> 		
+<span class='line'>255</span> 		</span><span class="COMM">/**
+<span class='line'>256</span> 		 * Strips listeners that were added to records by the decorateRecord method.
+<span class='line'>257</span> 		 * This is generally called on records as they are being removed from the record set
+<span class='line'>258</span> 		 * so that anything that was added to the record when it was added to the record
+<span class='line'>259</span> 		 * set will now be removed.  This is the inverse of decorateRecord()
+<span class='line'>260</span> 		 *
+<span class='line'>261</span> 		 * @param {Record} record The record to undecorate.
+<span class='line'>262</span> 		 * @returns {RecordSet} Self for chaining.
+<span class='line'>263</span> 		 */</span><span class="WHIT">
+<span class='line'>264</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">undecorateRecord</span><span class="PUNC">(</span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>265</span> </span><span class="WHIT">			</span><span class="NAME">record.unbind</span><span class="PUNC">(</span><span class="STRN">'afterDelete.updateRecordSet'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>266</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>267</span> </span><span class="WHIT">		
+<span class='line'>268</span> 		</span><span class="COMM">/**
+<span class='line'>269</span> 		 * Removes a record from the result set.  This will splice the record so that there is no blank
+<span class='line'>270</span> 		 * hole remaining.. it just collapses all of the records up one row.  This is the correct 
+<span class='line'>271</span> 		 * functionality to mirror a deletion of the record from the underlying datasource.  It is 
+<span class='line'>272</span> 		 * important to understand that this action is generally taken in response to a record being
+<span class='line'>273</span> 		 * deleted rather than to initiate a delete.  If you wish to delete a record, it is 
+<span class='line'>274</span> 		 * most correct to call delete() on that particular record.  This method will be called
+<span class='line'>275</span> 		 * by the afterDelete event handler for that record to update the state of the 
+<span class='line'>276</span> 		 * result set.
+<span class='line'>277</span> 		 *
+<span class='line'>278</span> 		 * This will fire the beforeRemoveRecord and afterRemoveRecord events.
+<span class='line'>279</span> 		 *
+<span class='line'>280</span> 		 * @param {Record} record The record to remove.
+<span class='line'>281</span> 		 * @returns {RecordSet} Self for chaining.
+<span class='line'>282</span> 		 */</span><span class="WHIT">
+<span class='line'>283</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">removeRecord</span><span class="PUNC">(</span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>284</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">idx</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">records.indexOf</span><span class="PUNC">(</span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>285</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">idx</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>286</span> </span><span class="WHIT">				</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">event</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RecordSetEvent</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>287</span> </span><span class="WHIT">					</span><span class="NAME">recordSet</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>288</span> </span><span class="WHIT">					</span><span class="NAME">action</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'removeRecord'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>289</span> </span><span class="WHIT">					</span><span class="NAME">record</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">record</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>290</span> </span><span class="WHIT">					</span><span class="NAME">index</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">idx</span><span class="WHIT">
+<span class='line'>291</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>292</span> </span><span class="WHIT">				</span><span class="NAME">this.trigger</span><span class="PUNC">(</span><span class="STRN">'beforeRemoveRecord'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>293</span> </span><span class="WHIT">				</span><span class="NAME">records.splice</span><span class="PUNC">(</span><span class="NAME">idx</span><span class="PUNC">,</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>294</span> </span><span class="WHIT">				</span><span class="NAME">this.undecorateRecord</span><span class="PUNC">(</span><span class="NAME">record</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>295</span> </span><span class="WHIT">				</span><span class="NAME">this.trigger</span><span class="PUNC">(</span><span class="STRN">'afterRemoveRecord'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> 
+<span class='line'>296</span> 			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>297</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>298</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>299</span> </span><span class="WHIT">		
+<span class='line'>300</span> 		</span><span class="COMM">/**
+<span class='line'>301</span> 		 * Gets the record at the specified index of the record set.  Note that this is 
+<span class='line'>302</span> 		 * the absolute index, not the index within what's been loaded.
+<span class='line'>303</span> 		 * @param {int} index The index to load.
+<span class='line'>304</span> 		 *
+<span class='line'>305</span> 		 * @returns {Record} The record at the specified index.
+<span class='line'>306</span> 		 */</span><span class="WHIT">
+<span class='line'>307</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getRecordAt</span><span class="PUNC">(</span><span class="NAME">index</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>308</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">index</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">index</span><span class="WHIT"> </span><span class="PUNC">></span><span class="WHIT"> </span><span class="NAME">cardinality</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>309</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Exception</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>310</span> </span><span class="WHIT">					</span><span class="NAME">message</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'Cannot get record at index '</span><span class="PUNC">+</span><span class="NAME">index</span><span class="PUNC">+</span><span class="STRN">' because that index has not been loaded yet - nor has the load been requested.'</span><span class="WHIT">
+<span class='line'>311</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>312</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>313</span> </span><span class="WHIT">			
+<span class='line'>314</span> 			
+<span class='line'>315</span> 			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.indexIsLoaded</span><span class="PUNC">(</span><span class="NAME">index</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>316</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Exception</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>317</span> </span><span class="WHIT">					</span><span class="NAME">message</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'Cannot get record at index '</span><span class="PUNC">+</span><span class="NAME">index</span><span class="PUNC">+</span><span class="STRN">' because that index has not been loaded yet.'</span><span class="WHIT">
+<span class='line'>318</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>319</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>320</span> </span><span class="WHIT">			
+<span class='line'>321</span> 			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">records</span><span class="PUNC">[</span><span class="NAME">index</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>322</span> </span><span class="WHIT">			
+<span class='line'>323</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>324</span> </span><span class="WHIT">		
+<span class='line'>325</span> 		
+<span class='line'>326</span> 		
+<span class='line'>327</span> 		
+<span class='line'>328</span> 		</span><span class="COMM">/**
+<span class='line'>329</span> 		 * Clears the result set.  Resets the start and end to default values and empties
+<span class='line'>330</span> 		 * out the records array.
+<span class='line'>331</span> 		 */</span><span class="WHIT">
+<span class='line'>332</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">clear</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>333</span> </span><span class="WHIT">			
+<span class='line'>334</span> 			
+<span class='line'>335</span> 			</span><span class="NAME">$.each</span><span class="PUNC">(</span><span class="NAME">records</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>336</span> </span><span class="WHIT">				</span><span class="NAME">self.undecorateRecord</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>337</span> </span><span class="WHIT">				
+<span class='line'>338</span> 			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>339</span> </span><span class="WHIT">			</span><span class="NAME">records</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>340</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>341</span> </span><span class="WHIT">		
+<span class='line'>342</span> 		</span><span class="COMM">/**
+<span class='line'>343</span> 		 * Checks whether a particular index has been loaded yet.
+<span class='line'>344</span> 		 * @param {int} index The index within the result set that we are checking 
+<span class='line'>345</span> 		 * 	to see if it has been loaded yet.
+<span class='line'>346</span> 		 *
+<span class='line'>347</span> 		 */</span><span class="WHIT">
+<span class='line'>348</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">indexIsLoaded</span><span class="PUNC">(</span><span class="NAME">index</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>349</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">records</span><span class="PUNC">[</span><span class="NAME">index</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'object'</span><span class="WHIT">  </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">records</span><span class="PUNC">[</span><span class="NAME">index</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>350</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>351</span> </span><span class="WHIT">		
+<span class='line'>352</span> 		
+<span class='line'>353</span> 		
+<span class='line'>354</span> 		
+<span class='line'>355</span> 		
+<span class='line'>356</span> 		
+<span class='line'>357</span> 		
+<span class='line'>358</span> 		
+<span class='line'>359</span> 	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>360</span> </span><span class="WHIT">	
+<span class='line'>361</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>362</span> 
+<span class='line'>363</span> 
+<span class='line'>364</span> </span></pre></body></html>

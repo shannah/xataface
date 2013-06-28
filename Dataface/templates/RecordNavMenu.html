@@ -1,0 +1,205 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{*
+ * <p>This template displays an ajax collapsible/expandable tree menu to navigate
+ * a specified record.  This requires only that the $record variable is set
+ * so that it knows which record to treat as the root.</p>
+ * <p>This tree menu is enabled by default and will appear in the left column of 
+ * Dataface apps using Dataface 0.6.7 and later.  
+ * It can be disabled in the conf.ini file by setting the show_record_tree pref
+ * to 0.</p>
+ *
+ * <p>e.g.  In your conf.ini file:</p>
+ *
+ * <code>
+ * [_prefs]
+ * show_record_tree = 0
+ * </code>
+ *
+ * @author Steve Hannah (shannah@sfu.ca)
+ * @created September 20, 2006
+ * @sponsored by Advanced Medical (advanced-medical.com)
+ * @dependencies %DATAFACE_PATH%/js/ajax.js
+ *				 %DATAFACE_PATH%/js/Dataface/Record.js
+ *				 %DATAFACE_PATH%/images/treeCollapsed.gif
+ *				 %DATAFACE_PATH%/images/treeExpanded.gif
+ *				 %DATAFACE_PATH%/actions/ajax_nav_tree_node.php
+ *
+ * @example
+ * <code>
+ * {load_record var="record"}
+ * {include file="RecordNavMenu.html" record=$record}
+ * </code>
+ *}
+{if $ENV.mode == 'browse' and $record}
+{assign var="table" value=$record->table()}
+{assign var="relationships" value=$table->getRelationshipsAsActions()}
+{if $relationships|@count > 0}	
+<script language="javascript" type="text/javascript"><!--
+	{literal}
+	require(DATAFACE_URL+'/js/ajax.js');
+		// loads the ajax library
+	if ( !window.Dataface_Record ){
+		require(DATAFACE_URL+'/js/Dataface/Record.js');
+			// A utility class for working with records.
+	}
+	
+	/**
+	 * Given the id for a record of the form tablename?key1=val1&key2=val2/relationshipname
+	 * or tablename?key1=val1&key2=val2, this will produce a URL to link to the record's
+	 * view tab.
+	 * @param string id The id of the record.
+	 * @returns string URL for the record.
+	 */
+	function getNavTreeUrl(id){
+		var parts = id.split('/');
+		var last = parts[parts.length-1];
+		if ( last.indexOf('?') >= 0 ){
+			var record = new Dataface_Record(document.recordIndex[last]);
+			return record.getURL('-action=ajax_nav_tree_node')+'&--orig-table={/literal}{$ENV.table|urlencode}{literal}';
+		} else {
+			var nextlast = parts[parts.length-2];
+			var record = new Dataface_Record(document.recordIndex[nextlast]);
+			return record.getURL('-action=ajax_nav_tree_node&-relationship='+escape(last))+'&--orig-table={/literal}{$ENV.table|urlencode}{literal}';
+		}
+	}
+	
+	/**
+	 * Expands a node specified by the given id.  This is smart.  If the node is already
+	 * loaded then it just displays it.  If it is not yet loaded, it will send an 
+	 * ajax request for the node data then display the node.
+	 *
+	 * @param DOM_Object img The img tag that was clicked to expand the node (treeCollapsed.gif)
+	 * @param string id The id for the node.  The id is of the form:
+	 *			relationship.name/recordid/relationship.name/recordid/...
+	 * where relationship.name is the name of a relationship, and recordid is a recordid of one
+	 * of the related records in that relationship.
+	 * e.g.
+	 *        courses/Course?CourseID=10/students/People?PersonID=20
+	 */
+	function expandNode(img,id){
+		var ul = document.getElementById('navtree-'+id);
+		ul.style.display = '';
+		img.src = DATAFACE_URL+'/images/treeExpanded.gif';
+		img.onclick = function(){
+			collapseNode(img,id);
+		}
+		if ( !ul.menuLoaded ){
+			document.http = getHTTPObject();
+			document.http.open('GET', getNavTreeUrl(id));
+			document.http_vars.ul = ul;
+			document.http_vars.basepath = id;
+			document.http.onreadystatechange = handleLoadNode;
+			document.http.send(null);
+		}
+		
+	}
+	
+	/**
+	 * Collapses the given node.
+	 * @param DOM_Object img The img tag that was clicked to collapse the node (treeExpanded.gif)
+	 * @param string id The id for the node to be expanded.  See docs for expandNode() for examples
+	 *		of the format of this parameter.
+	 */
+	function collapseNode(img,id){
+		var ul = document.getElementById('navtree-'+id);
+		ul.style.display = 'none';
+		img.src = DATAFACE_URL+'/images/treeCollapsed.gif';
+		img.onclick = function(){
+			expandNode(img,id);
+		}
+	}
+	
+	/**
+	 * Function called by HTTPRequest object to handle the response to the AJAX call to get the node 
+	 * data.  This will load the node with the retrieved data from the ajax_nav_tree_node action
+	 * in JSON format, and format the contents in HTML.
+	 */
+	function handleLoadNode(){
+		if ( document.http.readyState == 4 ){
+			//alert(document.http.responseText);
+			var data = eval('('+document.http.responseText+')');
+			//var ul = document.getElementById('navtree-'+document.http_vars.basepath+'/'+id);
+			var ul = document.http_vars.ul;
+			var out = '';
+			for (var id in data){
+				out += '<li><img '+((data[id]['__expandable__']==0)?' style="display:none" ':'')+'src="'+DATAFACE_URL+'/images/treeCollapsed.gif" alt="Expand node"  onclick="expandNode(this,\''+document.http_vars.basepath+'/'+id+'\')"/>&nbsp;'+((data[id]['__url__'])?('<a href="'+data[id]['__url__']+'">'):'')+data[id]['__title__']+((data[id]['__url__'])?'</a>':'')+'<ul style="display:none" id="navtree-'+document.http_vars.basepath+'/'+id+'">';
+				if ( id.indexOf('?') >= 0 ){
+					
+				
+					if ( !document.recordIndex[id] ){
+						document.recordIndex[id] = data[id];
+					}
+					{/literal}out += '<li>{translate id="templates.RecordNavMenu.MESSAGE_LOADING"}Loading ...{/translate}</li>';{literal}
+					
+				} else {
+					
+					for (recid in data[id]['records']){
+						out += '<li><img src="'+DATAFACE_URL+'/images/treeCollapsed.gif" alt="Expand node"  onclick="expandNode(this,\''+document.http.basepath+'/'+id+'/'+recid+'\')"/>&nbsp;<a href="'+data[id]['records'][recid]['__url__']+'">'+data[id]['records'][recid]['__title__']+'</a><ul style="display:none" id="navtree-'+document.http.basepath+'/'+recid+'"><li>Loading ...</li></ul></li>';
+					}
+				}
+				out += '</ul>';
+				
+				
+			}
+			document.http_vars.ul.innerHTML = out;
+			document.http_vars.ul.menuLoaded = true;
+		}
+	
+	}
+	
+	/**
+	 * We will maintain an associative array of all record objects that have been loaded.
+	 */
+	if (!document.recordIndex){
+		document.recordIndex = {};
+	}
+	document.http_vars = {};
+	{/literal}
+	document.recordIndex['{$record->getId()}'] = {$record->toJS()};
+	
+		// The current record.
+
+//--></script>
+<div class="portlet">
+<div>
+<h5>{translate id="templates.RecordNavMenu.HEADING_THIS_RECORD"}This Record{/translate}</h5>
+<div class="portletBody">
+<ul id="navtree-{$record->getId()}" class="navtree">
+
+	{foreach from=$relationships item="relationship"}
+	<li class="level1" >
+		<img src="{$ENV.DATAFACE_URL}/images/treeCollapsed.gif" alt="Show details" onclick="expandNode(this,'{$record->getId()}/{$relationship.name}')" />&nbsp;
+		{$relationship.label}
+		<ul style="display: none" id="navtree-{$record->getId()}/{$relationship.name}">
+			<li>{translate id="templates.RecordNavMenu.MESSAGE_LOADING"}Loading ...{/translate}</li>
+		
+		</ul>
+	
+	</li>
+	{/foreach}
+	
+
+</ul>
+</div>
+</div>
+</div>
+{/if}
+{/if}

@@ -1,0 +1,21 @@
+
+<ul class="Dataface_GlanceList">
+	{foreach from=$records item=recd}
+		{if_allowed permission=view record=$recd}
+		<li class="Dataface_GlanceList-item Dataface_GlanceList-item-{$recd->_table->tablename}">
+			
+			<span class="Dataface_GlanceList-item-content">
+				{block name="before_oneLineDescription" record=$recd}
+				{$list->oneLineDescription($recd)}
+				{block name="after_oneLineDescription" record=$recd}
+			</span>
+			<span class="Dataface_GlanceList-item-actions">
+				{block name="before_glanceList_actions" record=$recd}
+				{record_actions record=$recd}
+				{actions_menu record=$recd category="glancelistitem_actions"}
+				{block name="after_glancelist_actions" record=$recd}
+			</span>
+		</li>
+		{/if_allowed}
+	{/foreach}
+</ul>

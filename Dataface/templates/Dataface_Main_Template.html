@@ -1,0 +1,340 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}{if !$ENV.APPLICATION_OBJECT->main_content_only}{define_slot name="doctype_tag"}<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">{/define_slot}
+{define_slot name="html_tag"}<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$ENV.language|escape}" lang="{$ENV.language|escape}">{/define_slot}
+
+	<head>
+	{if !$ENV.prefs.no_history}
+		{php}
+			$app =& Dataface_Application::getInstance();
+			$_SESSION['--redirect'] = $app->url('');
+		{/php}
+	{/if}
+	
+	{define_slot name="html_head"}
+		<meta http-equiv="Content-Type" content="text/html; charset={$ENV.APPLICATION.oe}"/>
+		<title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
+		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL}/plone.css"/>{/define_slot}
+		{define_slot name="custom_stylesheets"}<!-- Stylesheets go here -->{/define_slot}
+		{block name="custom_stylesheets2"}
+		{define_slot name="dataface_javascripts"}
+		<!-- Common Plone ECMAScripts -->
+	
+		
+		
+		<script type="text/javascript" language="javascript"><!--
+		DATAFACE_URL = '{$ENV.DATAFACE_URL}';
+		DATAFACE_SITE_URL = '{$ENV.DATAFACE_SITE_URL}';
+		DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF}';
+		
+		//--></script>
+	
+		<script type="text/javascript"
+				src="{$ENV.DATAFACE_URL}/plone_javascripts.js">
+		</script>
+		{if $ENV.APPLICATION.usage_mode == 'edit'}
+		<script type="text/javascript"
+				src="{$ENV.DATAFACE_URL}/js/editable.js">
+		</script>
+		{/if}
+		
+		{/define_slot}
+		{* Add the head content that is to be inserted in the head of the document.
+		   This was added in version 1.0 to provide an easier way to add custom
+		   Stylesheets and javascripts to the pages.
+		*}
+		{foreach from=$ENV.APPLICATION_OBJECT->headContent item=headContent}
+			{$headContent}
+		{/foreach}
+		{define_slot name="custom_javascripts"}
+		<!-- custom javascripts can go in slot "custom_javascripts" -->
+		{/define_slot}
+		
+		{define_slot name="head_slot"}
+		<!-- Place any other items in the head of the document by filling the "head_slot" slot -->
+		{/define_slot}
+		{include file="head_slot.html"}
+		{block name="head"}
+	{/define_slot}
+
+
+	</head>
+	<body onload="bodyOnload()" {block name="body_atts"}>
+
+		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')}"
+          title="RSS 1.0" type="application/rss+xml" />
+
+	{block name="before_body"}
+	{define_slot name="html_body"}<!-- Replace the entire HTML Body with the "html_body" slot -->
+	<div id="top-section">
+		{block name="before_header"}
+		{define_slot name="global_header"}{include file="global_header.html"}{/define_slot}
+		{block name="after_header"}
+			
+		{if $ENV.prefs.show_search}
+		{block name="before_search"}
+		{define_slot name="search_form"}
+		<div class="search_form" style="float: right; white-space: nowrap" id="top-search-form">
+			<form method="GET" action="{$smarty.server.HOST_URI}{$ENV.DATAFACE_SITE_HREF}">
+			<label>{translate id="scripts.GLOBAL.LABEL_SEARCH"}Search{/translate}:</label>
+			<input type="hidden" name="-table" value="{$ENV.APPLICATION_OBJECT->_currentTable}"/>
+			<input type="text" name="-search" value="{$ENV.search|escape}"/>
+			{actions category="find_actions" var="find_actions"}
+			{if $find_actions|@count > 1}
+			<select name="-action">
+			{foreach from=$find_actions item="find_action"}
+				{assign var=option_label value=$find_action.label}
+				{if !$option_label}
+					{assign var=option_label value=$ENV.table_object->getLabel()}
+				{/if}
+				{assign var=option_value value=$find_action.action}
+				{if !$option_value}
+					{assign var=option_value value=$find_action.name}
+				{/if}
+				<option value="{$option_value}">{$option_label}</option>
+			{/foreach}
+			</select>
+			{else}
+			{foreach from=$find_actions item="find_action"}
+				
+				{assign var=option_value value=$find_action.action}
+				{if !$option_value}
+					{assign var=option_value value=$find_action.name}
+				{/if}
+				<input type="hidden" name="-action" value="{$option_value}"/>
+			{/foreach}
+				
+			{/if}
+			<input type="submit" name="-submit" value="{translate id="scripts.GLOBAL.LABEL_SUBMIT"}Search{/translate}" id="search_submit_button" />
+			{block name="after_search_form_submit"}
+			</form>
+		
+		</div>
+		{/define_slot}
+		{block name="after_search"}
+
+		{/if}
+		{if $ENV.prefs.horizontal_tables_menu and $ENV.prefs.show_tables_menu}
+			{block name="before_nav_menu"}
+			{include file="Dataface_NavMenu.html"}
+			{block name="after_nav_menu"}
+
+		{/if}
+
+		<div id="status-bar">
+		{if !$ENV.prefs.hide_language_selector}
+		{block name="before_language_selector"}
+		{define_slot name="language_selector"}<div id="language_selector">{language_selector autosubmit="true" type="ul" use_flags=false}</div>{/define_slot}
+		{block name="after_language_selector"}
+		{/if}
+		
+		{if !$ENV.prefs.hide_user_status}
+		<div id="user-status">
+		{if $ENV.username}
+			{block name="before_user_status_logged_in"}
+			{define_slot name="user_status_logged_in"}{assign var='username' value=$ENV.username}{translate id="Logged in as user" username=$username}Logged in as {$username}{/translate} (<a href="{$APP->url('-action=logout')}" title="{translate id="scripts.GLOBAL.LABEL_LOGOUT}Logout{/translate}">{translate id="scripts.GLOBAL.LABEL_LOGOUT}Logout{/translate}</a>){/define_slot}
+			{block name="after_user_status_logged_in"}
+		{elseif $APP->getAuthenticationTool()}
+			{block name="before_user_status_not_logged_in"}
+			{define_slot name="user_status_not_logged_in"}<a href="{$APP->url('-action=login')}" title="Login">{translate id="scripts.GLOBAL.LABEL_LOGIN"}Login{/translate}</a>{/define_slot}
+			{block name="after_user_status_not_logged_in"}
+		{/if}
+		</div>
+		{/if}
+
+		</div>
+		{if !$ENV.prefs.hide_personal_tools}
+		{if $ENV.user}
+			{block name="before_personal_tools"}
+			{define_slot name="personal_tools"}
+				{actions_menu id="personal-tools" category="personal_tools" id_prefix="personal_tools_"}
+				<!--<div id="personal-tools"><a href="{$ENV.user->getURL()}">My Profile</a></div>-->
+			{/define_slot}
+			{block name="after_personal_tools"}
+		{/if}
+		{/if}
+		{if $ENV.prefs.show_bread_crumbs}
+			{block name="before_bread_crumbs"}
+			{define_slot name="bread_crumbs"}<div class="bread-crumbs">{bread_crumbs}</div>{/define_slot}
+			{block name="after_bread_crumbs"}
+		{/if}
+		
+	
+	</div>
+	{block name="before_main_table"}
+	{define_slot name="main_table"}
+	<table width="100%" border="0" cellpadding="5" id="main_table">
+	<tr>
+	<td valign="top" id="left_column">
+	{block name="before_left_column"}
+	{define_slot name="left_column"}
+		{if $ENV.prefs.show_record_tree}
+			{block name="before_record_tree"}
+			{load_record var="record"}
+			{include file="RecordNavMenu.html" record=$record}
+			{block name="after_record_tree"}
+		{/if}
+		{if !$ENV.prefs.horizontal_tables_menu and $ENV.prefs.show_tables_menu}
+		{block name="before_nav_menu"}
+		{include file="Dataface_NavMenu.html"}
+		{block name="after_nav_menu"}
+		{/if}
+		{block name="before_application_menu"}
+		{define_slot name="application_menu"}{include file="Dataface_Application_Menu.html"}{/define_slot}
+		{block name="after_application_menu"}
+		
+	{/define_slot}
+	{block name="after_left_column"}
+
+	</td>
+	<td valign="top" id="main_column">
+	{block name="before_main_column"}
+	{define_slot name="main_column"}
+	
+		{if $back and !$ENV.APPLICATION.hide_back}
+		<div class="browser_nav_bar">
+			<a href="{$back.link}" title="{translate id="scripts.GLOBAL.LABEL_BACK"}Back{/translate}">&lt;&lt; {translate id="scripts.GLOBAL.LABEL_GO_BACK"}Go Back{/translate}</a>
+		</div>
+		{/if}
+		
+
+		<div class="horizontalDivider">&nbsp;</div>
+		
+
+		
+		{if $ENV.APPLICATION_OBJECT->numMessages() > 0 }
+			{block name="before_message"}
+			<div class="portalMessage">
+				<ul>
+				{block name="message"}
+				{foreach from=$ENV.APPLICATION_OBJECT->getMessages() item="msg"}
+					<li>{$msg|nl2br}</li>
+				{/foreach}
+				</ul>
+			</div>
+			{block name="after_message"}
+		{/if}
+		
+		{if $ENV.APPLICATION_OBJECT->numErrors() > 0 }
+			{block name="before_errors"}
+			<div class="portalMessage">
+				<h5>{translate id="scripts.GLOBAL.HEADING_ERRORS"}Errors{/translate}</h5>
+				<ul>
+					{block name="error"}
+					{foreach from=$ENV.APPLICATION_OBJECT->getErrors() item="error"}
+						<li>{$error->getMessage()|nl2br}</li>
+					{/foreach}
+				</ul>
+			</div>
+			{block name="after_errors"}
+		{/if}
+		
+		{if $ENV.prefs.show_table_tabs} 
+	   		{block name="before_table_tabs"}
+			{define_slot name="table_tabs"}
+				{actions_menu id="table_tabs" id_prefix="table-tabs-" class="contentViews" category="table_tabs" selected_action=$ENV.mode}
+			{/define_slot}
+			{block name="before_menus"}
+			{define_slot name="menus"}{include file="Dataface_TableView_menus.html"}{/define_slot}
+			{block name="after_menus"}
+		{/if}
+		
+		{if $ENV.prefs.show_table_tabs} 
+		<div class="documentContent" id="region-content" style="border: 1px solid gray">
+		{/if}
+	
+		{block name="before_main_section"}
+		{define_slot name="main_section"}
+			{if $history and !$ENV.APPLICATION.hide_history}
+			{block name="before_recently_viewed"}
+			<div id="recentlyViewed">
+				<b>{translate id="scripts.GLOBAL.LABEL_RECENT_RECORDS"}Recent Records{/translate}:</b><select name="recentRecords" onchange="javascript:window.location=this.options[this.selectedIndex].value;" >
+					{section loop=$history name=i}
+					<option value="{$history[i].link}" {if $title == $history[i].recordTitle}selected{/if}>{$history[i].recordTitle}</option>
+					{/section}
+					</select>
+			</div>
+			{block name="after_recently_viewed"}
+			{/if}
+			<div style="clear:both">
+				{block name="before_record_content"}
+				{define_slot name="record_content"}
+				{$body}
+				{/define_slot}
+				{block name="after_record_content"}
+		
+			</div>
+		{/define_slot}
+		{block name="after_main_section"}
+
+		{if $ENV.prefs.show_table_tabs}
+		</div>
+		{/if}
+	{/define_slot}
+	</td>
+	</tr>
+	</table>
+
+	{/define_slot}
+	{define_slot name="fineprint"}
+		{block name="before_fineprint"}
+		{include file="Dataface_Fineprint.html"}
+		{block name="after_fineprint"}
+	{/define_slot}
+	{block name="before_global_footer"}
+	{define_slot name="global_footer"}{include file="global_footer.html"}{/define_slot}
+	{block name="after_global_footer"}
+	{/define_slot}
+	{block name="javascript_tool_includes"}
+	</body>
+</html>
+{else}
+	{* We are only showing the main section on this round *}
+		{* Block to be displayed before the main section of the page. *}
+		{block name="before_main_section"}
+		{* The main content of the page. *}
+		{define_slot name="main_section"}
+			{if $history and !$ENV.APPLICATION.hide_history}
+			{*Block to be shown just before the 'recently viewed' records. *}
+			{block name="before_recently_viewed"}
+			<div id="recentlyViewed">
+				<b>{translate id="scripts.GLOBAL.LABEL_RECENT_RECORDS"}Recent Records:{/translate}</b><select name="recentRecords" onchange="javascript:window.location=this.options[this.selectedIndex].value;" >
+					{section loop=$history name=i}
+					<option value="{$history[i].link}" {if $title == $history[i].recordTitle}selected{/if}>{$history[i].recordTitle}</option>
+					{/section}
+					</select>
+			</div>
+			{* Block to be shown just after the 'recently viewed' records menu. *}
+			{block name="after_recently_viewed"}
+			{/if}
+			<div style="clear:both">
+				{* Content to be shown before the record content in the Main Template. *}
+				{block name="before_record_content"}
+				{* Slot to fill in with record content. *}
+				{define_slot name="record_content"}
+				{$body}
+				{/define_slot}
+				{* Content to be shown just after record content in the Main Template. *}
+				{block name="after_record_content"}
+		
+			</div>
+		{/define_slot}
+		{block name="after_main_section"}
+{/if} {* End if main_content_only*}

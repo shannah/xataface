@@ -1,0 +1,179 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">//require &lt;xatajax.ui.tk.js></span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="COMM">//require &lt;xatajax.ui.tk/Component.js></span><span class="WHIT">
+<span class='line'>  3</span> </span><span class="COMM">//require &lt;xatajax.ui.tk/ComponentEvent.js></span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="COMM">/**
+<span class='line'>  5</span>  * The base class for layout managers of Components.  A Layout Manager is responsible
+<span class='line'>  6</span>  * for the rendering and formatting of child components of a component.  This default
+<span class='line'>  7</span>  * implementation simply lays out child components sequentially, but subclasses, can
+<span class='line'>  8</span>  * override the behavior to support more complex layouts.
+<span class='line'>  9</span>  *
+<span class='line'> 10</span>  * @depends XataJax.ui.tk.Component
+<span class='line'> 11</span>  * @created Feb. 7, 2011
+<span class='line'> 12</span>  * @author Steve Hannah &lt;steve@weblite.ca>
+<span class='line'> 13</span>  */</span><span class="WHIT">
+<span class='line'> 14</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 15</span> </span><span class="WHIT">	
+<span class='line'> 16</span> 	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">Component</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">XataJax.ui.tk.Component</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ComponentEvent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">XataJax.ui.tk.ComponentEvent</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">	
+<span class='line'> 19</span> 	</span><span class="COMM">/**
+<span class='line'> 20</span> 	 * Define the public API
+<span class='line'> 21</span> 	 */</span><span class="WHIT">
+<span class='line'> 22</span> </span><span class="WHIT">	</span><span class="NAME">XataJax.ui.tk.LayoutManager</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">LayoutManager</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 23</span> </span><span class="WHIT">	
+<span class='line'> 24</span> 	</span><span class="COMM">/**
+<span class='line'> 25</span> 	 * @package
+<span class='line'> 26</span> 	 */</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">	</span><span class="NAME">XataJax.ui.tk.layout</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">	
+<span class='line'> 29</span> 	
+<span class='line'> 30</span> 	</span><span class="COMM">/**
+<span class='line'> 31</span> 	 * Implementation details.
+<span class='line'> 32</span> 	 */</span><span class="WHIT">
+<span class='line'> 33</span> 
+<span class='line'> 34</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">$</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jQuery</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">	
+<span class='line'> 36</span> 
+<span class='line'> 37</span> 	</span><span class="COMM">/**
+<span class='line'> 38</span> 	 * Base class for layout managers which provide a layout mechanism for components.
+<span class='line'> 39</span> 	 * Components don't have to use layout managers, but they can help to make certain
+<span class='line'> 40</span> 	 * complex layouts reusable.
+<span class='line'> 41</span> 	 *
+<span class='line'> 42</span> 	 * @constructor
+<span class='line'> 43</span> 	 """
+<span class='line'> 44</span> 	 new LayoutManager();
+<span class='line'> 45</span> 	 """
+<span class='line'> 46</span> 	*/</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">LayoutManager</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'> 49</span> 		
+<span class='line'> 50</span> 		@constructor
+<span class='line'> 51</span> 		 """
+<span class='line'> 52</span> 		 LayoutManager.__methods__ = publicAPI;
+<span class='line'> 53</span> 		 """
+<span class='line'> 54</span> 		*/</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">publicAPI</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="WHIT">			</span><span class="NAME">install</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">install</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">			</span><span class="NAME">uninstall</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">uninstall</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">			</span><span class="NAME">update</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">update</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">			</span><span class="NAME">childAdded</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">childAdded</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">			</span><span class="NAME">childRemoved</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">childRemoved</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">			</span><span class="NAME">getComponent</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">getComponent</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">	
+<span class='line'> 64</span> 		</span><span class="NAME">XataJax.publicAPI</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">publicAPI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">		
+<span class='line'> 66</span> 	
+<span class='line'> 67</span> 		</span><span class="COMM">/**
+<span class='line'> 68</span> 		 * Private Member Variables
+<span class='line'> 69</span> 		 */</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">members</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">			</span><span class="COMM">/**
+<span class='line'> 72</span> 			 * @type Component
+<span class='line'> 73</span> 			 */</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">			</span><span class="NAME">component</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">		
+<span class='line'> 77</span> 		</span><span class="COMM">/**
+<span class='line'> 78</span> 		 * @returns {Component} The component that this object is managing.
+<span class='line'> 79</span> 		 */</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getComponent</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">members.component</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">		
+<span class='line'> 84</span> 		
+<span class='line'> 85</span> 		
+<span class='line'> 86</span> 		</span><span class="COMM">/**
+<span class='line'> 87</span> 		 * Installs this layout manager into the specified component.  This 
+<span class='line'> 88</span> 		 * uninstalls any existing component, and registers tha layout manager
+<span class='line'> 89</span> 		 * as a component listener.  Finally it updates the component.
+<span class='line'> 90</span> 		 *
+<span class='line'> 91</span> 		 * @param {Component} c
+<span class='line'> 92</span> 		 */</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">install</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">members.component</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">c</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">members.component</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">this.uninstall</span><span class="PUNC">(</span><span class="NAME">members.component</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 96</span> </span><span class="WHIT">				</span><span class="NAME">members.component</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">c</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">				</span><span class="NAME">c.addComponentListener</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">				</span><span class="NAME">c.update</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">			
+<span class='line'>101</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">		
+<span class='line'>103</span> 		</span><span class="COMM">/**
+<span class='line'>104</span> 		 * Uninstalls the component from this layout manager.
+<span class='line'>105</span> 		 *
+<span class='line'>106</span> 		 * @param {Component} c
+<span class='line'>107</span> 		 */</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">uninstall</span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">members.component</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">c</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">				</span><span class="NAME">members.component</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="WHIT">				</span><span class="NAME">c.removeComponentListener</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">		
+<span class='line'>115</span> 		</span><span class="COMM">/**
+<span class='line'>116</span> 		 * Clears and re-lays out the component's children.  The default implementation
+<span class='line'>117</span> 		 * just lays them all out sequentially, but other implementations might
+<span class='line'>118</span> 		 * override this method to do more advanced layouts.
+<span class='line'>119</span> 		 *
+<span class='line'>120</span> 		 * Note: It is better to call getComponent().update() which in turn calls
+<span class='line'>121</span> 		 * this method.  That way the ComponentListeners' beforeUpdate and afterUpdate
+<span class='line'>122</span> 		 * events will be properly handled.
+<span class='line'>123</span> 		 *
+<span class='line'>124</span> 		 */</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">update</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">members.component</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">el</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">members.component.getElement</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">			</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">el</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">children</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">detach</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">			</span><span class="NAME">$.each</span><span class="PUNC">(</span><span class="NAME">this.getComponent</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">getChildComponents</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">				</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">el</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">append</span><span class="PUNC">(</span><span class="NAME">this.getElement</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>135</span> </span><span class="WHIT">		
+<span class='line'>136</span> 		
+<span class='line'>137</span> 		</span><span class="COMM">/**
+<span class='line'>138</span> 		 * Method called when a child is added to the component.  This 
+<span class='line'>139</span> 		 * prompts the layout manager to add the child's element
+<span class='line'>140</span> 		 * to the layout.  This can be overridden by subclasses
+<span class='line'>141</span> 		 * to handle things differently.
+<span class='line'>142</span> 		 * This is an implementation of ComponentListener.childAdded
+<span class='line'>143</span> 		 *
+<span class='line'>144</span> 		 * @see ComponentListener#childAdded
+<span class='line'>145</span> 		 * @param {ComponentEvent} event
+<span class='line'>146</span> 		 */</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">childAdded</span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">			</span><span class="NAME">members.component.getElement</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">appendChild</span><span class="PUNC">(</span><span class="NAME">event.component.getElement</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>149</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">		
+<span class='line'>151</span> 		
+<span class='line'>152</span> 		</span><span class="COMM">/**
+<span class='line'>153</span> 		 * Method called when a child is removed from the component. This prompts
+<span class='line'>154</span> 		 * the layout manager to remove the child's element from the component's 
+<span class='line'>155</span> 		 * element.  This can be overridden b subclasses to handle things
+<span class='line'>156</span> 		 * differently.
+<span class='line'>157</span> 		 *
+<span class='line'>158</span> 		 * This method is an implementation of the ComponentListener.childRemoved
+<span class='line'>159</span> 		 *
+<span class='line'>160</span> 		 * @see ComponentListener#childRemoved
+<span class='line'>161</span> 		 * @param {ComponentEvent} event
+<span class='line'>162</span> 		 */</span><span class="WHIT">
+<span class='line'>163</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">childRemoved</span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>164</span> </span><span class="WHIT">			</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">event.component.getElement</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">remove</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="WHIT">		
+<span class='line'>167</span> 		
+<span class='line'>168</span> 		
+<span class='line'>169</span> 		
+<span class='line'>170</span> 		
+<span class='line'>171</span> 	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>172</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

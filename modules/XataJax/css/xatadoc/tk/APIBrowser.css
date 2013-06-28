@@ -1,0 +1,90 @@
+
+
+/*************************************/
+/* Viewer: Layout                    */
+
+body {
+	font-family: sans-serif;
+}
+
+.packageTemplate .folder {
+	font-size: 90%;
+}
+
+.classTemplate .file {
+	cursor: pointer;
+	font-size: 90%;
+}
+
+#container {
+	width: 100%;
+	border: 1px solid #666;
+}
+
+#container td {
+	vertical-align: top;
+
+}
+
+
+	#header {
+		padding: 10px;
+		background: #67A7E3; color: #fff;
+		position: relative;
+	}
+	
+
+		#container .ui-resizable-e {
+			width: 10px; height: 100%;
+			background:#e1e7f2 url(images/splitpane_handle-ew.gif) no-repeat scroll 75% 50% !important;
+			cursor:col-resize !important;
+			border-left: #bbb 1px solid;
+			padding: 3px;
+			padding-bottom: 0;
+			padding-top: 0;
+		}
+		#container .ui-resizable-n {
+			height: 10px;
+			background:#e1e7f2 url(images/splitpane_handle-sn.gif) no-repeat scroll 50% 55% !important;
+			border-top: #bbb 1px solid;
+			padding: 3px;
+		}
+	
+	
+
+	.ui-toolbar-item-hide-icon { 
+		padding-left: 16px; height: 16px;
+		background-image: url(images/icons_2.png);
+		background-repeat: no-repeat; margin: 0 2px;
+		display: inline-block;
+	}
+
+	.ui-toolbar-item-hide-icon { background-position: -64px 50%; } 
+	
+	.proxy { border: 1px dashed #000; }
+
+.ui-split-side-box {
+	width: 200px;
+	margin:0;
+	padding:0;
+}
+
+
+
+.ui-split-main1 {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.ui-split-main1,
+.ui-split-side
+{
+	overflow: auto;
+	overflow-x: hidden;
+	
+}
+
+.ui-split-main1-content {
+	padding: 1em;
+}

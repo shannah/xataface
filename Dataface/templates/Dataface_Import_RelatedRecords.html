@@ -1,0 +1,97 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{use_macro file="Dataface_Record_Template.html"}
+	{fill_slot name="record_content"}
+
+		<h2>{translate id="templates.Dataface_Import_Related_Records.HEADING_IMPORT_RECORDS_FORM"}
+			Import Records Form
+			{/translate}</h2>
+		<p>{translate id="templates.Dataface_Import_Related_Records.MESSAGE_INTRO"}
+			This form allows you to import records into the current table
+			{/translate}</p>
+		
+		{if $filters|@count > 0 or $step != 1}
+				{if $filters|@count > 0 }
+				<div id="import-filter-help">
+				<h3>{translate id="templates.Dataface_Import_Related_Records.HEADING_INSTRUCTIONS"}
+					Instructions
+					{/translate}</h3>
+				<p>{translate id="templates.Dataface_Import_Related_Records.P_INSTRUCTIONS_1"}
+					Select the appropriate import format from the select list, paste the appropriate
+				   data to be imported into the text area or select a file to upload that contains
+				   the data to be imported.
+				   {/translate}
+				</p>
+				<p>
+					{translate id="templates.Dataface_Import_Related_Records.P_INSTRUCTIONS_2"}
+					Be sure that the data being imported is in the correct format or the
+				   import may fail.
+				   {/translate}
+				 </p>
+				 
+				 <h4>{translate id="templates.Dataface_Import_Related_Records.HEADING_IMPORT_SPECIFIC_INSTRUCTIONS"}
+				 Import Format Specific Instructions:
+				 {/translate}</h4>
+				 <div id="import-filter-description">
+				 
+				 </div>
+			
+				</div>
+			{literal}
+				<script language="javascript"><!--
+				
+			{/literal}
+			var filterDiv = document.getElementById('import-filter-description');
+			filterDiv.__filter_descriptions = {literal}{};{/literal}
+			
+			{foreach from=$filters item=filterName}
+				
+				
+				filterDiv.__filter_descriptions['{$filterName|addslashes}'] = "{translate id="import_filters:`$filterName`:help"}No description available for this import filter.  Please add a filter description to your language config files ask key <em>import_filters:{$filterName}</em>{/translate}";
+			
+			{/foreach}
+			
+			{literal}
+				
+				function updateFilterDescription(filterName){
+					var filterDiv = document.getElementById('import-filter-description');
+					filterDiv.innerHTML = filterDiv.__filter_descriptions[filterName];
+				}
+				//--></script>
+			{/literal}
+			{/if}
+				{block name="before_import_related_records_form"}
+				{block name="before_import_related_`$ENV.relationship`_form"}
+				{define_slot name="import_related_`$ENV.relationship`_form"}
+				{define_slot name="import_related_records_form"}
+						<div id="import-records-form">
+				{$form}
+				</div>
+				{/define_slot}
+				{/define_slot}
+				{block name="after_import_related_`$ENV.relationship`_form"}
+				{block name="after_import_related_records_form"}
+		{else}
+		
+		<p><img src="{$ENV.DATAFACE_URL}/images/exclamation.gif"> {translate id="templates.Dataface_Import_Related_Records.MESSAGE_NO_IMPORT_FILTERS_DEFINED"}No import filters were defined for this table.{/translate}</p>
+		{/if}
+		
+	{/fill_slot}
+{/use_macro}

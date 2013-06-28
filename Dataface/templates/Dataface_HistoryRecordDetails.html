@@ -1,0 +1,32 @@
+<table class="details_table_wrapper">
+	<tr>
+		<td>
+			<table class="details_table">
+				
+
+{foreach from=$fields item="field"}
+	{if $field.name == $first_field_second_col}
+	</table></td><td><table class="details_table">
+	{/if}
+	{if $field.visibility.history != 'hidden'}
+	<tr>
+		<td {if $table->isText($field.name)}colspan="2" {/if}class="details_label_cell">
+			<label>
+				{$field.widget.label}:
+			</label>
+		</td>
+		{if $table->isText($field.name)}</tr><tr>{/if}
+		<td {if $table->isText($field.name)}colspan="2" {/if}class="details_value_cell {if $table->isText($field.name)}max-10-rows{/if}">
+
+			{$history_record->htmlValue($field.name)}
+			
+		</td>
+	</tr>
+	{/if}
+	
+	
+{/foreach}
+			</table>
+		</td>
+	</tr>
+</table>

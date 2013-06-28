@@ -1,0 +1,35 @@
+{use_macro file="Dataface_View_Record.html"}
+	{fill_slot name="record_view_main_section"}
+		<h3>Search results for <em>&quot;{$queryString|escape}&quot;</em>
+		<a title="Subscribe to an RSS feed of these results" href="{$ENV.APPLICATION_OBJECT->url('')}&--subsearch={$queryString|escape}&--format=RSS2.0"><img src="{$ENV.DATAFACE_URL}/images/feed-icon-14x14.png" alt="RSS" /></a>
+		</h3>
+		
+		{if $results|@count > 0 }
+			{foreach from=$results key=relationship item=rows}
+				
+				{collapsible_sidebar heading="<em>`$relationship`</em> Matches"}
+					{if $rows|@count > 0}
+					<ol>
+					{foreach from=$rows item=row}
+						{assign var="rowRecord" value=$row->toRecord()}
+						{if $rowRecord->checkPermission('view')}
+							<li>
+							
+							
+							<div><a href="{$rowRecord->getURL()}">{$rowRecord->getTitle()|escape}</a></div>
+							<div>{$rowRecord->getDescription()}</div>
+							</li>
+						{/if}
+					{/foreach}
+					</ol>
+					{else}
+						<p>No matching records in the <em>{$relationship}</em> relationship</p>
+					{/if}
+				{/collapsible_sidebar}
+				
+			{/foreach}
+		{else}
+			<p>No records matches your query.</p>
+		{/if}
+	{/fill_slot}
+{/use_macro}

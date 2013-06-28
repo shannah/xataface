@@ -1,0 +1,6 @@
+var xatacard;
+
+/**
+ * @package
+ */
+xatacard = {};

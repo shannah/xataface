@@ -1,0 +1,113 @@
+.PackageDetails-wrapper {
+	font-family: sans-serif;
+	font-size: 10pt;
+}
+
+table.PackageDetails-methods-table
+{
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+}
+
+table.PackageDetails-methods-table td
+{
+	border: 1px solid #ccc;
+	padding: 1em;
+	cursor: pointer;
+	
+}
+
+table.PackageDetails-methods-table thead
+{
+	background-color: #fafafa;
+}
+
+
+.PackageDetails-methods-long-description,
+.PackageDetails-methods-options,
+.PackageDetails-methods-returns
+{
+	display: none;
+}
+
+
+
+tr.expanded .PackageDetails-methods-long-description,
+tr.expanded .PackageDetails-methods-options ,
+tr.expanded .PackageDetails-methods-returns
+{
+	display: block;
+}
+
+tr.expanded .PackageDetails-methods-short-description{
+	display: none;
+}
+
+
+
+
+
+.PackageDetails-methods-name,
+.option-name
+{
+	font-weight: bold;
+	color: #083772;
+}
+
+.PackageDetails-methods-parameters,
+.option-type
+{
+	font-family: monospace;
+}
+
+.PackageDetails-methods-table th {
+	font-weight: normal;
+	text-align: left;
+	padding: 0.5em;
+}
+
+.PackageDetails-methods-short-description,
+.PackageDetails-methods-long-description
+.option-short-description,
+.option-long-description{
+	padding: 5px;
+	color: #444;
+}
+
+.package-summary {
+
+	padding: 1em;
+	border-bottom: 1px solid #ccc;
+}
+
+
+
+.package-summary .package-description {
+	padding: 2em;
+}
+
+
+.PackageDetails-methods-options .options-table .option-long-description {
+	display: none;
+}
+
+.PackageDetails-methods-options .options-table tr.expanded .option-long-description {
+	display: block;
+}
+
+.PackageDetails-methods-options .options-table tr.expanded .option-short-description {
+	display: none;
+}
+
+
+.PackageDetails-methods-returns .returns-table .option-long-description {
+	display: none;
+}
+
+.PackageDetails-methods-returns .returns-table tr.expanded .option-long-description {
+	display: block;
+}
+
+.PackageDetails-methods-returns .returns-table tr.expanded .option-short-description {
+	display: none;
+}

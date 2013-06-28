@@ -1,0 +1,4 @@
+.xatajax-buttonset { float:left; }
+.xatajax-buttonset .xatajax-button { float: left; }
+.xatajax-buttonset-single .xatajax-button, 
+.xatajax-buttonset-multi .xatajax-button { margin-right: -1px;}

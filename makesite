@@ -1,0 +1,303 @@
+#!/usr/bin/env php
+<?php
+if ( @$_SERVER['REQUEST_URI']) die('This script can only be called from the command line.');
+
+$args = $_SERVER['argv'];
+
+if ( realpath($args[0]) == __FILE__ ) array_shift($args);
+
+$argnum=0;
+foreach ($args as $arg ){
+	if ( strpos($arg, '--dataface_url=') === 0 ){
+		$dataface_url = substr( $arg, strpos($arg, '=')+1 );
+	} else if ( strpos($arg, '--site_path=') === 0 ){
+		$site_path = substr($arg, strpos($arg, '=')+1 );
+		
+	} else if ( strpos($arg, '--database_host=') === 0 ){
+		$database_host = substr($arg, strpos($arg, '=')+1);
+		
+	} else if ( strpos($arg, '--database_name=') === 0 ){
+		$database_name = substr($arg, strpos($arg, '=')+1);
+	} else if ( strpos($arg, '--database_username=') === 0 ){
+		$database_username = substr($arg, strpos($arg, '=')+1);
+	} else if ( strpos($arg, '--database_password=') === 0 ){
+		$database_password = substr($arg, strpos($arg, '=')+1);
+	} else if ( strpos($arg, '-') !== 0 ){
+		
+		if ( $argnum == 0 ){
+			// this is the site path
+			$site_path = $arg;
+			
+		} else if ( $argnum == 1 ){
+			// This is the database connection string in the form
+			// username:password@dbhost/dbname
+			
+			list($u_p, $h_d) = explode('@', $arg);
+			list($database_username, $database_password) = explode(':', $u_p);
+			list($database_host, $database_name) = explode('/', $h_d);
+			
+			
+		} else if ( $argnum == 2 ){
+			// this is the dataface installation url
+			$dataface_url = $arg;
+		}
+		
+		$argnum++;
+		
+	}
+
+}
+
+if ( !@$dataface_url || !@$site_path || !@$database_host || !@$database_username ||  !@$database_name){
+
+	$msg = "\nmakesite: invalid options entered.
+	
+Usage: 
+makesite <site_path> <db_user>:<db_pass>@<db_host>/<db_name> <dataface_url>
+or
+php makesite <site_path> <db_user>:<db_pass>@<db_host>/<db_name> <dataface_url>
+	where 
+	<site_path> = The path to your application directory.
+	<db_user>	= The MySQL username to connect to the database
+	<db_pass>	= The User's password to connect to the database
+	<db_host>	= The MySQL host name.
+	<db_name>	= The name of the mysql database for the application.
+	<dataface_url> = The URL to the dataface installation
+	
+Examples:
+
+makesite ../FacultyOfWidgetry root:pass@localhost/FacultyOfWidgetry /dataface
+
+The above command would create a site at ../FacultyOfWidgetry (i.e., the Faculty 
+of Widgetry directory in the parent directory.  The database used for this site 
+is located at localhost, and the database name is FacultyOfWidgetry.  The 
+username to connect to the database is root and his password is password.
+";
+	fwrite(STDOUT, $msg);
+	exit;
+	
+	
+	
+
+}
+
+$dataface_path = dirname(__FILE__);
+
+/**
+ * Command line script to create a site.
+ */
+while ( strlen(@$site_path) <= 0 ){
+	fwrite(STDOUT, "Please enter the path to the site to be created:");
+	$site_path = trim(fgets(STDIN));
+}
+if ( substr($site_path, strlen($site_path)-1, 1) == DIRECTORY_SEPARATOR){
+	$site_path = substr($site_path,0, strlen($site_path)-1);
+}
+
+
+while ( strlen(@$dataface_url)<= 0 ){
+	fwrite(STDOUT, "Please enter the full URL to the dataface (e.g.,: http://www.yoursite.com/path/to/dataface:)");
+	$dataface_url = trim(fgets(STDIN));
+}
+
+if ( substr($dataface_url, strlen($dataface_url)-1, 1) == DIRECTORY_SEPARATOR){
+	$dataface_url = substr($dataface_url,0, strlen($dataface_url)-1);
+}
+
+while (strlen(@$database_host) <= 0 ){
+	fwrite(STDOUT, "MySQL Host [localhost]:");
+	$database_host = trim(fgets(STDIN));
+	if ( !$database_host ) $database_host = "localhost";
+}
+
+
+while (strlen(@$database_name) <= 0 ){
+	fwrite(STDOUT, "MySQL Database Name:");
+	$database_name = trim(fgets(STDIN));
+}
+
+while (strlen(@$database_username) <= 0 ){
+	fwrite(STDOUT, "MySQL user name:");
+	$database_username = trim(fgets(STDIN));
+	break;
+}
+
+while (strlen(@$database_password)<=0 ){
+	fwrite(STDOUT, "MySQL password:");
+	$database_password = trim(fgets(STDIN));
+	break;
+}
+
+$db = mysql_connect($database_host, $database_username, $database_password);
+if ( !$db ){
+	fwrite(STDERR, "Failed to create site because we could not connect to the mysql database at host '$database_host' with username='$database_username' and password='$database_password'.  The mysql error was as follows: ".mysql_error());
+	exit(1);
+}
+$res = mysql_select_db($database_name);
+if ( !$res ){
+	fwrite(STDERR, "Failed to create site because the database '$database_name' does not yet exist or the user '$database_username' does not have access to it.  Please create this database before creating a database site for it: ".mysql_error($db));
+	exit(1);
+}
+
+$res = mysql_query("SHOW TABLES", $db);
+if ( !$res ){
+	fwrite(STDERR, "Failed to create site because an error occurred:".mysql_error($db));
+	exit(1);
+}
+
+$tables = array();
+while ( $row = mysql_fetch_row($res) ){
+	if ( $row[0]{0} == '_' ) continue;
+	if ( strpos($row[0], 'dataface_') === 0 ) continue;
+	if ( preg_match('/__history$/', $row[0]) ) continue;
+	$tables[] = $row[0];
+}
+$conf_file_created = false;
+$dir_created = false;
+$htaccess_created = false;
+$index_file_created = false;
+$tables_dir_created = false;
+if ( !file_exists($site_path) ){
+	if ( !mkdir($site_path) ){
+		fwrite(STDERR, "Failed to create site because we could not create the directory '$site_path'.  Please check to make sure that you have permission to create the directory.\n");
+		exit(1);
+	}
+	$dir_created = true;
+}
+
+
+$skel_path = dirname(__FILE__).DIRECTORY_SEPARATOR."site_skeleton";
+if ( !file_exists($site_path.DIRECTORY_SEPARATOR."conf.ini") ){
+	fwrite(STDOUT, "Copying conf.ini file to '$site_path"."/conf.ini'...");
+	$conf_file = file_get_contents($skel_path.DIRECTORY_SEPARATOR."conf.ini");
+	
+	$conf_file = preg_replace('/\{__DATABASE_HOST__\}/', $database_host, $conf_file);
+	$conf_file = preg_replace('/\{__DATABASE_NAME__\}/', $database_name, $conf_file);
+	$conf_file = preg_replace('/\{__DATABASE_USER__\}/', $database_username, $conf_file);
+	$conf_file = preg_replace('/\{__DATABASE_PASSWORD__\}/', $database_password, $conf_file);
+	
+	$conf_file .= "\n[_tables]\n";
+	foreach ($tables as $table){
+		$conf_file .= "$table = \"$table\"\n";
+		fwrite(STDOUT, "Found table: $table .  Adding to application menu...\n");
+	}
+	
+	
+	
+	$res = false;
+	if ( $fh = fopen($site_path.DIRECTORY_SEPARATOR."conf.ini", "w") ){
+		$res = fwrite($fh,  $conf_file);
+		fclose($fh);
+	} else {
+		fwrite(STDERR, "Failed to open '$site_path"."/conf.ini' file for writing so the site could not be created.\n");
+	}
+	
+	if ( !$res ){
+		if ( $dir_created ){
+			@rmdir($site_path);
+		}
+		fwrite(STDERR, "Failed to create site because we failed to write the conf.ini file.\n");
+		exit(1);
+	} else {
+		$conf_file_created = true;
+	}
+}
+
+if ( !file_exists($site_path.DIRECTORY_SEPARATOR.".htaccess") ){
+	fwrite(STDOUT, "Copying .htaccess file to '$site_path"."/.htaccess'...\n");
+	if ( !copy($skel_path.DIRECTORY_SEPARATOR.".htaccess", $site_path.DIRECTORY_SEPARATOR.".htaccess") ){
+		if ( $conf_file_created ){
+			@unlink($site_path.DIRECTORY_SEPARATOR."conf.ini");
+		}
+		if ( $dir_created ){
+			@rmdir($site_path);
+		}
+		fwrite(STDERR, "Failed to create site because we failed to write .htaccess file.\n");
+		exit(1);
+		
+	
+	} else {
+		$htaccess_created = true;
+	}
+}
+
+if ( !file_exists($site_path.DIRECTORY_SEPARATOR."Web.config") ){
+	fwrite(STDOUT, "Copying Web.config file to '$site_path"."/Web.config'...\n");
+	if ( !copy($skel_path.DIRECTORY_SEPARATOR."Web.config", $site_path.DIRECTORY_SEPARATOR."Web.config") ){
+		if ( $conf_file_created ){
+			@unlink($site_path.DIRECTORY_SEPARATOR."conf.ini");
+		}
+		if ( $dir_created ){
+			@rmdir($site_path);
+		}
+		fwrite(STDERR, "Failed to create site because we failed to write .htaccess file.\n");
+		exit(1);
+		
+	
+	} else {
+		$htaccess_created = true;
+	}
+}
+
+
+if ( !file_exists($site_path.DIRECTORY_SEPARATOR."index.php") ){
+	fwrite(STDOUT, "Copying index.php file to '$site_path"."/index.php'...\n");
+	$index_file = file_get_contents($skel_path.DIRECTORY_SEPARATOR."index.php");
+	$index_file = preg_replace('/\{__DATAFACE_URL__\}/', $dataface_url, $index_file);
+	$index_file = preg_replace('/\{__DATAFACE_PATH__\}/', dirname(__FILE__), $index_file);
+	$res = false;
+	if ($fh = fopen($site_path.DIRECTORY_SEPARATOR."index.php", "w") ){
+		$res = fwrite($fh, $index_file);
+		fclose($fh);
+	} else {
+		fwrite(STDERR, "Failed to open '$site_path"."/index.php' for writing.\n");
+	}
+	
+	if ( !$res ){
+		if ( $htaccess_created ){
+			fwrite(STDOUT, "Removing .htaccess file\n");
+			@unlink($skel_path.DIRECTORY_SEPARATOR.".htaccess");
+		}
+		if ( $conf_file_created ){
+			fwrite(STDOUT, "Removing conf.ini file\n");
+			@unlink($skel_path.DIRECTORY_SEPARATOR."conf.ini");
+		}
+		if ( $conf_file_created ){
+			fwrite(STDOUT, "Removing Web.config file\n");
+			@unlink($skel_path.DIRECTORY_SEPARATOR."Web.config");
+		}
+		
+		if ( $dir_created ){
+			@rmdir($site_path);
+		}
+	} else {
+		$index_file_created = true;
+	}
+}
+
+
+if ( !file_exists($site_path.DIRECTORY_SEPARATOR."tables") ){
+	fwrite(STDOUT, "Creating tables directory at '$site_path"."/tables'...\n");
+	if ( mkdir($site_path.DIRECTORY_SEPARATOR."tables") ){
+		$tables_dir_created = true;
+	}
+}
+
+if ( is_dir($site_path.DIRECTORY_SEPARATOR."tables") ){
+	foreach ( $tables as $table ){
+		if ( strpos($table, "/") !== false ){
+			fwrite(STDOUT, "Could not create table '$table' because its name is invalid\n");
+		} else if ( !file_exists( $site_path.DIRECTORY_SEPARATOR."tables".DIRECTORY_SEPARATOR.basename($table)) ){
+			fwrite(STDOUT, "Creating config directory for table '$table' at '$site_path"."/tables/"."$table'...\n");
+			@mkdir($site_path.DIRECTORY_SEPARATOR."tables".DIRECTORY_SEPARATOR.$table);
+		}
+	
+	}
+}
+
+
+
+fwrite(STDOUT, "Site successfully created at '$site_path'.");
+
+
+?>

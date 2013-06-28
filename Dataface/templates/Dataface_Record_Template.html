@@ -1,0 +1,96 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{load_record}
+{use_macro file="Dataface_Main_Template.html"}
+
+	{fill_slot name="main_section"}
+		{if $ENV.prefs.show_result_controller}
+		{block name="before_details_controller"}
+		<div id="details-controller">{include file="Dataface_Details_Controller.html"}</div>
+		{block name="after_details_controller"}
+		{/if}
+		{block name="before_record_heading"}
+		{define_slot name="record_heading"}
+
+			<h2 class="dataface-record-title">{if $ENV.record}<span class="dataface-current-record-prelabel"><b>{translate id="templates.Dataface_Record.LABEL_CURRENT_RECORD"}Current Record{/translate}:</b> </span>{$ENV.record->getTitle()}{else}No Records Matched your Request{/if}</h2>
+		{/define_slot}
+		{block name="after_record_heading"}
+		{block name="before_record_tabs"}
+		{if $ENV.prefs.show_record_tabs}{record_tabs mincount=2 id="record_tabs" id_prefix="record-tabs-" class="contentViews" selected_action=$ENV.mode}
+			{actions var="menus" category="record_actions"}  
+			 {if $menus|@count > 0 }
+			<div id="contentActionsWrapper" class="contentActions">
+			
+					
+			
+					 
+			
+			
+			<ul>
+			
+			
+				
+					   
+							 {foreach from=$menus item="menu" key="name"}
+			
+							<li>
+								<a href="{$menu.url}"
+								   id="record-actions-menu-{$menu.id}"
+								   onmouseup="if (activeButton != null) resetButton(activeButton);"
+								   title="{$menu.description}">
+								  <img src="{$menu.icon}"
+									   alt="" width="16" height="16" />
+								  {$menu.label}
+								</a>
+							</li>
+							{/foreach}
+							 
+			 
+				
+			
+			</ul>
+			
+			
+			
+			
+					
+			
+				</div>
+			{/if}
+		
+		
+		<div class="documentContent" id="region-content" style="border: 1px solid gray">
+		{/if}
+		{block name="before_record_content"}
+			{define_slot name="record_content"}
+				Record Content goes here ...
+			{/define_slot}
+		{block name="after_record_content"}
+		{if $ENV.prefs.show_record_tabs}
+		</div>
+		{/if}
+		{block name="before_record_footer"}
+		{define_slot name="record_footer"}{/define_slot}
+		{block name="after_record_footer"}
+		
+	
+	{/fill_slot}
+
+{/use_macro}

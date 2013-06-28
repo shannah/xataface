@@ -1,0 +1,133 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">document.__dataface__</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">document.__dataface__</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">document.__dataface__.recordIndex</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">document.__dataface__.recordIndex</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  3</span> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">document.__dataface__.tableIndex</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">document.__dataface__.tableIndex</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">document.__dataface__.requestStack</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">document.__dataface__.requestStack</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  5</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">__dataface__</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">document.__dataface__</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  6</span> 
+<span class='line'>  7</span> </span><span class="NAME">__dataface__.recordLoaded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">id</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  8</span> </span><span class="WHIT">	
+<span class='line'>  9</span> 	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">__dataface__.recordIndex</span><span class="PUNC">[</span><span class="NAME">id</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 10</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 11</span> 
+<span class='line'> 12</span> </span><span class="NAME">__dataface__.tableLoaded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 13</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">__dataface__.tableIndex</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 14</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 15</span> 
+<span class='line'> 16</span> </span><span class="NAME">__dataface__.fieldLoaded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">tablename</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">fieldname</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">tableLoaded</span><span class="PUNC">(</span><span class="NAME">tablename</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">__dataface__.tableIndex</span><span class="PUNC">[</span><span class="NAME">tablename</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">__fields__</span><span class="PUNC">[</span><span class="NAME">fieldname</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 19</span> 
+<span class='line'> 20</span> </span><span class="NAME">__dataface__.pushRequest</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">params</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 21</span> </span><span class="WHIT">	</span><span class="NAME">__dataface__.requestStack.push</span><span class="PUNC">(</span><span class="PUNC">[</span><span class="NAME">func</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">params</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 22</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 23</span> </span><span class="NAME">__dataface__.popRequest</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 24</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">__dataface__.requestStack.pop</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 26</span> 
+<span class='line'> 27</span> </span><span class="NAME">__dataface__.requestStackSize</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">__dataface__.requestStack.length</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 28</span> 
+<span class='line'> 29</span> </span><span class="NAME">__dataface__.getRecord</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">id</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 30</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">__dataface__.recordIndex</span><span class="PUNC">[</span><span class="NAME">id</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 32</span> 
+<span class='line'> 33</span> </span><span class="NAME">__dataface__.getTable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">__dataface__.tableIndex</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 36</span> 
+<span class='line'> 37</span> </span><span class="NAME">__dataface__.loadField</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">params</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">	</span><span class="NAME">__dataface__.errors</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 39</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">__dataface__.fieldLoaded</span><span class="PUNC">(</span><span class="NAME">params</span><span class="PUNC">[</span><span class="STRN">'table'</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">params</span><span class="PUNC">[</span><span class="STRN">'field'</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">query</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="STRN">'action'</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'-ajax_load_fields'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">tables</span><span class="STRN">': [], '</span><span class="NAME">records</span><span class="STRN">': [], '</span><span class="NAME">fields</span><span class="STRN">': [] };
+<span class='line'> 41</span> 	
+<span class='line'> 42</span> 	if ( !__dataface__.tableLoaded(params['</span><span class="NAME">table</span><span class="STRN">']) ) query.tables.push(params['</span><span class="NAME">table</span><span class="STRN">']);
+<span class='line'> 43</span> 	query.fields.push('</span><span class="PUNC">*</span><span class="STRN">');
+<span class='line'> 44</span> 	__dataface__.pushRequest(callback[0], callback[1]);
+<span class='line'> 45</span> 	__dataface__.sendRequest(query, [__dataface__.handleLoadField, null]);
+<span class='line'> 46</span> 	return;
+<span class='line'> 47</span> }
+<span class='line'> 48</span> 
+<span class='line'> 49</span> __dataface__.handleLoadField = function(){
+<span class='line'> 50</span> 
+<span class='line'> 51</span> 	if ( __dataface__.http.readyState == 4 ){
+<span class='line'> 52</span> 		var data = eval('</span><span class="PUNC">(</span><span class="STRN">'+__dataface__.http.responseText+'</span><span class="PUNC">)</span><span class="STRN">');
+<span class='line'> 53</span> 		__dataface__.errors = data.errors;
+<span class='line'> 54</span> 		__dataface__.messages = data.messages;
+<span class='line'> 55</span> 		
+<span class='line'> 56</span> 		
+<span class='line'> 57</span> 		if ( data.tables ){
+<span class='line'> 58</span> 			for ( tablename in data.tables ){
+<span class='line'> 59</span> 				__dataface__.updateTable(tablename, data.tables[tablename]);
+<span class='line'> 60</span> 			}
+<span class='line'> 61</span> 		}
+<span class='line'> 62</span> 		
+<span class='line'> 63</span> 		if ( data.records ){
+<span class='line'> 64</span> 			for ( recordId in data.records ){
+<span class='line'> 65</span> 				__dataface__.updateRecord(recordId, data.records[recordId]);	
+<span class='line'> 66</span> 			}
+<span class='line'> 67</span> 		}
+<span class='line'> 68</span> 		
+<span class='line'> 69</span> 		__dataface__.performNextRequest();
+<span class='line'> 70</span> 	}
+<span class='line'> 71</span> 
+<span class='line'> 72</span> }
+<span class='line'> 73</span> 
+<span class='line'> 74</span> 
+<span class='line'> 75</span> __dataface__.performNextRequest = function(){
+<span class='line'> 76</span> 	if ( __dataface__.requestStackSize() > 0 ){
+<span class='line'> 77</span> 		var callback = __dataface__.popRequest();
+<span class='line'> 78</span> 		var func = callback[0];
+<span class='line'> 79</span> 		var param = callback[1];
+<span class='line'> 80</span> 		func(param);
+<span class='line'> 81</span> 	}
+<span class='line'> 82</span> 
+<span class='line'> 83</span> }
+<span class='line'> 84</span> 
+<span class='line'> 85</span> __dataface__.sendRequest = function(query, callback){
+<span class='line'> 86</span> 	__dataface__.http = getHTTPObject();
+<span class='line'> 87</span> 	var qstr = '</span><span class="PUNC">?</span><span class="PUNC">-</span><span class="NAME">action</span><span class="PUNC">=</span><span class="STRN">'+escape(query.action);
+<span class='line'> 88</span> 	if ( query.tables ){
+<span class='line'> 89</span> 		for ( var i=0; i&lt;query.tables.length; i++){
+<span class='line'> 90</span> 			qstr += '</span><span class="PUNC">&</span><span class="STRN">'+escape('</span><span class="NAME">tables</span><span class="PUNC">[</span><span class="STRN">'+i+'</span><span class="PUNC">]</span><span class="STRN">')+'</span><span class="PUNC">=</span><span class="STRN">'+escape(query.tables[i]);
+<span class='line'> 91</span> 		}
+<span class='line'> 92</span> 	}
+<span class='line'> 93</span> 	if ( query.records ){
+<span class='line'> 94</span> 		for ( var i=0; i&lt;query.records.length; i++){
+<span class='line'> 95</span> 			qstr += '</span><span class="PUNC">&</span><span class="STRN">'+escape('</span><span class="NAME">records</span><span class="PUNC">[</span><span class="STRN">'+i+'</span><span class="PUNC">]</span><span class="STRN">')+'</span><span class="PUNC">=</span><span class="STRN">'+escape(query.records[i]);
+<span class='line'> 96</span> 		}
+<span class='line'> 97</span> 	}
+<span class='line'> 98</span> 	if ( query.fields ){
+<span class='line'> 99</span> 		for ( var i=0; i&lt;query.fields.length; i++){
+<span class='line'>100</span> 			qstr += '</span><span class="PUNC">&</span><span class="STRN">'+escape('</span><span class="NAME">fields</span><span class="PUNC">[</span><span class="STRN">'+i+'</span><span class="PUNC">]</span><span class="STRN">')+'</span><span class="PUNC">=</span><span class="STRN">'+escape(query.fields[i]);
+<span class='line'>101</span> 		}
+<span class='line'>102</span> 	}
+<span class='line'>103</span> 
+<span class='line'>104</span> 	__dataface__.http.open('</span><span class="NAME">GET</span><span class="STRN">', qstr);
+<span class='line'>105</span> 	
+<span class='line'>106</span> 	__dataface__.http.onreadystatechange = callback[0];
+<span class='line'>107</span> 	__dataface__.http.send(null);
+<span class='line'>108</span> }
+<span class='line'>109</span> 
+<span class='line'>110</span> 
+<span class='line'>111</span> __dataface__.setTagMode = function(tag, mode){
+<span class='line'>112</span> 	var id = tag.getAttribute('</span><span class="NAME">id</span><span class="STRN">');
+<span class='line'>113</span> 	var date = new Date();
+<span class='line'>114</span> 	if ( !tag.__modes__ ) tag.__modes__ = {'</span><span class="NAME">view</span><span class="STRN">': {'</span><span class="NAME">timestamp</span><span class="STRN">': date.getTime(), '</span><span class="NAME">innerHTML</span><span class="STRN">': tag.innerHTML}};
+<span class='line'>115</span> 	if ( !tag.__mode__ ) tag.__mode__ = '</span><span class="NAME">view</span><span class="STRN">';
+<span class='line'>116</span> 	if ( tag.__mode__ != mode ){
+<span class='line'>117</span> 		if ( mode == '</span><span class="NAME">edit</span><span class="STRN">' ){
+<span class='line'>118</span> 			// we are entering edit mode... must load the field
+<span class='line'>119</span> 			
+<span class='line'>120</span> 		}
+<span class='line'>121</span> 	}
+<span class='line'>122</span> 	
+<span class='line'>123</span> 	
+<span class='line'>124</span> 	if ( !id ) return;
+<span class='line'>125</span> 	var recid = id.substring(0, id.indexOf('</span><span class="TOKN">#</span><span class="STRN">'));
+<span class='line'>126</span> 	var field = id.substring(id.indexOf('</span><span class="TOKN">#</span><span class="TOKN"></span></pre></body></html>

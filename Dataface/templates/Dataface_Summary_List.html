@@ -1,0 +1,20 @@
+
+<ul class="Dataface_Summary_List">
+	{foreach from=$records item=recd}
+
+		<li class="Dataface_Summary_List-item">
+			<div class="Dataface_Summary_List-item-actions">
+				{block name="before_summary_actions" record=$recd}
+				{record_actions record=$recd}
+				{actions_menu record=$recd category="summary_actions"}
+				{block name="after_summary_actions" record=$recd}
+			</div>
+			<div class="Dataface_Summary_List-item-content">
+				{block name="before_summary" record=$recd}
+				{$list->showSummary($recd)}
+				{block name="after_summary" record=$recd}
+			</div>
+			<div style="clear:both"></div>
+		</li>
+	{/foreach}
+</ul>

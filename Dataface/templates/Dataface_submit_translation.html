@@ -1,0 +1,22 @@
+{if $success}
+	<p>{translate id="thank you for translation submission"}Thank you for your submission.  It has been queued for administrator approval.{/translate}</p>
+{else}
+<form method="post" action="{$ENV.APPLICATION_OBJECT->url('')}">
+<fieldset>
+	<legend>{translate id="templates.Dataface_submit_translation.HEADING"}Submit Translation{/translate}</legend>
+	<div style="display: none">
+		<label>{translate id="templates.Dataface_submit_translation.LABEL_SUBJECT"}Subject{/translate}</label><input type="text" name="subject" />
+	</div>
+	<table>
+		<tr><th>{translate id="templates.Dataface_submit_translation.LABEL_NAME"}Your name:{/translate}</th><td><input type="text" name="--submitted_by"/></td></tr>
+		<tr><th>{translate id="templates.Dataface_submit_translation.LABEL_ORIGINAL_TEXT"}Original Text:{/translate}</th><td><textarea rows="10" cols="60" name="--original_text"></textarea></td></tr>
+		<tr><th>{translate id="templates.Dataface_submit_translation.LABEL_TRANSLATED_TEXT"}Translated Text:{/translate}</th><td><textarea rows="10" cols="60" name="--translated_text"></textarea></td></tr>
+		<tr><td colspan="2"><input type="submit" name="--submit" value="{translate id="templates.Dataface_submit_translation.LABEL_SUBMIT"}Submit{/translate}"></td></tr>
+	</table>
+	{foreach from=$query item=val key=key}
+		<input type="hidden" name="{$key}" value="{$val}" />
+	{/foreach}
+</fieldset>
+
+</form>
+{/if}

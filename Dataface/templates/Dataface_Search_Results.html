@@ -1,0 +1,34 @@
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="main_column"}
+		{if $results|@count>0}
+			<p>Results {$metadata.start+1} to {$metadata.end} of {$metadata.found} for "{$search_term|escape}"</p>
+			{capture assign="prev_next"}
+			{if $metadata.start>0}<a href="{$smarty.server.HOST_URI}{$ENV.DATAFACE_SITE_HREF}?-action=search_index&table={$metadata.table|escape:"url"}&-search={$search_term|escape:"url"}&-skip={$metadata.start-30}">[ Previous 30 Results ]</a>{/if}
+			{if $metadata.end<$metadata.found}<a href="{$smarty.server.HOST_URI}{$ENV.DATAFACE_SITE_HREF}?-action=search_index&table={$metadata.table|escape:"url"}&-search={$search_term|escape:"url"}&-skip={$metadata.end}">[ Next 30 Results ]</a>{/if}
+			{/capture}
+			{$prev_next}
+			{if $metadata.tables|@count>1}
+			<table class="listing" width="100%"><thead><tr>
+			<th>Filter By Type</th>
+			<td {if !$metadata.table}class="selected-search-type"{/if}><a href="{$smarty.server.HOST_URI}{$ENV.DATAFACE_SITE_HREF}?-action=search_index&-search={$search_term|escape:"url"}">All Results</a> ({$metadata.total_found})</td>
+			{foreach from=$metadata.tables item=tabledata key=table}
+				<td {if $table==$metadata.table}class="selected-search-type"{/if}><a href="{$smarter.server.HOST_URI}{$ENV.DATAFACE_SITE_HREF}?-action=search_index&table={$table|escape}&-search={$search_term|escape:"url"}">{$tabledata.label|escape}</a> ({$tabledata.found})</td>
+			{/foreach}
+			</tr>
+			</thead>
+			</table>
+			{/if}
+			
+			<dl>
+			{foreach from=$results item=result}
+				<dt><a href="{$result.record_url}">{$result.record_title|escape}</a></dt>
+				<dd>{$result.record_description|escape}</dd>
+				<dd>{$result.relevance_bar}</dd>
+			{/foreach}
+			</dl>
+			{$prev_next}
+		{else}
+			<p>No matches for the query provided, please try again.</p>
+		{/if}
+	{/fill_slot}
+{/use_macro}

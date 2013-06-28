@@ -1,0 +1,13 @@
+The following areas need to have tests written for them:
+
+ActionTool
+AuthenticationTool
+LanguageTool
+
+Also:
+
+- Permissions and their customizations need to be tested.
+- Multilingual searching
+- Translations
+- Babelfish translator
+- Custom Actions

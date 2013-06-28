@@ -1,0 +1,279 @@
+
+<!-- Display the fields -->
+{*	
+	Contents:
+	---------
+	
+	#00 - Introduction/ Comments
+	#01 - Sections loop
+		#02 - Scriptaculous collapsible bar.
+		#03 - Inner elements loop
+		
+	
+
+	#00 - Introduction /Comments
+	-----------------------------
+	This template displays an entire HTML QuickForm form.  It is designed to 
+	be used with the HTML_QuickForm_Renderer_ArrayDataface class which produces
+	an array of the form:
+	 array(
+   'frozen'           => 'whether the form is frozen',
+   'javascript'       => 'javascript for client-side validation',
+   'attributes'       => 'attributes for <form> tag',
+   'requirednote      => 'note about the required elements',
+   // if we set the option to collect hidden elements
+   'hidden'           => 'collected html of all hidden elements',
+   // if there were some validation errors:
+   'errors' => array(
+     '1st element name' => 'Error for the 1st element',
+     ...
+     'nth element name' => 'Error for the nth element'
+   ),
+   // if there are no headers in the form:
+   'elements' => array(
+     element_1,
+     ...
+     element_N
+   )
+   // if there are headers in the form:
+   'sections' => array(
+     array(
+       'header'   => 'Header text for the first header',
+       'name'     => 'Header name for the first header',
+       'elements' => array(
+          element_1,
+          ...
+          element_K1
+       )
+     ),
+     ...
+     array(
+       'header'   => 'Header text for the Mth header',
+       'name'     => 'Header name for the Mth header',
+       'elements' => array(
+          element_1,
+          ...
+          element_KM
+       )
+     )
+   )
+ );
+
+ where element_i is an array of the form:
+ array(
+   'name'      => 'element name',
+   'value'     => 'element value',
+   'type'      => 'type of the element',
+   'frozen'    => 'whether element is frozen',
+   'label'     => 'label for the element',
+   'required'  => 'whether element is required',
+   'error'     => 'error associated with the element',
+   'style'     => 'some information about element style (e.g. for Smarty)',
+   'field'	   => 'field definition array for the associated field',
+   // if element is not a group
+   'html'      => 'HTML for the element'
+   // if element is a group
+   'separator' => 'separator for group elements',
+   'elements'  => array(
+     element_1,
+     ...
+     element_N
+   )
+ );
+ *}
+ 
+{literal}
+<script language="javascript" type="text/javascript"><!--
+	function Dataface_QuickForm(){
+		
+	}
+	Dataface_QuickForm.prototype.setFocus = function(element_name){
+		document.{/literal}{$form_data.name}{literal}.elements[element_name].focus();
+		document.{/literal}{$form_data.name}{literal}.elements[element_name].select();
+	}
+	var quickForm = new Dataface_QuickForm();
+//--></script>
+{/literal}
+		
+<form{$form_data.attributes}>
+{$form_data.hidden}
+{$form_data.javascript}
+ 
+{*
+	#01 - Outer sections loop
+	-------------------------
+	We begin by going through each section of the form individually.
+*}
+<table width="100%" class="Dataface_QuickForm-table-wrapper Dataface_FindForm-table-wrapper">
+
+{foreach from=$form_data.elements item=element}
+	{*
+		#04 - Render Element
+		------------------------------
+		This section is used to render an element to be displayed.
+	*}
+	{block name="findform_before_`$element.field.name`_row"}
+	{define_slot name="findform_`$element.field.name`_row"}
+	<tr id="{$element.field.name}_findform_row">
+		<td valign="top" align="right" class="Dataface_QuickForm-label-cell Dataface_FindForm-label-cell">
+		<div class="field" id="findform_{$element.field.tablename}-{$element.field.name}-label-wrapper">
+		
+			<label>{$element.field.widget.label}</label>
+		
+		</div>
+		</td>
+		<td class="Dataface_QuickForm-widget-cell Dataface_FindForm-widget-cell">
+		<div class="field" id="{$element.field.tablename}-{$element.field.name}-wrapper">
+		
+		
+		
+		
+			<div>
+			
+			{define_slot name="findform_`$element.field.name`_widget"}
+			{block name="findform_before_`$element.field.name`_widget"}
+			{if $element.html}
+				{$element.html}
+			{elseif $element.elements}
+				<!--<fieldset><legend>{$element.field.widget.label}</legend>-->
+				{if $element.field.widget.columns}{assign var=cols value=$element.field.widget.columns}{else}{assign var=cols value=3}{/if}
+				{if $cols > 1}{*The user has specified columns to use so we place the grouped elements in a table.*}
+					{assign var=numelements value=$element.elements|@count}
+					{assign var=threshold value=$numelements/$cols}
+					<table><tr><td>
+				{/if}
+				{assign var=ctr value=0}
+				{foreach from=$element.elements item=groupel name=grouploop}
+				
+					{$groupel.html}{if $element.widget.separator}{$element.widget.separator}{else}{$element.separator}{/if}
+					{assign var=ctr value=$ctr+1}
+					{if ($cols > 1) and ($ctr >= $threshold)}</td><td>{assign var=ctr value=0}{/if}
+				{/foreach}
+				{if $cols > 1}
+					</td></tr></table>
+				{/if}
+				<!--</fieldset>--> 
+			{/if}
+			{block name="findform_after_`$element.field.name`_widget"}
+			{/define_slot}
+			
+			
+			
+			</div>
+			<div class="formHelp">{$element.field.widget.description}</div>
+			
+			{if $element.field.widget.focus}
+			<script language="javascript" type="text/javascript"><!--
+			try{literal}{{/literal}quickForm.setFocus('{$element.field.name}');{literal}} catch(err){}{/literal}
+			//--></script>
+			
+			
+			{/if}
+		</div>
+		</td>
+	</tr>
+	{/define_slot}
+	{block name="findform_after_`$element.field.name`_row"}
+
+{/foreach}
+</table>
+{foreach from=$form_data.sections item=section}
+
+
+	{*
+		#02 - Scriptaculous collapsible sidebar
+		---------------------------------------
+	 	Let's use a scriptaculous collapsible sidebar for each section
+	 	so that we have that cool animation effect it the user wants to
+	 	hide a section.
+	*}
+	
+	{collapsible_sidebar heading=$section.header}
+	{block name="before_findform_table"}
+		<table width="100%" class="Dataface_QuickForm-table-wrapper Dataface_FindForm-table-wrapper">
+		
+			{* 
+				#03 - Inner elements loop
+				--------------------------
+				Now we go through each element in this section and render
+				it.
+			*}
+			{foreach from=$section.elements item=element}
+			
+				{*
+					#04 - Render Element
+					------------------------------
+					This section is used to render an element to be displayed.
+				*}
+				
+				{block name="findform_before_`$element.field.name`_row"}
+				{define_slot name="findform_`$element.field.name`_row"}
+				<tr id="{$element.field.name}_findform_row">
+					<td valign="top" align="right" class="Dataface_QuickForm-label-cell Dataface_FindForm-label-cell">
+					<div class="field" id="findform_{$element.field.tablename}-{$element.field.name}-label-wrapper">
+					
+						<label>{$element.field.widget.label}</label>
+					
+					</div>
+					</td>
+					<td class="Dataface_QuickForm-widget-cell Dataface_FindForm-widget-cell">
+					<div class="field" id="{$element.field.tablename}-{$element.field.name}-wrapper">
+					
+					
+					
+					
+						<div>
+						
+						{define_slot name="findform_`$element.field.name`_widget"}
+						{block name="findform_before_`$element.field.name`_widget"}
+						{if $element.html}
+							{$element.html}
+						{elseif $element.elements}
+							<!--<fieldset><legend>{$element.field.widget.label}</legend>-->
+							{if $element.field.widget.columns}{assign var=cols value=$element.field.widget.columns}{else}{assign var=cols value=3}{/if}
+							{if $cols > 1}{*The user has specified columns to use so we place the grouped elements in a table.*}
+								{assign var=numelements value=$element.elements|@count}
+								{assign var=threshold value=$numelements/$cols}
+								<table><tr><td>
+							{/if}
+							{assign var=ctr value=0}
+							{foreach from=$element.elements item=groupel name=grouploop}
+							
+								{$groupel.html}{if $element.widget.separator}{$element.widget.separator}{else}{$element.separator}{/if}
+								{assign var=ctr value=$ctr+1}
+								{if ($cols > 1) and ($ctr >= $threshold)}</td><td>{assign var=ctr value=0}{/if}
+							{/foreach}
+							{if $cols > 1}
+								</td></tr></table>
+							{/if}
+							<!--</fieldset>--> 
+						{/if}
+						{block name="findform_after_`$element.field.name`_widget"}
+						{/define_slot}
+						
+						
+						
+						</div>
+						<div class="formHelp">{$element.field.widget.description}</div>
+						
+						{if $element.field.widget.focus}
+						<script language="javascript" type="text/javascript"><!--
+						try{literal}{{/literal}quickForm.setFocus('{$element.field.name}');{literal}} catch(err){}{/literal}
+						//--></script>
+						
+						
+						{/if}
+					</div>
+					</td>
+				</tr>
+				{/define_slot}
+				{block name="findform_after_`$element.field.name`_row"}
+			{/foreach}
+		</table>
+		{block name="after_findform_table"}
+	{/collapsible_sidebar}
+{/foreach}
+
+</form>
+
+ 

@@ -1,0 +1,50 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{if !$ENV.APPLICATION_OBJECT->prefs.hide_resultlist_controller and !($ENV.APPLICATION_OBJECT->prefs.show_resultlist_controller_only_when_needed and $ENV.resultSet->found()<$ENV.resultSet->limit())}
+<div class="result-stats">
+		{translate id="templates.Dataface_ResultListController.MESSAGE_FOUND_RECORDS" 
+			found=$ENV.resultSet->found() 
+			table=$ENV.table_object->getLabel()
+			start=$ENV.resultSet->start()+1
+			end=$ENV.resultSet->end()+1
+			total=$ENV.resultSet->cardinality()
+			}<b>Found</b> {$ENV.resultSet->found()} of {$ENV.resultSet->cardinality()} records in table <b><i>{$ENV.table_object->getLabel()}</i></b>
+			<br/><b>Now Showing</b> {$ENV.resultSet->start()+1} to {$ENV.resultSet->end()+1}{/translate}
+			
+	</div>
+	
+
+	<div class="limit-field">
+		{limit_field}
+	</div>
+	<div class="prev-link">
+		{prev_link}
+	</div>
+	<div class="jump-menu">
+		{result_index}
+	</div>
+	<div class="next-link">
+		{next_link}
+	</div>
+{/if}
+	
+	<div class="result-list-actions">
+		{actions_menu id="result-list-actions" id_prefix="result-list-actions-" class="icon-only" category="result_list_actions"}
+	</div>

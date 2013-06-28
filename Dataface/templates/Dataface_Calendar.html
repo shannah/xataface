@@ -1,0 +1,51 @@
+{use_macro file="Dataface_Main_Template.html"}
+
+	{fill_slot name="main_section"}
+		{$filters}
+		<table class="calendar">
+		<tr><td class="calendar-left">
+		<div class="calendar-nav"><a href="{$nav.prev.url}">&lt; {$nav.prev.label}</a> 
+		<b>{$nav.current.label}</b> <a href="{$nav.next.url}">{$nav.next.label} &gt;</a>
+		</div>
+	
+		<script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL}/js/dfCalendar.js"></script>
+		<script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL}/js/ajaxgold.js"></script>
+		{literal}
+		<script language="javascript"><!--
+		
+		function handleGetEventDescription(text){
+			//alert(text);
+			eval('var data = '+text);
+			var div = document.getElementById(data['record_id']+'-description');
+			div.innerHTML = data['details'];
+			if ( df_add_editable_awareness ){
+				var tables = div.getElementsByTagName('table');
+				df_add_editable_awareness(tables[0]);
+			}
+			
+		}
+		Dataface.Calendar.Event.prototype.getDescription = function(){
+			
+			getDataReturnText(DATAFACE_SITE_HREF+'?-action=ajax_get_event_details&--record_id='+escape(this.record_id), handleGetEventDescription); 
+			return '<div id="'+this.record_id+'-description"><img src="'+DATAFACE_URL+'/images/progress.gif" alt="Please wait"></div>';
+			
+		};
+		var df_calendar = new Dataface.Calendar(null, new Date({/literal}{$currentTime}{literal}*1000+90000000));
+		{/literal}{$event_data}{literal}
+		for ( var i=0; i<events.length; i++){
+			df_calendar.events.add(new Dataface.Calendar.Event(null, events[i]));
+		}
+		
+		document.writeln(df_calendar.drawMonth());
+		df_calendar.detailsPanel = 'detailsPanel';
+		df_calendar.dayPanel = 'detailsPanel';
+		
+		//--></script>
+		{/literal}
+		<div id="dayPanel"></div>
+		</td><td class="calendar-right">
+		<div id="detailsPanel"></div>
+		</td></tr>
+		</table>
+	{/fill_slot}
+{/use_macro}

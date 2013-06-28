@@ -1,0 +1,48 @@
+.xatajax-ui-layout-borderlayout {
+	position: relative;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	border: none;
+}
+
+.xatajax-ui-layout-borderlayout-section {
+	position: fixed;
+	border: 1px solid black;
+	overflow: hidden;
+}
+
+.xatajax-ui-layout-borderlayout-top {
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 200px;
+}
+
+.xatajax-ui-layout-borderlayout-left {
+	top: 200px;
+	left: 0;
+	width: 100px;
+	bottom: 100px;
+}
+
+.xatajax-ui-layout-borderlayout-center {
+	top: 200px;
+	left: 100px;
+	right: 100px;
+	bottom: 100px;
+}
+
+.xatajax-ui-layout-borderlayout-right {
+	top: 200px;
+	right: 0;
+	width: 100px;
+	bottom: 100px;
+}
+
+.xatajax-ui-layout-borderlayout-bottom {
+	height: 100px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}

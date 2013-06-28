@@ -1,0 +1,53 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{use_macro file="Dataface_List_View.html"}
+
+	{fill_slot name="result_list"}
+		{if $error}<div id="error">{translate id=$error_i18n}{$error}{/translate}</div>{/if}
+
+		{*{define_slot name="result_list"}*}
+		<div id="list-window">
+		
+		
+		{assign var=loaded value=$ENV.resultSet->loadSet()}
+		{if !$ENV.prefs.SummaryList_hideSort}
+		{sort_controller}
+		{/if}
+		<div class="result-list-actions">
+		{actions_menu id="result-list-actions" id_prefix="result-list-actions-" class="icon-only" category="result_list_actions"}
+		</div>
+		{if !$ENV.prefs.hide_resultlist_controller}
+			{if $ENV.resultSet->found() > $ENV.resultSet->limit() or !$ENV.APPLICATION_OBJECT->prefs.show_resultlist_controller_only_when_needed}
+				{result_controller}
+			{/if}
+		{/if}
+		<div style="clear:both">
+			{summary_list records=$ENV.resultSet->getRecordsArray()}
+		</div>
+		{if !$ENV.prefs.hide_resultlist_controller}
+			{if $ENV.resultSet->found() > $ENV.resultSet->limit() or !$ENV.APPLICATION_OBJECT->prefs.show_resultlist_controller_only_when_needed}
+				{result_controller}
+			{/if}
+		{/if}
+		</div>
+		{*{/define_slot}*}
+
+	{/fill_slot}
+{/use_macro}

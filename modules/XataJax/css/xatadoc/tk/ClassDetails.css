@@ -1,0 +1,137 @@
+.ClassDetails-wrapper {
+	font-family: sans-serif;
+	font-size: 10pt;
+}
+
+table.ClassDetails-methods-table,
+table.ClassDetails-constructors-table,
+table.ClassDetails-properties-table,
+table.ClassDetails-events-table
+{
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+}
+
+table.ClassDetails-methods-table td,
+table.ClassDetails-constructors-table td,
+table.ClassDetails-events-table td,
+table.ClassDetails-properties-table td
+{
+	border: 1px solid #ccc;
+	padding: 1em;
+	cursor: pointer;
+	
+}
+
+table.ClassDetails-methods-table thead,
+table.ClassDetails-constructors-table thead,
+table.ClassDetails-events-table thead,
+table.ClassDetails-properties-table thead
+{
+	background-color: #fafafa;
+}
+
+
+.ClassDetails-methods-long-description,
+.ClassDetails-events-long-description,
+.ClassDetails-properties-long-description,
+.ClassDetails-methods-options,
+.ClassDetails-methods-returns
+{
+	display: none;
+}
+
+
+
+tr.expanded .ClassDetails-methods-long-description,
+tr.expanded .ClassDetails-events-long-description,
+tr.expanded .ClassDetails-properties-long-description,
+tr.expanded .ClassDetails-methods-options ,
+tr.expanded .ClassDetails-methods-returns
+{
+	display: block;
+}
+
+tr.expanded .ClassDetails-methods-short-description,
+tr.expanded .ClassDetails-events-short-description,
+tr.expanded .ClassDetails-properties-short-description{
+	display: none;
+}
+
+
+
+
+
+.ClassDetails-methods-name,
+.option-name,
+.ClassDetails-properties-name
+{
+	font-weight: bold;
+	color: #083772;
+}
+
+.ClassDetails-methods-parameters,
+.option-type,
+.ClassDetails-properties-type
+{
+	font-family: monospace;
+}
+
+.ClassDetails-methods-table th {
+	font-weight: normal;
+	text-align: left;
+	padding: 0.5em;
+}
+
+.ClassDetails-methods-short-description,
+.ClassDetails-methods-long-description,
+.ClassDetails-events-long-description,
+.ClassDetails-properties-long-description,
+.option-short-description,
+.option-long-description{
+	padding: 5px;
+	color: #444;
+}
+
+.class-summary {
+
+	padding: 1em;
+	border-bottom: 1px solid #ccc;
+}
+
+.class-summary table.class-properties th,
+.class-summary table.class-events th
+{
+	text-align: left;
+	padding-right: 4em;
+}
+
+.class-summary .class-description {
+	padding: 2em;
+}
+
+
+.ClassDetails-methods-options .options-table .option-long-description {
+	display: none;
+}
+
+.ClassDetails-methods-options .options-table tr.expanded .option-long-description {
+	display: block;
+}
+
+.ClassDetails-methods-options .options-table tr.expanded .option-short-description {
+	display: none;
+}
+
+
+.ClassDetails-methods-returns .returns-table .option-long-description {
+	display: none;
+}
+
+.ClassDetails-methods-returns .returns-table tr.expanded .option-long-description {
+	display: block;
+}
+
+.ClassDetails-methods-returns .returns-table tr.expanded .option-short-description {
+	display: none;
+}

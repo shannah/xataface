@@ -1,0 +1,315 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{if $ENV.resultSet->found() > 0}
+	{load_record var="record"}
+	{use_macro file="Dataface_Record_Template.html"}
+		
+	
+		{fill_slot name="record_content"}
+		{block name="before_view_tab_content"}
+		{define_slot name="view_tab_content"}
+		{record_view var=rv record=$record}
+		
+		<script type="text/javascript" src="{$ENV.DATAFACE_URL}/js/jquery-ui.packed.js"></script>
+					
+		<table width="100%">
+			{if !$rv->showLogo}
+			<tr>
+				
+				<td colspan="2" id="dataface-sections-top-column">
+					
+					<div class="dataface-sections-top {if $ENV.prefs.hide_record_view_logo}dataface-sections-top-no-logo{/if}">
+						<h3>{$record->getTitle()}</h3>
+						<div class="dataface-view-description">{$rv->description}</div>
+						<div class="dataface-view-status">{$rv->status}</div>
+					</div>
+				</td>
+			</tr>
+			{/if}
+			<tr>
+				<td id="dataface-sections-left-column" valign="top">
+					<div class="dataface-sections-left{if $rv->showLogo} dataface-sections-left-with-logo{/if}" id="dataface-sections-left">
+						{if $rv->showLogo}
+							{if $rv->logos|@count>0}
+								{foreach from=$rv->logos item=logo}
+									<div class="dataface-view-logo">
+									{$record->htmlValue($logo.name)}
+									</div>
+								{/foreach}
+							{else}
+								<div class="dataface-view-logo">
+								<img src="{$ENV.DATAFACE_URL}/images/missing_logo.gif" alt="Missing Logo"/>
+								</div>
+							{/if}
+							
+						{/if}
+						{block name="before_record_actions"}
+						{define_slot name="record_actions"}
+						<div class="dataface-view-record-actions">
+							{record_actions record=$record}
+						</div>
+						{/define_slot}
+						{block name="after_record_actions"}
+						{if $record->_table->relationships()|@count>0}
+							{define_slot name="record_search"}
+							{if !$ENV.prefs.hide_record_search}
+							<div id="record-search">
+								
+								<img src="{$ENV.DATAFACE_URL}/images/search_icon.gif" />
+								<input type="text" size="15" name="--subsearch" id="--subsearch" value="{$ENV.APPLICATION_OBJECT->getQueryParam('-subsearch')|escape}" onchange="doSubSearch();" />
+								{literal}
+								<script language="javascript">
+								<!--
+
+								function doSubSearch(){
+									var qstr = window.location.search;
+									var fld = document.getElementById('--subsearch');
+									if ( fld.value ){
+										if ( qstr.indexOf('?--subsearch=') >=0 || qstr.indexOf('&--subsearch=') >= 0 ){
+											qstr = qstr.replace(/([?&])--subsearch=([^&]*)/, '$1--subsearch='+escape(fld.value));
+											
+											
+										} else {
+											qstr += '&--subsearch='+escape(fld.value);
+										}
+										
+										if ( qstr.indexOf('?-action=') >= 0 || qstr.indexOf('&-action=') >=0 ){
+											qstr = qstr.replace(/([?&])-action=([^&]*)/, '$1-action=single_record_search');
+										} else {
+											qstr += '&-action=single_record_search';
+										}
+										
+										window.location.search = qstr;
+									}
+									return false;
+								}
+								
+								//--></script>
+								{/literal}
+								<input type="button" value="Search" onclick="doSubSearch();"/>
+							
+							</div>
+							{/if}
+							{/define_slot}
+						{/if}
+						
+						{foreach from=$rv->sections item=section}
+							{if $section.class == 'left'}
+							{collapsible_sidebar heading=$section.label see_all=$section.url edit_url=$section.edit_url movable=1 id=$section.name prefix="leftsidebar" oncollapse="DatafaceSections.oncollapse(this)" onexpand="DatafaceSections.onexpand(this)" display=$section.display}
+								{define_slot name="`$section.name`_section_content"}
+								{if $section.content}
+									<div class="dataface-view-section">
+									{$section.content}
+									</div>
+								{elseif $section.fields}
+									<table class="record-view-table">
+									<tbody>
+									{foreach from=$section.fields item=field key=fieldname}
+										{if $field.visibility.browse != 'hidden' and $record->htmlValue($field.name)}
+											<tr><th class="record-view-label">{$field.widget.label}</th><td class="record-view-value">{$record->htmlValue($field.name)}</td></tr>
+										{/if}
+									{/foreach}
+									</tbody>
+									</table>
+								{elseif $section.records}
+									{glance_list records=$section.records}
+								{/if}
+								{/define_slot}
+							{/collapsible_sidebar}
+							{/if}
+						
+						{/foreach}
+						
+					</div>
+				</td>
+				<td id="dataface-sections-main-column" valign="top">
+					
+		
+		
+		
+					<div class="dataface-sections-main" id="dataface-sections-main"> 
+						{if $rv->showLogo}
+						<div class="dataface-sections-top {if $ENV.prefs.hide_record_view_logo}dataface-sections-top-no-logo{/if}">
+							<h3>{$record->getTitle()}</h3>
+							<div class="dataface-view-description">{$rv->description}</div>
+							<div class="dataface-view-status">{$rv->status}</div>
+						</div>
+						
+						{/if}
+						{define_slot name="record_view_main_section"}
+							{if $ENV.prefs.collapse_all_sections_enabled}
+							<div class="section-tools">
+								<a href="javascript:DatafaceSections.collapseAll()"><img src="{$ENV.DATAFACE_URL}/images/treeExpanded.gif">Collapse All Sections</a> &nbsp; &nbsp;
+							<a href="javascript:DatafaceSections.expandAll()"><img src="{$ENV.DATAFACE_URL}/images/treeCollapsed.gif">Expand All Sections</a>
+							</div>
+							{/if}
+							
+							{foreach from=$rv->sections item=section}
+								{if $section.class == 'main'}
+								{collapsible_sidebar heading=$section.label edit_url=$section.edit_url movable=1 prefix="mainsidebar" id=$section.name onexpand="DatafaceSections.onexpand(this)" oncollapse="DatafaceSections.oncollapse(this)" display=$section.display}
+									{define_slot name="`$section.name`_section_content"}
+									{if $section.content}
+										<div class="dataface-view-section">
+										{$section.content}
+										</div>
+									{elseif $section.fields}
+										<table class="record-view-table">
+										<tbody>
+										{foreach from=$section.fields item=field key=fieldname}
+											{if $field.visibility.browse != 'hidden'}
+												{if $section.record}
+													{assign var="field_value" value=$section.record->htmlValue($field.name)}
+												{else}
+													{assign var="field_value" value=$record->htmlValue($field.name)}
+												
+												{/if}
+												{if $field_value}
+													<tr><th class="record-view-label">
+															{if $field.label_link}<a href="{$field.label_link|escape}" target="_blank" class="field-label-link no-link-icon">{/if}
+																{$field.widget.label}
+															{if $field.label_link}</a>{/if}
+														</th>
+														<td class="record-view-value">{$field_value}</td></tr>
+												{/if}
+											{/if}
+										{/foreach}
+										</tbody>
+										</table>
+									{elseif $section.records}
+										{glance_list records=$section.records}
+									{/if}
+									{/define_slot}
+								{/collapsible_sidebar}
+								{/if}
+							
+							{/foreach}
+						{/define_slot}
+						<div style="clear:both"></div>
+						
+					</div>
+					{literal}
+
+					 <script type="text/javascript">
+					// <![CDATA[
+						require(DATAFACE_URL+'/js/ajaxgold.js');
+						
+						var DatafaceSections = {
+							
+							'setDisplay': function(el,disp){
+								var params = '--record_id=*&--name='+encodeURIComponent('tables.{/literal}{$record->_table->tablename}{literal}.sections.'+el.getAttribute('df:section_name')+'.display')+'&--value='+disp;
+								var query = window.location.search;
+								if ( query.indexOf('-action=') >= 0 ){
+									query = query.replace(/([?&])-action=[^&]+/g, '$1-action=ajax_set_preference');
+								} else {
+									query = '-action=ajax_set_preference';
+								}
+								query = query.replace(/^[?]/, '');
+								var url = DATAFACE_SITE_HREF;
+								//alert(url + " : " + params);
+								postDataReturnText(url, params + '&' + query, function(text){});
+									
+							},
+							
+							'oncollapse': function(el){
+								return this.setDisplay(el, 'collapsed');
+							
+							},
+							
+							'onexpand': function(el){
+								return this.setDisplay(el, 'expanded');
+							},
+							'collapseAll': function(){
+							
+								var handles = getElementsByClassName(document,'*','expansion-handle');
+								for ( var i=0; i<handles.length; i++){
+									if ( !jQuery(handles[i].parentNode.nextSibling).hasClass('closed') ){
+										jQuery(handles[i].parentNode.nextSibling).slideToggle("slow", Xataface.blocks.collapsible_sidebar.toggleCallback);
+										//cd.collapseElement(handles[i]);
+									}
+								}
+							},
+							'expandAll': function(){
+								var handles = getElementsByClassName(document,'*','expansion-handle');
+								for ( var i=0; i<handles.length; i++){
+									if ( jQuery(handles[i].parentNode.nextSibling).hasClass('closed') ){
+										jQuery(handles[i].parentNode.nextSibling).slideToggle("slow", Xataface.blocks.collapsible_sidebar.toggleCallback);
+										//cd.collapseElement(handles[i]);
+									}
+								}
+							}
+						
+						
+						};
+						
+						var updateSections = function(container){
+									//alert('here');
+									
+									var params = window.location.search;//+'&'+Sortable.serialize("dataface-sections-left");
+									params = params.replace(/([?&])-action=[^&]+/g, '$1-action=ajax_sort_sections');
+									
+									
+									var movables = jQuery(container).find('.movable');
+									var movables_str = '';
+									for ( var i=0; i<movables.length; i++){
+										movables_str += ','+movables[i].getAttribute('df:section_name');
+									}
+									params += '&--'+encodeURIComponent(container.getAttribute('id'))+'='+encodeURIComponent(movables_str);
+									params = params.substring(1);
+									//alert(params);
+									postDataReturnText(DATAFACE_SITE_HREF, params, function(data){document.getElementById('terminal').innerHTML=data;});
+									//alert(Sortable.serialize("dataface-sections-left"));
+								}
+								
+						jQuery('#dataface-sections-left').sortable({'handle': '.movable-handle', 'update': function(){updateSections(jQuery('#dataface-sections-left').get(0));}});
+						jQuery('#dataface-sections-main').sortable({'handle': '.movable-handle', 'update': function(){updateSections(jQuery('#dataface-sections-main').get(0));}});
+						/*Sortable.create("dataface-sections-left",
+							{
+								dropOnEmpty:true,
+								constraint:false, 
+								handle:'movable-handle',
+								tag:'div',
+								only:'movable',
+								onUpdate: updateSections
+							});
+						Sortable.create("dataface-sections-main",
+						{dropOnEmpty:true,constraint:false, handle:'movable-handle',tag:'div',only:'movable', onUpdate:updateSections});
+					*/
+					// ]]>
+					 </script>
+					 {/literal}
+					<div id="terminal"/>
+				</td>
+			</tr>
+		</table>
+		
+			
+		{/define_slot}	
+		
+		{block name="after_view_tab_content"}
+		{/fill_slot}
+	{/use_macro}
+{else}
+	{use_macro file="Dataface_Main_Template.html"}
+		{fill_slot name="record_content"}
+			{translate id="scripts.GLOBAL.NO_RECORDS_MATCHED_REQUEST"}No records matched your request.{/translate}
+		{/fill_slot}
+	{/use_macro}
+
+{/if}

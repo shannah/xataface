@@ -1,0 +1,93 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="custom_stylesheets"}
+	<style type="text/css">
+	{literal}
+		#Login-Username label, #Login-Password label {
+			display: block;
+			float: left;
+			width: 100px;
+			text-align: right;
+			padding-right: 1em;
+		}
+	{/literal}
+	</style>
+	{/fill_slot}
+	{fill_slot name="main_section"}
+		{if $ENV.user}
+		<div id="xf-already-logged-in-msg" style="display:none">{translate id="You are already logged in"}You are already logged in{/translate}</div>
+		<script>
+			{literal}
+				alert(document.getElementById('xf-already-logged-in-msg').innerHTML);
+				var url = window.location.href;
+				url = url.replace(/-action=login_prompt/, '');
+				window.location.href=url;
+			{/literal}
+		</script>
+		{/if}
+		{block name="before_login_form"}
+		{define_slot name="login_form"}
+		<h1>{translate id="Please Login"}Please Login to access this section of the site{/translate}</h1>
+		{if $msg}<div class="portalMessage">{$msg}</div>{/if}
+		<form action="{$ENV.DATAFACE_SITE_HREF}" method="post" class="xataface-login-form">
+		<input type="hidden" name="-action" value="login" />
+		{if !$redirect}
+			{assign var=rkey1 value="-redirect"}
+			{assign var=rkey2 value="-redirect"}
+			{if $ENV.QUERY.$rkey1}
+				{assign var="redirect" value=$ENV.QUERY.$rkey1}
+			{elseif $ENV.QUERY.$rkey2}
+				{assign var="redirect" value=$ENV.QUERY.$rkey2}
+			{elseif $smarty.session.$rkey1}
+				{assign var="redirect" value=$smarty.session.$rkey1}
+			{elseif $smarty.session.$rkey2}
+				{assign var="redirect" value=$smarty.session.$rkey2}
+			{/if}
+		{/if}
+		<input type="hidden" name="-redirect" value="{$redirect|escape}" />
+		<fieldset>
+		<legend>{translate id="Login Form"}Login Form{/translate}</legend>
+			{block name="before_login_username}
+			<div id="Login-Username">
+				<label>{translate id="Username"}Username{/translate}:</label>
+				<input type="text" name="UserName" value="{$ENV.REQUEST.UserName|escape}">
+			</div>
+			{block name="after_login_username"}
+			<div id="Login-Password">
+				<label>{translate id="Password"}Password{/translate}:</label>
+				<input type="password" name="Password" value="{$ENV.REQUEST.Password|escape}">
+			</div>
+			{block name="after_login_password"}
+			<input id="Login-submit" name="-submit" type="submit" value="{translate id="scripts.GLOBAL.LABEL_SUBMIT"}Submit{/translate}"/>
+			{block name="after_login_submit"}
+		</fieldset>
+		
+		</form>
+		{actions category="login_actions" var="login_actions"}
+		<ul>
+		{foreach from=$login_actions item="action"}
+		 	<li><a href="{$action.url|escape}">{$action.label|escape}</a></li>
+		{/foreach}
+		</ul>
+		{/define_slot}
+		{block name="after_login_form"}
+	{/fill_slot}
+{/use_macro}

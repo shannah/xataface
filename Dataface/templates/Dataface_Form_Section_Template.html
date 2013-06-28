@@ -1,0 +1,199 @@
+{if $section.field.description}<div class="formHelp">{$section.field.description|escape}</div>{/if}
+{block name="before_quickform_table"}
+		<table width="100%" class="Dataface_QuickForm-table-wrapper xf-form-group" data-xf-record-id="{$form_record_id|escape}">
+		
+			{* 
+				#03 - Inner elements loop
+				--------------------------
+				Now we go through each element in this section and render
+				it.
+			*}
+			{foreach from=$elements item=element}
+			
+				{*
+					#04 - Render Element
+					------------------------------
+					This section is used to render an element to be displayed.
+				*}
+				
+				{block name="before_`$element.field.name`_row" table=$element.field.tablename}
+				{define_slot name="`$element.field.name`_row" table=$element.field.tablename}
+				<tr id="{$element.field.name}_form_row">
+					{if $element.field.widget.template}
+						<td colspan="2">
+							{include file=$element.field.widget.template element=$element}
+						</td>
+					{else}
+						<td {if $element.field.display == 'block'}colspan="2" class="Dataface_QuickForm-textarea-label-cell Dataface_QuickForm-block-label-cell"{/if} valign="top" {if $element.field.display != 'block'}align="right" class="Dataface_QuickForm-label-cell"{/if}>
+						<div class="field {if $element.error}error{/if}" id="{$element.field.tablename}-{$element.field.name}-label-wrapper">
+							
+							<label>
+								{if $element.field.label_link or $element.field.label_click}<a href="{if $element.field.label_link}{$element.field.label_link|escape}{else}#{/if}" target="_blank" {if $element.field.label_click}onclick="{$element.field.label_click|escape}" {/if}class="field-label-link no-link-icon">{/if}
+									{$element.field.widget.label}
+								{if $element.field.label_link or $element.field.label_click}</a>{/if}
+							</label>
+						
+							{if $element.required}
+								<span style="color: #ff0000" class="fieldRequired" title="required">&nbsp;</span>
+							{/if}
+						{if $element.field.display != 'block'}
+						</div>
+						</td>
+						<td class="Dataface_QuickForm-widget-cell{if $isText} Dataface_QuickForm-textarea-widget-cell{/if}">
+						<div class="field {if $element.error}error{/if}" id="{$element.field.tablename}-{$element.field.name}-wrapper">
+						{/if}
+							{if $element.error}
+								<div class="fieldError" style="color: #ff0000">{$element.error}</div>
+							{/if}
+						{if $element.field.display == 'block'}{if !$element.frozen}
+							<div class="formHelp">{$element.field.widget.description}</div>
+							{else}
+							<div class="formHelp">{$element.field.widget.frozen_description}</div>
+							{/if}
+						{/if}
+							
+						
+						{if $element.properties.preview}
+							<div id="{$element.field.tablename}-{$element.field.name}-preview">
+								{define_slot name="`$element.field.name`_preview_image" src=$element.properties.image_preview}
+								{if $element.properties.image_preview}
+								
+									<img src="{$element.properties.image_preview}" style="display: block; max-height: 200px" alt="{$element.field.name} preview image"/>
+								
+								{/if}
+								{/define_slot}
+								<script type="text/javascript" language="javascript">
+								require(DATAFACE_URL+'/js/delete_file.js');
+								</script>
+								{define_slot name="`$element.field.name`_preview_link" src=$element.properties.preview}<a href="{$element.properties.preview}" target="_blank">{translate id="scripts.GLOBAL.MESSAGE_VIEW_FIELD_CONTENT"}View Field Content in new Window{/translate}</a>{/define_slot}
+								{define_slot name="`$element.field.name`_delete_link"}<a class="delete-file-link" href="#" title="Delete this file" onclick="Xataface.deleteFile('{$element.properties.record_url}', '{$element.field.Field}', '{$element.field.tablename}-{$element.field.name}-preview');return false;"><img src="{$ENV.DATAFACE_URL}/images/delete.gif" alt="Delete"/></a>{/define_slot}
+							</div>
+						{/if}
+						
+							<div>
+							{if $element.field.widget.question}
+							<div class="formHelp">{$element.field.widget.question}</div>
+							{/if} 
+							{define_slot name="`$element.field.name`_widget" table=$element.field.tablename}
+							{block name="before_`$element.field.name`_widget" table=$element.field.tablename}
+							{if $element.html}
+								{if $element.type == 'submit'}
+									{define_slot name="before_submit_button"}{/define_slot}
+								{/if}
+								{$element.html}
+							{elseif $element.elements}
+								{if $element.field.widget.layout == 'table'}
+									<fieldset>
+									<legend>
+									{if $element.field.label_link or $element.field.label_click}<a href="{if $element.field.label_link}{$element.field.label_link|escape}{else}#{/if}" target="_blank" {if $element.field.label_click}onclick="{$element.field.label_click}"{/if} class="field-label-link no-link-icon">{/if}
+										{$element.field.widget.label}
+									{if $element.field.label_link or $element.field.label_click}</a>{/if}
+									</legend>
+									<table>
+									{foreach from=$element.elements item=groupel name=grouploop}
+										<tr>
+											<td align="right" valign="top" class="Dataface_QuickForm-label-cell">
+												<div class="field {if $groupel.error}error{/if} id="{$element.field.tablename}-{$element.field.name}-{$groupel.field.name}-label-wrapper">
+													<label>
+														{if $groupel.field.label_link or $groupel.field.label_click}<a href="{if $groupel.field.label_link}{$groupel.field.label_link|escape}{else}#{/if}" target="_blank" {if $groupel.field.label_click}onclick="{$groupel.field.label_click|escape}"{/if} class="field-label-link no-link-icon">{/if}
+															{$groupel.field.widget.label}
+														{if $groupel.field.label_link or $groupel.field.label_click}</a>{/if}
+													</label>
+													{if $groupel.required}
+														<span style="color: #ff0000" class="fieldRequired" title="required">&nbsp;</span>
+													{/if}
+													
+												</div>
+											</td>
+											
+											<td class="Dataface_QuickForm-widget-cell">
+												<div class="field {if $groupel.error}error{/if} id="{$element.field.tablename}-{$element.field.name}-{$groupel.field.name}-wrapper">
+												{if $groupel.error}
+													<div class="fieldError" style="color: #ff0000">{$groupel.error}</div>
+													
+												{/if}
+												{if $groupel.type == 'submit'}
+													{define_slot name="before_submit_button"}{/define_slot}
+												{/if}
+												{$groupel.html}
+													<div class="formHelp">{$groupel.field.widget.description}</div>
+												</div>
+											</td>
+										</tr>
+									{/foreach}
+									</table>
+									</fieldset>
+								{else}
+									<!--<fieldset><legend>{$element.field.widget.label}</legend>-->
+									{if $element.field.widget.columns}{assign var=cols value=$element.field.widget.columns}{else}{assign var=cols value=3}{/if}
+									{if $cols > 1}{*The user has specified columns to use so we place the grouped elements in a table.*}
+										{assign var=numelements value=$element.elements|@count}
+										{assign var=threshold value=$numelements/$cols}
+										<table><tr><td>
+									{/if}
+									{assign var=ctr value=0}
+									{foreach from=$element.elements item=groupel name=grouploop}
+										{if $groupel.field.label_link or $groupel.field.label_click}<a href="{if $groupel.field.label_link}{$groupel.field.label_link|escape}{else}#{/if}" target="_blank" {if $groupel.field.label_click}onclick="{$groupel.field.label_click|escape}"{/if} class="field-label-link no-link-icon">{/if}
+											{if $groupel.field.widget.label}{$groupel.field.widget.label}{else}{$groupel.label}{/if}
+										{if $groupel.field.label_link or $groupel.field.label_click}</a>{/if}
+										{if $groupel.type == 'submit'}
+											{define_slot name="before_submit_button"}{/define_slot}
+										{/if}
+										{$groupel.html}
+										{if $groupel.field.widget.description}<span class="formHelp">{$groupel.field.widget.description}</span>{/if}
+										{if $element.field.widget.separator}{$element.field.widget.separator}{else}{$element.separator}{/if}
+										{assign var=ctr value=$ctr+1}
+										{if ($cols > 1) and ($ctr >= $threshold)}</td><td>{assign var=ctr value=0}{/if}
+									{/foreach}
+									{if $cols > 1}
+										</td></tr></table>
+									{/if}
+									<!--</fieldset>--> 
+								{/if}
+							{/if}
+							{block name="after_`$element.field.name`_widget" table=$element.field.tablename}
+							{/define_slot}
+							{* TODO: This has to be factored out!!  There should be no mention of any
+									 particular widget type in this template.
+							*}
+							{if $element.field.widget.type == 'select' and $element.field.widget.editvalues}
+								<script language="javascript"><!--
+								require('{$ENV.DATAFACE_URL}/js/ajax.js');
+								makeSelectEditable('{$element.field.tablename}', '{$element.field.vocabulary}', document.getElementById('{$element.field.name}'));
+								//--></script>
+							{/if}
+							{* This allows us to add arbitrary content after the widget *}
+							{if $element.field.widget.suffix}
+								{$element.field.widget.suffix}
+							{/if}
+							
+							{if $element.properties.link}
+								<a href="{$element.properties.link}">Go</a>
+							{/if}
+							{if $element.field.actions}
+								{actions_menu class="field_actions" id="field_actions-`$element.field.name`"  category=$element.field.actions var="actions"}
+							{/if}
+							
+							</div>
+						{if $element.field.display != 'block'}
+							{if !$element.frozen}
+							<div class="formHelp">{$element.field.widget.description}</div>
+							{else}
+							<div class="formHelp">{$element.field.widget.frozen_description}</div>
+							{/if}
+						{/if}
+							{if $element.field.widget.focus}
+							<script language="javascript" type="text/javascript"><!--
+							try{literal}{{/literal}quickForm.setFocus('{$element.field.name}');{literal}} catch(err){}{/literal}
+							//--></script>
+							
+							
+							{/if}
+						</div>
+						</td>
+					{/if}
+				</tr>
+				{/define_slot}
+				{block name="after_`$element.field.name`_row" table=$element.field.tablename}
+			{/foreach}
+		</table>

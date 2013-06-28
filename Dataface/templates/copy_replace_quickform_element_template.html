@@ -1,0 +1,13 @@
+<tr id="copy-replace-field-{$fieldname}-row" class="xf-copy-replace-field-row {if $field.visibility.update=='default'}xf-update-default{/if}" data-xf-update-field="{$field.name|escape}" style="display: none">
+	<td id="copy-replace-field-{$fieldname}-label-cell" class="copy-replace-field-label-cell" valign="top" align="right">
+		<label>{$field.widget.label|escape}</label>
+	</td>
+	<td id="copy-replace-field-{$fieldname}-widget-cell" class="copy-replace-field-widget-cell" valign="top" align="left">
+		<!-- BEGIN required --><span style="color: #ff0000" class="fieldRequired" title="required">&nbsp;</span><!-- END required -->
+		<!-- BEGIN error --><div class="fieldError" style="color: #ff0000">{literal}{error}{/literal}</div><!-- END error -->
+		{literal}{element}{/literal}
+		(<input type="checkbox" name="-copy_replace:blank_flag[{$fieldname}]" label="Leave Blank"><label for="-copy_replace:blank_flag[{$fieldname}]">{translate id="templates.copy_replace_quickform_element_template.LABEL_MAKE_BLANK"}Make Blank{/translate}</label>)
+	
+		<button class="xf-remove-field"><span>Remove Field</span></button>
+	</td>
+</tr>

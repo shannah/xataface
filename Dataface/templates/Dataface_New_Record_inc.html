@@ -1,0 +1,36 @@
+
+{if $tabs and $tabs|@count>1}
+    <div id="edit-record-tabs-container" class="tabs-container">
+        <ul id="edit-record-tabs" class="tabs-nav">
+
+        {foreach from=$tabs item=tab}
+                <li class="{$tab.css_class|escape}"><a href="{$tab.url|escape}">{$tab.label|escape}</a><span></span></li>
+        {/foreach}
+        </ul>
+        <script language="javascript">
+        var head = document.getElementsByTagName('head');
+        var css = document.createElement('link');
+        css.type='text/css';
+        css.rel='stylesheet';
+        css.href='{$ENV.DATAFACE_URL}/css/jquery.tabs.css';
+        head[0].appendChild(css);
+        </script>
+        <!--[if lte IE 7]>
+        <script language="javascript">
+        var head = document.getElementsByTagName('head');
+        var css = document.createElement('link');
+        css.type='text/css';
+        css.rel='stylesheet';
+        css.href='{$ENV.DATAFACE_URL}/css/jquery.tabs-ie.css';
+        head[0].appendChild(css);
+        </script>
+        <![endif]-->
+    </div>
+
+    <div class="tabs-panel">
+        <div>Remember to press <em>Save</em> when you're done.</div>
+{/if}
+{$form}
+{if $tabs and $tabs|@count>1}
+    </div><!-- tabs-panel -->
+{/if}

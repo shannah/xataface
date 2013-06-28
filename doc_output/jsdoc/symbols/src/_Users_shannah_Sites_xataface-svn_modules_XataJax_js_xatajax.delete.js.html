@@ -1,0 +1,143 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">//require &lt;xatajax.core.js></span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  3</span> </span><span class="WHIT">	
+<span class='line'>  4</span> 	
+<span class='line'>  5</span> 	</span><span class="COMM">/**
+<span class='line'>  6</span> 	 * Submits a delete request.
+<span class='line'>  7</span> 	 *
+<span class='line'>  8</span> 	 * Parameters:
+<span class='line'>  9</span> 	 *
+<span class='line'> 10</span> 	 * onSuccess(data) : A callback on success.
+<span class='line'> 11</span> 	 * onFail(data):	A callback on fail.
+<span class='line'> 12</span> 	 * onComplete(data): A callback on complete.
+<span class='line'> 13</span> 	 *
+<span class='line'> 14</span> 	 * Other acceptable parameters include any valid Xataface POST parameter
+<span class='line'> 15</span> 	 * to help select a record.
+<span class='line'> 16</span> 	 *
+<span class='line'> 17</span> 	 * Callback parameters:
+<span class='line'> 18</span> 	 *
+<span class='line'> 19</span> 	 * code	: The integer response code (see Response Codes)
+<span class='line'> 20</span> 	 * message: The human readable message.
+<span class='line'> 21</span> 	 * errors: Array of error objects.  (See Error object below)
+<span class='line'> 22</span> 	 * deletedIds: Array of ids of deleted records.  (Using Xataface record id format)
+<span class='line'> 23</span> 	 *
+<span class='line'> 24</span> 	 *
+<span class='line'> 25</span> 	 * Response Codes:
+<span class='line'> 26</span> 	 * ----------------
+<span class='line'> 27</span> 	 *
+<span class='line'> 28</span> 	 * 200 : Success.  (All deletions succeeded)
+<span class='line'> 29</span> 	 * 201 : Partial Success.  (At least one deletion succeeded.  At least one failed also)
+<span class='line'> 30</span> 	 * 400 : Fail.  No deletions succeeded. At least one failed.
+<span class='line'> 31</span> 	 * 404 : Record could not be found to delete.
+<span class='line'> 32</span> 	 * 500 : Other server error.
+<span class='line'> 33</span> 	 *
+<span class='line'> 34</span> 	 *
+<span class='line'> 35</span> 	 * Error object:
+<span class='line'> 36</span> 	 * --------------
+<span class='line'> 37</span> 	 *
+<span class='line'> 38</span> 	 * record_id : The Xataface record id that produced the error.
+<span class='line'> 39</span> 	 * code :	The error code.
+<span class='line'> 40</span> 	 * message: The error message
+<span class='line'> 41</span> 	 *
+<span class='line'> 42</span> 	 * Example:
+<span class='line'> 43</span> 	 * --------
+<span class='line'> 44</span> 	 * 
+<span class='line'> 45</span> 	 * submitDelete({
+<span class='line'> 46</span> 	 *	'-table': 'people',
+<span class='line'> 47</span> 	 *	'person_id': 12,
+<span class='line'> 48</span> 	 *	onSuccess: function(data){
+<span class='line'> 49</span> 	 *      alert('delete succeeded');
+<span class='line'> 50</span> 	 *	},
+<span class='line'> 51</span> 	 *	onFail: function(data){
+<span class='line'> 52</span> 	 *  	alert('Delete failed: '+data.message);
+<span class='line'> 53</span> 	 *  }
+<span class='line'> 54</span> 	 * });
+<span class='line'> 55</span> 	 * 
+<span class='line'> 56</span> 	 */</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">submitDelete</span><span class="PUNC">(</span><span class="NAME">params</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">		
+<span class='line'> 59</span> 		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">q</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jQuery.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="NAME">params</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">		</span><span class="NAME">q</span><span class="PUNC">[</span><span class="STRN">'-action'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'xatajax_delete'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">		
+<span class='line'> 62</span> 		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">params.onSuccess</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">onFail</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">params.onFail</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">onComplete</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">params.onComplete</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">		
+<span class='line'> 66</span> 		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">q.onSuccess</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">q.onSuccess</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">q.onFail</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">q.onFail</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">q.onComplete</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">q.onComplete</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">		
+<span class='line'> 70</span> 		</span><span class="NAME">$.post</span><span class="PUNC">(</span><span class="NAME">DATAFACE_SITE_HREF</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">q</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">data</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">			</span><span class="NAME">handleDeleteResponse</span><span class="PUNC">(</span><span class="NAME">data</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">params</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">	
+<span class='line'> 75</span> 	
+<span class='line'> 76</span> 	</span><span class="COMM">/**
+<span class='line'> 77</span> 	 * Handles the response of a delete request.
+<span class='line'> 78</span> 	 *
+<span class='line'> 79</span> 	 * @param mixed data The response data.
+<span class='line'> 80</span> 	 * @param object params The parameters that were passed to the submitDelete
+<span class='line'> 81</span> 	 *		method.  Possible parameters include:
+<span class='line'> 82</span> 	 *		onSuccess: A callback function that is called when delete is completed successfully
+<span class='line'> 83</span> 	 *			with no warnings.
+<span class='line'> 84</span> 	 *		onComplete: A callback function that is called when delete completes (success or fail).
+<span class='line'> 85</span> 	 * 		onFail: A callback function that is called when the delete completes but some
+<span class='line'> 86</span> 	 *			have failed.
+<span class='line'> 87</span> 	 */</span><span class="WHIT">
+<span class='line'> 88</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">handleDeleteResponse</span><span class="PUNC">(</span><span class="NAME">data</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">params</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">		</span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">data</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'string'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">				</span><span class="NAME">eval</span><span class="PUNC">(</span><span class="STRN">'data='</span><span class="PUNC">+</span><span class="NAME">data</span><span class="PUNC">+</span><span class="STRN">';'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">				
+<span class='line'> 93</span> 			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">			
+<span class='line'> 95</span> 			</span><span class="KEYW">switch</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">data.code</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 96</span> </span><span class="WHIT">				</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">200</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">params.onComplete</span><span class="PUNC">)</span><span class="PUNC">==</span><span class="STRN">'function'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">						</span><span class="NAME">params.onComplete</span><span class="PUNC">(</span><span class="NAME">data</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">					
+<span class='line'>101</span> 					</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">params.onSuccess</span><span class="PUNC">)</span><span class="PUNC">==</span><span class="STRN">'function'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">						</span><span class="NAME">params.onSuccess</span><span class="PUNC">(</span><span class="NAME">data</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">					</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">					
+<span class='line'>106</span> 				</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">201</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="COMM">// Mixed success</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">				</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">404</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="COMM">// No matching records found</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">				</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">500</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="COMM">// Server error</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">params.onComplete</span><span class="PUNC">)</span><span class="PUNC">==</span><span class="STRN">'function'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">						</span><span class="NAME">params.onComplete</span><span class="PUNC">(</span><span class="NAME">data</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">params.onFail</span><span class="PUNC">)</span><span class="PUNC">==</span><span class="STRN">'function'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">						</span><span class="NAME">params.onFail</span><span class="PUNC">(</span><span class="NAME">data</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>115</span> </span><span class="WHIT">					</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>116</span> </span><span class="WHIT">				
+<span class='line'>117</span> 				
+<span class='line'>118</span> 				</span><span class="KEYW">default</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">					
+<span class='line'>120</span> 					</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">data.message</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">						</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="NAME">data.message</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">						</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">'Unspecified server error.  Check error log for more details.'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">			
+<span class='line'>127</span> 		</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">			</span><span class="NAME">alert</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">	
+<span class='line'>132</span> 	
+<span class='line'>133</span> 	</span><span class="NAME">XataJax.submitDelete</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">submitDelete</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">	
+<span class='line'>135</span> 
+<span class='line'>136</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

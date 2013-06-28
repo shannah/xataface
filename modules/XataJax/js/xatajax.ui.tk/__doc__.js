@@ -1,0 +1,12 @@
+//require <xatajax.ui.tk/HTMLComponent.js>
+//require <xatajax.ui.tk/Button.js>
+//require <xatajax.ui.tk/ButtonGroup.js>
+//require <xatajax.ui.tk/ComponentEvent.js>
+//require <xatajax.ui.tk/ComponentListener.js>
+//require <xatajax.ui.tk/LayoutManager.js>
+//require <xatajax.ui.tk/TextArea.js>
+//require <xatajax.ui.tk/TextComponent.js>
+//require <xatajax.ui.tk/TextField.js>
+//require <xatajax.ui.tk/layout/AbsoluteLayout.js>
+//require <xatajax.ui.tk/layout/BorderLayout.js>
+//require <xatajax.ui.tk/layout/ColumnLayout.js>
