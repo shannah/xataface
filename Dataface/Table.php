@@ -5522,8 +5522,8 @@ class Dataface_Table {
 			$configTool =& Dataface_ConfigTool::getInstance();
 			$actions =& $configTool->loadConfig('actions',$this->tablename);
 			//print_r($actions);
-			$singularLabel = $this->getSingularLabel();
-			$pluralLabel = $this->getLabel();
+			//$singularLabel = $this->getSingularLabel();
+			//$pluralLabel = $this->getLabel();
 			foreach ($actions as $key=>$action){
 				$action['table'] = $this->tablename;
 				$action['name'] = $key;
@@ -5533,10 +5533,11 @@ class Dataface_Table {
 				if ( !isset($action['label_i18n']) ) $action['label_i18n'] = 'action:'.$action['name'].' label';
 				if ( !isset($action['description_i18n'])) $action['description_i18n'] = 'action:'.$action['name'].' description';
 				if ( isset($action['description']) ){
-					$action['description'] = df_translate('actions.'.$action['name'].'.description', $action['description'], array('table_label'=>$singularLabel, 'table_label_plural'=>$pluralLabel));
+					$action['description'] = df_translate('actions.'.$action['name'].'.description', $action['description']);
 				}
 				if ( isset($action['label']) ){
-					$action['label'] = df_translate('actions.'.$action['name'].'.label',$action['label'], array('table_label_singular'=>$singularLabel, 'table_label_plural'=>$pluralLabel));
+					//$action['label'] = df_translate('actions.'.$action['name'].'.label',$action['label'], array('table_label_singular'=>$singularLabel, 'table_label_plural'=>$pluralLabel));
+                                    $action['label'] = df_translate('actions.'.$action['name'].'.label',$action['label']);
 				}
 				
 				$actionsTool->addAction($key, $action);

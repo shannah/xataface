@@ -206,7 +206,7 @@ class Dataface_LanguageTool_Instance {
 			$__found_text = $tool->dictionary[$__translation_id];
 		}
 		if ( isset($__found_text) ) {
-                        if ( !$params ){
+                        if ( !$params or @$params['__noreplace__'] ){
                             return $__found_text;
                         }
 			// make sure that there are no conflicting variable names as we are about to extract the params 
