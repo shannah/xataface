@@ -206,6 +206,9 @@ class Dataface_LanguageTool_Instance {
 			$__found_text = $tool->dictionary[$__translation_id];
 		}
 		if ( isset($__found_text) ) {
+                        if ( !$params ){
+                            return $__found_text;
+                        }
 			// make sure that there are no conflicting variable names as we are about to extract the params 
 			// array into local scope.
 			if ( isset($params['__translation_id']) ) unset($params['__translation_id']);
