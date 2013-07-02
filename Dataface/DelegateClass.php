@@ -1037,6 +1037,22 @@ interface DelegateClass {
 	 */
 	function fieldname__toString(Dataface_Record $record);
 	
+        /**
+         * @brief Overrides CSV export display value of a field for a given record.
+         * 
+         * @param Dataface_Record $record The subject record.
+         * @return string The value for the field (fieldname) as it will be 
+         *  output in the CSV export action.
+         * @section Examples
+         * 
+         * @code
+         * function first_name__csvValue(Dataface_Record $record){
+         *     return 'CSV value for '.$record->display('first_name');
+         * }
+         * @endcode
+         */
+        function fieldname__csvValue(Dataface_Record $record);
+        
 	/**
 	 * @brief Overrides the HTML display value of a field for a given record.
 	 * 

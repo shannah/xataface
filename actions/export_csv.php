@@ -126,11 +126,17 @@ class dataface_actions_export_csv {
 		
 		foreach ($columns as $key){
 			$f =& $record->_table->getField($key);
+                        $del = $record->_table->getDelegate();
 			if ( @$f['visibility']['csv'] == 'hidden' ){
 				unset($f);
 				continue;
 			}
-			$out[] = $record->display($key);
+                        $csvMethod = $key.'__csv';
+                        if ( isset($del) and method_exists($del, $csvMethod)){
+                            $out[] = $del->$csvMethod($record);
+                        } else {
+                            $out[] = $record->display($key);
+                        }
 			unset($f);
 		}
 		return $out;
@@ -141,11 +147,17 @@ class dataface_actions_export_csv {
 		$r =& $record->_relationship;
 		foreach ($r->_schema['short_columns'] as $col){
 			$f =& $r->getField($col);
-			if ( @$f['visibility']['csv'] == 'hidden' ){
+                        if ( @$f['visibility']['csv'] == 'hidden' ){
 				unset($f);
 				continue;
 			}
-			$out[] = $record->display($col);
+                        $del = $r->getTable($col)->getDelegate();
+			$csvMethod = $key.'__csv';
+                        if ( isset($del) and method_exists($del, $csvMethod) ){
+                            $out[] = $del->csvMethod($record->toRecord($col));
+                        } else {
+                            $out[] = $record->display($col);
+                        }
 			unset($f);
 		}
 		return $out;
