@@ -81,11 +81,12 @@ class dataface_actions_export_csv {
 			$temp = tmpfile();
 			$query['-skip'] = 0;
 			$query['-limit'] = null;
-			$records = new Dataface_RecordReader($query);
+			$records = new Dataface_RecordReader($query, 30, false);
 			//$records =& df_get_records_array($query['-table'], $query,null,null,false);
 			//$data = array();
 			$headings = array();
-			foreach (array_merge(array_keys($table->fields()), array_keys($table->graftedFields())) as $colhead){
+			//foreach (array_merge(array_keys($table->fields()), array_keys($table->graftedFields())) as $colhead){
+			foreach (array_keys($table->fields(false, true)) as $colhead){
 				$f =& $table->getField($colhead);
 				if ( @$f['visibility']['csv'] == 'hidden' ){
 					unset($f);
@@ -122,7 +123,8 @@ class dataface_actions_export_csv {
 	
 	function rec2data(&$record){
 		$out = array();
-		$columns = array_merge(array_keys($record->_table->fields()), array_keys($record->_table->graftedFields()));
+		//$columns = array_merge(array_keys($record->_table->fields()), array_keys($record->_table->graftedFields()));
+		$columns = array_keys($record->_table->fields(false, true));
 		
 		foreach ($columns as $key){
 			$f =& $record->_table->getField($key);
