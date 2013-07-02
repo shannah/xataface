@@ -87,6 +87,8 @@ class SQL_Compiler {
 			} else if ( $func_arg['type'] == 'expression' ){
 			
 				$out .= $this->compileExpression($func_arg['type'], $func_arg['value']).", ";
+                        } else if ( $func_arg['type'] == 'boolean_expression' ){
+                                $out .= $this->compileSearchClause($func_arg).", ";
 			} else {
 				$out .= $func_arg['value'].', ';
 			}

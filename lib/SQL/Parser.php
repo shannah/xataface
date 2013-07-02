@@ -956,6 +956,14 @@ class SQL_Parser
 					$arg = $this->parseExpression($arg);
 					if ( PEAR::isError($arg) ) return $arg;
 					$this->lexer->pushBack();
+                                } else if ( $this->isOperator() ){
+                                        $this->lexer->pushBack();
+                                        $this->lexer->pushBack();
+                                        $arg = $this->parseSearchClause();
+                                        if ( PEAR::isError($arg) ) return $arg;
+                                        $arg['type'] = 'boolean_expression';
+                                        
+                                        $this->lexer->pushBack();
 				} else {
 					$this->lexer->pushBack();
 				}

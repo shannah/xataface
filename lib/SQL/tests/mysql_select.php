@@ -8050,5 +8050,128 @@ array(
 
 
 ),
+    
+    
+array(
+'sql' => "select if(a is null, b, c)  from foo where 1",
+'expected_compiled' => "select if(`a` is null, `b`, `c`) from `foo` where 1",
+'expect' => array (
+  'command' => 'select',
+  'set_function' => 
+  array (
+    0 => 
+    array (
+      'name' => 'if',
+      'args' => 
+      array (
+        0 => 
+        array (
+          'arg_1' => 
+          array (
+            'value' => 'a',
+            'type' => 'ident',
+          ),
+          'op' => 'is',
+          'arg_2' => 
+          array (
+            'value' => '',
+            'type' => 'null',
+          ),
+          'type' => 'boolean_expression',
+        ),
+        1 => 
+        array (
+          'type' => 'ident',
+          'value' => 'b',
+        ),
+        2 => 
+        array (
+          'type' => 'ident',
+          'value' => 'c',
+        ),
+      ),
+    ),
+  ),
+  'columns' => 
+  array (
+    0 => 
+    array (
+      'type' => 'func',
+      'table' => '',
+      'value' => 
+      array (
+        'name' => 'if',
+        'args' => 
+        array (
+          0 => 
+          array (
+            'arg_1' => 
+            array (
+              'value' => 'a',
+              'type' => 'ident',
+            ),
+            'op' => 'is',
+            'arg_2' => 
+            array (
+              'value' => '',
+              'type' => 'null',
+            ),
+            'type' => 'boolean_expression',
+          ),
+          1 => 
+          array (
+            'type' => 'ident',
+            'value' => 'b',
+          ),
+          2 => 
+          array (
+            'type' => 'ident',
+            'value' => 'c',
+          ),
+        ),
+      ),
+      'alias' => '',
+    ),
+  ),
+  'table_names' => 
+  array (
+    0 => 'foo',
+  ),
+  'table_aliases' => 
+  array (
+    0 => '',
+  ),
+  'tables' => 
+  array (
+    0 => 
+    array (
+      'type' => 'ident',
+      'value' => 'foo',
+      'alias' => '',
+    ),
+  ),
+  'table_join_clause' => 
+  array (
+    0 => '',
+  ),
+  'where_clause' => 
+  array (
+    'arg_1' => 
+    array (
+      'value' => 1,
+      'type' => 'int_val',
+    ),
+  ),
+  'all_tables' => 
+  array (
+    0 => 'foo',
+  ),
+)
+
+
+
+
+
+),
 
 );
