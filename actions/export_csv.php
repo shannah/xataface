@@ -131,7 +131,7 @@ class dataface_actions_export_csv {
 				unset($f);
 				continue;
 			}
-                        $csvMethod = $key.'__csv';
+                        $csvMethod = $key.'__csvValue';
                         if ( isset($del) and method_exists($del, $csvMethod)){
                             $out[] = $del->$csvMethod($record);
                         } else {
@@ -152,7 +152,7 @@ class dataface_actions_export_csv {
 				continue;
 			}
                         $del = $r->getTable($col)->getDelegate();
-			$csvMethod = $key.'__csv';
+			$csvMethod = $key.'__csvValue';
                         if ( isset($del) and method_exists($del, $csvMethod) ){
                             $out[] = $del->csvMethod($record->toRecord($col));
                         } else {

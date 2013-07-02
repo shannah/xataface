@@ -1043,6 +1043,7 @@ interface DelegateClass {
          * @param Dataface_Record $record The subject record.
          * @return string The value for the field (fieldname) as it will be 
          *  output in the CSV export action.
+         * @since 2.0.3
          * @section Examples
          * 
          * @code
@@ -1050,6 +1051,7 @@ interface DelegateClass {
          *     return 'CSV value for '.$record->display('first_name');
          * }
          * @endcode
+         * 
          */
         function fieldname__csvValue(Dataface_Record $record);
         
