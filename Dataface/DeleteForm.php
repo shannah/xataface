@@ -156,7 +156,7 @@ class Dataface_DeleteForm extends HTML_QuickForm {
 			$form = '';
 		}
 		
-		$context = array('msg'=>'foo'.$msg, 'form'=>$form);
+		$context = array('msg'=>$msg, 'form'=>$form);
 		import('Dataface/SkinTool.php');
 		$skinTool =& Dataface_SkinTool::getInstance();
 		//$smarty = new Smarty;
