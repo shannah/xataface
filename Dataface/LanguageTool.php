@@ -249,39 +249,47 @@ class Dataface_LanguageTool_Instance {
 	 *			use_flags  : default true.
 	 */
 	function getLanguageSelectorHTML($params=array()){
+                $languages = $this->app->_conf['languages'];
+            
 		if ( !isset($params['use_flags']) ) $params['use_flags'] = true;
 		import('I18Nv2/Language.php');
-		$langcode = ( isset($params['lang']) ? $params['lang'] : $this->app->_conf['lang']);
+                $langcode = ( isset($params['lang']) ? $params['lang'] : $this->app->_conf['lang']);
 		$languageCodes = new I18Nv2_Language($langcode);
-		$currentLanguage = $languageCodes->getName( $this->app->_conf['lang']);
+		$currentLanguage = @$languages[$langCode] ? $languages[$langCode] : $languageCodes->getName( $this->app->_conf['lang']);
 		$name = (isset($params['name']) ? $params['name'] : 'language');
 		$options = array();
 		$var = (isset($params['var']) ? $params['var'] : '-lang');
 		$selected = (isset($params['selected']) ? $params['selected'] : $this->app->_conf['lang']);
-		$selectedValue = $languageCodes->getName($selected);
+		$selectedValue = @$languages[$selected] ? $languages[$selected] : $languageCodes->getName($selected);
 		$autosubmit = isset($params['autosubmit']) and $params['autosubmit'];
 		$type = ( isset($params['type']) ? $params['type'] : 'select');
 		
 		if ( isset($params['table']) ){
 			$table =& Dataface_Table::loadTable($params['table']);
-			$languages = array_keys($table->getTranslations());
-		} else {
-			$languages = $this->app->_conf['languages'];
-		}
+			$tlangs = array_keys($table->getTranslations());
+                        foreach ( $tlangs as $tcode ){
+                            if ( !isset($languages[$tcode] )){
+                                $languages[$tcode] = $languageCodes->getName($tcode);
+                                if ( !$languages[$tcode] ){
+                                    $languages[$tcode] = $tcode;
+                                }
+                            }
+                        }
+		} 
 		if ( !is_array($languages) ) return '';
 		
 		if ( $autosubmit) {
 			$onchange = 'javascript:window.location=this.options[this.selectedIndex].value;';
-			foreach ( $languages as $lang ){
-				$curri18n = new I18Nv2_Language($langCode);
-				$langname = $curri18n->getName($lang);
+			foreach ( $languages as $lang=>$langname ){
+				//$curri18n = new I18Nv2_Language($langCode);
+				//$langname = $curri18n->getName($lang);
 				$options[$this->app->url($var.'='.$lang)] = array('code'=>$lang, 'name'=>$langname);
 			}
 		} else {
 			$onchange = '';
-			foreach ($languages as $lang ){
-				$curri18n = new I18Nv2_Language($langCode);
-				$langname = $curri18n->getName($lang);
+			foreach ($languages as $lang=>$langname ){
+				//$curri18n = new I18Nv2_Language($langCode);
+				//$langname = $curri18n->getName($lang);
 				$options[$lang] = array('code'=>$lang, 'name'=>$langname);
 			}
 		}
@@ -290,29 +298,29 @@ class Dataface_LanguageTool_Instance {
 		ob_start();
 		if ( $type == 'select' ){
 		
-			echo '<select name="'.$name.'" '.($onchange ? 'onchange="'.$onchange.'"' : '').'>
+			echo '<select name="'.df_escape($name).'" '.($onchange ? 'onchange="'.df_escape($onchange).'"' : '').'>
 			';
 			foreach ($options as $code => $value ){
-				echo '<option value="'.$code.'"'. ( ($value['code'] == $selected) ? ' selected' : '').'>'.$value['name'].'</option>
+				echo '<option value="'.df_escape($code).'"'. ( ($value['code'] == $selected) ? ' selected' : '').'>'.df_escape($value['name']).'</option>
 				';
 			}
 			echo '</select>';
 		} else {
-			echo '<ul id="'.$name.'" class="language-selection-list">
+                        echo '<ul id="'.df_escape($name).'" class="language-selection-list">
 			';
-			foreach ( $languages as $code  ){
-				if ( !isset($params['lang']) and $this->app->_conf['language_labels'][$code] != $code ){
-					$languageName = $this->app->_conf['language_labels'][$code];
-				} else {
-					$languageName = $languageCodes->getName($code);
-				}
+			foreach ( $languages as $code => $languageName ){
+				//if ( !isset($params['lang']) and @$this->app->_conf['language_labels'][$code] and $this->app->_conf['language_labels'][$code] != $code ){
+                                //        $languageName = $this->app->_conf['language_labels'][$code];
+				//} else {
+				//	$languageName = $languageCodes->getName($code);
+				//}
 				//$languageName = $languageCodes->getName($code);
 				echo '<li class="language-selection-item '.( ($code == $this->app->_conf['lang']) ? ' selected-language' : '').'">
-				<a href="'.$this->app->url($var.'='.$code).'">';
-				if ( $params['use_flags'] ){
-					echo '<img src="'.DATAFACE_URL.'/images/flags/'.$code.'_small.gif" alt="'.$languageName.'" />';
+				<a href="'.df_escape($this->app->url($var.'='.$code)).'">';
+				if ( $params['use_flags'] or !$languageName ){
+					echo '<img src="'.df_escape(DATAFACE_URL.'/images/flags/'.$code.'_small.gif').'" alt="'.df_escape($languageName).'" />';
 				} else {
-					echo $languageName;
+					echo df_escape($languageName);
 				}
 				echo '</a></li>';
 			}
