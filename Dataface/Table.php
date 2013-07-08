@@ -2989,7 +2989,16 @@ class Dataface_Table {
 	 * @return string The table's label.
 	 */
 	function getLabel(){
-		return (@$this->_atts['label'] ? $this->_atts['label'] : $this->tablename);
+            if ( !@$this->_atts['label'] ){
+                $this->_atts['label'] = $this->tablename;
+            }
+            if ( !@$this->_atts['label__translated']){
+                $this->_atts['label__translated'] = true;
+                $this->_atts['label'] = df_translate('tables.'.$this->tablename.'.label', $this->_atts['label']);
+
+            }
+            return $this->_atts['label'];
+            
 	}
 	
 	
@@ -3005,10 +3014,16 @@ class Dataface_Table {
 	 * @return string
 	 */
 	function getSingularLabel(){
-		if ( !isset($this->_atts['singular_label']) ){
-			$this->_atts['singular_label'] = df_singularize($this->getLabel());
-		}
-		return $this->_atts['singular_label'];
+            if ( !@$this->_atts['singular_label'] ){
+                $this->_atts['singular_label'] = df_singularize($this->getLabel());
+            }
+            if ( !@$this->_atts['singular_label__translated'] ){
+                $this->_atts['singular_label__translated'] = true;
+                $this->_atts['singular_label'] = df_translate('tables.'.$this->tablename.'.singular_label', $this->_atts['singular_label']);
+                
+            }
+            
+            return $this->_atts['singular_label'];
 	
 	}
 	 
