@@ -30,7 +30,8 @@
 	
 	{define_slot name="html_head"}
 		<meta http-equiv="Content-Type" content="text/html; charset={$ENV.APPLICATION.oe}"/>
-		<title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=8" /> 
+                <title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
 		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL}/plone.css"/>{/define_slot}
 		{define_slot name="custom_stylesheets"}<!-- Stylesheets go here -->{/define_slot}
 		{block name="custom_stylesheets2"}
