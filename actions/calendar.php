@@ -18,7 +18,7 @@ class dataface_actions_calendar {
 		$dateAtt = $ontology->getFieldname('date');
 		if ( PEAR::isError($dateAtt) ) die($dateAtt->getMessage());
 		if ( !isset($query[$dateAtt]) or !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}\.\.[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $query[$dateAtt]) ){
-			$query[$dateAtt] = date('Y-m-01').'..'.date('Y-m-32');
+			$query[$dateAtt] = date('Y-m-01').'..'.date('Y-m-t');
 			
 		}
 		
@@ -31,10 +31,10 @@ class dataface_actions_calendar {
 		$nextTime = mktime(0,0,0,$nextMonth,1,date('Y', $startTime));
 		
 		$nav['prev']['label'] = date('F Y', $prevTime);
-		$nav['prev']['url'] = $app->url('-action=calendar&'.$dateAtt.'='.urlencode(date('Y-m-01',$prevTime).'..'.date('Y-m-31', $prevTime)), true, true);
+		$nav['prev']['url'] = $app->url('-action=calendar&'.$dateAtt.'='.urlencode(date('Y-m-01',$prevTime).'..'.date('Y-m-t', $prevTime)), true, true);
 		
 		$nav['next']['label'] = date('F Y', $nextTime);
-		$nav['next']['url'] = $app->url('-action=calendar&'.$dateAtt.'='.urlencode(date('Y-m-01',$nextTime).'..'.date('Y-m-31', $nextTime)), true, true);
+		$nav['next']['url'] = $app->url('-action=calendar&'.$dateAtt.'='.urlencode(date('Y-m-01',$nextTime).'..'.date('Y-m-t', $nextTime)), true, true);
 		
 		$nav['current']['label'] = date('F Y', $startTime);
 		
