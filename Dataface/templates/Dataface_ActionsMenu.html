@@ -28,9 +28,9 @@
               <li id="{$id_prefix}{$action.id}"
               	  class="
               	  {if $action.name==$selected_action or $action.selected}selected {$action.class|escape}{else}plain {$action.class|escape}{/if}
-              	  {if $action.subactions}xf-dropdown{/if}
+              	  {if $action.subactions}xf-dropdown{/if}"
               	  {foreach from=$action.atts item=actionAttValue key=actionAttName}{$actionAttName|escape}="{$actionAttValue|escape}" {/foreach}
-              	  ">
+              	  >
                 
                 <a class="{if $action.subactions}trigger{/if}" id="{$id_prefix}{$action.id|escape}-link" href="{$action.url|escape}"{if $action.onclick} onclick="{$action.onclick|escape}"{/if}
                    accesskey="{$action.accessKey|escape}" title="{$action.description|escape}" data-xf-permission="{$action.permission|escape}"
