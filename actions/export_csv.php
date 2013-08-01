@@ -111,7 +111,7 @@ class dataface_actions_export_csv {
 		header('Content-disposition: attachment; filename="'.$query['-table'].'_results_'.date('Y_m_d_H_i_s').'.csv"');
 		
 		$fstats = fstat($temp);
-		while ( ob_end_clean() );
+		while ( @ob_end_clean() );
 		//echo fread($temp, $fstats['size']);
 		fpassthru($temp);
 		fclose($temp);
