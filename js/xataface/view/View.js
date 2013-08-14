@@ -94,10 +94,10 @@
 					$.each(parts, function(k,v){
 						parts[k] = $.trim(v);
 					});
-					if ( parts.length === 2 ){
+					if ( parts.length == 2 ){
 						$this.attr(parts[0], model.get(parts[1]));
 						
-					} else {
+					} else if ( parts[0] ){
 						
 						var setFunc = $this.text;
 						if ( $this.is(':input') ){
