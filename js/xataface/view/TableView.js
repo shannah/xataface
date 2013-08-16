@@ -33,7 +33,7 @@
 		}
 		
 		function getTemplateRowsWrapperElement(){
-			return $('tbody', this.template);
+			return $($('tbody', this.template).get(0));
 		}
 		
 	})();
