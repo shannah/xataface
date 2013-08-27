@@ -28,6 +28,10 @@ class Dataface_FormTool_grid {
 			//echo "No add new ".$record->_table->tablename;
 			$el->addNew=false;
 		}
+                if ( !$record->checkPermission('add existing related record', array('relationship'=>$field['relationship']))){
+			//echo "No add new ".$record->_table->tablename;
+			$el->addExisting=false;
+		}
 		if ( isset($field['relationship']) ){
 			$relationship =& $table->getRelationship($field['relationship']);
 			
