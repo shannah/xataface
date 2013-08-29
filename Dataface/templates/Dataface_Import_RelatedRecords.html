@@ -64,7 +64,7 @@
 			{foreach from=$filters item=filterName}
 				
 				
-				filterDiv.__filter_descriptions['{$filterName|addslashes}'] = "{translate id="import_filters:`$filterName`:help"}No description available for this import filter.  Please add a filter description to your language config files ask key <em>import_filters:{$filterName}</em>{/translate}";
+				filterDiv.__filter_descriptions['{$filterName|addslashes}'] = "{translate id="import_filters:`$filterName`:help"}No description available for this import filter.  Please add a filter description to your language config files ask key <em>import_filters:{$filterName}:help</em>{/translate}";
 			
 			{/foreach}
 			
