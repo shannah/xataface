@@ -49,6 +49,7 @@
 	(function(){
 		$.extend(ListView.prototype, {
 			_update : _update,
+                        updateRows : updateRows,
 			updateRow : updateRow,
 			_updateRow : _updateRow,
 			template : null,
@@ -142,6 +143,13 @@
 			return this;
 		}
 		
+                function updateRows(){
+                    var self = this;
+                    $.each(this.getRowElements(), function(k,view){
+                        self.updateRow(view, self.getRowModel(view));
+                    });
+                }
+                
 		function updateSelections(){
 			var self = this;
 			var $rows = this.getRowElements();
