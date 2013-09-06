@@ -26,37 +26,25 @@ class Dataface_FormTool_checkbox {
 				if ( !@$widget['suffix'] ) $widget['suffix'] = '';
 				$dtable = & Dataface_Table::loadTable($relationship->getDomainTable());
 				if ( !PEAR::isError($dtable) and $record->checkPermission('add new related record', array('relationship'=>$relationship->getName()) )){
-					
+				import('Dataface/JavascriptTool.php');
+                                $jt = Dataface_JavascriptTool::getInstance();
+                                $jt->import('xataface/widgets/checkbox.js');
 				
-					$suffix =  '<script type="text/javascript" src="'.DATAFACE_URL.'/js/jquery-ui-1.7.2.custom.min.js"></script>';
-        			$suffix .= '<script type="text/javascript" src="'.DATAFACE_URL.'/js/RecordDialog/RecordDialog.js"></script>';
-        			$suffix .= '<a href="#" onclick="return false" id="'.df_escape($field['name']).'-other">Other..</a>';
-        			$suffix .= '<script>
-        			$(\'head\').append(\'<link rel="stylesheet" type="text/css" href="\'+DATAFACE_URL+\'/css/smoothness/jquery-ui-1.7.2.custom.css"/>\');
-        			jQuery(document).ready(function($){
-						$("#'.$field['name'].'-other").each(function(){
-							var tablename = "'.addslashes($dtable->tablename).'";
-							var fldname = "'.addslashes(df_escape($field['name'])).'";
-							var keys = '.json_encode(array_keys($dtable->keys())).';
-							var btn = this;
-							$(this).RecordDialog({
-								table: tablename,
-								callback: function(data){
-									var val = [];
-									for ( var i=0; i<keys.length; i++){
-										val.push(encodeURIComponent(keys[i])+\'=\'+encodeURIComponent(data[keys[i]]));
-									}
-									val = val.join(\'&\');
-									fldname = tablename+\'[\'+val+\']\';
-									
-									
-									$(btn).before(\'<input type="checkbox" name="\'+fldname+\'" value="\'+val+\'" checked="1"/>\'+data["__title__"]+\'<br/>\');
-								}
-							});
-						});
-        			});
-        			</script>
-        			';
+				//	$suffix =  '<script type="text/javascript" src="'.DATAFACE_URL.'/js/jquery-ui-1.7.2.custom.min.js"></script>';
+        			//$suffix .= '<script type="text/javascript" src="'.DATAFACE_URL.'/js/RecordDialog/RecordDialog.js"></script>';
+        			$suffix .= 
+                                    '<a 
+                                        class="xf-checkbox-widget-other-link"
+                                        href="#" 
+                                        onclick="return false" 
+                                        id="'.df_escape($field['name']).'-other"
+                                        data-relationship-name="'.df_escape($relationship->getName()).'"
+                                        data-table-name="'.df_escape($dtable->tablename).'"
+                                        data-field-name="'.df_escape($field['name']).'"
+                                        data-keys="'.df_escape(json_encode(array_keys($dtable->keys()))).'"
+                                    >Other..</a>';
+        			
+        			
         			$widget['suffix'] = $suffix;
 				}
 			}
