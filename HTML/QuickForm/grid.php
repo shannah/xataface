@@ -127,11 +127,15 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
     function toHtml(){
     	
         //print_r($this->getProperties());
+        import('Dataface/JavascriptTool.php');
+        $jt = Dataface_JavascriptTool::getInstance();
+        $jt->import('xataface/widgets/grid.js');
+        
     	ob_start();
-    	if ( !defined('HTML_QuickForm_grid_displayed') ){
-    		define('HTML_QuickForm_grid_displayed',true);
-    		echo '<script type="text/javascript" language="javascript" src="'.DATAFACE_URL.'/HTML/QuickForm/grid.js"></script>';
-    	}
+    	//if ( !defined('HTML_QuickForm_grid_displayed') ){
+    	//	define('HTML_QuickForm_grid_displayed',true);
+    	//	echo '<script type="text/javascript" language="javascript" src="'.DATAFACE_URL.'/HTML/QuickForm/grid.js"></script>';
+    	//}
     	
     	
     	$columnNames = $this->getColumnLabels();
@@ -144,12 +148,12 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
     	}
     	$fieldName = $this->name;
 ?>
-			<table id="xf-grid-table-<?php echo $this->getName();?>" class="xf-grid-table-<?php echo $this->getName();?>" style="width: 100%; <?php echo $this->getAttribute('style');?>">
+			<table data-field-name="<?php echo df_escape($fieldName);?>" data-grid-name="<?php echo df_escape($this->getName());?>" id="xf-grid-table-<?php echo df_escape($this->getName());?>" class="xf-grid-table xf-grid-table-<?php echo df_escape($this->getName());?>" style="width: 100%; <?php echo df_escape($this->getAttribute('style'));?>">
                 <thead>
                     <tr>
                     <?php foreach ( $columnNames as $i=>$columnName):?>
                         <th class="discreet" style="text-align: left">
-                        	<?php echo $columnName?>
+                        	<?php echo df_escape($columnName);?>
                         	
                         	
                         </th>
@@ -200,7 +204,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
 
                        ?>
                         <td style="width: 20px">
-                        	<input type="hidden" name="<?php echo $fieldName.'['.$this->next_row_id.'][__id__]';?>" value="<?php echo $rows['__id__'];?>"/>
+                        	<input type="hidden" name="<?php echo df_escape($fieldName.'['.$this->next_row_id.'][__id__]');?>" value="<?php echo df_escape($rows['__id__']);?>"/>
                             <?php if ( $this->delete ): ?>
                             <img src="<?php echo DATAFACE_URL.'/images/delete_icon.gif';?>" 
                                style="cursor: pointer;"
@@ -234,8 +238,8 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                                  onclick="dataGridFieldFunctions.moveRowDown(this);return false"/> 
                           <?php endif;?>
                            <input type="hidden"
-                                  name="<?php echo $fieldName.'['.$this->next_row_id.'][__order__]';?>"
-                                  id="<?php echo 'orderindex__'.$fieldId;?>"
+                                  name="<?php echo df_escape($fieldName.'['.$this->next_row_id.'][__order__]');?>"
+                                  id="<?php echo df_escape('orderindex__'.$fieldId);?>"
                                   value="<?php echo $this->next_row_id;?>"
                                   />                         
                         </td>
@@ -269,7 +273,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                         <?php endforeach;?>
                         <td style="width: 20px">
                         <?php if (!$this->_flagFrozen):?>
-                           <input type="hidden" name="<?php echo $fieldName.'['.$this->next_row_id.'][__id__]';?>" value="new"/>
+                           <input type="hidden" name="<?php echo df_escape($fieldName.'['.$this->next_row_id.'][__id__]');?>" value="new"/>
                            
                             <img style="display: none; cursor: pointer" 
                                  src="<?php echo DATAFACE_URL.'/images/delete_icon.gif';?>" 
@@ -300,9 +304,9 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                           
               			   
                            <input type="hidden"
-                                   value="<?php echo ( $this->getValue() ? 999999 : 0);?>"
-                                   name="<?php echo $fieldName.'['.$this->next_row_id.'][__order__]';?>"
-                                   id="<?php echo 'orderindex__'.$fieldId;?>"
+                                   value="<?php echo df_escape( $this->getValue() ? 999999 : 0);?>"
+                                   name="<?php echo df_escape($fieldName.'['.$this->next_row_id.'][__order__]');?>"
+                                   id="<?php echo df_escape('orderindex__'.$fieldId);?>"
                                     />
                         <?php endif;?>
                         </td>
@@ -314,90 +318,20 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                 	
                 </tfoot>
             </table>
-            <script>
-            	jQuery('table.xf-grid-table-<?php echo $this->getName();?>').each(function(){
-            		var rows = jQuery('tbody tr', this);
-            		var lastRow = rows.get(rows.size()-1);
-            		var template = jQuery(lastRow).clone();
-            		jQuery('script[src]', template).remove();
-            		
-            		var scripts = lastRow.getElementsByTagName('SCRIPT');
-					var scriptTexts = [];
-					for ( var i=0,imax=scripts.length; i<imax; i++){
-						scriptTexts[scriptTexts.length] = dataGridFieldFunctions.getScriptText(scripts[i]);
-					}
-					
-					scripts = scriptTexts;
-					jQuery(this).attr('data-script-text', scripts.join("\n"));
-					if ( typeof(dataGridFieldFunctions.templates) == 'undefined' ){
-						dataGridFieldFunctions.templates = {};
-					}
-					
-					dataGridFieldFunctions.templates['xf-grid-table-<?php echo $this->getName();?>'] = template.get(0);
-            	});
             
-            </script>
             
             <input type="hidden" name="<?php echo $fieldName.'[__loaded__]';?>" value="1"/>
             
             <?php if ( $this->addExisting ): ?>
-            <input type="button" class="xf-lookup-grid-row-button-<?php echo $fieldName;?>" value="Add Existing Record"/>
-            <script type="text/javascript">
-            	jQuery(document).ready(function($){
-            		$('.xf-lookup-grid-row-button-<?php echo $fieldName;?>').each(function(){
-            			$(this).RecordBrowser({
-            				<?php if ($this->addExistingFilters):?>filters: <?php echo json_encode($this->addExistingFilters);?>,<?php endif;?>
-            				table: <?php echo json_encode($this->table);?>,
-            				callback: function(values){
-            					// After we select the records we need to place them
-            					// in the grid
-            					var ids = [];
-            					for ( var id in values ){
-            						ids[ids.length] = encodeURIComponent('-id[]')+'='+encodeURIComponent(id);
-
-            					}
-            					var url = DATAFACE_SITE_HREF+'?-action=RecordBrowser_lookup_single&'+ids.join('&')+'&-table='+encodeURIComponent(<?php echo json_encode($this->table);?>)+'&-text=__json__&-return-type=array';
-            					$.getJSON(url, function(data){
-            						
-            						for ( var i=0; i<data.length; i++ ){
-            							var row = data[i];
-            							if ( row['appointment_id'] ){
-											// if this position is already associated with an
-											// appointment, we cannot add it to this appointment
-											alert('This position is already associated with another appointment.  It cannot be added to a second appointment.');
-											return;
-										}
-            							var selector = '.xf-grid-table-<?php echo $this->getName();?> tr:last';
-            							var lastRow = $(selector);
-            							for ( var j in row ){
-            								lastRow.find("input[name$='["+j+"]']").each(function(){
-            									//alert($(this).attr('name'));
-            									$(this).val(row[j]);
-            									$(this).trigger("change");
-            								});
-            							}
-            							
-            							lastRow.find("input[name$='[__id__]']").each(function(){
-            								$(this).val('new:'+$(this).val());
-            							});
-            							
-            								
-            						}
-            					});
-            					//alert('now');
+            <input 
+                type="button" 
+                class="xf-lookup-grid-row-button xf-lookup-grid-row-button-<?php echo df_escape($fieldName);?>" 
+                value="Add Existing Record"
+                data-table-name="<?php echo df_escape($this->table);?>"
+                <?php if($this->addExistingFilters):?>data-filters="<?php echo df_escape(json_encode($this->addExistingFilters));?>"<?php endif;?>
             				
-            				}
-            			});
-            			$(this).css({
-            				'padding-left': '25px',
-            				'background-image': 'url('+DATAFACE_URL+'/images/search_icon.gif)',
-            				'background-repeat': 'no-repeat',
-            				'background-position': '3px 3px'
-            			});
-            			
-            		});
-            	});
-            </script>
+            />
+            
             
             <?php endif;?>
            
