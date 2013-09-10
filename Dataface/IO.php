@@ -288,73 +288,77 @@ class Dataface_IO {
 			if ( PEAR::isError($res) ) return $res;
 		}
 		
-		
-		
-		// do the deleting
-		$keys =& $record->_table->keys();
-		if ( !$keys || count($keys) == 0 ){
-			throw new Exception(
-				df_translate(
-					'scripts.Dataface.IO.delete.ERROR_NO_PRIMARY_KEY',
-					'Could not delete record from table "'.$record->_table->tablename.'" because no primary key was defined.',
-					array('tablename'=>$record->_table->tablename)
-					)
-				);
+                $del = $record->table()->getDelegate();
+                if ( isset($del) and method_exists($del, 'deleteRecord') ){
+                    $res = $del->deleteRecord($record);
+                } else {
 
-		}
-		$query = array();
-		foreach ( array_keys($keys) as $key ){
-			if ( !$record->strval($key) ){
-				return PEAR::raiseError(
-					Dataface_LanguageTool::translate(
-						/* i18n id */
-						'Could not delete record because missing keys',
-						/* default error message */
-						'Could not delete record '.
-						$record->getTitle().
-						' because not all of the keys were included.',
-						/* i18n parameters */
-						array('title'=>$record->getTitle(), 'key'=>$key)
-					),
-					DATAFACE_E_DELETE_FAILED
-				);
-			}
-			$query[$key] = '='.$record->strval($key);
-		}
-		
-		$sql = $builder->delete($query);
-		if ( PEAR::isError($sql) ) return $sql;
-		
-		//$res = mysql_query($sql);
-		$res = $this->dbObj->query($sql, null, $this->lang);
-		if ( !$res || PEAR::isError($res)){
-			if ( PEAR::isError($res) ) $msg = $res->getMessage();
-			else $msg = mysql_error(df_db());
-			return PEAR::raiseError(
-				
-				Dataface_LanguageTool::translate(
-					/* i18n id */
-					'Failed to delete record. SQL error',
-					/* default error message */
-					'Failed to delete record '.
-					$record->getTitle().
-					' because of an sql error. '.mysql_error(df_db()),
-					/* i18n parameters */
-					array('title'=>$record->getTitle(), 'sql'=>$sql, 'mysql_error'=>$msg)
-				),
-				DATAFACE_E_DELETE_FAILED
-			);
-		}
-		
-		$parentIO =& $this->getParentIO();
-		if ( isset($parentIO) ){
-			$parentRecord =& $record->getParentRecord();
-			if ( isset($parentRecord) ){
-				$res = $parentIO->delete($parentRecord, $secure);
-				if ( PEAR::isError($res) ) return $res;
-			}
-		}
-		
+
+                    // do the deleting
+                    $keys =& $record->_table->keys();
+                    if ( !$keys || count($keys) == 0 ){
+                            throw new Exception(
+                                    df_translate(
+                                            'scripts.Dataface.IO.delete.ERROR_NO_PRIMARY_KEY',
+                                            'Could not delete record from table "'.$record->_table->tablename.'" because no primary key was defined.',
+                                            array('tablename'=>$record->_table->tablename)
+                                            )
+                                    );
+
+                    }
+                    $query = array();
+                    foreach ( array_keys($keys) as $key ){
+                            if ( !$record->strval($key) ){
+                                    return PEAR::raiseError(
+                                            Dataface_LanguageTool::translate(
+                                                    /* i18n id */
+                                                    'Could not delete record because missing keys',
+                                                    /* default error message */
+                                                    'Could not delete record '.
+                                                    $record->getTitle().
+                                                    ' because not all of the keys were included.',
+                                                    /* i18n parameters */
+                                                    array('title'=>$record->getTitle(), 'key'=>$key)
+                                            ),
+                                            DATAFACE_E_DELETE_FAILED
+                                    );
+                            }
+                            $query[$key] = '='.$record->strval($key);
+                    }
+
+                    $sql = $builder->delete($query);
+                    if ( PEAR::isError($sql) ) return $sql;
+
+                    //$res = mysql_query($sql);
+                    $res = $this->dbObj->query($sql, null, $this->lang);
+                    if ( !$res || PEAR::isError($res)){
+                            if ( PEAR::isError($res) ) $msg = $res->getMessage();
+                            else $msg = mysql_error(df_db());
+                            return PEAR::raiseError(
+
+                                    Dataface_LanguageTool::translate(
+                                            /* i18n id */
+                                            'Failed to delete record. SQL error',
+                                            /* default error message */
+                                            'Failed to delete record '.
+                                            $record->getTitle().
+                                            ' because of an sql error. '.mysql_error(df_db()),
+                                            /* i18n parameters */
+                                            array('title'=>$record->getTitle(), 'sql'=>$sql, 'mysql_error'=>$msg)
+                                    ),
+                                    DATAFACE_E_DELETE_FAILED
+                            );
+                    }
+
+                    $parentIO =& $this->getParentIO();
+                    if ( isset($parentIO) ){
+                            $parentRecord =& $record->getParentRecord();
+                            if ( isset($parentRecord) ){
+                                    $res = $parentIO->delete($parentRecord, $secure);
+                                    if ( PEAR::isError($res) ) return $res;
+                            }
+                    }
+                }
 		if ( $this->fireTriggers ){
 			$res2 = $this->fireAfterDelete($record);
 			if ( PEAR::isError($res2) ) return $res2;
