@@ -79,7 +79,7 @@ class dataface_actions_export_csv {
 			}
 		} else {
 			$temp = tmpfile();
-			$query['-skip'] = 0;
+                        $query['-skip'] = 0;
 			$query['-limit'] = null;
 			$records = new Dataface_RecordReader($query, 30, false);
 			//$records =& df_get_records_array($query['-table'], $query,null,null,false);
@@ -107,20 +107,54 @@ class dataface_actions_export_csv {
 		
 		
 		fseek($temp,0);
-		header("Content-type: text/csv; charset={$app->_conf['oe']}");
-		header('Content-disposition: attachment; filename="'.$query['-table'].'_results_'.date('Y_m_d_H_i_s').'.csv"');
-		
-		$fstats = fstat($temp);
-		while ( @ob_end_clean() );
-		//echo fread($temp, $fstats['size']);
-		fpassthru($temp);
-		fclose($temp);
+		if ( @$app->_conf['export_csv'] and @$app->_conf['export_csv']['format'] == 'excel' ){
+                    
+                    $this->outputExcelcsv($temp, $query, $app);
+                } else {
+                    $this->outputStandardCsv($temp, $query, $app);
+                }
+                    
 		exit;
 		
 		
 		
 	}
+        
+        function outputStandardCsv($fh, $query, $app){
+            header("Content-type: text/csv; charset={$app->_conf['oe']}");
+            header('Content-disposition: attachment; filename="'.$query['-table'].'_results_'.date('Y_m_d_H_i_s').'.csv"');
+
+            $fstats = fstat($fh);
+            while ( @ob_end_clean() );
+            //echo fread($temp, $fstats['size']);
+            fpassthru($fh);
+            fclose($fh);
+        }
 	
+        function outputExcelCsv($fh, $query, $app){
+            $sep  = "\t";
+            $eol  = "\n";
+            $stdout = fopen('php://output', 'w');
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-disposition: attachment; filename="'.$query['-table'].'_results_'.date('Y_m_d_H_i_s').'.csv"');
+            header('Content-Transfer-Encoding: binary');
+            fwrite($stdout, chr(255) . chr(254));
+            while ( ($row = fgetcsv($fh, 0, ',', '"')) !== false ){
+                //print_r($row);
+                ob_start();
+                fputcsv($stdout, $row, $sep);
+                $rowText = ob_get_contents();
+                //echo $rowText.'now';exit;
+                ob_end_clean();
+                
+                $rowText =  mb_convert_encoding($rowText, 'UTF-16LE', 'UTF-8');
+                fwrite($stdout, $rowText);
+            }
+            fclose($fh);
+            fclose($stdout);
+        }
+        
 	function rec2data(&$record){
 		$out = array();
 		//$columns = array_merge(array_keys($record->_table->fields()), array_keys($record->_table->graftedFields()));
