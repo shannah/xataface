@@ -3,6 +3,11 @@ require_once('PEAR.php');
 if ( !defined('FILE_APPEND') ){
 	define('FILE_APPEND', 1);
 }
+if ( !function_exists('df_escape') ){
+    function df_escape($content){
+        return htmlspecialchars($content, ENT_COMPAT);
+    }
+}
 if ( !function_exists('file_put_contents')  ) {
 	
 	function file_put_contents($n, $d, $flag = false) {
