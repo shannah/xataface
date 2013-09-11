@@ -1,3 +1,9 @@
+Xataface 2.0.3 4798
+September 11, 2013
+    - Fixed fatal error in installer.
+    - Added support for Excel-friendly CSV exports.
+        http://xataface-tips.blogspot.ca/2013/09/excel-friendly-csv-files.html
+
 Xataface 2.0.2 4797
 September 9, 2013
     - Added support for --stats parameter in export_json to return the stats of 
