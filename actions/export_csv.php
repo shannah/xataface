@@ -107,9 +107,9 @@ class dataface_actions_export_csv {
 		
 		
 		fseek($temp,0);
-		if ( @$app->_conf['export_csv'] and @$app->_conf['export_csv']['format'] == 'excel' ){
+		if ( strtolower($app->_conf['oe']) === 'utf-8' and @$app->_conf['export_csv'] and @$app->_conf['export_csv']['format'] == 'excel' ){
                     
-                    $this->outputExcelcsv($temp, $query, $app);
+                    $this->outputExcelCsv($temp, $query, $app);
                 } else {
                     $this->outputStandardCsv($temp, $query, $app);
                 }
