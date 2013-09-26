@@ -66,6 +66,8 @@
      <deltree dir="{$outputDir}/lib/dhtmlxGrid/src" />
      <deltree dir="{$outputDir}/lib/dhtmlxGrid/doc" />
      <delete file="{$outputDir}/lib/dhtmlxGrid/dhtmlxGrid.zip" />
+     <delete dir="{$outputDir}/lib/FCKeditor"/>
+     <delete dir="{$outputDir}/lib/tiny_mce"/>
      
    </target>
    
