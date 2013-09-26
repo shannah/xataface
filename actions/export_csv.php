@@ -42,6 +42,28 @@ if ( !function_exists('fputcsv') ){
 
 class dataface_actions_export_csv {
 	
+        function writeRow($fh, $data, $query){
+            fputcsv($temp, $data,",",'"');
+        }
+        
+        function startFile($fh, $query){
+            
+        }
+        
+        function endFile($fh, $query){
+            
+        }
+        
+        function writeOutput($fh, $query){
+            $app = Dataface_Application::getInstance();
+            if ( @$app->_conf['export_csv'] and @$app->_conf['export_csv']['format'] == 'excel' ){
+                    
+                $this->outputExcelcsv($fh, $query, $app);
+            } else {
+                $this->outputStandardCsv($fh, $query, $app);
+            }
+        }
+    
 	function handle(&$params){
 		set_time_limit(0);
 		import('Dataface/RecordReader.php');
@@ -74,11 +96,13 @@ class dataface_actions_export_csv {
 				$data[] = $this->related_rec2data($record);
 			}
 			$temp = tmpfile();
+                        $this->startFile($temp, $query);
 			foreach ($data as $row){
-				fputcsv($temp, $row,",",'"');
+				$this->writeRow($temp, $row, $query);//, $recordfputcsv($temp, $row,",",'"');
 			}
 		} else {
 			$temp = tmpfile();
+                        
                         $query['-skip'] = 0;
 			$query['-limit'] = null;
 			$records = new Dataface_RecordReader($query, 30, false);
@@ -97,22 +121,20 @@ class dataface_actions_export_csv {
 			
 			}
 			//$data[] = $headings;
-			fputcsv($temp, $headings,",",'"');
+                        $this->startFile($temp, $query);
+                        $this->writeRow($temp, $headings, $query);
+			//fputcsv($temp, $headings,",",'"');
 			foreach ($records as $record){
 				if ( !$record->checkPermission('view') ) continue;
 				$data = $this->rec2data($record);
-				fputcsv($temp, $data,",",'"');
+				//fputcsv($temp, $data,",",'"');
+                                $this->writeRow($temp, $data, $query);
 			}
 		}
-		
+		$this->endFile($temp, $query);
 		
 		fseek($temp,0);
-		if ( strtolower($app->_conf['oe']) === 'utf-8' and @$app->_conf['export_csv'] and @$app->_conf['export_csv']['format'] == 'excel' ){
-                    
-                    $this->outputExcelCsv($temp, $query, $app);
-                } else {
-                    $this->outputStandardCsv($temp, $query, $app);
-                }
+		$this->writeOutput($temp, $query);
                     
 		exit;
 		
@@ -124,7 +146,7 @@ class dataface_actions_export_csv {
             header("Content-type: text/csv; charset={$app->_conf['oe']}");
             header('Content-disposition: attachment; filename="'.$query['-table'].'_results_'.date('Y_m_d_H_i_s').'.csv"');
 
-            $fstats = fstat($fh);
+            //$fstats = fstat($fh);
             while ( @ob_end_clean() );
             //echo fread($temp, $fstats['size']);
             fpassthru($fh);
