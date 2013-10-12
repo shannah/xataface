@@ -1794,11 +1794,8 @@ class Dataface_IO {
 				// Unless we have specified that we want the domain table record
 				// deleted, we leave it alone!
 				
-				
-				
 				// If this is a one to many we'll try to just set the foreign key to null
 				if ( count($fkeys) == 1 ){
-					
 					if (($currTable == $domainTable->tablename) and $secure and !$related_record->_record->checkPermission('remove related record', array('relationship'=>$related_record->_relationshipName)) ){
 						$useSecurity = true;
 						
@@ -1808,7 +1805,7 @@ class Dataface_IO {
 				
 					$myfkeys = $related_record->_relationship->getForeignKeyValues();
 					foreach ( $myfkeys[$currTable] as $colName=>$colVal ){
-						$record->setValue($colName, null);
+                                                $record->setValue($colName, null);
 						
 					}
 					//exit;
@@ -1849,8 +1846,7 @@ class Dataface_IO {
 			} else {
 				$useSecurity = false;
 			}
-
-			$res = $io->delete($record, $useSecurity);
+                        $res = $io->delete($record, $useSecurity);
 			
 			if ( PEAR::isError($res) && Dataface_Error::isError($res) ){
 				//$this->logError($res);
@@ -2552,7 +2548,7 @@ class Dataface_IO {
 	
 	
 	static function createModificationTimesTable(){
-		$sql = "create table dataface__mtimes (
+		$sql = "create table if not exists dataface__mtimes (
 			`name` varchar(255) not null primary key,
 			`mtime` int(11)
 		)";
