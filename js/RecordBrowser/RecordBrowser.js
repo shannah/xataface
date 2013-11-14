@@ -578,7 +578,9 @@
 					//alert(text);
 					$(displayField).val(text);
 				});
-				updatePermissions();
+                                if ( typeof(updatePermissions) !== 'undefined' ){
+                                    updatePermissions();
+                                }
 			}
 			
 			
