@@ -847,6 +847,7 @@ class Dataface_Application {
 		}
 		
 		$this->_conf['lang'] = basename($this->_conf['lang']);
+                $this->addHeadContent('<script>XF_LANG="'.htmlspecialchars($this->_conf['lang']).'";</script>');
 		
                 
                 if ( isset($_REQUEST['-template']) ){
