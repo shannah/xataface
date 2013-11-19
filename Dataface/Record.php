@@ -2688,6 +2688,21 @@ class Dataface_Record {
 			}
 			return $res;
 		}
+                
+                $event = new StdClass;
+                $event->record = $this;
+                $event->fieldname = $fieldname;
+                $event->index = $index;
+                $event->where = $where;
+                $event->sort = $sort;
+                $event->params = $params;
+                $event->out = null;
+                
+                Dataface_Application::getInstance()->fireEvent('Dataface_Record__htmlValue', $event);
+                if ( isset($event->out) ){
+                    return $event->out;
+                }
+                
 		$parent =& $this->getParentRecord();
 		if ( isset($parent) and $parent->_table->hasField($fieldname) ){
 			return $parent->htmlValue($fieldname, $index, $where, $sort, $params);
