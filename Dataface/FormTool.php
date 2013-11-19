@@ -474,7 +474,11 @@ class Dataface_FormTool {
 		$atts = $el->getAttributes();
 		if ( !is_array($atts) ) $atts = array();
 		$atts = array_merge($atts, $field['widget']['atts']);
-
+                foreach ( $atts as $k=>$v ){
+                    if ( strpos($k, 'data-xf-override-') === 0 ){
+                        $atts[substr($k, 17)] = $v;
+                    }
+                }
 		if ( !isset($atts['data-xf-field']) ){
 			$atts['data-xf-field'] = $field['name'];
 		}
