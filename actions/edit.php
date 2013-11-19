@@ -199,6 +199,9 @@ class dataface_actions_edit {
 						$vals['-query'] = preg_replace('/([&\?])-action=edit$/', '$1-action=view', $vals['-query']);
 					}
 					$vals['-query'] = preg_replace('/&?--msg=[^&]*/', '', $vals['-query']);
+                                        if ( @$query['--lang'] ){
+                                            $vals['-query'] .= '&--lang='.$query['--lang'];
+                                        }
 					
 					$link = $_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?'.$vals['-query'].'&--saved=1&--msg='.$msg;
 					

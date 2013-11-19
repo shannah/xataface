@@ -181,6 +181,9 @@ class dataface_actions_new {
                                     }
                                 }
 				$url = $currentRecord->getURL($urlParams);
+                                if ( @$query['--lang'] ){
+                                    $url .= '&--lang='.$query['--lang'];
+                                }
 				//echo $url;exit;
 				
 				$msg = implode("\n", $app->getMessages());//@$response['--msg'];
