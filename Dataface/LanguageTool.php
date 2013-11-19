@@ -39,6 +39,7 @@ class Dataface_LanguageTool {
 	
 	
 	
+        
 	
 	/**
 	 * Like addRealm except that it only adds the realm if the realm
@@ -353,6 +354,65 @@ class Dataface_LanguageTool_Instance {
 		return DATAFACE_URL.'/images/flags/'.$code.'_small.gif';
 	
 	}
+        
+        
+        /**
+	 * @brief Adds a language table for the specific language.  This will
+	 * be a copy of the $table_en table.  This is because each language
+	 * needs its own language table to store translations for the webpages.
+	 * At install time, none exist.  When a user adds a new language, it 
+	 * dynamically creates the appropriate language tables.
+	 *
+	 * Note: It may be necessary to augment this method to create other 
+	 * language tables (e.g. for jobs).
+	 * 
+	 * @param string $lang The 2-digit language code of the language for
+	 * which the language will be created.
+	 *
+	 * @returns boolean True if the table was added successfully.  False if the
+	 *  language table already exists.
+	 * @throws Exception If the language code is not a valid language code.
+	 * 
+	 * @see <a href="http://xataface.com/documentation/tutorial/internationalization-with-dataface-0.6/dynamic_translations">Dynamic Translations</a> for information about creating translation tables in Xataface.
+	 *
+	 */
+	public function addLanguageTable($table, $lang){
+		if ( !preg_match('/^[a-z0-9]{2}$/', $lang) ){
+			throw new Exception("Language $lang is not a valid language code.");
+		}
+		$webpages = Dataface_Table::loadTable($table);
+		$translations = $webpages->getTranslations();
+		// If the translation is already there we just return false
+		if ( isset($translations[$lang]) ) return false;
+		
+		// First we need to create the translation table for webpages if it isn't created already
+                $res = df_q("show create table `".$table."_en`");
+                $row = mysql_fetch_row($res);
+                $sql = null;
+                foreach ($row as $k=>$v){
+                    if ( stripos($v, 'CREATE') !== false ){
+                        $sql = $v;
+                        break;
+                    }
+                }
+		@mysql_free_result($res);
+		$sql = str_replace('`'.$table.'_en`', '`'.$table.'_'.$lang.'`', $sql);
+		$sql = str_replace('CREATE TABLE', 'CREATE TABLE IF NOT EXISTS', $sql);
+		$res = df_q($sql);
+		
+		// The translation table was added successfully
+		return true;	
+	}
+        
+        public function addLanguageTables($lang){
+            $res = df_q("show tables like '%_en'");
+            while ( $row = mysql_fetch_row($res) ){
+                if ( preg_match('/^(.*)_en$/', $row[0], $matches)){
+                    $this->addLanguageTable($matches[1], $lang);
+                }
+            }
+            @mysql_free_result($res);
+        }
 	
 	
 }
