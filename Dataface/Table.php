@@ -493,6 +493,9 @@ class Dataface_Table {
 			
 			
 			$_tables[$name]->postInit();
+                        $event = new StdClass;
+                        $event->table = $_tables[$name];
+                        $app->fireEvent('afterTableInit', $event);
 		}
 		
 		return $_tables[$name];
