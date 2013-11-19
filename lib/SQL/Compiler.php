@@ -124,6 +124,7 @@ class SQL_Compiler {
             	break;
             case 'real_val':
             case 'int_val':
+            case 'null':
                 $value = $arg['value'];
                 break;
             case 'text_val':
@@ -175,7 +176,7 @@ class SQL_Compiler {
             	$value = 'against ('.$this->compileFunctionOpts($arg['value']).')';
             	break;
             default:
-                return PEAR::raiseError('Unknown type: '.$arg['type']);
+                return PEAR::raiseError('Unknown type: '.$arg['type'].' on line '.__LINE__);
         }
         return $value;
     }
@@ -206,7 +207,7 @@ class SQL_Compiler {
 						}
 						$value[] = $val;
 					default:
-						return PEAR::raiseError('Unknown type: '.$arg['type'][$i]);
+						return PEAR::raiseError('Unknown type: '.$arg['type'][$i].' on line '.__LINE__);
 				}
 			}
 		} else {
@@ -223,7 +224,7 @@ class SQL_Compiler {
 				$value[] = $val;
 			
 			} else {
-				return PEAR::raiseError('Unknown type: '.$arg['type']);
+				return PEAR::raiseError('Unknown type: '.$arg['type'].' on line '.__LINE__);
 			}
 			
 		}
