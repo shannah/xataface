@@ -204,7 +204,7 @@ class dataface_actions_register {
 				registration_code varchar(32) not null,
 				registration_date timestamp not null,
 				registration_data longtext not null,
-				primary key (registration_code))";
+				primary key (registration_code)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 				// registration_code stores an md5 code used to identify the registration
 				// registration_date is the date that the registration was made
 				// registration_data is a serialized array of the data from getValues()

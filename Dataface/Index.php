@@ -60,7 +60,7 @@ class Dataface_Index {
 			`searchable_text` text,
 			fulltext index `searchable_text_index` (`searchable_text`),
 			unique key `record_key` (`record_id`,`lang`),
-			primary key (`index_id`))";
+			primary key (`index_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8";
 		$res = mysql_query($sql, df_db());
 		
 		if ( !$res ){

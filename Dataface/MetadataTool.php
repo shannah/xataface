@@ -165,7 +165,7 @@ class Dataface_MetadataTool {
 			}
 			
 			$keynames = array_keys($table->keys());
-			$sql .= "primary key (`".implode('`,`', $keynames)."`))";
+			$sql .= "primary key (`".implode('`,`', $keynames)."`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 			$res = mysql_query($sql, $app->db());
 			if ( !$res ) trigger_error(mysql_error($res), E_USER_ERROR);
 			return true;

@@ -121,7 +121,7 @@ END;
 				$sql .= "KEY `$key_name` (`".implode('`,`',array_keys($key))."`)";
 			}
 		}
-		$sql .= ")";
+		$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8";
 		
 		$res = mysql_query($sql, $app->db());
 		if ( !$res ) {throw new Exception(mysql_error($app->db()), E_USER_ERROR);}
@@ -179,7 +179,7 @@ END;
 				$sql .= "KEY `$key_name` (`".implode('`,`',array_keys($key))."`)";
 			}
 		}
-		$sql .= ")";
+		$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8";
 		
 		$res = mysql_query($sql, $app->db());
 		if ( !$res ) {echo $sql;throw new Exception(mysql_error($app->db()), E_USER_ERROR);}

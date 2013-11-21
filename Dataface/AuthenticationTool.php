@@ -427,7 +427,7 @@ class Dataface_AuthenticationTool {
 			`ip_address` varchar(32) not null,
 			`username` varchar(32) not null,
 			`time_of_attempt` int(11) not null
-			)", df_db());
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
 		if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
 	}
 	

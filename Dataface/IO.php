@@ -759,7 +759,7 @@ class Dataface_IO {
 	    $res = df_q("create table if not exists dataface__record_mtimes (
 				recordhash varchar(32) not null primary key,
 				recordid varchar(255) not null,
-				mtime int(11) not null)");
+				mtime int(11) not null) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         //$res = df_q($sql);
 	}
 	
@@ -2551,7 +2551,7 @@ class Dataface_IO {
 		$sql = "create table if not exists dataface__mtimes (
 			`name` varchar(255) not null primary key,
 			`mtime` int(11)
-		)";
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 		$res = mysql_query($sql, df_db());
 		if ( !$res ) throw new Exception(mysql_error(df_db()));
 	}

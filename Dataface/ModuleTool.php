@@ -34,7 +34,7 @@ class Dataface_ModuleTool {
 				$res = mysql_query("create table dataface__modules (
 					module_name varchar(255) not null primary key,
 					module_version int(11)
-				)", df_db());
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
 				if ( !$res ) throw new Exception(mysql_error(df_db()));
 				$res = mysql_query($sql, df_db());
 			}

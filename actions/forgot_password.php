@@ -104,7 +104,7 @@ class dataface_actions_forgot_password {
 			request_ip int(11),
 			date_created datetime,
 			expires int(11),
-			key (request_uuid) )", df_db());
+			key (request_uuid) ) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
 		if ( !$res ) throw new Exception(mysql_error(df_db()));
 		
 	}

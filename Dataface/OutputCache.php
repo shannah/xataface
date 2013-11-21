@@ -539,7 +539,7 @@ class Dataface_OutputCache {
 			`Headers` TEXT,
 			PRIMARY KEY (`GenID`),
 			INDEX `LookupIndex` (`Language`,`UserID`,`PageID`)
-			)", $this->app->db());
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8", $this->app->db());
 		if ( !$res ){
 			return PEAR::raiseError('Could not create cache table: '.mysql_error($this->app->db()));
 		}	
