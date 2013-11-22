@@ -195,6 +195,7 @@ class SQL_Compiler {
 						break;
 					case 'real_val':
 					case 'int_val':
+                                        case 'null':
 						$value[] = $arg['value'][$i];
 						break;
 					case 'text_val':

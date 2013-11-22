@@ -25,7 +25,7 @@
  * Description:	Class to convert SQL queries into multlingual queries based
  * on table naming conventions.
  */
-
+import('Dataface/Table.php');
 
 class Dataface_QueryTranslator {
 	var $app;
