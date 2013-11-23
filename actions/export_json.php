@@ -199,6 +199,12 @@ class dataface_actions_export_json {
                 foreach ( $allowed_fields as $fld ){
                     $row[$fld] = $record->$displayMethod($fld);
                 }
+                if ( @$query['--include-title'] ){
+                    $row['__title__'] = $record->getTitle();
+                }
+                if ( @$query['--include-id'] ){
+                    $row['__id__'] = $record->getId();
+                }
             }
             
             if ( isset($del) and method_exists($del, 'filter_json') ){
