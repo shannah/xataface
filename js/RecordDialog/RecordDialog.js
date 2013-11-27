@@ -118,7 +118,7 @@
 					
 					iframe.find('.xf-button-bar').remove();
 					
-					var dc =iframe.find('.documentContent');
+					var dc =iframe.find('.documentContent').first();
 					if ( dc.length == 0 ) dc = iframe.find('#main_section');
 					if ( dc.length == 0 ) dc = iframe.find('#main_column');
 					
