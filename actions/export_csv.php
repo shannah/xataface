@@ -43,7 +43,7 @@ if ( !function_exists('fputcsv') ){
 class dataface_actions_export_csv {
 	
         function writeRow($fh, $data, $query){
-            fputcsv($temp, $data,",",'"');
+            fputcsv($fh, $data,",",'"');
         }
         
         function startFile($fh, $query){
