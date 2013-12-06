@@ -1,0 +1,28 @@
+10
+
+dir
+0
+http://weblite.ca/svn/dataface/core/trunk/xf/db
+http://weblite.ca/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+a5bf82c2-4c1e-0410-907c-956ee4d02f49
+
