@@ -241,6 +241,11 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		
 		parent::HTML_QuickForm($formname, 'post', df_absolute_url($_SERVER['PHP_SELF']),'',array('accept-charset'=>$app->_conf['ie']),self::$TRACK_SUBMIT);
 		
+		$this->setJsWarnings(
+			df_translate('quickform.warning.prefix', $this->_jsPrefix),
+			df_translate('quickform.warning.postfix', $this->_jsPostfix)
+		);
+		
 		//$this->_fields =& $this->_table->fields(false,false,true);
 		$this->_fields =& $this->_table->formFields(false,true);
 		

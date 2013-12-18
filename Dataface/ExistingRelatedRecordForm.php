@@ -110,7 +110,10 @@ class Dataface_ExistingRelatedRecordForm extends HTML_QuickForm {
 		$this->_built = false;
 		$app =& Dataface_Application::getInstance();
 		$this->HTML_QuickForm($tableName.'_'.$relationshipName, 'POST', '','',array('accept-charset'=>$app->_conf['ie']), true);
-		
+		$this->setJsWarnings(
+			df_translate('quickform.warning.prefix', $this->_jsPrefix),
+			df_translate('quickform.warning.postfix', $this->_jsPostfix)
+		);
 	
 	}
 	

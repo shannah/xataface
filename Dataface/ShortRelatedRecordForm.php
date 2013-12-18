@@ -133,7 +133,10 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 		$this->_built = false;
 		
 		$this->HTML_QuickForm($tableName.'_'.$relationshipName,'post','','',array('accept-charset'=>$app->_conf['ie']),true);
-		
+		$this->setJsWarnings(
+			df_translate('quickform.warning.prefix', $this->_jsPrefix),
+			df_translate('quickform.warning.postfix', $this->_jsPostfix)
+		);
 		$this->_renderer = new HTML_QuickForm_Renderer_Dataface($this); //$this->defaultRenderer();
 		$this->_renderer->setFormTemplate($this->getFormTemplate());
 		$this->_requiredNote = '';
