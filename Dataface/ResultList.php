@@ -592,6 +592,9 @@ END;
  	}
  	
  	function getResultFilters(){
+                if ( !$this->_filterCols ){
+                    return '';
+                }
  		ob_start();
  		$app =& Dataface_Application::getInstance();
  		$query =& $app->getQuery();
