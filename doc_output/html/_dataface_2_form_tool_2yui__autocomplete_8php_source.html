@@ -140,14 +140,22 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                                $el-&gt;updateAttributes(array(<span class="stringliteral">&#39;df:scriptQueryParam&#39;</span>=&gt;$el-&gt;scriptQueryParam));</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        }</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <span class="keywordflow">return</span> $el;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <span class="keywordflow">if</span> ( @<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>[<span class="stringliteral">&#39;yui_autocomplete&#39;</span>] and is_array(<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>[<span class="stringliteral">&#39;yui_autocomplete&#39;</span>]) ){</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                    $el-&gt;updateAttributes(</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                        array(</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                            <span class="stringliteral">&#39;data-xf-max-results-displayed&#39;</span> =&gt; <a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>[<span class="stringliteral">&#39;yui_autocomplete&#39;</span>][<span class="stringliteral">&#39;maxResultsDisplayed&#39;</span>]</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        )</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                    ); </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                <span class="keywordflow">return</span> $el;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:34 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:24 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

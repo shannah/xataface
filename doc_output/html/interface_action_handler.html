@@ -173,7 +173,7 @@ Configuration With The actions.ini file</h1>
 <dl class="section return"><dt>Returns</dt><dd>mixed If this method returns a <a class="el" href="class_p_e_a_r___error.html">PEAR_Error</a> object, then Xataface will do some additional processing depending on the type of error.</dd></dl>
 <dl class="section user"><dt>Dealing with Permission Denied Errors</dt><dd></dd></dl>
 <p>If during the course of execution the current user is deemed to lack sufficient permission to perform this action, then <a class="el" href="interface_action_handler.html#a4ea58d0d4ac6d4ef7456e09dc108bb56" title="The entry point for this action.">handle()</a> may return a <a class="el" href="class_p_e_a_r___error.html">PEAR_Error</a> with the code <code>DATAFACE_E_PERMISSION_DENIED</code>. Equivalently it may return the result of the <a class="el" href="class_dataface___error.html#af326456319a1a38b3ae0c9a1942e1458">Dataface_Error::permissionDenied()</a> method:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">if</span> ( !$record-&gt;checkPermission(<span class="stringliteral">&#39;view&#39;</span>) ){</div>
+<div class="fragment"><div class="line"><span class="keywordflow">if</span> ( !$record-&gt;<a class="code" href="class_dataface___record.html#a1d200d9415c0733c0762d3adb928e9ed" title="Checks to see is a particular permission is granted in this record.">checkPermission</a>(<span class="stringliteral">&#39;view&#39;</span>) ){</div>
 <div class="line">    <span class="keywordflow">return</span> <a class="code" href="class_dataface___error.html#af326456319a1a38b3ae0c9a1942e1458">Dataface_Error::permissionDenied</a>(<span class="stringliteral">&quot;You don&#39;t have permission for this.&quot;</span>);</div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="section user"><dt>Request Not Handled Errors</dt><dd></dd></dl>
@@ -197,7 +197,7 @@ Configuration With The actions.ini file</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:25 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

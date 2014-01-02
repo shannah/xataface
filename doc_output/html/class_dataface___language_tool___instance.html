@@ -106,6 +106,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2c57e59e0b8613f1d9f1f26fe85561bd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___language_tool___instance.html#a2c57e59e0b8613f1d9f1f26fe85561bd">getLanguageSelectorHTML</a> ($params=array())</td></tr>
 <tr class="memitem:a5261801f10c32cb1fa735202ea9e66d8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___language_tool___instance.html#a5261801f10c32cb1fa735202ea9e66d8">getLanguageLabel</a> ($code)</td></tr>
 <tr class="memitem:ae48427d6af3ea088352d0982849bb4aa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___language_tool___instance.html#ae48427d6af3ea088352d0982849bb4aa">getLanguageFlag</a> ($code)</td></tr>
+<tr class="memitem:a33184294b348cbd380a8597aedd9b419"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___language_tool___instance.html#a33184294b348cbd380a8597aedd9b419">addLanguageTable</a> ($table, $lang)</td></tr>
+<tr class="memdesc:a33184294b348cbd380a8597aedd9b419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a language table for the specific language. This will be a copy of the $table_en table. This is because each language needs its own language table to store translations for the webpages. At install time, none exist. When a user adds a new language, it dynamically creates the appropriate language tables.  <a href="#a33184294b348cbd380a8597aedd9b419"></a><br/></td></tr>
+<tr class="memitem:ab06c7b6c8f927a25d3a640d8df2063ff"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___language_tool___instance.html#ab06c7b6c8f927a25d3a640d8df2063ff">addLanguageTables</a> ($lang)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
@@ -116,7 +119,7 @@ Data Fields</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00100">100</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00101">101</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 </div><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="afbf043873d8ea22969ca9f2baa767d69"></a>
 <div class="memitem">
@@ -132,7 +135,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00133">133</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00134">134</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -150,7 +153,70 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00173">173</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00174">174</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a33184294b348cbd380a8597aedd9b419"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">addLanguageTable </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$table</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$lang</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds a language table for the specific language. This will be a copy of the $table_en table. This is because each language needs its own language table to store translations for the webpages. At install time, none exist. When a user adds a new language, it dynamically creates the appropriate language tables. </p>
+<p>Note: It may be necessary to augment this method to create other language tables (e.g. for jobs).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string</td><td class="paramname">$lang</td><td>The 2-digit language code of the language for which the language will be created.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>boolean True if the table was added successfully. False if the language table already exists. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">Exception</td><td>If the language code is not a valid language code.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See Also</dt><dd><a href="http://xataface.com/documentation/tutorial/internationalization-with-dataface-0.6/dynamic_translations">Dynamic Translations</a> for information about creating translation tables in Xataface. </dd></dl>
+
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00379">379</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab06c7b6c8f927a25d3a640d8df2063ff"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">addLanguageTables </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$lang</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00407">407</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -178,7 +244,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00154">154</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00155">155</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -196,7 +262,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00341">341</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00353">353</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -214,7 +280,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00325">325</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00337">337</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -239,7 +305,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00248">248</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00252">252</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -258,7 +324,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Like addRealm except that it only adds the realm if the realm isn't already loaded. </p>
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00145">145</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00146">146</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -276,7 +342,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00167">167</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00168">168</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -316,7 +382,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00194">194</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00195">195</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -331,7 +397,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00111">111</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00112">112</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -345,7 +411,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00105">105</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00106">106</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -360,7 +426,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>2-digit language code of the language that this language tool is set up for. </p>
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00124">124</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00125">125</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -374,7 +440,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00118">118</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_language_tool_8php_source.html#l00119">119</a> of file <a class="el" href="_language_tool_8php_source.html">LanguageTool.php</a>.</p>
 
 </div>
 </div>
@@ -384,7 +450,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:26 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

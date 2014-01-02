@@ -1548,6 +1548,42 @@ interface DelegateClass {
 	function renderRowHeader(Dataface_Record $record);
 	
 	
+        
+        /**
+         * @brief Allows you to output a series of zero or more &lt;tr&gt; tags that should 
+         * be displayed inside the &lt;tfoot&gt; of the table.  The &lt;tr&gt; tags must follow
+         * a few conventions in order to be displayed properly in the user interface:
+         * 
+         * <ol>
+         *  <li>You may include one &lt;td&gt; or &lt;th&gt; tag with the CSS class "label" which
+         *  will be used for displaying the label for the footer row.</li>
+         *  <li>All &lt;td&gt; and &lt;th&gt; tags that you want to have displayed must include
+         *     the data-column attribute with the name of the field that it corresponds to.  Xataface
+         *     will automatically place the cell in the correct column of the table based on this value.
+         *  </li>
+         * </ol>
+         * 
+         * <h3>Example</h3>
+         * 
+         * <p>The following example displays the SUM of all results in the somesum column of the table.
+         * It makes use of the new Dataface_QueryTool::loadTotals() method for obtaining the totals
+         * of the current found set.</p>
+         * 
+         * @code
+         * function renderRowFooterTemplate(){
+         *    $resultSet = Dataface_Application::getInstance()->getResultSet();
+	 *    $totals = $resultSet->loadTotals(array('somesum#sum'));
+         *    return '<tr class="template">'
+         *        .'<th class="label">Total</th>'
+         *        .'<td data-column="somesum">'
+         *           .df_escape($totals['somesum_SUM'])
+         *        .'</td></tr>';
+         * }
+         * @endcode
+         * @since 2.0.4
+         * @see Dataface_QueryTool::loadTotals()
+         */
+        function renderRowFooterTemplate(Dataface_Record $record);
 	
 	// @}
 	

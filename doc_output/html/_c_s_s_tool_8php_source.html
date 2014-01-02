@@ -195,7 +195,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                </div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                $deps = json_decode(file_get_contents($mfpath), <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <span class="keywordflow">foreach</span> ($deps as $script=&gt;$file){</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                        <span class="keywordflow">if</span> ( filemtime($file) &gt; $mtime ){</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                        <span class="keywordflow">if</span> ( @filemtime($file) &gt; $mtime ){</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                        }</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                }</div>
@@ -959,7 +959,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:33 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:24 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

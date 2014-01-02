@@ -146,34 +146,49 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        $key = array_shift($row);</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">foreach</span> ( <a class="code" href="csv2ini_8php.html#a9e329f02a66064794f4ef47954bb733f">$filenames</a> as $i=&gt;$file ){</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                <span class="keywordflow">if</span> ( isset($row[$i]) and !empty($row[$i]) ){</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                        <a class="code" href="csv2ini_8php.html#ad096e0e57ff79ffd6583bc3fd14ed270">$dicts</a>[$file][$key] = $row[$i];</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        }</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;fclose(<a class="code" href="csv2ini_8php.html#a3cc184a1cd41d8be1f7c13781cf63fc1">$fp</a>);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keywordflow">foreach</span> ( <a class="code" href="csv2ini_8php.html#ad096e0e57ff79ffd6583bc3fd14ed270">$dicts</a> as $file =&gt; $contents ){</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        $df = fopen(<a class="code" href="csv2ini_8php.html#a7735e1f7163f0f1cc4016f0d430c0b8e">$outputPath</a>.$file, <span class="charliteral">&#39;w&#39;</span>);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">foreach</span> ($contents as $key=&gt;$val){</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                fwrite($df, $key.<span class="stringliteral">&#39; = &quot;&#39;</span>.str_replace(<span class="charliteral">&#39;&quot;&#39;</span>, <span class="stringliteral">&#39;&quot;XATAFACEQ&quot;&#39;</span>, $val).<span class="charliteral">&#39;&quot;&#39;</span>.<span class="stringliteral">&quot;\r\n&quot;</span>);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        }</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        fclose($df);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;fwrite(STDOUT, <span class="stringliteral">&quot;Conversions complete.\n&quot;</span>);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                        $row[$i] = preg_replace(</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                            array(</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                                <span class="stringliteral">&#39;/&amp;uuml;/&#39;</span>,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                <span class="stringliteral">&#39;/&amp;auml;/&#39;</span>,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                                <span class="stringliteral">&#39;/&amp;ouml;/&#39;</span>,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                                <span class="stringliteral">&#39;/&amp;szlig;/&#39;</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                            ),</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                            array(</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                                <span class="stringliteral">&#39;ü&#39;</span>,</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                                <span class="stringliteral">&#39;ä&#39;</span>,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                                <span class="stringliteral">&#39;ö&#39;</span>,</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                                <span class="stringliteral">&#39;ß&#39;</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                            ),</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                            $row[$i]</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        );</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        <a class="code" href="csv2ini_8php.html#ad096e0e57ff79ffd6583bc3fd14ed270">$dicts</a>[$file][$key] = $row[$i];</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;fclose(<a class="code" href="csv2ini_8php.html#a3cc184a1cd41d8be1f7c13781cf63fc1">$fp</a>);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keywordflow">foreach</span> ( <a class="code" href="csv2ini_8php.html#ad096e0e57ff79ffd6583bc3fd14ed270">$dicts</a> as $file =&gt; $contents ){</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        $df = fopen(<a class="code" href="csv2ini_8php.html#a7735e1f7163f0f1cc4016f0d430c0b8e">$outputPath</a>.$file, <span class="charliteral">&#39;w&#39;</span>);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">foreach</span> ($contents as $key=&gt;$val){</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                fwrite($df, $key.<span class="stringliteral">&#39; = &quot;&#39;</span>.str_replace(<span class="charliteral">&#39;&quot;&#39;</span>, <span class="stringliteral">&#39;&quot;XATAFACEQ&quot;&#39;</span>, $val).<span class="charliteral">&#39;&quot;&#39;</span>.<span class="stringliteral">&quot;\r\n&quot;</span>);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        fclose($df);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;fwrite(STDOUT, <span class="stringliteral">&quot;Conversions complete.\n&quot;</span>);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:34 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:25 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

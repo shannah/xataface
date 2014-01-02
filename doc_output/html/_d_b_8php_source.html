@@ -422,7 +422,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                                </div>
 <div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                        }</div>
 <div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                        <span class="keywordflow">if</span> ( defined(<span class="stringliteral">&#39;DATAFACE_DEBUG_DB&#39;</span>) ) echo <span class="stringliteral">&quot;Performing query: &#39;$sql&#39; &lt;br&gt;&quot;</span>;</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                        <span class="keywordflow">if</span> ( defined(<span class="stringliteral">&#39;DATAFACE_DEBUG_DB&#39;</span>) or @<a class="code" href="class_dataface___d_b.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;_conf[<span class="stringliteral">&#39;debug_sql&#39;</span>] ) echo <span class="stringliteral">&quot;Performing query: &#39;$sql&#39; &lt;br&gt;&quot;</span>;</div>
 <div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                        $this-&gt;db_hits++;</div>
 <div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                        $res = mysql_query($sql, $db);</div>
 <div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                        </div>
@@ -742,7 +742,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:33 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:24 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

@@ -146,6 +146,8 @@ Field Filters</h2></td></tr>
 <tr class="memdesc:gae22ab8ff57abf6b05fbe741d93b113df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formats the output value of a particular field. In constrast to <a class="el" href="group__delegate_class.html#ga05d5a179839db34530cadd6abc2ce5cd" title="Overrides the display of the specified field name for the given record.">fieldname__display()</a> this does not take the <a class="el" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> as a parameter. As such it can be used to format arbitrary values in a consistent way. If you don't need information from the record when formatting a value for display, it is preferred to use this method since it is more generic.  <a href="#gae22ab8ff57abf6b05fbe741d93b113df"></a><br/></td></tr>
 <tr class="memitem:gab5e28c65e0e42dd0a7ca1b01287c165d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#gab5e28c65e0e42dd0a7ca1b01287c165d">fieldname__toString</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $record)</td></tr>
 <tr class="memdesc:gab5e28c65e0e42dd0a7ca1b01287c165d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides the string value of specified field for a given record.  <a href="#gab5e28c65e0e42dd0a7ca1b01287c165d"></a><br/></td></tr>
+<tr class="memitem:gab3f2d896eb8e81e29d36a0564d47d950"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#gab3f2d896eb8e81e29d36a0564d47d950">fieldname__csvValue</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $record)</td></tr>
+<tr class="memdesc:gab3f2d896eb8e81e29d36a0564d47d950"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides CSV export display value of a field for a given record.  <a href="#gab3f2d896eb8e81e29d36a0564d47d950"></a><br/></td></tr>
 <tr class="memitem:gaae879923c877895962d0258b4e1a6e9b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#gaae879923c877895962d0258b4e1a6e9b">fieldname__htmlValue</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $record)</td></tr>
 <tr class="memdesc:gaae879923c877895962d0258b4e1a6e9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides the HTML display value of a field for a given record.  <a href="#gaae879923c877895962d0258b4e1a6e9b"></a><br/></td></tr>
 <tr class="memitem:ga133597e1420b7b462376e563a41689e7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#ga133597e1420b7b462376e563a41689e7">fieldname__parse</a> ($value)</td></tr>
@@ -231,6 +233,8 @@ List Tab Cutomization</h2></td></tr>
 <tr class="memdesc:ga442231547ab990e73764366cda633282"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides the display of a table row in list view.  <a href="#ga442231547ab990e73764366cda633282"></a><br/></td></tr>
 <tr class="memitem:ga99d5d0b8c77485c3cd0f7157a45fa1af"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#ga99d5d0b8c77485c3cd0f7157a45fa1af">renderRowHeader</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $record)</td></tr>
 <tr class="memdesc:ga99d5d0b8c77485c3cd0f7157a45fa1af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides the headings row for the list view table.  <a href="#ga99d5d0b8c77485c3cd0f7157a45fa1af"></a><br/></td></tr>
+<tr class="memitem:ga70d828feb134623c64e38f8212ad0907"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#ga70d828feb134623c64e38f8212ad0907">renderRowFooterTemplate</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $record)</td></tr>
+<tr class="memdesc:ga70d828feb134623c64e38f8212ad0907"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows you to output a series of zero or more &lt;tr&gt; tags that should be displayed inside the &lt;tfoot&gt; of the table. The &lt;tr&gt; tags must follow a few conventions in order to be displayed properly in the user interface:  <a href="#ga70d828feb134623c64e38f8212ad0907"></a><br/></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="member-group"></a>
 View Tab Customization</h2></td></tr>
@@ -878,7 +882,7 @@ Dataface_IO::insert() </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>mixed <a class="el" href="class_p_e_a_r___error.html">PEAR_Error</a> object If there is a problem. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.5</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___i_o.html#ad2e1bb2cccd8358e28b5d5ba00563547">Dataface_IO::write()</a> </dd>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___i_o.html#a7824d6aed3bd3c85bd8149623be0b08c">Dataface_IO::write()</a> </dd>
 <dd>
 <a class="el" href="class_dataface___record.html#a2cb39139de2ff70eb79923d903026cce" title="Saves the current record to the database.">Dataface_Record::save()</a> </dd>
 <dd>
@@ -1136,7 +1140,7 @@ Dataface_IO::update() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>mixed <a class="el" href="class_p_e_a_r___error.html">PEAR_Error</a> object if there is a problem. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.5</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___i_o.html#ad2e1bb2cccd8358e28b5d5ba00563547">Dataface_IO::write()</a> </dd>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___i_o.html#a7824d6aed3bd3c85bd8149623be0b08c">Dataface_IO::write()</a> </dd>
 <dd>
 <a class="el" href="class_dataface___record.html#a2cb39139de2ff70eb79923d903026cce" title="Saves the current record to the database.">Dataface_Record::save()</a> </dd>
 <dd>
@@ -1288,6 +1292,37 @@ df_display() </dd>
 <dl class="section return"><dt>Returns</dt><dd>mixed The field value. This may be any data type, including a data structure.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___record.html#a33fe3481a3ffd092c699e2657bdbf10e" title="Gets the value of a field in this record.">Dataface_Record::getValue()</a> </dd></dl>
 
+</div>
+</div>
+<a class="anchor" id="gab3f2d896eb8e81e29d36a0564d47d950"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">fieldname__csvValue </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_dataface___record.html">Dataface_Record</a>&#160;</td>
+          <td class="paramname"><em>$record</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Overrides CSV export display value of a field for a given record. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype"><a class="el" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a></td><td class="paramname">$record</td><td>The subject record. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>string The value for the field (fieldname) as it will be output in the CSV export action. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>2.0.3 </dd></dl>
+<h1><a class="anchor" id="Examples"></a>
+Examples</h1>
+<div class="fragment"><div class="line"><span class="keyword">function</span> first_name__csvValue(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $record){</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="stringliteral">&#39;CSV value for &#39;</span>.$record-&gt;display(<span class="stringliteral">&#39;first_name&#39;</span>);</div>
+<div class="line">}</div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a class="anchor" id="ga86a7a0d8ba3397d115900027f569bdb4"></a>
@@ -2923,6 +2958,43 @@ Synopsis</h1>
 
 </div>
 </div>
+<a class="anchor" id="ga70d828feb134623c64e38f8212ad0907"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">renderRowFooterTemplate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_dataface___record.html">Dataface_Record</a>&#160;</td>
+          <td class="paramname"><em>$record</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allows you to output a series of zero or more &lt;tr&gt; tags that should be displayed inside the &lt;tfoot&gt; of the table. The &lt;tr&gt; tags must follow a few conventions in order to be displayed properly in the user interface: </p>
+<ol>
+<li>
+You may include one &lt;td&gt; or &lt;th&gt; tag with the CSS class "label" which will be used for displaying the label for the footer row. </li>
+<li>
+All &lt;td&gt; and &lt;th&gt; tags that you want to have displayed must include the data-column attribute with the name of the field that it corresponds to. Xataface will automatically place the cell in the correct column of the table based on this value.  </li>
+</ol>
+<h3>Example</h3>
+<p>The following example displays the SUM of all results in the somesum column of the table. It makes use of the new <a class="el" href="class_dataface___query_tool.html#a264dcda75bd32341c66d8447da20cd4a" title="Load the totals for the current found set using MySQL&#39;s aggregate operators. This method will always ...">Dataface_QueryTool::loadTotals()</a> method for obtaining the totals of the current found set.</p>
+<div class="fragment"><div class="line"><span class="keyword">function</span> <a class="code" href="group__delegate_class.html#ga70d828feb134623c64e38f8212ad0907" title="Allows you to output a series of zero or more &lt;tr&gt; tags that should be displayed inside the &lt;tfoot&gt; o...">renderRowFooterTemplate</a>(){</div>
+<div class="line">   $resultSet = <a class="code" href="class_dataface___application.html#a9eb606fdb589cab3ae9edc96dce15972" title="Returns reference to the singleton instance of this class.">Dataface_Application::getInstance</a>()-&gt;getResultSet();</div>
+<div class="line">   $totals = $resultSet-&gt;loadTotals(array(<span class="stringliteral">&#39;somesum#sum&#39;</span>));</div>
+<div class="line">   <span class="keywordflow">return</span> <span class="stringliteral">&#39;&lt;tr class=&quot;template&quot;&gt;&#39;</span></div>
+<div class="line">       .<span class="stringliteral">&#39;&lt;th class=&quot;label&quot;&gt;Total&lt;/th&gt;&#39;</span></div>
+<div class="line">       .<span class="stringliteral">&#39;&lt;td data-column=&quot;somesum&quot;&gt;&#39;</span></div>
+<div class="line">          .df_escape($totals[<span class="stringliteral">&#39;somesum_SUM&#39;</span>])</div>
+<div class="line">       .<span class="stringliteral">&#39;&lt;/td&gt;&lt;/tr&gt;&#39;</span>;</div>
+<div class="line">}</div>
+</div><!-- fragment --> <dl class="section since"><dt>Since</dt><dd>2.0.4 </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___query_tool.html#a264dcda75bd32341c66d8447da20cd4a" title="Load the totals for the current found set using MySQL&#39;s aggregate operators. This method will always ...">Dataface_QueryTool::loadTotals()</a> </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga99d5d0b8c77485c3cd0f7157a45fa1af"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3104,7 +3176,7 @@ Synopsis</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:25 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

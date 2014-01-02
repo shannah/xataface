@@ -96,7 +96,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a1c5e35591c19dd77153d0c4d48c4d019"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#a1c5e35591c19dd77153d0c4d48c4d019">writeRow</a> ($fh, $data, $query)</td></tr>
+<tr class="memitem:acbb0e73508b61e7402a78fea1b338d50"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#acbb0e73508b61e7402a78fea1b338d50">startFile</a> ($fh, $query)</td></tr>
+<tr class="memitem:ae35bc3af9cd5bd65530abbcfa59feae7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#ae35bc3af9cd5bd65530abbcfa59feae7">endFile</a> ($fh, $query)</td></tr>
+<tr class="memitem:a313c9cd6952cee98bcad241d87015a4a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#a313c9cd6952cee98bcad241d87015a4a">writeOutput</a> ($fh, $query)</td></tr>
 <tr class="memitem:a3cbcc8cc8594fd19d9f3a0364ed5e7ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#a3cbcc8cc8594fd19d9f3a0364ed5e7ca">handle</a> (&amp;$params)</td></tr>
+<tr class="memitem:a0595ce6f45e975773657210044ad72e6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#a0595ce6f45e975773657210044ad72e6">outputStandardCsv</a> ($fh, $query, $app)</td></tr>
+<tr class="memitem:adebe9d52b9235a03f88b0377f56ac371"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#adebe9d52b9235a03f88b0377f56ac371">outputExcelCsv</a> ($fh, $query, $app)</td></tr>
 <tr class="memitem:af1655cedf23cdc6220d61dddc6c35422"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#af1655cedf23cdc6220d61dddc6c35422">rec2data</a> (&amp;$record)</td></tr>
 <tr class="memitem:ae5de1bae8f01d5516970017b2fff12f1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdataface__actions__export__csv.html#ae5de1bae8f01d5516970017b2fff12f1">related_rec2data</a> (&amp;$record)</td></tr>
 </table>
@@ -104,6 +110,34 @@ Public Member Functions</h2></td></tr>
 <div class="textblock">
 <p>Definition at line <a class="el" href="export__csv_8php_source.html#l00043">43</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
 </div><h2>Member Function Documentation</h2>
+<a class="anchor" id="ae35bc3af9cd5bd65530abbcfa59feae7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">endFile </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$fh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$query</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00053">53</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a3cbcc8cc8594fd19d9f3a0364ed5e7ca"></a>
 <div class="memitem">
 <div class="memproto">
@@ -118,7 +152,75 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00045">45</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00067">67</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adebe9d52b9235a03f88b0377f56ac371"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">outputExcelCsv </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$fh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$query</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$app</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00156">156</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0595ce6f45e975773657210044ad72e6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">outputStandardCsv </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$fh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$query</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$app</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00145">145</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
 
 </div>
 </div>
@@ -136,7 +238,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00123">123</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00180">180</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
 
 </div>
 </div>
@@ -154,7 +256,97 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00139">139</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00203">203</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acbb0e73508b61e7402a78fea1b338d50"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">startFile </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$fh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$query</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00049">49</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a313c9cd6952cee98bcad241d87015a4a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">writeOutput </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$fh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$query</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00057">57</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1c5e35591c19dd77153d0c4d48c4d019"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">writeRow </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$fh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$query</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="export__csv_8php_source.html#l00045">45</a> of file <a class="el" href="export__csv_8php_source.html">export_csv.php</a>.</p>
 
 </div>
 </div>
@@ -164,7 +356,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:25 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

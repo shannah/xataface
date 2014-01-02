@@ -204,7 +204,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                        }</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                        </div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                        $keynames = array_keys(<a class="code" href="blob_8php.html#ae8876a14058f368335baccf35af4a22b">$table</a>-&gt;keys());</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                        $sql .= <span class="stringliteral">&quot;primary key (`&quot;</span>.implode(<span class="stringliteral">&#39;`,`&#39;</span>, $keynames).<span class="stringliteral">&quot;`))&quot;</span>;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                        $sql .= <span class="stringliteral">&quot;primary key (`&quot;</span>.implode(<span class="stringliteral">&#39;`,`&#39;</span>, $keynames).<span class="stringliteral">&quot;`)) ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;</span>;</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                        $res = mysql_query($sql, <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;db());</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                        <span class="keywordflow">if</span> ( !$res ) trigger_error(mysql_error($res), E_USER_ERROR);</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
@@ -286,7 +286,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:34 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:24 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

@@ -122,7 +122,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                                $res = mysql_query(<span class="stringliteral">&quot;create table dataface__modules (</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="stringliteral">                                        module_name varchar(255) not null primary key,</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="stringliteral">                                        module_version int(11)</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="stringliteral">                                )&quot;</span>, df_db());</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="stringliteral">                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;</span>, df_db());</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                                <span class="keywordflow">if</span> ( !$res ) <span class="keywordflow">throw</span> <span class="keyword">new</span> Exception(mysql_error(df_db()));</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                $res = mysql_query($sql, df_db());</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                        }</div>
@@ -342,7 +342,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00352"></a><span class="lineno"><a class="code" href="class_dataface___module_tool.html#a1f2041d7c31a9c1eb0f21c933b34af57">  352</a></span>&#160;</div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:34 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:24 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

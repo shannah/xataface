@@ -168,7 +168,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                <a class="code" href="blob_8php.html#ae8876a14058f368335baccf35af4a22b">$table</a> =&amp; <a class="code" href="class_dataface___serializer.html#ac0ee5b766d19cb282552a3449a1f8376">$this-&gt;_table</a>;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                <a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a> =&amp; <a class="code" href="blob_8php.html#ae8876a14058f368335baccf35af4a22b">$table</a>-&gt;getField(<a class="code" href="blob_8php.html#a6f57b00c360f3bd8c95e1b281ce9d900">$fieldname</a>);</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                <span class="keywordflow">if</span> ( <a class="code" href="class_p_e_a_r.html#ae59587d5f701115ff0ae38bd852789db">PEAR::isError</a>(<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>) ){</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        <span class="keywordflow">throw</span> <span class="keyword">new</span> Exception(<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>-&gt;getMessage());</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        <span class="keywordflow">throw</span> <span class="keyword">new</span> Exception(<span class="stringliteral">&quot;Failed to get field $fieldname: &quot;</span>.<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>-&gt;getMessage());</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                }</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                </div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                $delegate =&amp; <a class="code" href="blob_8php.html#ae8876a14058f368335baccf35af4a22b">$table</a>-&gt;getDelegate();</div>
@@ -329,7 +329,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:34 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:24 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

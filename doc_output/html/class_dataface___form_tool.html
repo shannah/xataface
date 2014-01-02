@@ -121,8 +121,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a65a9cba4c54dd29dbb6985dd631f622d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Groups a collection of fields together by group.  <a href="#a65a9cba4c54dd29dbb6985dd631f622d"></a><br/></td></tr>
 <tr class="memitem:af6f4587a369389bc89299a8daf903181"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___form_tool.html#af6f4587a369389bc89299a8daf903181">display</a> (&amp;$form, $template=null, $singleField=false, $useTabs=false)</td></tr>
 <tr class="memdesc:af6f4587a369389bc89299a8daf903181"><td class="mdescLeft">&#160;</td><td class="mdescRight">Displays a form.  <a href="#af6f4587a369389bc89299a8daf903181"></a><br/></td></tr>
-<tr class="memitem:a4267cee4a869bfeed64a996e5f6a2c4e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___form_tool.html#a4267cee4a869bfeed64a996e5f6a2c4e">createRecordForm</a> ($record, $new=false, $tab=null, $query=null)</td></tr>
-<tr class="memdesc:a4267cee4a869bfeed64a996e5f6a2c4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds an HTML_QuickForm object to edit the given record.  <a href="#a4267cee4a869bfeed64a996e5f6a2c4e"></a><br/></td></tr>
+<tr class="memitem:a58367b4de3e7c90b1d6fe6422dd00353"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___form_tool.html#a58367b4de3e7c90b1d6fe6422dd00353">createRecordForm</a> ($record, $new=false, $tab=null, $query=null, $fields=null)</td></tr>
+<tr class="memdesc:a58367b4de3e7c90b1d6fe6422dd00353"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds an HTML_QuickForm object to edit the given record.  <a href="#a58367b4de3e7c90b1d6fe6422dd00353"></a><br/></td></tr>
 <tr class="memitem:a3b54979c00abcd566eb689f8671edd9c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___form_tool.html#a3b54979c00abcd566eb689f8671edd9c">decorateRecordForm</a> ($record, &amp;$form, $new=false, $tab=null)</td></tr>
 <tr class="memdesc:a3b54979c00abcd566eb689f8671edd9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds the necessary extra fields to a form to equip it to be used to edit the given record. In particular, it adds the next, submit, etc.. buttons to the bottom of the form. It also adds a <b>keys</b> group to store/submit the keys of the record so that the correct record is processed when the form is submitted.  <a href="#a3b54979c00abcd566eb689f8671edd9c"></a><br/></td></tr>
 <tr class="memitem:aba01026fe1f6d16599a2acf38d9777ee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___form_tool.html#aba01026fe1f6d16599a2acf38d9777ee">validateRecordForm</a> ($record, &amp;$form, $new=false, $tab=null)</td></tr>
@@ -254,7 +254,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01353">1353</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01359">1359</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -299,7 +299,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array Datastructure of the form: array( array( // Tab 1 'url' =&gt; ... // URL for the tab. 'css_class' =&gt; ... // The CSS class that should be used for the tab. ), array( ... // Tab 2 ), ... ); </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01271">1271</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01277">1277</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -331,11 +331,11 @@ Data Fields</h2></td></tr>
 <p>CSS is used to hide the tabs by default.</p>
 <dl class="section return"><dt>Returns</dt><dd>array(HTML_QuickForm_element) An array of submit elements. </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01394">1394</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01400">1400</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4267cee4a869bfeed64a996e5f6a2c4e"></a>
+<a class="anchor" id="a58367b4de3e7c90b1d6fe6422dd00353"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -361,7 +361,13 @@ Data Fields</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$query</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>$query</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$fields</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -380,7 +386,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01020">1020</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01024">1024</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -432,7 +438,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01056">1056</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01060">1060</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -483,7 +489,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00923">923</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00927">927</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -510,7 +516,7 @@ Data Fields</h2></td></tr>
 
 <p>Returns a QuickForm object that can be used to generate elements safely. </p>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00626">626</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00630">630</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -555,7 +561,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>HTML_QuickForm_element </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00771">771</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00775">775</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -620,7 +626,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array Associative array of session data, as it was submitted in the forms. The data structure looks like: array( 'tabs' =&gt; array( 'tab1' =&gt; array( 'myfield1' =&gt; 'val1', ... etc ... ), 'tab2' =&gt; array( 'myfieldx' =&gt; 'valx' ... etc ... ), ... ) ) </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01329">1329</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01335">1335</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -640,7 +646,7 @@ Data Fields</h2></td></tr>
 <p>Returns the key that is used to keep track of this particular session. This manifests itself as the $_GET['&ndash;form-session-key'] variable. If no session key is set, this will generate a new one and add a '&ndash;form-session-key' variable to the current $query. </p>
 <dl class="section return"><dt>Returns</dt><dd>The current session key. </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01293">1293</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01299">1299</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -686,7 +692,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array The associative array of options in the valuelist. </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00643">643</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00647">647</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -732,7 +738,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array The associative array of classes [key =&gt; class] </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00658">658</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00662">662</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -759,7 +765,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="interface_widget_handler.html" title="An interface for widget handlers. This interface is not real. It is only used for documentation purpo...">WidgetHandler</a> The widget handler. </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00589">589</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00593">593</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -786,7 +792,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00852">852</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00856">856</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -832,7 +838,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01168">1168</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01174">1174</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -1074,7 +1080,7 @@ pullValue() </dd></dl>
 <div class="line">$formTool-&gt;registerWidgetHandler(<span class="stringliteral">&#39;colorpicker&#39;</span>, <span class="stringliteral">&#39;/path/to/my/colorpicker.php&#39;</span>, <span class="stringliteral">&#39;my_colorpicker_class&#39;</span>);</div>
 </div><!-- fragment --> </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00565">565</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00569">569</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -1110,7 +1116,7 @@ pullValue() </dd></dl>
 
 <p>Now that we allow tabbed forms, we may be temporarily storing data in the session. This goes through the session data and saves it to the appropriate places. </p>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01448">1448</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01454">1454</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -1153,7 +1159,7 @@ pullValue() </dd></dl>
 <p>Stores data from a form session so that it can be retrieved in the next page or the next time a tab is loaded for this form. </p>
 <p>If we are using a multi-tab implementation, then we need to store the data for each tab in sessions until we are ready to save the entire record. </p>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01367">1367</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01373">1373</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -1174,7 +1180,7 @@ pullValue() </dd></dl>
 <p>Unregisters a particular widget handler. </p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___form_tool.html#af6c31f1f026f1a025877fbfec4ba896a" title="Registers a class to handle the pushing and pulling for a particular type of widget. This is the mechanism by which custom widgets can be created and registered. All that is required is to define a WidgetHandler and then register that handler with the form tool with this method.">registerWidgetHandler()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00575">575</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l00579">579</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -1226,7 +1232,7 @@ pullValue() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if the form validates. </dd></dl>
 
-<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01111">1111</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_form_tool_8php_source.html#l01117">1117</a> of file <a class="el" href="_form_tool_8php_source.html">FormTool.php</a>.</p>
 
 </div>
 </div>
@@ -1282,7 +1288,7 @@ pullValue() </dd></dl>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:25 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

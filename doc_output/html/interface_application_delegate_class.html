@@ -144,6 +144,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac0b75ecf5a351083fa9434cf3f70c871"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_application_delegate_class.html#ac0b75ecf5a351083fa9434cf3f70c871">getRegistrationActivationEmailHeaders</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $user, $activationURL)</td></tr>
 <tr class="memdesc:ac0b75ecf5a351083fa9434cf3f70c871"><td class="mdescLeft">&#160;</td><td class="mdescRight">A hook that can be implemented to override the default registration activation email headers.  <a href="#ac0b75ecf5a351083fa9434cf3f70c871"></a><br/></td></tr>
 <tr><td colspan="2"><div class="groupHeader">Forgot Password</div></td></tr>
+<tr class="memitem:a1cf340c05a39aacf3f57b9c8e83b9d23"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_application_delegate_class.html#a1cf340c05a39aacf3f57b9c8e83b9d23">generateTemporaryPassword</a> ()</td></tr>
+<tr class="memdesc:a1cf340c05a39aacf3f57b9c8e83b9d23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional method to generate a temporary password for a user. This is used by the forgot_password action and will override the default implementation. It is important to allow for systems that have password restrictions.  <a href="#a1cf340c05a39aacf3f57b9c8e83b9d23"></a><br/></td></tr>
 <tr class="memitem:acb16593b459e49320ad418497a0f27b4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_application_delegate_class.html#acb16593b459e49320ad418497a0f27b4">getPasswordChangedEmailInfo</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $user, $password)</td></tr>
 <tr class="memdesc:acb16593b459e49320ad418497a0f27b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional method to define the settings for the email that is sent to the user upon successful resetting of their password using the password reset function.  <a href="#acb16593b459e49320ad418497a0f27b4"></a><br/></td></tr>
 <tr class="memitem:a75824b49db118b4c5ee6c9eb89fdc734"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_application_delegate_class.html#a75824b49db118b4c5ee6c9eb89fdc734">getResetPasswordEmailInfo</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $user, $reset_url)</td></tr>
@@ -445,6 +447,29 @@ function block__before_header(){
 <dl class="section user"><dt>Listing All Blocks</dt><dd>You can list the blocks and slots in Xataface by enabling debug mode in your application. You can do this by adding: <div class="fragment"><div class="line">debug=1</div>
 </div><!-- fragment --> to the beginning of your application's conf.ini file, then loading your application in a web browser. Blocks and slots will be printed out with the interface. You can then easily insert content into these blocks by imlementing the appropriate named <code><a class="el" href="interface_application_delegate_class.html#a02e759df91113d14d1b5fc26cf60d28d" title="Inserts content into a particular block or slot of a template in Xataface.">block__blockname()</a></code> method in either your application delegate class or your table delegate class.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://xataface.com/wiki/block__blockname">A Full List of Slots and blocks In Xataface.  DelegateClass::block__blockname() - For blocks that only affect a particular table. </a></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a1cf340c05a39aacf3f57b9c8e83b9d23"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">generateTemporaryPassword </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Optional method to generate a temporary password for a user. This is used by the forgot_password action and will override the default implementation. It is important to allow for systems that have password restrictions. </p>
+<dl class="section return"><dt>Returns</dt><dd>String A random temporary password. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>2.0.2</dd></dl>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a1cf340c05a39aacf3f57b9c8e83b9d23" title="Optional method to generate a temporary password for a user. This is used by the forgot_password acti...">generateTemporaryPassword</a>(){</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="stringliteral">&#39;my temp password&#39;</span>;</div>
+<div class="line">}</div>
+</div><!-- fragment --> </dd></dl>
 
 </div>
 </div>
@@ -1202,7 +1227,7 @@ inserted in the users table for this registration.
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:25 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

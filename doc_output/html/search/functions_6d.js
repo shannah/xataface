@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['main',['main',['../class_js_debug_run.html#a8b260eecbaabcef8473fd87ada040682',1,'JsDebugRun.main()'],['../class_js_run.html#a8b260eecbaabcef8473fd87ada040682',1,'JsRun.main()']]],
+  ['mainmenu',['mainMenu',['../class_dataface___installer.html#a196db148ff278b0447b45800cc655ca9',1,'Dataface_Installer']]],
+  ['makeequivalencelabels',['makeEquivalenceLabels',['../class_s_q_l___parser__wrapper.html#a4adbabba2746bdbe175717b2fa49e53f',1,'SQL_Parser_wrapper']]],
+  ['mandatoryfields',['mandatoryFields',['../class_dataface___table.html#ad85a48f4ec638e82d6a075e7ccaf4bbe',1,'Dataface_Table']]],
+  ['marknewcanonicalversion',['markNewCanonicalVersion',['../class_dataface___translation_tool.html#aab6c95c53feb03ecb44c2f293be43325',1,'Dataface_TranslationTool']]],
+  ['markrequiredtableloaded',['markRequiredTableLoaded',['../class_dataface___x_m_l_tool.html#ac6ffffeeb2b12c3022e949901cc6ea98',1,'Dataface_XMLTool']]],
+  ['mask',['MASK',['../class_dataface___permissions_tool.html#a5c12723334616b19f33a9eaa62f1dee9',1,'Dataface_PermissionsTool\MASK()'],['../class_dataface___permissions_tool___instance.html#a307192484f7e84014a56c8892fa0933b',1,'Dataface_PermissionsTool_Instance\MASK()']]],
+  ['mdtm',['mdtm',['../class_f_t_p.html#a5c450cd649939e4d015508214f7a1fa7',1,'FTP']]],
+  ['memcache_5fget',['memcache_get',['../class_dataface___d_b.html#aa78564626d289e9a0e9c2d8fc55b1e29',1,'Dataface_DB']]],
+  ['memcache_5fget_5fkey',['memcache_get_key',['../class_dataface___d_b.html#ad10b288a0050ee6e33aa6d63f99e76e0',1,'Dataface_DB']]],
+  ['memcache_5fmtime',['memcache_mtime',['../class_dataface___d_b.html#a9bada98cb45f60a0b4753fbf2f74a042',1,'Dataface_DB']]],
+  ['memcache_5fset',['memcache_set',['../class_dataface___d_b.html#af950428eee7acad405e26b923c29fce2',1,'Dataface_DB']]],
+  ['mergecsspaths',['mergeCSSPaths',['../class_dataface___javascript_tool.html#a2fd702a3a974e1c0a3e8daf8ea628437',1,'Dataface_JavascriptTool']]],
+  ['migrate',['migrate',['../class_dataface___module_tool.html#a67bb19f198b4c2b2c6db2ebc19dc08f6',1,'Dataface_ModuleTool\migrate()'],['../class_dataface___translation_tool.html#a40ee067b290f06bd50cf41affdeb60dd',1,'Dataface_TranslationTool\migrate()']]],
+  ['migratedefaultlanguage',['migrateDefaultLanguage',['../class_dataface___translation_tool.html#a5e64da9aba73c57005d304521cc36119',1,'Dataface_TranslationTool']]],
+  ['min',['min',['../class_j_s_min.html#a0bb962b33915e2c1a507e95798a453a6',1,'JSMin']]],
+  ['minify',['minify',['../class_css_min.html#ae8900b1131d52ea4eda54c34c877ef28',1,'CssMin\minify()'],['../class_j_s_min.html#a3a83b0020e30f40e82dcf9ab4c24c822',1,'JSMin\minify()']]],
+  ['mkdir',['mkdir',['../class_f_t_p.html#afa6a1d63a73a88e0565b0585fc76d425',1,'FTP']]],
+  ['modified_5f_5ftostring',['modified__toString',['../classtables__lesson__plans.html#a4ef8c04cebb82ceefdddd6a0b10e84f1',1,'tables_lesson_plans']]],
+  ['movedown',['moveDown',['../class_dataface___record.html#a0c1cf09df155e82fb13a3986522fc51d',1,'Dataface_Record']]],
+  ['moveup',['moveUp',['../class_dataface___record.html#a3d13df53dd91eb74b3b14e2b34350a2e',1,'Dataface_Record']]],
+  ['multiplelinecomment',['multipleLineComment',['../class_j_s_min.html#a1ac45225bdc9d7204722f20a246c9a56',1,'JSMin']]]
+];

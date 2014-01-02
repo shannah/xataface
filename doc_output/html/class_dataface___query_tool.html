@@ -90,7 +90,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pub-attribs">Data Fields</a>  </div>
+<a href="#pub-attribs">Data Fields</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">Dataface_QueryTool Class Reference</div>  </div>
 </div><!--header-->
@@ -110,7 +111,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a513a490a5cb9341d8a2a11931c66ed39"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a513a490a5cb9341d8a2a11931c66ed39">staticCache</a> ()</td></tr>
 <tr class="memitem:a06eafd830799df74f8d7beca966a330b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a06eafd830799df74f8d7beca966a330b">Dataface_QueryTool</a> ($tablename, $<a class="el" href="_installer_8php.html#abf2dfcff06cad1e6c249ddc4df4d0866">db</a>=null, $query=null)</td></tr>
 <tr class="memitem:a1d3a9475bc35be0bb7f2996405d81dfb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a1d3a9475bc35be0bb7f2996405d81dfb">getTitles</a> ($ordered=true, $genericKeys=false, $ignoreLimit=false)</td></tr>
+<tr class="memitem:a264dcda75bd32341c66d8447da20cd4a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a264dcda75bd32341c66d8447da20cd4a">loadTotals</a> ($columns=array())</td></tr>
+<tr class="memdesc:a264dcda75bd32341c66d8447da20cd4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the totals for the current found set using MySQL's aggregate operators. This method will always query the database directly (no caching).  <a href="#a264dcda75bd32341c66d8447da20cd4a"></a><br/></td></tr>
 <tr class="memitem:ab95b6db29da3d075f379e4fa6d548b1d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#ab95b6db29da3d075f379e4fa6d548b1d">loadSet</a> ($columns='', $loadText=false, $loadBlobs=false, $preview=true)</td></tr>
+<tr class="memdesc:ab95b6db29da3d075f379e4fa6d548b1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the results into an array.  <a href="#ab95b6db29da3d075f379e4fa6d548b1d"></a><br/></td></tr>
 <tr class="memitem:aa4980b148fc78c0ae24f2558769b3372"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#aa4980b148fc78c0ae24f2558769b3372">loadCurrent</a> ($columns=null, $loadText=true, $loadBlobs=false, $loadPasswords=false)</td></tr>
 <tr class="memitem:a7aecb55a05c24dc1d87894cbc70c9c16"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a7aecb55a05c24dc1d87894cbc70c9c16">found</a> ()</td></tr>
 <tr class="memitem:ad6c43c64d9dac919edc017afe3fd51bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#ad6c43c64d9dac919edc017afe3fd51bc">cardinality</a> ()</td></tr>
@@ -137,6 +141,10 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a5b7bd5b9330ab561e761d4afee8916aa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a5b7bd5b9330ab561e761d4afee8916aa">$_currentRecord</a> = null</td></tr>
 <tr class="memitem:a9ae10f46eecff003593a139e376e6374"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a9ae10f46eecff003593a139e376e6374">$_titles</a></td></tr>
 <tr class="memitem:af362faed1363ab96cbb16b42c13d1451"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#af362faed1363ab96cbb16b42c13d1451">$dbObj</a> = null</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a4e2da765c54abab8a1d00f1fbc0c4128"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a4e2da765c54abab8a1d00f1fbc0c4128">$lastIterated</a> = null</td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock">
@@ -157,7 +165,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#ad6c43c64d9dac919edc017afe3fd51bc">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00459">459</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00571">571</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -176,7 +184,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#aa3b267270ebe136571604fe35ce404fa">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00511">511</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00623">623</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -195,7 +203,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a95e4bceef4fbe25eb66623a90436f403">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00486">486</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00598">598</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -238,7 +246,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00066">66</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00070">70</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -257,7 +265,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a817082ace0e2589d27b22890290aa4a9">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00482">482</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00594">594</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -276,7 +284,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a7aecb55a05c24dc1d87894cbc70c9c16">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00441">441</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00553">553</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -295,7 +303,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a56e2c42385937cd82bf25b03468e129f">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00495">495</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00607">607</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -331,7 +339,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a1d3a9475bc35be0bb7f2996405d81dfb">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00143">143</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00147">147</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -350,7 +358,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a8edc9a88c8c4952188bc9e4dc705ff27">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00515">515</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00627">627</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -369,7 +377,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a8eb596690c78195fdebf737f4d1f3a32">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00490">490</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00602">602</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -388,7 +396,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a63aed2ed30505623343b3e7df7fa6c16">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00506">506</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00618">618</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -430,7 +438,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#aa4980b148fc78c0ae24f2558769b3372">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00367">367</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00479">479</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -472,7 +480,7 @@ Data Fields</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00519">519</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00631">631</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -511,7 +519,9 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Loads the results into an array. Array keys are concatenated values of primary key fields. </p>
+
+<p>Loads the results into an array. </p>
+<p>Array keys are concatenated values of primary key fields.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">$columns</td><td>Array of column names to return. </td></tr>
@@ -523,7 +533,95 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#ab95b6db29da3d075f379e4fa6d548b1d">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00235">235</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00347">347</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a264dcda75bd32341c66d8447da20cd4a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">loadTotals </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$columns</em> = <code>array()</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Load the totals for the current found set using MySQL's aggregate operators. This method will always query the database directly (no caching). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array</td><td class="paramname">$columns</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>type </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">Exception&lt;p&gt;This</td><td>method was developed to make it easier to create "totals" rows in the list view.</td></tr>
+  </table>
+  </dd>
+</dl>
+<h3>Example</h3>
+<div class="fragment"><div class="line">$resultSet = <a class="code" href="class_dataface___application.html#a9eb606fdb589cab3ae9edc96dce15972" title="Returns reference to the singleton instance of this class.">Dataface_Application::getInstance</a>()-&gt;getResultSet();</div>
+<div class="line">$results = $resultSet-&gt;loadTotals(array(</div>
+<div class="line">   <span class="stringliteral">&#39;age#avg&#39;</span>,</div>
+<div class="line">   <span class="stringliteral">&#39;age#std&#39;</span>,</div>
+<div class="line">   <span class="stringliteral">&#39;income#sum&#39;</span></div>
+<div class="line">));</div>
+<div class="line">print_r($results);</div>
+</div><!-- fragment --><p>Output:</p>
+<div class="fragment"><div class="line">array(</div>
+<div class="line">   <span class="stringliteral">&#39;age_AVG&#39;</span> =&gt; 74.4,</div>
+<div class="line">   <span class="stringliteral">&#39;age_STD&#39;</span> =&gt; 13.2,</div>
+<div class="line">   <span class="stringliteral">&#39;income_SUM&#39;</span> =&gt; 100567</div>
+<div class="line">);</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array</td><td class="paramname">$columns</td><td>A list of strings of the form {fieldname}#{operator} where where {fieldname} is the name of a field and {operator} is the name of an operator to apply to the field.</td></tr>
+  </table>
+  </dd>
+</dl>
+<h3>Available Operators</h3>
+<table class="doxtable">
+<tr>
+<th>Operator</th><th>Description  </th></tr>
+<tr>
+<td>sum</td><td>The sum of field values for result set.  </td></tr>
+<tr>
+<td>avg</td><td>The average value of field in result set. </td></tr>
+<tr>
+<td>max</td><td>The max value of field in result set.  </td></tr>
+<tr>
+<td>min</td><td>The minimum value of field result set.  </td></tr>
+<tr>
+<td>bit_and</td><td>Result of bitwise AND on field for all found records.  </td></tr>
+<tr>
+<td>bit_or</td><td>Result of bitwise OR on field for all found records.  </td></tr>
+<tr>
+<td>bit_xor</td><td>Result of bitwise XOR on field for all found records.  </td></tr>
+<tr>
+<td>group_concat</td><td>The concatenation of all rows in found set for field. Joined with a comma.  </td></tr>
+<tr>
+<td>std</td><td>Population Standard deviation of field values for result set.  </td></tr>
+<tr>
+<td>stddev_samp</td><td>Sample Standard deviation of field values for result set.  </td></tr>
+<tr>
+<td>stddev_pop</td><td>Same as stddev  </td></tr>
+<tr>
+<td>var_pop</td><td></td><td>Population standard variance for field values for result set.  </td></tr>
+<tr>
+<td>var_samp</td><td>Sample standard deviation for field values for result set.  </td></tr>
+<tr>
+<td>variance</td><td>Same as var_pop  </td></tr>
+</table>
+<dl class="section return"><dt>Returns</dt><dd>Associative array where the keys have the form {fieldname}_{operator|uppercase} and the values are the corresponding result of the operator on that field. E.g. If your input was array('field1::sum', 'field2::avg') the output woult be array('field1_SUM' =&gt; {some number}, 'field2_AVG' =&gt; {some_number})</dd></dl>
+<dl class="section since"><dt>Since</dt><dd>2.0.4 </dd></dl>
+
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00322">322</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -542,7 +640,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#af8fa59992209e36dccb3eefb0f75531f">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00479">479</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00591">591</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -561,7 +659,7 @@ Data Fields</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="class_dataface___query_tool___null.html#a513a490a5cb9341d8a2a11931c66ed39">Dataface_QueryTool_Null</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00051">51</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00055">55</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -576,7 +674,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00046">46</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00050">50</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -590,7 +688,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00044">44</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00048">48</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -604,7 +702,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00039">39</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00043">43</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -618,7 +716,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00042">42</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00046">46</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -632,7 +730,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00038">38</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00042">42</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -646,7 +744,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00040">40</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00044">44</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -660,7 +758,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00047">47</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00051">51</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -674,7 +772,29 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00049">49</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00053">53</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4e2da765c54abab8a1d00f1fbc0c4128"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$lastIterated = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00040">40</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -684,7 +804,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:26 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

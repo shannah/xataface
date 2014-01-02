@@ -324,7 +324,7 @@ Example</h1>
 <p>Inside the module modules_tagger, the method to include javascripts contains:</p>
 <div class="fragment"><div class="line">$baseURL = <a class="code" href="class_dataface___module_tool.html#a940c46dff92c1704a1d43d2926a72ba0">Dataface_ModuleTool::getInstance</a>()-&gt;getModuleURL(__FILE__);</div>
 <div class="line"><a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;addHeadContent(</div>
-<div class="line">    <span class="stringliteral">&#39;&lt;script src=&quot;&#39;</span>.htmlspecialchars($baseURL.<span class="stringliteral">&#39;/js/tagger.js&#39;</span>).<span class="stringliteral">&#39;&quot;&gt;&lt;/script&gt;&#39;</span></div>
+<div class="line">    <span class="stringliteral">&#39;&lt;script src=&quot;&#39;</span>.df_escape($baseURL.<span class="stringliteral">&#39;/js/tagger.js&#39;</span>).<span class="stringliteral">&#39;&quot;&gt;&lt;/script&gt;&#39;</span></div>
 <div class="line">);</div>
 </div><!-- fragment --> 
 <p>Definition at line <a class="el" href="_module_tool_8php_source.html#l00152">152</a> of file <a class="el" href="_module_tool_8php_source.html">ModuleTool.php</a>.</p>
@@ -526,7 +526,7 @@ Example</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:26 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

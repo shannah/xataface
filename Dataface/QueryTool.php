@@ -228,6 +228,98 @@ class Dataface_QueryTool {
 		return $this->_titles[$ordered][$genericKeys][$ignoreLimit];
 	}
 	
+        /**
+         * 
+         * @param array $columns
+         * @return type
+         * @throws Exception@brief Load the totals for the current found set using MySQL's aggregate 
+         * operators.  This method will always query the database directly (no caching).  
+         * 
+         * <p>This method was developed to make it easier to create "totals" rows in the 
+         *    list view.</p>
+         * 
+         * <h3>Example</h3>
+         * 
+         * @code
+         * $resultSet = Dataface_Application::getInstance()->getResultSet();
+         * $results = $resultSet->loadTotals(array(
+         *    'age#avg',
+         *    'age#std',
+         *    'income#sum'
+         * ));
+         * print_r($results);
+         * @endcode
+         * 
+         * <p>Output:</p>
+         * 
+         * @code
+         * array(
+         *    'age_AVG' => 74.4,
+         *    'age_STD' => 13.2,
+         *    'income_SUM' => 100567
+         * );
+         * @endcode
+         * 
+         * @param array $columns A list of strings of the form {fieldname}#{operator} where 
+         *  where {fieldname} is the name of a field and {operator} is the name of an operator
+         *  to apply to the field.
+         * 
+         * <h3>Available Operators</h3>
+         * <table>
+         *    <tr>
+         *     <th>Operator</th><th>Description</th>
+         *    </tr>
+         *    <tr>
+         *       <td>sum</td><td>The sum of field values for result set.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>avg</td><td>The average value of field in result set.</td>
+         *    <tr>
+         *       <td>max</td><td>The max value of field in result set.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>min</td><td>The minimum value of field result set.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>bit_and</td><td>Result of bitwise AND on field for all found records.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>bit_or</td><td>Result of bitwise OR on field for all found records.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>bit_xor</td><td>Result of bitwise XOR on field for all found records.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>group_concat</td><td>The concatenation of all rows in found set for field.  Joined with a comma.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>std</td><td>Population Standard deviation of field values for result set.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>stddev_samp</td><td>Sample Standard deviation of field values for result set.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>stddev_pop</td><td>Same as stddev</td>
+         *    </tr>
+         *    <tr>
+         *       <td>var_pop<td><td>Population standard variance for field values for result set.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>var_samp</td><td>Sample standard deviation for field values for result set.</td>
+         *    </tr>
+         *    <tr>
+         *       <td>variance</td><td>Same as var_pop</td>
+         *    </tr>
+         * </table>
+         * 
+         *    
+         * @return Associative array where the keys have the form {fieldname}_{operator|uppercase} and the values
+         *  are the corresponding result of the operator on that field.  E.g. If your input was array('field1#sum', 'field2#avg')
+         *  the output woult be array('field1_SUM' => {some number}, 'field2_AVG' => {some_number})
+         * 
+         * @since 2.0.4
+         * @see Dataface_QueryBuilder::select_totals()
+         */
         function loadTotals($columns=array()){
             $builder = new Dataface_QueryBuilder($this->_tablename, $this->_query);
             $sql = $builder->select_totals(array(), null, $columns);
@@ -246,8 +338,8 @@ class Dataface_QueryTool {
         }
         
 	/**
-	 * Loads the results into an array.
-	 * Array keys are concatenated values of primary key fields.
+	 * @brief Loads the results into an array.
+	 * <p>Array keys are concatenated values of primary key fields.</p>
 	 * @param $columns Array of column names to return.
 	 * @param $loadText Defaults to false.  If true, returns text fields as well.
 	 * @param $loadBlobs Defaults to false. If true, returns blob fields as well.

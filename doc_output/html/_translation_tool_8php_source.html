@@ -196,7 +196,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                                $sql .= <span class="stringliteral">&quot;KEY `$key_name` (`&quot;</span>.implode(<span class="stringliteral">&#39;`,`&#39;</span>,array_keys($key)).<span class="stringliteral">&quot;`)&quot;</span>;</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                        }</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                }</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                $sql .= <span class="stringliteral">&quot;)&quot;</span>;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                $sql .= <span class="stringliteral">&quot;) ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;</span>;</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                </div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                $res = mysql_query($sql, <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;db());</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                <span class="keywordflow">if</span> ( !$res ) {<span class="keywordflow">throw</span> <span class="keyword">new</span> Exception(mysql_error(<a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;db()), E_USER_ERROR);}</div>
@@ -251,7 +251,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                                $sql .= <span class="stringliteral">&quot;KEY `$key_name` (`&quot;</span>.implode(<span class="stringliteral">&#39;`,`&#39;</span>,array_keys($key)).<span class="stringliteral">&quot;`)&quot;</span>;</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                        }</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                }</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                $sql .= <span class="stringliteral">&quot;)&quot;</span>;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                $sql .= <span class="stringliteral">&quot;) ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;</span>;</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                </div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                $res = mysql_query($sql, <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;db());</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                <span class="keywordflow">if</span> ( !$res ) {echo $sql;<span class="keywordflow">throw</span> <span class="keyword">new</span> Exception(mysql_error(<a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;db()), E_USER_ERROR);}</div>
@@ -653,7 +653,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:34 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:24 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

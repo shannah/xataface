@@ -262,7 +262,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                                <span class="keywordflow">if</span> ( !$record-&gt;checkPermission(<span class="stringliteral">&#39;view&#39;</span>) ) <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                                <span class="keywordflow">if</span> ( @<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>[<span class="stringliteral">&#39;visibility&#39;</span>][<span class="stringliteral">&#39;feed&#39;</span>] == <span class="stringliteral">&#39;hidden&#39;</span> ) <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                                <span class="keywordflow">if</span> ( $disp = @$record-&gt;val(<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>[<span class="stringliteral">&#39;name&#39;</span>]) ){</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                                        <a class="code" href="ini2csv_8php.html#a48cb304902320d173a4eaa41543327b9">$out</a> .= <span class="stringliteral">&#39;&lt;tr&gt;&lt;td valign=&quot;top&quot;&gt;&#39;</span>.htmlspecialchars(<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>[<span class="stringliteral">&#39;widget&#39;</span>][<span class="stringliteral">&#39;label&#39;</span>]).<span class="stringliteral">&#39;&lt;/td&gt;&#39;</span>;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                                        <a class="code" href="ini2csv_8php.html#a48cb304902320d173a4eaa41543327b9">$out</a> .= <span class="stringliteral">&#39;&lt;tr&gt;&lt;td valign=&quot;top&quot;&gt;&#39;</span>.df_escape(<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>[<span class="stringliteral">&#39;widget&#39;</span>][<span class="stringliteral">&#39;label&#39;</span>]).<span class="stringliteral">&#39;&lt;/td&gt;&#39;</span>;</div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                                        <a class="code" href="ini2csv_8php.html#a48cb304902320d173a4eaa41543327b9">$out</a> .= <span class="stringliteral">&#39;&lt;td valign=&quot;top&quot;&gt;&#39;</span>.@$record-&gt;htmlValue(<a class="code" href="blob_8php.html#a83e4d6721f3491a4fd780dbd3ce1a3c0">$field</a>[<span class="stringliteral">&#39;name&#39;</span>]).<span class="stringliteral">&#39;&lt;/td&gt;&lt;/tr&gt;&#39;</span>;</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                                }</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                        }</div>
@@ -426,7 +426,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:33 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:24 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

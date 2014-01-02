@@ -177,6 +177,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae2d84e878a376272d12e55c052519bcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks to see if a container or blob field contains an image.  <a href="#ae2d84e878a376272d12e55c052519bcc"></a><br/></td></tr>
 <tr class="memitem:a166a94187401257a33b99ec317b19200"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___record.html#a166a94187401257a33b99ec317b19200">getLength</a> ($fieldname, $index=0, $where=0, $sort=0)</td></tr>
 <tr class="memdesc:a166a94187401257a33b99ec317b19200"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the value in a particular field. This can be especially useful for blob and longtext fields that aren't loaded into memory. It allows you to see if there is indeed a value there.  <a href="#a166a94187401257a33b99ec317b19200"></a><br/></td></tr>
+<tr class="memitem:a043fa7007d9178074188d3d6cf642500"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___record.html#a043fa7007d9178074188d3d6cf642500">getGroupRoleMetadata</a> ()</td></tr>
+<tr class="memdesc:a043fa7007d9178074188d3d6cf642500"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the group role metadata for this record as an Object.  <a href="#a043fa7007d9178074188d3d6cf642500"></a><br/></td></tr>
+<tr class="memitem:ab1cab58118390c8f0681ec35129d719d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___record.html#ab1cab58118390c8f0681ec35129d719d">getGroupRoles</a> ()</td></tr>
+<tr class="memdesc:ab1cab58118390c8f0681ec35129d719d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the roles that are assigned to the currently logged-in user using the group_permissions module.  <a href="#ab1cab58118390c8f0681ec35129d719d"></a><br/></td></tr>
 <tr><td colspan="2"><div class="groupHeader">IO Methods</div></td></tr>
 <tr><td colspan="2"><div class="groupText"><p>Methods for reading and writing records to and from the database. </p>
 </div></td></tr>
@@ -428,7 +432,7 @@ Synopsis</h1>
 <dd>
 <a class="el" href="class_dataface___record.html#a5ef403397d76b4eaebba8b33ce919b82" title="This method is to implement the PropertyChangeListener interface. This method will be called whenever...">propertyChanged()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03053">3053</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03072">3072</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -508,7 +512,7 @@ Synopsis</h1>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>boolean whether permission is granted on the current record. </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03410">3410</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03429">3429</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -563,7 +567,7 @@ clearSnapshots() </dd>
 <dd>
 <a class="el" href="class_dataface___record.html#af35e9f6dc82d1c10366a11656c3f4477" title="Indicates whether a value in the record has been updated since the flags have been cleared...">valueChanged()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03724">3724</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03748">3748</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -584,7 +588,7 @@ clearSnapshots() </dd>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> Self for chaining.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___record.html#aa6fa54fd0745e74db5528fd24215da64" title="Clears a snapshot of values. Note that for an update to take place properly, a snapshot should be obt...">clearSnapshot()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03690">3690</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03714">3714</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -604,7 +608,7 @@ clearSnapshots() </dd>
 <p>Clears a snapshot of values. Note that for an update to take place properly, a snapshot should be obtained before any changes are made to the Table schema. </p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> Self for chaining. </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03576">3576</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03600">3600</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -631,7 +635,7 @@ clearSnapshots() </dd>
 </dl>
 <dl class="section since"><dt>Since</dt><dd>0.6 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03001">3001</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03020">3020</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -651,7 +655,7 @@ clearSnapshots() </dd>
 <p>Clears all fields in this record. </p>
 <dl class="section since"><dt>Since</dt><dd>0.6 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02980">2980</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02999">2999</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -713,7 +717,7 @@ clearSnapshots() </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>mixed True on success. <a class="el" href="class_p_e_a_r___error.html">PEAR_Error</a> object on fail. </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04607">4607</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04724">4724</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -918,7 +922,7 @@ Overriding the Display Method</h1>
 <dd>
 <a class="el" href="class_dataface___record.html#a5ef403397d76b4eaebba8b33ce919b82" title="This method is to implement the PropertyChangeListener interface. This method will be called whenever...">propertyChanged()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03095">3095</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03114">3114</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -954,7 +958,7 @@ Synopsis</h1>
 <div class="line">echo $absVals[<span class="stringliteral">&#39;name&#39;</span>]; <span class="comment">// null</span></div>
 </div><!-- fragment --><dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___record.html#ab2affb184b7fc080b958f05920107de6" title="Gets the values of this Record in an associative array. [Field names] -&gt; [Field values].">getValues()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02899">2899</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02918">2918</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1014,7 +1018,7 @@ Synopsis</h1>
 <dd>
 <a class="el" href="class_dataface___table.html#aa1bb3db0f400a24571ef169856960b33" title="Makes a best guess at which field stores the &quot;body&quot; of the record. The body is used in things like th...">Dataface_Table::getBodyField()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04205">4205</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04232">4232</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1054,7 +1058,7 @@ Examples</h1>
 <dd>
 <a href="http://www.xataface.com/wiki/Delegate_class_methods">http://www.xataface.com/wiki/Delegate_class_methods</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04316">4316</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04343">4343</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1189,7 +1193,7 @@ Synopsis</h1>
 <div class="line">echo $record-&gt;getContainerSource(<span class="stringliteral">&#39;uploaded_image&#39;</span>); <span class="comment">// &#39;tables/people/uploaded_image/my_image.jpg&#39;</span></div>
 </div><!-- fragment --><dl class="section see"><dt>See Also</dt><dd><a href="http://xataface.com/documentation/how-to/how-to-handle-file-uploads">http://xataface.com/documentation/how-to/how-to-handle-file-uploads</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02933">2933</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02952">2952</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1219,7 +1223,7 @@ Synopsis</h1>
 <dd>
 <a href="http://xataface.com/documentation/tutorial/getting_started/delegate_classes">http://xataface.com/documentation/tutorial/getting_started/delegate_classes</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04077">4077</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04104">4104</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1249,7 +1253,7 @@ Synopsis</h1>
 <dd>
 <a class="el" href="class_dataface___table.html#a8d8f0b6e227934563f2bd3b84c8fba43" title="Makes a best guess at which field stores the username of the person who created the record...">Dataface_Table::getCreatorField()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04113">4113</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04140">4140</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1279,7 +1283,48 @@ Synopsis</h1>
 <dd>
 <a class="el" href="class_dataface___table.html#a682528f9eb0d8a2e3f27a2776a57baa9" title="Makes a best guess at which field in this table stores the record description. The record description...">Dataface_Table::getDescriptionField()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04044">4044</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04071">4071</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a043fa7007d9178074188d3d6cf642500"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getGroupRoleMetadata </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the group role metadata for this record as an Object. </p>
+<dl class="section return"><dt>Returns</dt><dd>An object tree that contains all of the role assignments of this record for each user and group.</dd></dl>
+<p>The structure would be something like: <code> Object( users =&gt; Object( shannah =&gt; Array('ROLE1','ROLE2',etc..), user2 =&gt; Array('Role3', 'ROLE2', etc..), etc ... ), groups =&gt; Object( 1 =&gt; Array('ROLE1', 'ROLE2', etc...), 57 =&gt; Array('ROLE3, 'ROLE5', etc...), etc... ) ) </code> </p>
+
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04616">4616</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab1cab58118390c8f0681ec35129d719d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getGroupRoles </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the roles that are assigned to the currently logged-in user using the group_permissions module. </p>
+<dl class="section return"><dt>Returns</dt><dd>String[] An array of role names assigned to this user. </dd></dl>
+
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04630">4630</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1298,7 +1343,7 @@ Synopsis</h1>
 <p>This returns a unique id to this record. It is in a format similar to a url: table?key1=value1&amp;key2=value2 </p>
 <dl class="section return"><dt>Returns</dt><dd>string </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04447">4447</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04474">4474</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1338,7 +1383,7 @@ Example</h1>
 <div class="line">    print_r($authorKeys);</div>
 <div class="line">       <span class="comment">// array( &#39;AuthorID&#39;=&gt;10)</span></div>
 </div><!-- fragment --> 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03234">3234</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03253">3253</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1383,7 +1428,7 @@ Synopsis</h1>
 <p>A join record is one that contains auxiliary data for the current record. It is specified by the [<b>join</b>] section of the fields.ini file or the <b>join</b>() method of the delegate class.</p>
 <p>It is much like a one-to-one relationship. The key difference between a join record and a related record is that a join record is assumed to be one-to-one, and an extra tab is added to the edit form to edit a join record. </p>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03189">3189</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03208">3208</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1413,7 +1458,7 @@ Synopsis</h1>
 <dd>
 <a class="el" href="class_dataface___table.html#a15a8993901ca4dcadd4ad4a59cbe1b78" title="Makes a best guess at which field stores the last modified date of the record.">Dataface_Table::getLastUpdatedField()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04145">4145</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04172">4172</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1466,7 +1511,7 @@ Synopsis</h1>
 <dl class="section return"><dt>Returns</dt><dd>integer The length of the specified field's value in bytes.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.5 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04543">4543</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04570">4570</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1487,7 +1532,7 @@ Synopsis</h1>
 <p>Sometimes a link is specified to be associated with a field. These links will be displayed on the forms next to the associated field. Links may be specified in the fields.ini file with a "link" attribute; or in the delegate with the $fieldname__link() method. </p>
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000009">Deprecated:</a></b></dt><dd>See <a class="el" href="class_dataface___record.html#a8272b50fd6185ba6248dcb65b298cc7f" title="Sometimes a link is specified to be associated with a field. These links will be displayed on the for...">Dataface_Record::getLink()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03810">3810</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03834">3834</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1540,7 +1585,7 @@ Synopsis</h1>
 <dl class="section return"><dt>Returns</dt><dd>string The mimetype of the specified field value.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.6 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04478">4478</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04505">4505</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1606,7 +1651,7 @@ Defining a method named <em><a class="el" href="class_dataface___record.html#a08
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___table.html#a082e9ac00414f2c3f21aa818209033da" title="Gets the parent table of this table to help model inheritance. The parent table can be specified by t...">Dataface_Table::getParent()</a>; </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> The parent record of this record (by the <b>isa</b> hierarchy). </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03510">3510</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03534">3534</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1691,7 +1736,7 @@ Dataface_Table::getFieldPermissions() </dd>
 <dd>
 <a href="http://www.xataface.com/documentation/tutorial/getting_started/permissions">http://www.xataface.com/documentation/tutorial/getting_started/permissions</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03396">3396</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03415">3415</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -1745,7 +1790,7 @@ Example</h1>
 <dd>
 <a class="el" href="class_dataface___record.html#a4b5fe1a6effff99c57500b68327c0ba9" title="Returns the URL to this record.">getURL()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04271">4271</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04298">4298</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2110,7 +2155,7 @@ Sorting the Results</h2>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03306">3306</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03325">3325</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2143,7 +2188,7 @@ Sorting the Results</h2>
 <dd>
 <a class="el" href="class_dataface___record.html#a1d200d9415c0733c0762d3adb928e9ed" title="Checks to see is a particular permission is granted in this record.">checkPermission()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03295">3295</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03314">3314</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2224,7 +2269,7 @@ Sorting the Results</h2>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array Key value pairs of the snapshots as an associative array. </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03594">3594</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03618">3618</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2241,7 +2286,7 @@ Sorting the Results</h2>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04644">4644</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04761">4761</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2314,7 +2359,7 @@ Examples</h1>
 <dd>
 <a href="http://xataface.com/wiki/titleColumn">http://xataface.com/wiki/titleColumn</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03970">3970</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03994">3994</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2385,7 +2430,7 @@ df_secure() </dd>
 <dd>
 <a class="el" href="class_dataface___link_tool.html#a92cb0fc23ac161abe25cc7fe5a4e0ba7">Dataface_LinkTool::buildLink()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04407">4407</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04434">4434</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2848,7 +2893,7 @@ Default Fields List</h1>
 <dl class="section since"><dt>Since</dt><dd>0.5 </dd></dl>
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000008">Deprecated:</a></b></dt><dd>As of 2.0 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02864">2864</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02883">2883</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2972,7 +3017,7 @@ Synopsis</h1>
 <dd>
 <a href="http://xataface.com/documentation/how-to/how-to-handle-file-uploads">http://xataface.com/documentation/how-to/how-to-handle-file-uploads</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04523">4523</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04550">4550</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -2999,7 +3044,7 @@ Synopsis</h1>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if the field is loaded. False otherwise. </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03789">3789</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03813">3813</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3250,7 +3295,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dd>
 <a class="el" href="class_dataface___record.html#a216dd63f5fc65529972c24c13e19fe09" title="Returns an array of all of the records returned by a specified relation.">getRelatedRecords()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02764">2764</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02783">2783</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3294,7 +3339,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated:</a></b></dt><dd></dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.5 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02826">2826</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02845">2845</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3338,7 +3383,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated:</a></b></dt><dd></dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.5 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02817">2817</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02836">2836</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3397,7 +3442,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dd>
 <a class="el" href="class_dataface___record.html#a5ef403397d76b4eaebba8b33ce919b82" title="This method is to implement the PropertyChangeListener interface. This method will be called whenever...">propertyChanged()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03127">3127</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03146">3146</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3441,7 +3486,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000006">Deprecated:</a></b></dt><dd></dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.5 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02835">2835</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02854">2854</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3485,7 +3530,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000007">Deprecated:</a></b></dt><dd></dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.5 </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02845">2845</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02864">2864</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3513,7 +3558,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dl class="section return"><dt>Returns</dt><dd>boolean True if any of the fields in the record have changed since the last snapshot. </dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___record.html#af35e9f6dc82d1c10366a11656c3f4477" title="Indicates whether a value in the record has been updated since the flags have been cleared...">valueChanged()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03665">3665</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03689">3689</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3556,7 +3601,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dd>
 <a class="el" href="class_dataface___record.html#a5ef403397d76b4eaebba8b33ce919b82" title="This method is to implement the PropertyChangeListener interface. This method will be called whenever...">propertyChanged()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03071">3071</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03090">3090</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3594,7 +3639,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>mixed True on success. <a class="el" href="class_p_e_a_r___error.html">PEAR_Error</a> object on fail. </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04595">4595</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04712">4712</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3635,7 +3680,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dd>
 <a class="el" href="class_dataface___record.html#a200809b41153b16300f0a7493b758aaa" title="Signifies that we are beginning a transaction. So a snapshot of the values can be saved and possibly ...">setSnapshot()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03761">3761</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03785">3785</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3675,7 +3720,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <p>Metadata fields are fields that store supplementary information for other fields. E.g. If you have a container field, you probably have other fields to store the mimetype of the file. This is also used to store the lengths of all field data that is loaded.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___record.html#a166a94187401257a33b99ec317b19200" title="Gets the length of the value in a particular field. This can be especially useful for blob and longte...">getLength()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02960">2960</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02979">2979</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3745,7 +3790,7 @@ $address.city : This would be replaced by the value in the 'city' field in the '
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> Self for chaining.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___record.html#a81f4725996004e4caaf913efaf544ac0" title="Clears all of the dirty flags to indicate that this record is up to date.">clearFlags()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03540">3540</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03564">3564</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3864,7 +3909,7 @@ Examples</h1>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if a snapshot has been created.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___record.html#a200809b41153b16300f0a7493b758aaa" title="Signifies that we are beginning a transaction. So a snapshot of the values can be saved and possibly ...">setSnapshot()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03564">3564</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03588">3588</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -3889,7 +3934,7 @@ Examples</h1>
 <dd>
 <a class="el" href="class_dataface___record.html#aa6fa54fd0745e74db5528fd24215da64" title="Clears a snapshot of values. Note that for an update to take place properly, a snapshot should be obt...">clearSnapshot()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03617">3617</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03641">3641</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -4101,7 +4146,7 @@ Examples</h1>
 <dl class="section since"><dt>Since</dt><dd>0.8</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___table.html#a034d28a366786cbcf7c663585592aeb0" title="Returns an associative array of tab definitions of the form: [tabname] -&gt; [tab_properties].">Dataface_Table::tabs()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03261">3261</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03280">3280</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -4171,7 +4216,7 @@ Examples</h1>
 <td>max_height</td><td>Int</td><td>The maximum height of the image in pixels. It will resize the image to this height if it is greater.</td><td>No Default </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l02801">2801</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l02820">2820</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -4199,7 +4244,7 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l04619">4619</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l04736">4736</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -4292,7 +4337,7 @@ Examples</h1>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if the value is valid. False otherwise.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__delegate_class.html#ga8ec25a489ea86b744e42bf6db2d4638a" title="Validates form input for a field.">DelegateClass::fieldname__validate()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03446">3446</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03465">3465</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -4424,7 +4469,7 @@ Examples</h1>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if the value of the specified field has changed since the last snapshot was taken. </dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___record.html#ada2733266d6d210bf1ef0b641424f35e" title="Boolean indicator to see whether the record has been changed since its flags were last cleared...">recordChanged()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_record_8php_source.html#l03632">3632</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
+<p>Definition at line <a class="el" href="_record_8php_source.html#l03656">3656</a> of file <a class="el" href="_record_8php_source.html">Record.php</a>.</p>
 
 </div>
 </div>
@@ -4603,7 +4648,7 @@ Examples</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:26 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

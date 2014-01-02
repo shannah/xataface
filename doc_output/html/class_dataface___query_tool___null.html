@@ -122,6 +122,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8edc9a88c8c4952188bc9e4dc705ff27"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool___null.html#a8edc9a88c8c4952188bc9e4dc705ff27">indexedData</a> ()</td></tr>
 <tr class="inherit_header pub_methods_class_dataface___query_tool"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_dataface___query_tool')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_dataface___query_tool.html">Dataface_QueryTool</a></td></tr>
 <tr class="memitem:a06eafd830799df74f8d7beca966a330b inherit pub_methods_class_dataface___query_tool"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a06eafd830799df74f8d7beca966a330b">Dataface_QueryTool</a> ($tablename, $<a class="el" href="_installer_8php.html#abf2dfcff06cad1e6c249ddc4df4d0866">db</a>=null, $query=null)</td></tr>
+<tr class="memitem:a264dcda75bd32341c66d8447da20cd4a inherit pub_methods_class_dataface___query_tool"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a264dcda75bd32341c66d8447da20cd4a">loadTotals</a> ($columns=array())</td></tr>
+<tr class="memdesc:a264dcda75bd32341c66d8447da20cd4a inherit pub_methods_class_dataface___query_tool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the totals for the current found set using MySQL's aggregate operators. This method will always query the database directly (no caching).  <a href="#a264dcda75bd32341c66d8447da20cd4a"></a><br/></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -136,10 +138,12 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a5b7bd5b9330ab561e761d4afee8916aa inherit pub_attribs_class_dataface___query_tool"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a5b7bd5b9330ab561e761d4afee8916aa">$_currentRecord</a> = null</td></tr>
 <tr class="memitem:a9ae10f46eecff003593a139e376e6374 inherit pub_attribs_class_dataface___query_tool"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a9ae10f46eecff003593a139e376e6374">$_titles</a></td></tr>
 <tr class="memitem:af362faed1363ab96cbb16b42c13d1451 inherit pub_attribs_class_dataface___query_tool"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#af362faed1363ab96cbb16b42c13d1451">$dbObj</a> = null</td></tr>
+<tr class="inherit_header pub_static_attribs_class_dataface___query_tool"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_class_dataface___query_tool')"><img src="closed.png" alt="-"/>&nbsp;Static Public Attributes inherited from <a class="el" href="class_dataface___query_tool.html">Dataface_QueryTool</a></td></tr>
+<tr class="memitem:a4e2da765c54abab8a1d00f1fbc0c4128 inherit pub_static_attribs_class_dataface___query_tool"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___query_tool.html#a4e2da765c54abab8a1d00f1fbc0c4128">$lastIterated</a> = null</td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00539">539</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00651">651</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 </div><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="affa09689e365edff79563b2c3b5cf66a"></a>
 <div class="memitem">
@@ -180,7 +184,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00556">556</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00668">668</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -200,7 +204,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#ad6c43c64d9dac919edc017afe3fd51bc">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00593">593</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00705">705</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -219,7 +223,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#aa3b267270ebe136571604fe35ce404fa">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00622">622</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00735">735</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -238,7 +242,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a95e4bceef4fbe25eb66623a90436f403">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00604">604</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00716">716</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -257,7 +261,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a817082ace0e2589d27b22890290aa4a9">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00600">600</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00712">712</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -276,7 +280,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a7aecb55a05c24dc1d87894cbc70c9c16">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00587">587</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00699">699</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -295,7 +299,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a56e2c42385937cd82bf25b03468e129f">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00613">613</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00726">726</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -331,7 +335,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a1d3a9475bc35be0bb7f2996405d81dfb">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00562">562</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00674">674</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -350,7 +354,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a8edc9a88c8c4952188bc9e4dc705ff27">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00626">626</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00739">739</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -369,7 +373,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a8eb596690c78195fdebf737f4d1f3a32">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00608">608</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00720">720</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -388,7 +392,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a63aed2ed30505623343b3e7df7fa6c16">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00617">617</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00730">730</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -430,7 +434,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#aa4980b148fc78c0ae24f2558769b3372">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00580">580</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00692">692</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -481,7 +485,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#ab95b6db29da3d075f379e4fa6d548b1d">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00574">574</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00686">686</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -500,7 +504,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#af8fa59992209e36dccb3eefb0f75531f">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00597">597</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00709">709</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -519,7 +523,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="class_dataface___query_tool.html#a513a490a5cb9341d8a2a11931c66ed39">Dataface_QueryTool</a>.</p>
 
-<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00541">541</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_query_tool_8php_source.html#l00653">653</a> of file <a class="el" href="_query_tool_8php_source.html">QueryTool.php</a>.</p>
 
 </div>
 </div>
@@ -529,7 +533,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:35 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:26 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

@@ -175,15 +175,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                $res = mysql_query(<span class="stringliteral">&quot;update dataface__version set `version`=&#39;&quot;</span>.addslashes(df_get_file_system_version()).<span class="stringliteral">&quot;&#39;&quot;</span>, df_db());</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <span class="keywordflow">if</span> ( !$res ) <span class="keywordflow">throw</span> <span class="keyword">new</span> Exception(mysql_error(df_db()), E_USER_ERROR);</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;redirect(DATAFACE_SITE_HREF.<span class="stringliteral">&#39;?--msg=&#39;</span>.urlencode(<span class="stringliteral">&#39;The database has been successfully updated to version &#39;</span>.df_get_file_system_version()));</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                <span class="keywordflow">if</span> ( function_exists(<span class="stringliteral">&#39;apc_clear_cache&#39;</span>) ){</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                    apc_clear_cache(<span class="stringliteral">&#39;user&#39;</span>);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                df_clear_views();</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                df_clear_cache();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;redirect(DATAFACE_SITE_HREF.<span class="stringliteral">&#39;?--msg=&#39;</span>.urlencode(<span class="stringliteral">&#39;The database has been successfully updated to version &#39;</span>.df_get_file_system_version()));</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        }</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:33 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:23 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

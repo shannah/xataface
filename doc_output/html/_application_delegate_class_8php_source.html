@@ -155,39 +155,41 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        <span class="comment">// @}</span></div>
 <div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        </div>
 <div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;        <span class="comment">// @{</span></div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="comment"></span>        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#acb16593b459e49320ad418497a0f27b4" title="Optional method to define the settings for the email that is sent to the user upon successful resetti...">getPasswordChangedEmailInfo</a>(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $user, $password);</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;        </div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a75824b49db118b4c5ee6c9eb89fdc734" title="Optional method to define the settings for the email that is sent to the user when they request to re...">getResetPasswordEmailInfo</a>(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $user, $reset_url);</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;<span class="comment"></span>        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a1cf340c05a39aacf3f57b9c8e83b9d23" title="Optional method to generate a temporary password for a user. This is used by the forgot_password acti...">generateTemporaryPassword</a>();</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;        </div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#acb16593b459e49320ad418497a0f27b4" title="Optional method to define the settings for the email that is sent to the user upon successful resetti...">getPasswordChangedEmailInfo</a>(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $user, $password);</div>
 <div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;        </div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;        <span class="comment">// @}</span></div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;        </div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;        <span class="comment">// @{</span></div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;<span class="comment"></span>        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a332ddc8d8ce3876e6f464661f4009bdd" title="Returns an associative array of parameters to configure the RSS feed for a particular table ...">getFeed</a>(array $query);</div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;        </div>
-<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a166efd68555c1183f7c35329dff0b8d5" title="Returns an associative array of parameters to configure the RSS feed for the related records of a par...">getRelatedFeed</a>(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $record, $relationship);</div>
-<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;        </div>
-<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;        </div>
-<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;        <span class="comment">// @}</span></div>
-<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;        </div>
-<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;        <span class="comment">// @{</span></div>
-<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;<span class="comment"></span>        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a02e759df91113d14d1b5fc26cf60d28d" title="Inserts content into a particular block or slot of a template in Xataface.">block__blockname</a>();</div>
-<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;        </div>
-<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#ae47454c160a4a10203658bd17acddfaf" title="The getNavItem() method of the application delegate class can be used to override the items that appe...">getNavItem</a>($key, $label);</div>
-<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a556f012b0c79aa3bdcb34a604d2eba5b">navItemIsSelected</a>($key);</div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a2038618d1e557be90752a76a9eca167c">getTemplateContext</a>();</div>
-<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;        </div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#adfe361752713868652012ed9734fbc8b" title="Returns the name of an action that should be used as the target action of a search performed from the...">getSearchTarget</a>(array $action);</div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;        </div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;        <span class="comment">// @}</span></div>
-<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;        </div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;        <span class="comment">// @{</span></div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;<span class="comment"></span>        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#aed70627bc9fe054ddbc00d81661c86e7">valuelist__valuelistname</a>();</div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;        <span class="comment">// @}</span></div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;}</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a75824b49db118b4c5ee6c9eb89fdc734" title="Optional method to define the settings for the email that is sent to the user when they request to re...">getResetPasswordEmailInfo</a>(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $user, $reset_url);</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;        </div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;        <span class="comment">// @}</span></div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;        </div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        <span class="comment">// @{</span></div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;<span class="comment"></span>        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a332ddc8d8ce3876e6f464661f4009bdd" title="Returns an associative array of parameters to configure the RSS feed for a particular table ...">getFeed</a>(array $query);</div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;        </div>
+<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a166efd68555c1183f7c35329dff0b8d5" title="Returns an associative array of parameters to configure the RSS feed for the related records of a par...">getRelatedFeed</a>(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $record, $relationship);</div>
+<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160;        </div>
+<div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;        </div>
+<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;        <span class="comment">// @}</span></div>
+<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;        </div>
+<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;        <span class="comment">// @{</span></div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;<span class="comment"></span>        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a02e759df91113d14d1b5fc26cf60d28d" title="Inserts content into a particular block or slot of a template in Xataface.">block__blockname</a>();</div>
+<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;        </div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#ae47454c160a4a10203658bd17acddfaf" title="The getNavItem() method of the application delegate class can be used to override the items that appe...">getNavItem</a>($key, $label);</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a556f012b0c79aa3bdcb34a604d2eba5b">navItemIsSelected</a>($key);</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#a2038618d1e557be90752a76a9eca167c">getTemplateContext</a>();</div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;        </div>
+<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#adfe361752713868652012ed9734fbc8b" title="Returns the name of an action that should be used as the target action of a search performed from the...">getSearchTarget</a>(array $action);</div>
+<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;        </div>
+<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;        <span class="comment">// @}</span></div>
+<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;        </div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;        <span class="comment">// @{</span></div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;<span class="comment"></span>        <span class="keyword">function</span> <a class="code" href="interface_application_delegate_class.html#aed70627bc9fe054ddbc00d81661c86e7">valuelist__valuelistname</a>();</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;        <span class="comment">// @}</span></div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:33 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:23 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

@@ -105,31 +105,35 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                $errs = array();</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <span class="keywordflow">foreach</span> ($records as $rec){</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                        <span class="keywordflow">if</span> ( !$rec-&gt;checkPermission(<span class="stringliteral">&#39;delete&#39;</span>) ){</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                                $errs[] = <a class="code" href="class_dataface___error.html#af326456319a1a38b3ae0c9a1942e1458">Dataface_Error::permissionDenied</a>(<span class="stringliteral">&quot;You do not have permission to delete &#39;&quot;</span>.$rec-&gt;getTitle().<span class="stringliteral">&quot;&#39; because you do not have the &#39;delete&#39; permission.&quot;</span>);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                                <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        }</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        $res = $rec-&gt;delete(<span class="keyword">true</span> <span class="comment">/*secure*/</span>);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                        <span class="keywordflow">if</span> ( <a class="code" href="class_p_e_a_r.html#ae59587d5f701115ff0ae38bd852789db">PEAR::isError</a>($res) ) $errs[] = $res-&gt;getMessage();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        <span class="keywordflow">else</span> $updated++;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                }</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keywordflow">if</span> ( $errs ){</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                        $_SESSION[<span class="stringliteral">&#39;--msg&#39;</span>] = <span class="stringliteral">&#39;Errors Occurred:&lt;br/&gt; &#39;</span>.implode(<span class="stringliteral">&#39;&lt;br/&gt; &#39;</span>, $errs);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                        $_SESSION[<span class="stringliteral">&#39;--msg&#39;</span>] = <span class="stringliteral">&quot;No errors occurred&quot;</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                }</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                $url = <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;url(<span class="stringliteral">&#39;-action=list&#39;</span>);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <span class="keywordflow">if</span> ( @$_POST[<span class="stringliteral">&#39;--redirect&#39;</span>] ) $url = base64_decode($_POST[<span class="stringliteral">&#39;--redirect&#39;</span>]);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                $url .= <span class="stringliteral">&#39;&amp;--msg=&#39;</span>.urlencode($updated.<span class="stringliteral">&#39; records were deleted.&#39;</span>);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;redirect($url);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        }</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;}</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                                $errStr = df_translate(<span class="stringliteral">&quot;actions.delete_selected.permission_denied&quot;</span>, <span class="stringliteral">&quot;You do not have permission to delete &#39;%s&#39; because you do not have the &#39;delete&#39; permission.&quot;</span> );</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                                $errs[] = sprintf($errStr, $rec-&gt;getTitle());</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                                </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                                <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                        }</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        $res = $rec-&gt;delete(<span class="keyword">true</span> <span class="comment">/*secure*/</span>);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        <span class="keywordflow">if</span> ( <a class="code" href="class_p_e_a_r.html#ae59587d5f701115ff0ae38bd852789db">PEAR::isError</a>($res) ) $errs[] = $res-&gt;getMessage();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        <span class="keywordflow">else</span> $updated++;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                        </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                }</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                <span class="keywordflow">if</span> ( $errs ){</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                        $_SESSION[<span class="stringliteral">&#39;--msg&#39;</span>] = df_translate(<span class="stringliteral">&#39;Errors Occurred&#39;</span>, <span class="stringliteral">&#39;Errors Occurred&#39;</span>).<span class="stringliteral">&#39;:&lt;br/&gt; &#39;</span>.implode(<span class="stringliteral">&#39;&lt;br/&gt; &#39;</span>, $errs);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                        $_SESSION[<span class="stringliteral">&#39;--msg&#39;</span>] = df_translate(<span class="stringliteral">&#39;No errors occurred&#39;</span>, <span class="stringliteral">&quot;No errors occurred&quot;</span> );</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                }</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                $url = <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;url(<span class="stringliteral">&#39;-action=list&#39;</span>);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <span class="keywordflow">if</span> ( @$_POST[<span class="stringliteral">&#39;--redirect&#39;</span>] ) $url = base64_decode($_POST[<span class="stringliteral">&#39;--redirect&#39;</span>]);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                $msgStr = df_translate(<span class="stringliteral">&#39;x records were deleted&#39;</span>, <span class="stringliteral">&#39;%d records were deleted.&#39;</span>);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                $msgStr = sprintf($msgStr, $updated);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                $url .= <span class="stringliteral">&#39;&amp;--msg=&#39;</span>.urlencode($msgStr);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                <a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;redirect($url);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 22 2013 09:40:33 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 2 2014 12:23:23 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
