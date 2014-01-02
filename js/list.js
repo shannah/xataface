@@ -3,10 +3,60 @@
 
 	jQuery(document).ready(function($){
 		
-		var resultList = $('#result_list');
-		var thead = $('thead', resultList);
-		var tbody = $('tbody', resultList);
-		var headingRow = $('tr', thead);
+		var resultList = $('table#result_list');
+                
+		var thead = resultList.children('thead');
+		var tbody = resultList.children('tbody');
+		var headingRow = $(thead).children('tr');
+                var tfoot = resultList.children('tfoot');
+                tfoot.children('tr.template').each(function(){
+                    var self = this;
+                    var footRow = $('<tr>');
+                    
+                    
+                    // Index columns by column name
+                    var columnIndex = {};
+                    var label = $('.label', self).text();
+                    $(self).children().each(function(){
+                        var columnName = $(this).attr('data-column');
+                        if ( columnName ){
+                            columnIndex[columnName] = this;
+                        }
+                    });
+                    var numLeadingBlanks = 0;
+                    var foundFirstNonBlank = false;
+                    $('tr',thead).first().children().each(function(){
+                        var columnName = $(this).attr('data-column');
+                        if ( columnName && columnIndex[columnName] ){
+                            console.log("Appending for ");
+                            console.log(this);
+                            if ( !foundFirstNonBlank){
+                                foundFirstNonBlank = true;
+                                if ( numLeadingBlanks > 0 ){
+                                    if (label ){
+                                        $(footRow).append($('<th>').attr('colspan', numLeadingBlanks).text(label));
+                                    } else {
+                                        $(footRow).append($('<td>').attr('colspan', numLeadingBlanks));
+                                    }
+                                }
+                            }
+                            $(footRow).append($(columnIndex[columnName]).clone());
+                            
+                            
+                        } else {
+                            if ( foundFirstNonBlank ){
+                                $(footRow).append($('<td>'));
+                            } else {
+                                numLeadingBlanks++;
+                            }
+                        }
+                    });
+                    $(tfoot).append(footRow);
+                    $(tfoot).show();
+                    
+                });
+                tfoot.children('tr.template').remove();
+                
 		if ( typeof(window.xataface) == 'undefined' ) window.xataface = {};
 		window.xataface.query = {};
 		var queryJson = resultList.attr('data-xataface-query');

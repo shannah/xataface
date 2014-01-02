@@ -228,6 +228,23 @@ class Dataface_QueryTool {
 		return $this->_titles[$ordered][$genericKeys][$ignoreLimit];
 	}
 	
+        function loadTotals($columns=array()){
+            $builder = new Dataface_QueryBuilder($this->_tablename, $this->_query);
+            $sql = $builder->select_totals(array(), null, $columns);
+            
+            $res = df_query($sql);
+            if ( !$res ){
+                throw new Exception(mysql_error(df_db()));
+            } else {
+                $out = mysql_fetch_assoc($res);
+                
+                @mysql_free_result($res);
+                return $out;
+            }
+            
+           
+        }
+        
 	/**
 	 * Loads the results into an array.
 	 * Array keys are concatenated values of primary key fields.

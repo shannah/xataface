@@ -135,6 +135,20 @@ import('Dataface/QueryTool.php');
  		return null;
  	}
  	
+        function getTfootContent(){
+            if ( !isset($tablename) ) $tablename = $this->_table->tablename;
+ 		$del =& $this->_table->getDelegate();
+ 		if ( isset($del) and method_exists($del, 'renderRowFooterTemplate') ){
+ 			return $del->renderRowFooterTemplate($tablename);
+ 		}
+ 		$app =& Dataface_Application::getInstance();
+ 		$appdel =& $app->getDelegate();
+ 		if ( isset($appdel) and method_exists($appdel,'renderRowFooterTemplate') ){
+ 			return $appdel->renderRowFooterTemplate($tablename);
+ 		}
+ 		return '';
+        }
+        
  	function renderRow(&$record){
  		$del =& $record->_table->getDelegate();
  		if ( isset($del) and method_exists($del, 'renderRow') ){
@@ -342,6 +356,7 @@ import('Dataface/QueryTool.php');
 			}
 			echo "</tr>
 				</thead>
+                                <tfoot style='display:none'>".$this->getTfootContent()."</tfoot>
 				<tbody>
 				";
 	

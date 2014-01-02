@@ -265,6 +265,57 @@ class Dataface_QueryBuilder {
 	
 	
 	}
+        
+        function select_totals($query=array(), $tablename=null, $fields = array()){
+            $tablename = $this->tablename($tablename);
+            $table = Dataface_Table::loadTable($tablename);
+            if ( PEAR::isError($table) ){
+                throw new Exception($table->getMessage());
+            }
+            
+            $this->action='select_totals';
+            $query = array_merge( $this->_query, $query);
+            $sql = array();
+            foreach ( $fields as $field ){
+                list($fieldname, $func) = explode('#', $field);
+                $fieldname = preg_replace('/[^a-zA-Z0-9_]/', '', $fieldname);
+                $func = strtolower($func);
+                switch ( $func ){
+                    case 'sum':
+                    case 'avg':
+                    case 'max':
+                    case 'min':
+                    case 'bit_and':
+                    case 'bit_or':
+                    case 'bit_xor':
+                    case 'group_concat':
+                    case 'std':
+                    case 'stddev_samp':
+                    case 'stddev':
+                    case 'var_pop':
+                    case 'var_samp':
+                    case 'variance':
+                        
+                        $sql[] = strtoupper($func).'('.$this->wc($tablename, $fieldname).') as `'.$fieldname.'_'.strtoupper($func).'`';
+                        break;
+                    default:
+                        throw new Exception("Unrecognized field function ".$func." for field ".$fieldname);
+
+                }
+            }
+            
+            $ret = 'SELECT ';
+	    $from = $this->_from($this->tablename($tablename));
+	    $where = $this->_where($query);
+	    $where = $this->_secure($where);
+            $ret .= implode(', ', $sql);
+	    if ( strlen($from)>0 ) $ret .= ' '.$from;
+	    if ( strlen($where)>0 ) $ret .= ' '.$where;
+	    $this->action = null;
+            return trim($ret);
+            
+            
+        }
 	
 	
 	/**
@@ -482,7 +533,7 @@ class Dataface_QueryBuilder {
 	}
 	
 	function wc($tablename, $colname){
-		if ( in_array($this->action, array('select','delete', 'select_num_rows')) ){
+		if ( in_array($this->action, array('select','delete', 'select_num_rows', 'select_totals')) ){
 			return "`{$tablename}`.`{$colname}`";
 		} else {
 			return "`{$colname}`";
