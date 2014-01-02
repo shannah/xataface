@@ -385,6 +385,9 @@
             var scripts = lastRow.getElementsByTagName('SCRIPT');
             var scriptTexts = [];
             for ( var i=0,imax=scripts.length; i<imax; i++){
+                if ( jQuery(scripts[i]).attr('type') == 'text/html' ){
+                    continue
+                }
                 scriptTexts[scriptTexts.length] = dataGridFieldFunctions.getScriptText(scripts[i]);
             }
 
