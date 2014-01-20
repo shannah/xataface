@@ -250,7 +250,7 @@ class Dataface_Installer {
 	function db2app(){
 		require_once 'HTML/QuickForm.php';
 		$form = new HTML_QuickForm('db2app');
-		$res = mysql_list_dbs(db());
+		$res = mysql_query("SHOW DATABASES", db());
 		if ( !$res ) trigger_error(mysql_error(db()), E_USER_ERROR);
 		$options = array('' => 'Please Select Database ...');
 		while ( $row = mysql_fetch_row($res) ) $options[$row[0]] = $row[0];
