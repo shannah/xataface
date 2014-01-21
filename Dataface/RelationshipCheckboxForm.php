@@ -52,7 +52,7 @@ class Dataface_RelationshipCheckboxForm extends HTML_QuickForm {
 		$boxes = array();
 		foreach ($options as $opt_val=>$opt_text){
 			if ( !$opt_val ) continue;
-			$boxes[] =& HTML_QuickForm::createElement('checkbox',$opt_val , null, $opt_text, array('class'=>'relationship-checkbox-of-'.$opt_val.' '.@$options__classes[$opt_val]));
+			$boxes[] =& HTML_QuickForm::createElement('advcheckbox',$opt_val , null, $opt_text, array('class'=>'relationship-checkbox-of-'.$opt_val.' '.@$options__classes[$opt_val]));
 		}
 		$el =& $this->addGroup($boxes, '--related-checkboxes', df_translate('scripts.Dataface_RelationshipCheckboxForm.LABEL_'.$this->relationship->_name.'_CHECKBOXES', 'Related '.$this->relationship->_name.' Records'));
 		
@@ -96,39 +96,47 @@ class Dataface_RelationshipCheckboxForm extends HTML_QuickForm {
 		$this->setDefaults(array('-table'=>$q['-table'], '-action'=>$q['-action'], '-relationship'=>$q['-relationship']));
 		
 		$this->addElement('submit','save',df_translate('scripts.Dataface_RelationshipCheckboxForm.LABEL_SUBMIT', 'Save'));
+                
+                $perms = $this->record->getPermissions(array('relationship' => $q['-relationship']));
+                if ( !@$perms['add existing related record'] and !@$perms['remove related record']){
+                    $this->freeze();
+                }
 		
 	
 	}
 	
 	function save($values){
-	
+                $app = Dataface_Application::getInstance();
 		// Which ones were checked
-		$checked = array_keys($values['--related-checkboxes']);
-		
+                
+		$checked = array();
+                foreach ( $values['--related-checkboxes'] as $k=>$v){
+                    if ( $v ){
+                        $checked[] = $k;
+                    }
+                }
 		// Which ones are currently part of the relationship
 		$default = array_keys($this->getCheckedRecordsDefaults());
-		
 		// Which ones need to be added?
 		$toAdd = array_diff($checked, $default);
-		
 		// Which ones need to be removed?
 		$toRemove = array_diff($default, $checked);
-		
 		
 		// Now we go through and remove the ones that need to be removed.
 		$io = new Dataface_IO($this->record->_table->tablename);
 		$messages = array();
 		$successfulRemovals = 0;
+                $successfulAdditions = 0;
 		foreach ( $toRemove as $id ){
-			$res = $io->removeRelatedRecord($this->id2record($id));
+			$res = $io->removeRelatedRecord($this->id2record($id), false, true);
 			if ( PEAR::isError($res) ) $messages[] = $res->getMessage();
-			else $sucessfulRemovals++;
+			else $successfulRemovals++;
 			
 		}
 		
 		// Now we go through and add the ones that need to be added.
 		foreach ( $toAdd as $id ){
-			$res = $io->addExistingRelatedRecord($this->id2record($id));
+			$res = $io->addExistingRelatedRecord($this->id2record($id), true);
 			if ( PEAR::isError($res) ) $messages[] = $res->getMessage();
 			else $successfulAdditions++;
 		}
@@ -143,7 +151,7 @@ class Dataface_RelationshipCheckboxForm extends HTML_QuickForm {
 				array('num_removed'=>$successfulRemovals)
 				)
 			);
-		$_SESSION['msg'] = '<ul><li>'.implode('</li><li>', $messages).'</li></ul>';
+		$_SESSION['--msg'] = '<ul><li>'.implode('</li><li>', $messages).'</li></ul>';
 		$url = $values['--query'];
 		$urlparts = parse_url($url);
 		if ( $urlparts and $urlparts['host'] and $urlparts['host'] != $_SERVER['HTTP_HOST'] ){
