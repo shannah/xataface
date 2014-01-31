@@ -1020,6 +1020,62 @@ interface DelegateClass {
 	function fieldname__format($value);
 	
 	/**
+	 * @brief Initializes the value for a field when it is first loaded.  This is useful
+	 * if you want to lazily load the value of a transient field.
+	 *
+	 * @section Examples
+	 * 
+	 * In the following example, we have a transient field "owner_name" which is intended
+	 * to allow the user to edit the name of the owner of the current record.  The owner_name
+	 * field is not part of the current table, so we need to initialize the value before the
+	 * form is shown.  We use the beforeSave() and afterSave() hooks to handle the 
+	 * saving of this field.
+	 *
+	 * @code
+	 * function owner_name_init(Dataface_Record $record){
+	 *     $res = df_q(sprintf("select owner_name from owners where owner_id=%d", intval($record->val('owner_id'))));
+	 *     $row = mysql_fetch_row($res);
+	 *     @mysql_free_result($res);
+	 *     if ( $row ) return $row[0];
+	 *	   else return null;
+	 * }
+	 * 
+	 * function beforeSave(Dataface_Record $record){
+     *     if ( $record->valueChanged('owner_name') ){
+     *         $record->pouch['owner_name_changed'] = true;
+     *     }
+     * }
+     *
+     * function afterSave(Dataface_Record $record){
+     *     if ( @$record->pouch['owner_name_changed'] ){
+     *         unset($record->pouch['owner_name_changed']);
+     *         $res = df_q(
+     *             sprintf("update owners set owner_name = '%s' where owner_id=%d", 
+     *                 addslashes($record->val('owner_name')), 
+     *                 $record->val('owner_id')
+     *             )
+     *         );
+     *     }
+     * }
+     * @endcode
+     *
+     * This assumes that you have defined the field "owner_name" as a transient field 
+     * in your fields.ini file as follows:
+     *
+     * @code
+     * [owner_name]
+     *    transient=1
+     *    widget:type=text
+     * @endcode
+	 *
+	 * @param Dataface_Record $record The record for which the field is to be initialized.
+	 * @returns mixed The value to se in this field.
+	 * @since 2.0
+	 *     
+	 */
+	function fieldname__init(Dataface_Record $record);
+	
+	/**
 	 * @brief Overrides the string value of specified field for a given record.
 	 *
 	 * @param Dataface_Record $record The subject record.

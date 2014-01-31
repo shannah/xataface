@@ -16,6 +16,7 @@ var searchData=
   ['fieldname_5f_5fdisplay',['fieldname__display',['../group__delegate_class.html#ga05d5a179839db34530cadd6abc2ce5cd',1,'DelegateClass']]],
   ['fieldname_5f_5fformat',['fieldname__format',['../group__delegate_class.html#gae22ab8ff57abf6b05fbe741d93b113df',1,'DelegateClass']]],
   ['fieldname_5f_5fhtmlvalue',['fieldname__htmlValue',['../group__delegate_class.html#gaae879923c877895962d0258b4e1a6e9b',1,'DelegateClass']]],
+  ['fieldname_5f_5finit',['fieldname__init',['../group__delegate_class.html#gad558f5659b85130b8cdd551d798815fb',1,'DelegateClass']]],
   ['fieldname_5f_5flink',['fieldname__link',['../group__delegate_class.html#ga113b7edc734eb6a79f0b5a09dd8fd81c',1,'DelegateClass']]],
   ['fieldname_5f_5fparse',['fieldname__parse',['../group__delegate_class.html#ga133597e1420b7b462376e563a41689e7',1,'DelegateClass']]],
   ['fieldname_5f_5fpermissions',['fieldname__permissions',['../group__delegate_class.html#gaf71dba7d5732b67192af9da4eb7cb55e',1,'DelegateClass']]],

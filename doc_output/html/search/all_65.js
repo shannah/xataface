@@ -3,6 +3,7 @@ var searchData=
   ['edit',['edit',['../class_dataface___permissions_tool.html#a7141c82bdeb3bb41176af653c2d05987',1,'Dataface_PermissionsTool\edit()'],['../class_dataface___permissions_tool___instance.html#a56f1e28608c075c8f256e45ec117acd0',1,'Dataface_PermissionsTool_Instance\edit()']]],
   ['edit_2ephp',['edit.php',['../edit_8php.html',1,'']]],
   ['editable',['editable',['../class_dataface___skin_tool.html#a5e05d7fa4149ffa66c5ecbd3b2d3f09f',1,'Dataface_SkinTool']]],
+  ['else',['else',['../config_8inc_8php.html#aef1496aa7f0ae7bc73480ee21d27250a',1,'else():&#160;config.inc.php'],['../dataface__info_8php.html#aca6c1f8bac1d9b00001c435bd6fbaffe',1,'else():&#160;dataface_info.php'],['../_fix_p_h_p5_p_e_a_r_warnings_8php.html#accd1c656e9747fbc30d21e37a585888c',1,'else():&#160;FixPHP5PEARWarnings.php'],['../_p_e_a_r_8php.html#aa8a49739e8eb898476e14127c4cd0a49',1,'else():&#160;PEAR.php']]],
   ['empty',['empty',['../class_dataface___clipboard.html#a15293e929a98c92f011d6cef446df6de',1,'Dataface_Clipboard']]],
   ['enablesessions',['enableSessions',['../class_dataface___application.html#a0e5c8160381b02811a16d84ad6df2f5d',1,'Dataface_Application']]],
   ['encode_5fif_5fnecessary',['encode_if_necessary',['../ini2csv_8php.html#a127859c4609e7d102bc01fc979eec2ab',1,'ini2csv.php']]],
