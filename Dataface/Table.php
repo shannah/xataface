@@ -773,8 +773,18 @@ class Dataface_Table {
 						strlen($row['Default']) == 0	and
 						$row['Extra'] != 'auto_increment' and 
 						@$row['validators']['required'] !== 0){
-				$row['validators'][ 'required' ] = array('message' => $row['widget']['label'] ." is a required field.",
+				$messageStr = "%s is a required field";
+				$message = sprintf(
+						df_translate('Field is a required field', $messageStr),
+						$row['widget']['label']
+				);
+				
+				if ( @is_array($row['validators'][ 'required' ]) and isset($row['validators']['required']['message']) ){
+					$message = $row['validators']['required']['message'];
+				}
+				$row['validators'][ 'required' ] = array('message' => $message,
 												  'arg' => '' );
+				
 			} else if ( @$row['validators']['required'] === 0 ){
 				unset($row['validators']['required']);
 			}
