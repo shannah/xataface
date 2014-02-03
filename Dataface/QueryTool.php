@@ -509,7 +509,6 @@ class Dataface_QueryTool {
 				$unloaded[] = $name;
 			}
 		}
-		
 		if ( sizeof( $unloaded ) > 0 ){
 			
 			$query = array_merge( $this->_query, array('-skip'=>$this->_data['cursor'], '-limit'=>1) );
@@ -539,7 +538,11 @@ class Dataface_QueryTool {
 			}
 			$row = $res[0]; //mysql_fetch_assoc($res);
 			//@mysql_free_result($row);
-			$this->_currentRecord = new Dataface_Record($this->_table->tablename, $row);
+			if ( !isset($this->_currentRecord) ){
+				$this->_currentRecord = new Dataface_Record($this->_table->tablename, $row);
+			} else {
+				$this->_currentRecord->setValues($row);
+			}
 			//$this->_table->setValues($row);
 			//$this->_table->setSnapshot();
 			//$this->_table->deserialize();
