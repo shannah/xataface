@@ -4942,7 +4942,7 @@ class Dataface_Table {
 	 * @see DelegateClass::fieldname__format()
 	 */
 	public function format($fieldname, $value){
-
+		$isEmpty =  ( !isset($value) or '' === ''.$value );
 		$out = $value;
 		$table = $this->getTableTableForField($fieldname);
 		if ( strpos($fieldname, '.') !== false ){
@@ -4959,13 +4959,13 @@ class Dataface_Table {
 		}
 		// If this is a number, let's format it!!
 		if ( $table->isInt($fieldname) or $table->isFloat($fieldname) ){
-			if ( isset($field['number_format']) ){
+			if ( !$isEmpty and isset($field['number_format']) ){
 				$locale_data = localeconv();
 				$decimal = $locale_data['decimal_point'];
 				$sep = $locale_data['thousands_sep'];
 				$places = intval($field['number_format']);
 				$out = number_format(floatval($out), $places, $decimal, $sep); 
-			} else if ( isset($field['money_format']) ){
+			} else if ( !$isEmpty and isset($field['money_format']) ){
 				
 				$fieldLocale = null;
 				if ( method_exists($delegate, 'getFieldLocale') ){
@@ -4988,7 +4988,7 @@ class Dataface_Table {
 				}
 			
 			}
-		} else if ( $table->isDate($fieldname) ){
+		} else if ( !$isEmpty and $table->isDate($fieldname) ){
 		
 			// If this is a date field, we will do some date formatting
 		
@@ -5038,7 +5038,7 @@ class Dataface_Table {
 		
 		
 		// If A display format was set for this field, let's apply it
-		if ( isset($field['display_format']) ){
+		if ( !$isEmpty and isset($field['display_format']) ){
 			if ( isset($field['display_format_i18n']) ){
 				$fmt = df_translate($field['display_format_18n'], $field['display_format']);
 			} else {
