@@ -84,6 +84,8 @@ class Dataface_SkinTool extends Smarty{
 	var $compile_dir;
 	var $ENV;
 	var $skins = array();
+	var $skinPriorities = array('templates' => 100);
+	var $skinsSorted = false;
 	var $locals = array();
 	var $languageTool;
 	var $app;
@@ -120,9 +122,9 @@ class Dataface_SkinTool extends Smarty{
 		$this->languageTool =& Dataface_LanguageTool::getInstance();
 		
 		
-		$this->register_skin('dataface', $GLOBALS['Dataface_Globals_Templates']);
+		$this->register_skin('dataface', $GLOBALS['Dataface_Globals_Templates'], -100);
 		
-		$this->register_skin('default', $GLOBALS['Dataface_Globals_Local_Templates']);
+		//$this->register_skin('default', $GLOBALS['Dataface_Globals_Local_Templates'], 100);
 		$this->register_plugins($GLOBALS['Dataface_Globals_Local_Plugins']);
 
 		$app =& Dataface_Application::getInstance();
@@ -318,6 +320,10 @@ class Dataface_SkinTool extends Smarty{
 	 * <em>Dataface/templates</em> directory to find the template.
 	 */
 	function display($context, $template=null, $compile_id=null){
+		if ( !$this->skinsSorted ){
+			usort($this->template_dir, array($this, '_cmp_template_dirs'));
+			$this->skinsSorted = true;
+		}
 		if ( !is_array($context) ) {
 			return parent::display($context);
 		}
@@ -329,6 +335,16 @@ class Dataface_SkinTool extends Smarty{
 	
 	}
 	
+	
+	function _cmp_template_dirs($a, $b){
+		if ( $this->skinPriorities[$a] < $this->skinPriorities[$b] ){
+			return 1;;
+		} else if ( $this->skinPriorities[$a] > $this->skinPriorities[$b] ){
+			return -1;
+		} else {
+			return 0;
+		}
+	}
 
 	
 	/**
@@ -357,7 +373,7 @@ class Dataface_SkinTool extends Smarty{
 	 * @param string $template_dir The directory to the templates for this skin.
 	 * @param string $compile_dir The directory where the compiled templates should be stored.
 	 */
-	function register_skin( $name, $template_dir){
+	function register_skin( $name, $template_dir, $priority=0){
 		if ( !is_array($this->template_dir) ){
 			if ( strlen($this->template_dir) > 0 ){
 				$this->template_dir = array($this->template_dir);
@@ -365,7 +381,10 @@ class Dataface_SkinTool extends Smarty{
 				$this->template_dir = array();
 			}
 		}
-		array_unshift($this->template_dir, $template_dir);
+		
+		$this->template_dir[] = $template_dir;
+		$this->skinPriorities[$template_dir] = $priority;
+		$this->skinsSorted = false;
 		$this->skins[$template_dir] = $name;
 	
 	}
