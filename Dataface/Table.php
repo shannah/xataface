@@ -747,7 +747,7 @@ class Dataface_Table {
 					$row['repeat'] = false;
 				}
 				
-				$row['widget']['type'] = 'select';
+				//$row['widget']['type'] = 'select';
 				
 				$opt_keys = array_keys($vocab);
 				
