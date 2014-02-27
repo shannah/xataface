@@ -1,0 +1,12 @@
+#top-section,
+#left_column,
+.fineprint,
+#top-search-form,
+#main_column > .horizontalDivider {
+	display:none;
+}
+
+#main_table {
+	margin:0;
+	padding:0;
+}
