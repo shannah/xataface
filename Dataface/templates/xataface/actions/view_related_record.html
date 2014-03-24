@@ -1,0 +1,232 @@
+{if $ENV.resultSet->found() > 0}
+    {use_macro file="Dataface_Record_Template.html"}
+        {fill_slot name="record_content"}
+        <div class="view-related-record-wrapper">
+            <div class="subrecord-tabs">
+            	<ul>
+                {foreach from=$related_record->toRecords() key=k item=subrecord}
+                	<li><a href="#tabs-{$k}">{$subrecord->getTitle()|escape}</a></li>
+                {/foreach}
+                </ul>
+                {foreach from=$related_record->toRecords() key=k item=subrecord}
+                    {record_view var=subrv record=$subrecord}
+                    <div class="view-tab-content" id="tabs-{$k}">
+                    	
+                        <table class="view-record-columns" width="100%">
+                            <tr>
+                                <td id="dataface-sections-left-column" valign="top">
+                                    <div class="dataface-sections-count-{$subrv->sections|@count} dataface-sections-left{if $subrv->showLogo} dataface-sections-left-with-logo{/if}" id="dataface-sections-left">
+                                        {if $subrv->showLogo}
+                                            {if $subrv->logos|@count>0}
+                                                {foreach from=$subrv->logos item=logo}
+                                                    <div class="dataface-view-logo">
+                                                    {$related_record->htmlValue($logo.name)}
+                                                    </div>
+                                                {/foreach}
+                                            {else}
+                                                <div class="dataface-view-logo">
+                                                <img src="{$ENV.DATAFACE_URL}/images/missing_logo.gif" alt="Missing Logo"/>
+                                                </div>
+                                            {/if}
+                                            
+                                        {/if}
+                                        {block record=$subrecord table=$subrecord->_table->tablename name="before_record_actions"}
+                                        {define_slot table=$subrecord->_table->tablename name="record_actions"}
+                                        
+                                        {/define_slot}
+                                        {block record=$subrecord table=$subrecord->_table->tablename name="after_record_actions"}
+                                        
+                                        {foreach from=$subrv->sections item=section}
+                                            {if $section.class == 'left'}
+                                            {collapsible_sidebar heading=$section.label see_all=$section.url edit_url=$section.edit_url movable=1 id=$section.name prefix="leftsidebar" oncollapse="DatafaceSections.oncollapse(this)" onexpand="DatafaceSections.onexpand(this)" display=$section.display}
+                                                {define_slot table=$subrecord->_table->tablename name="`$section.name`_section_content"}
+                                                {if $section.content}
+                                                    <div class="dataface-view-section">
+                                                    {$section.content}
+                                                    </div>
+                                                {elseif $section.fields}
+                                                    <table class="record-view-table">
+                                                    <tbody>
+                                                    {foreach from=$section.fields item=field key=fieldname}
+                                                        {if $field.visibility.browse != 'hidden' and $record->htmlValue($field.name)}
+                                                            <tr><th class="record-view-label">{$field.widget.label}</th><td class="record-view-value">{$record->htmlValue($field.name)}</td></tr>
+                                                        {/if}
+                                                    {/foreach}
+                                                    </tbody>
+                                                    </table>
+                                                {elseif $section.records}
+                                                    {glance_list records=$section.records}
+                                                {/if}
+                                                {/define_slot}
+                                            {/collapsible_sidebar}
+                                            {/if}
+                                        
+                                        {/foreach}
+                                        
+                                    </div>
+                                </td>
+                                <td id="dataface-sections-main-column" valign="top">
+                                    <div class="dataface-sections-main dataface-sections-count-{$subrv->sections|@count}" id="dataface-sections-main"> 
+                                        {define_slot table=$subrecord->_table->tablename name="record_view_main_section"}
+                                            {if $ENV.prefs.collapse_all_sections_enabled}
+                                            <div class="section-tools">
+                                                <a href="javascript:DatafaceSections.collapseAll()"><img src="{$ENV.DATAFACE_URL}/images/treeExpanded.gif">Collapse All Sections</a> &nbsp; &nbsp;
+                                            <a href="javascript:DatafaceSections.expandAll()"><img src="{$ENV.DATAFACE_URL}/images/treeCollapsed.gif">Expand All Sections</a>
+                                            </div>
+                                            {/if}
+                                            
+                                            {foreach from=$subrv->sections item=section}
+                                                {if $section.class == 'main'}
+                                                {collapsible_sidebar heading=$section.label edit_url=$section.edit_url movable=1 prefix="mainsidebar" id=$section.name onexpand="DatafaceSections.onexpand(this)" oncollapse="DatafaceSections.oncollapse(this)" display=$section.display}
+                                                    {define_slot table=$subrecord->_table->tablename name="`$section.name`_section_content"}
+                                                    {if $section.content}
+                                                        <div class="dataface-view-section">
+                                                        {$section.content}
+                                                        </div>
+                                                    {elseif $section.fields}
+                                                        <table class="record-view-table">
+                                                        <tbody>
+                                                        {foreach from=$section.fields item=field key=fieldname}
+                                                            {if $field.visibility.browse != 'hidden'}
+                                                                {if $section.record}
+                                                                    {assign var="field_value" value=$section.record->htmlValue($field.name)}
+                                                                {else}
+                                                                    {assign var="field_value" value=$subrecord->htmlValue($field.name)}
+                                                                
+                                                                {/if}
+                                                                {if $field_value}
+                                                                    <tr><th class="record-view-label">
+                                                                            {if $field.label_link}<a href="{$field.label_link|escape}" target="_blank" class="field-label-link no-link-icon">{/if}
+                                                                                {$field.widget.label}
+                                                                            {if $field.label_link}</a>{/if}
+                                                                        </th>
+                                                                        <td class="record-view-value">{$field_value}</td></tr>
+                                                                {/if}
+                                                            {/if}
+                                                        {/foreach}
+                                                        </tbody>
+                                                        </table>
+                                                    {elseif $section.records}
+                                                        {glance_list records=$section.records}
+                                                    {/if}
+                                                    {/define_slot}
+                                                {/collapsible_sidebar}
+                                                {/if}
+                                            
+                                            {/foreach}
+                                        {/define_slot}
+                                        <div style="clear:both"></div>
+                                        
+                                    </div>
+                                    {literal}
+                
+                                     <script type="text/javascript">
+                                    // <![CDATA[
+                                        require(DATAFACE_URL+'/js/ajaxgold.js');
+                                        
+                                        var DatafaceSections = {
+                                            
+                                            'setDisplay': function(el,disp){
+                                                var params = '--record_id=*&--name='+encodeURIComponent('tables.{/literal}{$record->_table->tablename}{literal}.sections.'+el.getAttribute('df:section_name')+'.display')+'&--value='+disp;
+                                                var query = window.location.search;
+                                                if ( query.indexOf('-action=') >= 0 ){
+                                                    query = query.replace(/([?&])-action=[^&]+/g, '$1-action=ajax_set_preference');
+                                                } else {
+                                                    query = '-action=ajax_set_preference';
+                                                }
+                                                query = query.replace(/^[?]/, '');
+                                                var url = DATAFACE_SITE_HREF;
+                                                //alert(url + " : " + params);
+                                                postDataReturnText(url, params + '&' + query, function(text){});
+                                                    
+                                            },
+                                            
+                                            'oncollapse': function(el){
+                                                return this.setDisplay(el, 'collapsed');
+                                            
+                                            },
+                                            
+                                            'onexpand': function(el){
+                                                return this.setDisplay(el, 'expanded');
+                                            },
+                                            'collapseAll': function(){
+                                            
+                                                var handles = getElementsByClassName(document,'*','expansion-handle');
+                                                for ( var i=0; i<handles.length; i++){
+                                                    if ( !jQuery(handles[i].parentNode.nextSibling).hasClass('closed') ){
+                                                        jQuery(handles[i].parentNode.nextSibling).slideToggle("slow", Xataface.blocks.collapsible_sidebar.toggleCallback);
+                                                        //cd.collapseElement(handles[i]);
+                                                    }
+                                                }
+                                            },
+                                            'expandAll': function(){
+                                                var handles = getElementsByClassName(document,'*','expansion-handle');
+                                                for ( var i=0; i<handles.length; i++){
+                                                    if ( jQuery(handles[i].parentNode.nextSibling).hasClass('closed') ){
+                                                        jQuery(handles[i].parentNode.nextSibling).slideToggle("slow", Xataface.blocks.collapsible_sidebar.toggleCallback);
+                                                        //cd.collapseElement(handles[i]);
+                                                    }
+                                                }
+                                            }
+                                        
+                                        
+                                        };
+                                        
+                                        var updateSections = function(container){
+                                                    //alert('here');
+                                                    
+                                                    var params = window.location.search;//+'&'+Sortable.serialize("dataface-sections-left");
+                                                    params = params.replace(/([?&])-action=[^&]+/g, '$1-action=ajax_sort_sections');
+                                                    
+                                                    
+                                                    var movables = jQuery(container).find('.movable');
+                                                    var movables_str = '';
+                                                    for ( var i=0; i<movables.length; i++){
+                                                        movables_str += ','+movables[i].getAttribute('df:section_name');
+                                                    }
+                                                    params += '&--'+encodeURIComponent(container.getAttribute('id'))+'='+encodeURIComponent(movables_str);
+                                                    params = params.substring(1);
+                                                    //alert(params);
+                                                    postDataReturnText(DATAFACE_SITE_HREF, params, function(data){document.getElementById('terminal').innerHTML=data;});
+                                                    //alert(Sortable.serialize("dataface-sections-left"));
+                                                }
+                                                
+                                        jQuery('#dataface-sections-left').sortable({'handle': '.movable-handle', 'update': function(){updateSections(jQuery('#dataface-sections-left').get(0));}});
+                                        jQuery('#dataface-sections-main').sortable({'handle': '.movable-handle', 'update': function(){updateSections(jQuery('#dataface-sections-main').get(0));}});
+                                        /*Sortable.create("dataface-sections-left",
+                                            {
+                                                dropOnEmpty:true,
+                                                constraint:false, 
+                                                handle:'movable-handle',
+                                                tag:'div',
+                                                only:'movable',
+                                                onUpdate: updateSections
+                                            });
+                                        Sortable.create("dataface-sections-main",
+                                        {dropOnEmpty:true,constraint:false, handle:'movable-handle',tag:'div',only:'movable', onUpdate:updateSections});
+                                    */
+                                    // ]]>
+                                     </script>
+                                     {/literal}
+                                    <div id="terminal"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="view-related-record-footer-actions">
+                        	{actions_menu category="view_related_record_footer_actions" record=$subrecord}
+                        </div>
+                    </div>
+                    
+                {/foreach}
+            </div>
+        </div><!-- view-related-record-wrapper-->
+        {/fill_slot}
+    {/use_macro}
+{else}
+    {use_macro file="Dataface_Main_Template.html"}
+        {fill_slot name="record_content"}
+            {translate id="scripts.GLOBAL.NO_RECORDS_MATCHED_REQUEST"}No records matched your request.{/translate}
+        {/fill_slot}
+    {/use_macro}
+
+{/if}

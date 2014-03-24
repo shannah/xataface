@@ -1,0 +1,56 @@
+.view-related-record-wrapper .subrecord-tabs {
+
+	background-color: transparent;
+}
+
+.view-related-record-wrapper .ui-widget-content {
+	background: transparent;
+}
+
+.view-related-record-wrapper .ui-widget-header {
+	background:none;
+	background-color: rgb(237, 243,254);
+	border: 1px solid rgb(187,204,255);
+} 
+
+.view-related-record-wrapper .ui-state-active a, .view-related-record-wrapper .ui-state-active a:link, .view-related-record-wrapper .ui-state-active a:visited {
+	color: black;
+	
+}
+
+.view-related-record-wrapper .ui-state-active {
+	border: 1px solid rgb(187,204,255); 
+}
+
+.view-related-record-wrapper .dataface-sections-count-1 h3.Dataface_collapsible_sidebar
+{
+	display:none;	
+}
+.view-related-record-wrapper .dataface-sections-count-1 .movable {
+	border:none;
+}
+
+.view-related-record-wrapper .open-record-in-table {
+	list-style-type: none;
+	list-style-image: none;
+	display:block;
+	float:left;
+	
+}
+.view-related-record-wrapper .open-record-in-table a {
+	text-decoration: none;
+	background-image: url(../../../images/go-jump.png);
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	display:block;
+	
+}
+.view-related-record-wrapper .open-record-in-table a:hover {
+	border-bottom: 1px dotted #ccc;
+}
+
+
+.view-related-record-footer-actions {
+	height: 20px;
+	display:block;
+}
