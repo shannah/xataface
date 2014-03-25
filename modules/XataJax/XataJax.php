@@ -10,6 +10,8 @@ import('Dataface/JavascriptTool.php');
 import('Dataface/CSSTool.php');
 class modules_XataJax {
 	
+	private $scriptsSent = false;
+	
 	public function __construct(){
 	
 	
@@ -45,17 +47,18 @@ class modules_XataJax {
 	
 
 	public function block__after_global_footer(){
-		
-		$js = Dataface_JavascriptTool::getInstance();
-		$used = false;
-		if ( $js->getScripts() ){
-			echo $js->getHtml();
-			$used = true;
+		if ( !$this->scriptsSent ){
+			$this->scriptsSent = true;
+			$js = Dataface_JavascriptTool::getInstance();
+			$used = false;
+			if ( $js->getScripts() ){
+				echo $js->getHtml();
+				$used = true;
+			}
+			
+			return $used;
 		}
-		
-		
-		
-		return $used;
+		return false;
 	}
 	
 	public function block__javascript_tool_includes(){
