@@ -16,7 +16,7 @@
 							<li>
 							
 							
-							<div><a href="{$rowRecord->getURL()}">{$rowRecord->getTitle()|escape}</a></div>
+							<div><a href="{$row->getParentURL('-action=view_related_record')|escape}">{$rowRecord->getTitle()|escape}</a></div>
 							<div>{$rowRecord->getDescription()}</div>
 							</li>
 						{/if}

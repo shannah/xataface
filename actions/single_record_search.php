@@ -33,7 +33,7 @@ class dataface_actions_single_record_search {
 		if ( @$query['--format'] == 'RSS2.0' ){
 			$this->handleRSS($results);
 		} else {
-			df_display(array('results'=>&$results, 'queryString'=>$query['--subsearch']), 'Dataface_single_record_search.html');
+			df_display(array('results'=>&$results, 'queryString'=>$query['--subsearch'], 'record'=>$record), 'Dataface_single_record_search.html');
 		}
 	}
 	

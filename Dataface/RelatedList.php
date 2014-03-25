@@ -439,11 +439,11 @@ class Dataface_RelatedList {
                         unset($field);
                         $field = & $fields_index[$key]; //$s->getField($fullpath);
                         $srcRecord = & $rrec->toRecord($field['tablename']);
-                        if ( @$_GET['-dev'] ){
+                        //if ( @$_GET['-dev'] ){
                         	$link = $this->_record->getURL('-action=view_related_record&-related-record-id=' . urlencode($rrecid));
-                        } else {
-                        	$link = $srcRecord->getURL('-action=browse&-portal-context=' . urlencode($rrecid));
-                        }
+                        //} else {
+                        //	$link = $srcRecord->getURL('-action=browse&-portal-context=' . urlencode($rrecid));
+                        //}
                         $srcRecordId = $srcRecord->getId();
 
                         //$val = $this->_record->preview($fullpath, $i,255, $this->_where, $sort_columns_str);

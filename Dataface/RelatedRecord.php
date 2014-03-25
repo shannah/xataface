@@ -158,6 +158,18 @@ class Dataface_RelatedRecord {
 	}
 	
 	
+	function getParentURL($params=null){
+		if ( is_null($params) ){
+			$params = array();
+		} else if ( is_string($params) ){
+			$p = array();
+			parse_str($params, $p);
+			$params = $p;
+		}
+		$params['-related-record-id'] = $this->getId();
+		return $this->_record->getURL($params);
+	}
+	
 	/**
 	 * @brief Initializes the values array for this related record.
 	 * @private
