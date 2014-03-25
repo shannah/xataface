@@ -54,3 +54,12 @@
 	height: 20px;
 	display:block;
 }
+
+
+.view-related-record-wrapper div.view-tab-content {
+	margin-left:0;
+}
+
+.view-related-record-wrapper .view-mode .edit-related-record-actions-wrapper {
+	display:none;
+}
