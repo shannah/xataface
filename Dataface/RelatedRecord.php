@@ -1251,6 +1251,9 @@ class Dataface_RelatedRecord {
 			}
 			
 			$parentPerms = $this->_record->getPermissions(array('relationship'=>$this->_relationshipName));
+			//echo $this->_record->getTitle();
+			//echo $this->_relationshipName;
+			//print_r($parentPerms);
 			$domainRecord = $this->toRecord($targetTable);
 			
 			
@@ -1320,9 +1323,9 @@ class Dataface_RelatedRecord {
 			
 			
 			
-			if ( @$parentPerms['view related records'] ){
+			if ( @$parentPerms['view related records override'] ){
 				$perms['view'] = 1;
-			} else if ( isset($parentPerms['view related records']) and !@$parentPerms['view related records'] ){
+			} else if ( isset($parentPerms['view related records override']) and !@$parentPerms['view related records override'] ){
 				$perms['view'] = 0;
 			}
 			if ( @$parentPerms['find related records'] ){

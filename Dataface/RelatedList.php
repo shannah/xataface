@@ -418,6 +418,10 @@ class Dataface_RelatedList {
                     unset($rrec);
                     $rrec = $this->_record->getRelatedRecord($this->_relationship_name, $i, $this->_where, $sort_columns_str); //new Dataface_RelatedRecord($this->_record, $this->_relationship_name, $this->_record->getValues($fullpaths, $i, 0, $sort_columns_str));
                     $rrecid = $rrec->getId();
+                    $rowPerms = $rrec->getPermissions();
+                    if ( !@$rowPerms['view'] ){
+                    	continue;
+                    }
 
                     echo "<tr class=\"listing $rowClass\" style=\"$style\" id=\"row_$rrecid\">";
                     if (count($selected_actions) > 0) {

@@ -399,9 +399,9 @@ class Dataface_PermissionsTool_Instance {
 		} else if ( isset($parentPerms['edit related records']) and !@$parentPerms['edit related records'] ){
 			$perms['edit'] = 0;
 		}
-		if ( @$parentPerms['view related records'] ){
+		if ( @$parentPerms['view related records override'] ){
 			$perms['view'] = 1;
-		} else if ( isset($parentPerms['view related records']) and !@$parentPerms['view related records'] ){
+		} else if ( isset($parentPerms['view related records override']) and !@$parentPerms['view related records override'] ){
 			$perms['view'] = 0;
 		}
 		if ( @$parentPerms['find related records'] ){
