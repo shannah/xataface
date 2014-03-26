@@ -118,7 +118,9 @@ class Dataface_SkinTool extends Smarty{
 			that the <pre>$GLOBALS[Dataface_Globals_Local_Templates_c]</pre> directory exists and is 
 			writable by the web server.</p>", E_USER_ERROR);
 		}
-		
+		if ( !file_exists($this->compile_dir.DIRECTORY_SEPARATOR.'.htaccess') ){
+			file_put_contents($this->compile_dir.DIRECTORY_SEPARATOR.'.htaccess', 'Deny from all');
+		}
 		$this->languageTool =& Dataface_LanguageTool::getInstance();
 		
 		
