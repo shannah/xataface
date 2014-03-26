@@ -298,6 +298,12 @@ class Dataface_Application {
 	var $tableNamesUsed = array();
 	
 	/**
+	 * @brief Keeps track of files used in the current request -- jus so we know the
+	 *	breadth of the request.  This can be used by caching schemes.
+	 */
+	var $filesUsed = array();
+	
+	/**
 	 * @private
 	 */
 	var $main_content_only = false;
@@ -2438,6 +2444,7 @@ class Dataface_Application {
 				$loginPrompt = true;
 				$loginError = $auth_result->getMessage();
 			} else if ( $authTool->isLoggedIn() ){
+				Dataface_ConfigTool::getInstance()->loadUserConfig();
 				// The user is logged in ok
 				// Handle the request
 				$result = $this->handleRequest();

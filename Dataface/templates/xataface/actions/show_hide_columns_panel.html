@@ -1,0 +1,61 @@
+<div class="show-hide-columns-panel">
+	
+	<h2>{translate id="show_hide_columns.title"}Select Column Visibility{/translate}</h2>
+	
+	<p class="instructions">
+		{translate id="show_hide_columns.instructions"}
+		Check the boxes next to columns that you want to appear in the specified view.  Uncheck
+		boxes next to columns you wish to hide.
+		{/translate}
+	</p>
+	<table class="show-hide-columns-grid" data-table-name="{$table_name|escape}">
+		<thead>
+			<tr>
+				<th>{translate id="show_hide_columns.column_label"}Column{/translate}</th>
+				{foreach from=$visibility_types item=vtype}
+					<th class="visibility-col">{$vtype|escape}</th>
+				{/foreach}
+				<th>Record Data</th>
+			</tr>
+			<tr>
+				<td>(Un)Select All &raquo;</td>
+				{foreach from=$visibility_types item=vtype}
+					<th class="checkbox-col visibility-col">
+						<input type="checkbox"
+							class="select-all"
+							id="select-all-{$vtype|escape}" 
+							data-visibility-type="{$vtype|escape}"
+						/>
+					</th>
+				{/foreach}
+				<th><!-- Record Data --></th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach from=$fields item=field}
+				<tr data-field-name="{$field.name|escape}">
+					<th>{$field.widget.label|escape}</th>
+					{foreach from=$visibility_types item=vtype}
+						<td class="checkbox-col visibility-col">
+							<input type="checkbox"
+								data-visibility-type="{$vtype|escape}"
+								data-field-name="{$field.name|escape}"
+								{if $self->is_checked($field.name, $vtype)}
+									checked="1"
+								{/if}
+							/>
+						</td>
+					{/foreach}
+					<td>
+						{$record->preview($field.name)|escape}
+					</td>
+				</tr>
+			{/foreach}
+		</tbody>
+	</table>
+	
+	<div class="buttons">
+		<button class="save">Save Changes</button>
+	</div>	
+
+</div>

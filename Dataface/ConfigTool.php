@@ -38,10 +38,13 @@ class Dataface_ConfigTool {
 	var $configLoaded = false;
 	var $iniLoaded = array();
 	var $configTableName = 'dataface__config';
+	var $userConfig = null;
+	var $userConfigLoaded = false;
 
 	function Dataface_ConfigTool(){
 		$this->apc_load();
 		register_shutdown_function(array(&$this, 'apc_save'));
+		$this->userConfig = new StdClass;
 	}
 	
 	/**
@@ -68,6 +71,68 @@ class Dataface_ConfigTool {
 		return $out;
 	}
 	
+	/**
+	 * @brief Loads the user config file settings from the user config file.
+	 * This is a single file including all overridden settings as one large JSON 
+	 * data structure.  It is much like a session structure.
+	 * @since 2.1
+	 */
+	function loadUserConfig(){
+		if ( !$this->userConfigLoaded ){
+			if ( class_exists('Dataface_AuthenticationTool') 
+				and ($user_name = Dataface_AuthenticationTool::getInstance()->getLoggedInUserName()) )
+			{
+				$config_dir = DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'user_config';
+				if ( file_exists($config_dir) ){
+					$htaccess_file = $config_dir.DIRECTORY_SEPARATOR.'.htaccess';
+					if ( !file_exists($htaccess_file) ){
+						file_put_contents($htaccess_file, 'Deny from all');
+					}
+				
+					$file_name = preg_replace('/[^0-9a-zA-Z]/', '_', $user_name).'.'.md5($user_name).'.json';
+					$file_path = $config_dir.DIRECTORY_SEPARATOR.$file_name;
+					if ( file_exists($file_path) ){
+						$this->userConfig = json_decode(file_get_contents($file_path));
+						// Mark this file as used so that caching mechanisms can compare
+						// cache times against the mtime of this file.
+						Dataface_Application::getInstance()->usedFiles[] = $file_path;
+					}
+				}
+			}
+			if ( !$this->userConfig ){
+				 $this->userConfig = new StdClass;
+			}
+			$this->userConfigLoaded = true;
+		}
+		return $this->userConfig;
+	}
+	
+	/**
+	 * @brief Saves the user config data to the user config file.
+	 * @since 2.1
+	 */
+	function writeUserConfig(){
+		if ( isset($this->userConfig) ){
+			if ( class_exists('Dataface_AuthenticationTool') 
+				and ($user_name = Dataface_AuthenticationTool::getInstance()->getLoggedInUserName()) )
+			{
+				$config_dir = DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'user_config';
+				if ( file_exists($config_dir) ){
+					$file_name = preg_replace('/[^0-9a-zA-Z]/', '_', $user_name).'.'.md5($user_name).'.json';
+					$file_path = $config_dir.DIRECTORY_SEPARATOR.$file_name;
+					file_put_contents($file_path, json_encode($this->userConfig), LOCK_EX);
+					return true;
+				} else {
+					throw new Exception("Failed to write user config because the user_config directory doesn't exist.");
+				}
+			}
+			else
+			{
+				throw new Exception("Failed to write user config because you are not logged in.");
+			}
+		}
+		return false;
+	}
 	
 	/**
 	 * Loads configuration information from an INI file.
@@ -250,12 +315,63 @@ class Dataface_ConfigTool {
 			
 			unset($config);
 		}
+		
+		// New in 2.1.  We load user config if it is available to override the 
+		// built-in config
+		$user_config = $this->userConfig;
+		$upaths = array();
+		if ( $type == 'lang' ){
+			$upaths[] =  'lang/'.$app->_conf['lang'].'.ini';
+			$upaths[] = 'tables/'.$tablename.'/lang/'.$app->_conf['lang'].'.ini';
+		} else {
+			$upaths[] = $type.'.ini';
+			$upaths[] = 'tables/'.$tablename.'/'.$type.'.ini';
+		}
+		foreach ( $upaths as $p ){
+			if ( isset($user_config->{$p}) ){
+				if ( $type == 'lang' ){
+					$this->config[$type][$app->_conf['lang']][$tablename] = array_merge_recursive_unique(
+						$this->config[$type][$app->_conf['lang']][$tablename],
+						$this->objectToArray($user_config->{$p})
+					);
+				} else {
+					$this->config[$type][$tablename] = array_merge_recursive_unique(
+						$this->config[$type][$tablename],
+						$this->objectToArray($user_config->{$p})
+					);
+					
+				}
+			}
+		}
+		
+		
 		if ( $type == 'lang' ){
 			return $this->config[$type][$app->_conf['lang']][$tablename];
 		} else {
 			return $this->config[$type][$tablename];
 		}
 		
+	}
+	
+	private function objectToArray($d) {
+		if (is_object($d)) {
+			// Gets the properties of the given object
+			// with get_object_vars function
+			$d = get_object_vars($d);
+		}
+ 
+		if (is_array($d)) {
+			/*
+			* Return array converted to object
+			* Using __FUNCTION__ (Magic constant)
+			* for recursive call
+			*/
+			return array_map(__METHOD__, $d);
+		}
+		else {
+			// Return array
+			return $d;
+		}
 	}
 	
 	function apc_save(){

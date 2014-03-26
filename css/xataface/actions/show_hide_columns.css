@@ -1,0 +1,14 @@
+table.show-hide-columns-grid th.checkbox-col, td.checkbox-col {
+	text-align: center;
+}
+
+table.show-hide-columns-grid th, table.show-hide-columns-grid td {
+	border-bottom: 1px solid #ccc;
+}
+
+table.show-hide-columns-grid th.visibility-col,
+table.show-hide-columns-grid td.visibility-col {
+	border-left : 1px solid rgb(187,205,255);
+	background-color: rgb(237,243,254);
+	width: 50px;
+}
