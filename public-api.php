@@ -824,6 +824,37 @@ function df_tz_or_offset(){
 		}
 	}
 
+	/**
+	 * Returns the value from a struct using a path.
+	 * Paths are of the form key:subkey:subsubkey
+	 */
+	function df_get_from_struct(&$struct, $path){
+		$parts = explode(':', $path);
+		$c =& $struct;
+		foreach ( $parts as $p ){
+			if ( is_object($c) ){
+				if ( isset($c->{$p}) ){
+					$tmp =& $c->{$p};
+					unset($c);
+					$c =& $tmp;
+				} else {
+					return null;
+				}
+			} else if ( is_array($c) ){
+				if ( isset($c[$p]) ){
+					$tmp =& $c[$p];
+					unset($c);
+					$c =& $tmp;
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		}
+		return $c;
+			
+	}
 
 	function df_IPv4To6($ip) {
 		if ( strpos($ip, ':') !== false ){

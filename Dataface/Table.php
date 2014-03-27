@@ -3685,11 +3685,18 @@ class Dataface_Table {
 		foreach ($conf as $rel_name => $rel_values){
 			// Case 1: The we have an array of values - meaning that this is the definition of a relationship.
 			// Right now there is only one case, but we could have cases with single entries also.
-			if ( is_array( $rel_values ) ){
+			if ( strpos($rel_name, '.') === false and is_array( $rel_values ) ){
 				
 				$r[$rel_name] = new Dataface_Relationship($this->tablename, $rel_name, $rel_values);
-				
+			} else if ( is_array($rel_values) ){
+				list($rel_name, $field_name) = explode('.', $rel_name);
+				if ( isset($r[$rel_name]) ){
+					$field_def = array();
+					$this->_parseIniSection($rel_values, $field_def);
+					$r[$rel_name]->setFieldDefOverride($field_name, $field_def);
+				}
 			}
+			
 		}
 		
 		$parent =& $this->getParent();

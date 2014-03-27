@@ -172,6 +172,14 @@ class Dataface_RelatedList {
         $s = & $this->_table;
         $r = & $this->_relationship->_schema;
         $fkeys = $this->_relationship->getForeignKeyValues();
+        $local_fkey_fields = array();
+        foreach ( $fkeys as $fk_table_name => $fk_table_cols ){
+        	foreach ( $fk_table_cols as $k=>$v ){
+        		if ( $v and $v{0} === '$' ){
+        			$local_fkey_fields[$k] = $v;
+        		}
+        	}
+        }
         $default_order_column = $this->_relationship->getOrderColumn();
 
         //echo "Def order col = $default_order_column";
@@ -335,13 +343,20 @@ class Dataface_RelatedList {
                     $fullpath = $this->_relationship_name . '.' . $key;
 
                     $field = & $s->getField($fullpath);
-                    if (isset($this->_relationship->_schema['visibility'][$key]) and $this->_relationship->_schema['visibility'][$key] == 'hidden')
+                    $field_override = & $this->_relationship->getFieldDefOverride($fullpath);
+                    $visibility = null;
+                    if ( ($visibility = df_get_from_struct($field_override, 'visibility:list')) !== null ){
+                    	if ( $visibility === 'hidden' ){
+                    		continue;
+                    	}
+                    }
+                    if ($visibility === null and isset($this->_relationship->_schema['visibility'][$key]) and $this->_relationship->_schema['visibility'][$key] == 'hidden')
                         continue;
-                    if ($field['visibility']['list'] != 'visible')
+                    if ($visibility === null and $field['visibility']['list'] != 'visible')
                         continue;
                     if ($s->isBlob($fullpath) or $s->isPassword($fullpath))
                         continue;
-                    if (isset($localFields[$key]) and !isset($this->_relationship->_schema['visibility'][$key]))
+                    if ($visibility === null and isset($local_fkey_fields[$key]) and !isset($this->_relationship->_schema['visibility'][$key]))
                         continue;
                     if (PEAR::isError($field)) {
                         $field->addUserInfo("Error getting field info for field $key in RelatedList::toHtml() ");

@@ -68,6 +68,8 @@ class Dataface_Relationship {
 	var $_keys;
 	
 	
+	var $_field_def_overrides = array();
+	
 	/**
 	 * Flag to indicate whether or not the sql has been generated. (Used in particular
 	 * by the getSQL() method.
@@ -117,6 +119,25 @@ class Dataface_Relationship {
 		}
 		$this->_permissions =& $this->_schema['permissions'];
 		
+	}
+	
+	function &getFieldDefOverride($field_name, $default=array()){
+		if ( strpos($field_name,'.') !== false	){
+			list($rname,$field_name) = explode('.', $field_name);
+		}
+		if ( isset($this->_field_def_overrides[$field_name]) ){
+			return $this->_field_def_overrides[$field_name];
+		} else {
+			return $default;
+		}
+	}
+	
+	
+	function setFieldDefOverride($field_name, array $field_def){
+		if ( strpos($field_name,'.') !== false	){
+			list($rname,$field_name) = explode('.', $field_name);
+		}
+		$this->_field_def_overrides[$field_name] = $field_def;
 	}
 	
 	/**
