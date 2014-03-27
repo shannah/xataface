@@ -175,7 +175,7 @@ class Dataface_RelatedList {
         $local_fkey_fields = array();
         foreach ( $fkeys as $fk_table_name => $fk_table_cols ){
         	foreach ( $fk_table_cols as $k=>$v ){
-        		if ( $v and $v{0} === '$' ){
+        		if ( is_string($v) and $v and $v{0} === '$' ){
         			$local_fkey_fields[$k] = $v;
         		}
         	}
