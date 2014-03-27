@@ -234,7 +234,7 @@ class dataface_actions_show_hide_columns {
 				}
 				$relationship_fields = array();
 				$relationship = $table->getRelationship($relationship_name);
-				foreach ( $relationship->fields(true, true) as $field_name ){
+				foreach ( $relationship->fields(true) as $field_name ){
 					$fperms = $relationship->getPermissions(array('field' => $field_name));
 					if ( !@$fperms['show hide columns'] ){
 						continue;
