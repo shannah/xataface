@@ -342,21 +342,14 @@ class Dataface_RelatedList {
 
                     $fullpath = $this->_relationship_name . '.' . $key;
 
-                    $field = & $s->getField($fullpath);
-                    $field_override = & $this->_relationship->getFieldDefOverride($fullpath);
-                    $visibility = null;
-                    if ( ($visibility = df_get_from_struct($field_override, 'visibility:list')) !== null ){
-                    	if ( $visibility === 'hidden' ){
-                    		continue;
-                    	}
-                    }
-                    if ($visibility === null and isset($this->_relationship->_schema['visibility'][$key]) and $this->_relationship->_schema['visibility'][$key] == 'hidden')
+                    $field =&  $this->_relationship->getField($key);
+                    if (isset($this->_relationship->_schema['visibility'][$key]) and $this->_relationship->_schema['visibility'][$key] == 'hidden')
                         continue;
-                    if ($visibility === null and $field['visibility']['list'] != 'visible')
+                    if ($field['visibility']['list'] != 'visible')
                         continue;
                     if ($s->isBlob($fullpath) or $s->isPassword($fullpath))
                         continue;
-                    if ($visibility === null and isset($local_fkey_fields[$key]) and !isset($this->_relationship->_schema['visibility'][$key]))
+                    if (isset($local_fkey_fields[$key]) and !isset($this->_relationship->_schema['visibility'][$key]))
                         continue;
                     if (PEAR::isError($field)) {
                         $field->addUserInfo("Error getting field info for field $key in RelatedList::toHtml() ");
@@ -408,7 +401,7 @@ class Dataface_RelatedList {
                 $fields_index = array();
                 foreach ($usedColumns as $key) {
                     $fullpaths[$key] = $this->_relationship_name . '.' . $key;
-                    $fields_index[$key] = & $s->getField($fullpaths[$key]);
+                    $fields_index[$key] =& $this->_relationship->getField($key);
                 }
 
                 $evenRow = false;

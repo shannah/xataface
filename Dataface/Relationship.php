@@ -982,8 +982,8 @@ class Dataface_Relationship {
 	 *		whereas relative would be something like firstName).
 	 * @returns array or null if field doesn't exist.
 	 */
-	function &getField($fieldname){
-		if ( !isset($this->_cache[__FUNCTION__][$fieldname]) ){
+	function &getField($fieldname, $with_override = true){
+		if ( !isset($this->_cache[__FUNCTION__][$fieldname][$with_override?0:1]) ){
 			if ( strpos($fieldname, '.') !== false ){
 				list($tablename, $sfieldname) = explode('.', $fieldname);
 				$table =& Dataface_Table::loadTable($tablename);
@@ -993,7 +993,7 @@ class Dataface_Relationship {
 				// Check the domain table first
 				$domainTable = Dataface_Table::loadTable($this->getDomainTable());
 				$f =& $domainTable->getField($fieldname);
-				if ( !PEAR::isError($f) ) return $field =& $f;
+				if ( !PEAR::isError($f) )  $field =& $f;
 				else {
 					
 					// Domain table doesn't have a field by this name
@@ -1011,9 +1011,17 @@ class Dataface_Relationship {
 					}
 				}
 			}
-			$this->_cache[__FUNCTION__][$fieldname] =& $field;
+			if ( isset($field) and  $with_override and isset($this->_field_def_overrides[$field['name']]) ){
+				$field_merged = array_merge_recursive_unique(
+					$field,
+					$this->_field_def_overrides[$field['name']]
+				);
+				unset($field);
+				$field =& $field_merged;
+			}
+			$this->_cache[__FUNCTION__][$fieldname][$with_override?0:1] =& $field;
 		}
-		return $this->_cache[__FUNCTION__][$fieldname];
+		return $this->_cache[__FUNCTION__][$fieldname][$with_override?0:1];
 	}
 	
 	
