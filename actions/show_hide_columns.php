@@ -39,9 +39,7 @@ class dataface_actions_show_hide_columns {
 		}
 		
 		$data = json_decode($_POST['--data'], true);
-		if ( !isset($data['fields']) ){
-			throw new Exception("No fields specified");
-		}
+		
 		$fields = $data['fields'];
 		$app = Dataface_Application::getInstance();
 		$query = $app->getQuery();
@@ -54,12 +52,7 @@ class dataface_actions_show_hide_columns {
 		}
 		$config_tool = Dataface_ConfigTool::getInstance();
 		$user_config = $config_tool->loadUserConfig();
-		$config_path = 'tables/'.$table_name.'/fields.ini';
-		if ( !@$user_config->{$config_path} ){
-			$user_config->{$config_path} = new StdClass;
-		}
-		$user_table_config = @$user_config->{$config_path};
-		
+		$errors = array();
 		$visibilities = array(
 			'visible',
 			'hidden'
@@ -67,34 +60,102 @@ class dataface_actions_show_hide_columns {
 		
 		$opt_types = array('list', 'find', 'browse', 'csv', 'rss', 'xml');
 		
-		$errors = array();
-	
-		foreach ( $fields as $field_name => $field_opts ){
-			if ( is_array($field_opts) ){
-				if ( !isset($user_table_config->{$field_name}) ){
-					$user_table_config->{$field_name} = new StdClass;
-				}
-				if ( !isset($user_table_config->{$field_name}->visibility) ){
-					$user_table_config->{$field_name}->visibility = new StdClass;
-				}
-				$field_perms = $table->getPermissions(array('field'=>$field_name));
-				if ( !@$field_perms['show hide columns'] ){
-					$errors[] = 'You don\'t have permission to alter column visibility for field '.$field_name;
-					continue;
-				}
-				$visibility_config = $user_table_config->{$field_name}->visibility;
-				foreach ( $field_opts as $opt_type => $opt_visibility ){
-					if ( !in_array($opt_visibility, $visibilities) ){
-						$errors[] = 'Invalid visibility for field '.$field_name.'.  Expecting visible or hidden but received '.$opt_visibility.'.';
+		if ( isset($data['fields']) ){
+		
+			$fields = $data['fields'];
+			$config_path = 'tables/'.$table_name.'/fields.ini';
+			if ( !@$user_config->{$config_path} ){
+				$user_config->{$config_path} = new StdClass;
+			}
+			$user_table_config = @$user_config->{$config_path};
+			
+			
+			
+			foreach ( $fields as $field_name => $field_opts ){
+				if ( is_array($field_opts) ){
+					if ( !isset($user_table_config->{$field_name}) ){
+						$user_table_config->{$field_name} = new StdClass;
+					}
+					if ( !isset($user_table_config->{$field_name}->visibility) ){
+						$user_table_config->{$field_name}->visibility = new StdClass;
+					}
+					$field_perms = $table->getPermissions(array('field'=>$field_name));
+					if ( !@$field_perms['show hide columns'] ){
+						$errors[] = 'You don\'t have permission to alter column visibility for field '.$field_name;
 						continue;
 					}
-					if ( !in_array($opt_type, $opt_types) ){
-						$errors[] = 'Invalid option type for field '.$field_name.'.  Expecting one of {'.implode(', ', $opt_types).'} but received '.$opt_type.'.';
+					$visibility_config = $user_table_config->{$field_name}->visibility;
+					foreach ( $field_opts as $opt_type => $opt_visibility ){
+						if ( !in_array($opt_visibility, $visibilities) ){
+							$errors[] = 'Invalid visibility for field '.$field_name.'.  Expecting visible or hidden but received '.$opt_visibility.'.';
+							continue;
+						}
+						if ( !in_array($opt_type, $opt_types) ){
+							$errors[] = 'Invalid option type for field '.$field_name.'.  Expecting one of {'.implode(', ', $opt_types).'} but received '.$opt_type.'.';
+							continue;
+						}
+						$visibility_config->{$opt_type} = $opt_visibility;
+					}
+				}	
+			}
+		}
+		
+		// Now deal with the relationships
+		if ( isset($data['relationships']) ){
+			foreach ( $data['relationships'] as $relationship_data ){
+				$config_path = 'tables/'.$table_name.'/relationships.ini';
+				if ( !@$user_config->{$config_path} ){
+					$user_config->{$config_path} = new StdClass;
+				}
+				$user_table_config = @$user_config->{$config_path};
+				
+				if ( isset($relationship_data['fields']) ){
+					$relationship_name = $relationship_data['name'];
+					if ( !$relationship_name ){
+						throw new Exception("Expected name for relationship but did not receive one.");
 						continue;
 					}
-					$visibility_config->{$opt_type} = $opt_visibility;
+					$relationship = $table->getRelationship($relationship_name);
+					if ( PEAR::isError($relationship) or !isset($relationship) ){
+						throw new Exception("Relationship ".$relationship_name." does not exist.");
+					}
+					foreach ( $relationship_data['fields'] as $field_name => $field_opts ){
+						list($r_name, $r_field_name) = explode('.', $field_name);
+						if ( $r_name !== $relationship_name ){
+							throw new Exception("Relationship fields must have same root name as the relationship itself.");
+							continue;
+						}
+						if ( !$relationship->hasField($r_field_name, true) ){
+							throw new Exception("Relationship ".$relationship_name." has no such field ".$r_field_name);
+						}
+						
+						if ( !isset($user_table_config->{$field_name}) ){
+							$user_table_config->{$field_name} = new StdClass;
+						}
+						if ( !isset($user_table_config->{$field_name}->visibility) ){
+							$user_table_config->{$field_name}->visibility = new StdClass;
+						}
+						$field_perms = $relationship->getPermissions(array('field'=>$r_field_name));
+						if ( !@$field_perms['show hide columns'] ){
+							$errors[] = 'You don\'t have permission to alter column visibility for field '.$field_name;
+							continue;
+						}
+						$visibility_config = $user_table_config->{$field_name}->visibility;
+						foreach ( $field_opts as $opt_type => $opt_visibility ){
+							if ( !in_array($opt_visibility, $visibilities) ){
+								$errors[] = 'Invalid visibility for field '.$field_name.'.  Expecting visible or hidden but received '.$opt_visibility.'.';
+								continue;
+							}
+							if ( !in_array($opt_type, $opt_types) ){
+								$errors[] = 'Invalid option type for field '.$field_name.'.  Expecting one of {'.implode(', ', $opt_types).'} but received '.$opt_type.'.';
+								continue;
+							}
+							$visibility_config->{$opt_type} = $opt_visibility;
+						}
+							
+					}
 				}
-			}	
+			}
 		}
 		
 		$res = $config_tool->writeUserConfig();
@@ -131,18 +192,22 @@ class dataface_actions_show_hide_columns {
 		}
 		
 		$fields = array();
-		foreach ( $table->fields(false, true, true) as $field_name => $field_config ){
-			$field_perms = $table->getPermissions(array('field' => $field_name));
-			if ( !@$field_perms['show hide columns'] ){
-				continue;
+		if ( !@$query['--hide-local-fields'] ){
+			foreach ( $table->fields(false, true, true) as $field_name => $field_config ){
+				$field_perms = $table->getPermissions(array('field' => $field_name));
+				if ( !@$field_perms['show hide columns'] ){
+					continue;
+				}
+				$fields[] = $field_config;
 			}
-			$fields[] = $field_config;
 		}
 		
 		$visibility_types = array('list','browse','find');
 		if ( isset($query['--visibility-types']) ){
 			$visibility_types = explode(' ', $query['--visibility-types']);
 		}
+		
+		
 		
 		$context = array(
 			'fields' => $fields,
@@ -151,6 +216,40 @@ class dataface_actions_show_hide_columns {
 			'visibility_types' => $visibility_types,
 			'self' => $this
 		);
+		
+		if ( @$query['--relationships'] ){
+			$relationships = array();
+			$rnames = array();
+			if ( $query['--relationships'] == '*' ){
+				// it's all relationships
+				$rnames = array_keys($table->relationships());
+			} else {
+				$rnames = explode(' ', $query['--relationships']);
+			}
+			
+			foreach ( $rnames as $relationship_name ){
+				$rperms = $table->getPermissions(array('relationship' => $relationship_name));
+				if ( !@$rperms['show hide columns'] ){
+					continue;
+				}
+				$relationship_fields = array();
+				$relationship = $table->getRelationship($relationship_name);
+				foreach ( $relationship->fields(true, true) as $field_name ){
+					$fperms = $relationship->getPermissions(array('field' => $field_name));
+					if ( !@$fperms['show hide columns'] ){
+						continue;
+					}
+					$field_def = $relationship->getField($field_name);
+					$relationship_fields[$relationship_name.'.'.$field_def['name']] = $field_def;
+				}
+				$relationships[] = array(
+					'name' => $relationship_name,
+					'label' => $relationship->getLabel(),
+					'fields' => $relationship_fields
+				);
+			}
+			$context['relationships'] = $relationships;
+		}
 		
 		Dataface_JavascriptTool::getInstance()
 			->import('xataface/actions/show_hide_columns.js');
@@ -172,6 +271,7 @@ class dataface_actions_show_hide_columns {
 			return false;
 		}
 		return @$field['visibility'][$visibility_type] !== 'hidden'; 
+		
 	}
 	
 	function json_out($data){

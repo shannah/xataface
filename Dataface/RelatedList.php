@@ -538,6 +538,8 @@ class Dataface_RelatedList {
             }
         }
 
+		Dataface_JavascriptTool::getInstance()
+			->import('xataface/actions/related_list.js');
         ob_start();
         df_display($context, 'xataface/RelatedList/list.html');
         $out = ob_get_contents();

@@ -14,14 +14,38 @@
 		var data = {fields:{}};
 		$('input[data-field-name]', el).each(function(){
 			var fieldName = $(this).attr('data-field-name');
-			var visibilityType = $(this).attr('data-visibility-type');
-			var visibility = $(this).is(':checked') ? 'visible' : 'hidden';
-			
-			data.fields[fieldName] = data.fields[fieldName] || {};
-			var fieldConfig = data.fields[fieldName];
-			
-			//fieldConfig.visibility = fieldConfig.visibility || {};
-			fieldConfig[visibilityType] = visibility;
+			if ( fieldName.indexOf('.') < 0 ){
+				// This is not a related field
+				var visibilityType = $(this).attr('data-visibility-type');
+				var visibility = $(this).is(':checked') ? 'visible' : 'hidden';
+				
+				data.fields[fieldName] = data.fields[fieldName] || {};
+				var fieldConfig = data.fields[fieldName];
+				
+				//fieldConfig.visibility = fieldConfig.visibility || {};
+				fieldConfig[visibilityType] = visibility;
+			} else {
+				var parts = fieldName.split('.');
+				var relationshipName = parts[0];
+				var sfieldName = parts[1];
+				if ( typeof(data['relationships']) === 'undefined'  ){
+					data.relationships = {};
+				}
+				if ( typeof(data.relationships[relationshipName]) === 'undefined' ){
+					data.relationships[relationshipName] = {
+						name : relationshipName,
+						fields : {}
+					};
+					
+				}
+				var relationshipConfig = data.relationships[relationshipName];
+				relationshipConfig.fields[fieldName] = relationshipConfig.fields[fieldName] || {};
+				var fieldConfig = relationshipConfig.fields[fieldName];
+				var visibilityType = $(this).attr('data-visibility-type');
+				var visibility = $(this).is(':checked') ? 'visible' : 'hidden';
+				fieldConfig[visibilityType] = visibility;
+				
+			}
 		});
 		
 		return data;
@@ -84,7 +108,7 @@
 		});
 		
 		$('input.select-all', el).click(function(){
-			$('input[data-visibility-type="'+$(this).attr('data-visibility-type')+'"]', el)
+			$('input[data-visibility-type="'+$(this).attr('data-visibility-type')+'"]', $(this).parents('table').first())
 				.prop('checked', $(this).prop('checked'));
 		});
 		
