@@ -2743,3 +2743,5 @@ img.blob-preview {
     max-width: 100px;
     max-height: 100px;
 }
+
+.xf-form-group-inline div.field {float:left;}

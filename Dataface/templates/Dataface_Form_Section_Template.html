@@ -1,6 +1,22 @@
 {if $section.field.description}<div class="formHelp">{$section.field.description|escape}</div>{/if}
 {block name="before_quickform_table"}
-		<table width="100%" class="Dataface_QuickForm-table-wrapper xf-form-group" data-xf-record-id="{$form_record_id|escape}">
+
+{if $section.field.display=='inline'}
+	{assign var="table_tag" value="span"}
+	{assign var="tr_tag" value="span"}
+	{assign var="td_tag" value="span"}
+	{assign var="th_tag" value="span"}
+	{assign var="thead_tag" value="span"}
+	{assign var="tbody_tag" value="span"}
+{else}
+	{assign var="table_tag" value="table"}
+	{assign var="tr_tag" value="tr"}
+	{assign var="td_tag" value="td"}
+	{assign var="th_tag" value="th"}
+	{assign var="thead_tag" value="thead"}
+	{assign var="tbody_tag" value="tbody"}
+{/if}
+		<{$table_tag} width="100%" class="Dataface_QuickForm-table-wrapper xf-form-group {if $section.field.display=='inline'}xf-form-group-inline{/if} " data-xf-record-id="{$form_record_id|escape}">
 		
 			{* 
 				#03 - Inner elements loop
@@ -18,13 +34,13 @@
 				
 				{block name="before_`$element.field.name`_row" table=$element.field.tablename}
 				{define_slot name="`$element.field.name`_row" table=$element.field.tablename}
-				<tr id="{$element.field.name}_form_row">
+				<{$tr_tag} id="{$element.field.name}_form_row">
 					{if $element.field.widget.template}
-						<td colspan="2">
+						<{$td_tag} colspan="2">
 							{include file=$element.field.widget.template element=$element}
-						</td>
+						</{$td_tag}>
 					{else}
-						<td {if $element.field.display == 'block'}colspan="2" class="Dataface_QuickForm-textarea-label-cell Dataface_QuickForm-block-label-cell"{/if} valign="top" {if $element.field.display != 'block'}align="right" class="Dataface_QuickForm-label-cell"{/if}>
+						<{$td_tag} {if $element.field.display == 'block'}colspan="2" class="Dataface_QuickForm-textarea-label-cell Dataface_QuickForm-block-label-cell"{/if} valign="top" {if $element.field.display != 'block'}align="right" class="Dataface_QuickForm-label-cell"{/if}>
 						<div class="field {if $element.error}error{/if}" id="{$element.field.tablename}-{$element.field.name}-label-wrapper">
 							
 							<label>
@@ -38,8 +54,8 @@
 							{/if}
 						{if $element.field.display != 'block'}
 						</div>
-						</td>
-						<td class="Dataface_QuickForm-widget-cell{if $isText} Dataface_QuickForm-textarea-widget-cell{/if}">
+						</{$td_tag}>
+						<{$td_tag} class="Dataface_QuickForm-widget-cell{if $isText} Dataface_QuickForm-textarea-widget-cell{/if}">
 						<div class="field {if $element.error}error{/if}" id="{$element.field.tablename}-{$element.field.name}-wrapper">
 						{/if}
 							{if $element.error}
@@ -190,10 +206,10 @@
 							
 							{/if}
 						</div>
-						</td>
+						</{$td_tag}>
 					{/if}
-				</tr>
+				</{$tr_tag}>
 				{/define_slot}
 				{block name="after_`$element.field.name`_row" table=$element.field.tablename}
 			{/foreach}
-		</table>
+		</{$table_tag}>
