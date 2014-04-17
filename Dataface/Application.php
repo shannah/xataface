@@ -588,7 +588,7 @@ class Dataface_Application {
 			$this->mysqlVersion = mysql_get_server_info($this->_db);
 			mysql_select_db( $dbinfo['name'] ) or die("Could not select DB: ".mysql_error($this->_db));
 		}
-		if ( !defined( 'DATAFACE_DB_HANDLE') ) define('DATAFACE_DB_HANDLE', $this->_db);
+		//if ( !defined( 'DATAFACE_DB_HANDLE') ) define('DATAFACE_DB_HANDLE', $this->_db);
 		
 		
 		if ( !is_array( $conf['_tables'] ) ){

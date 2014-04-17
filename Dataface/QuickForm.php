@@ -222,12 +222,10 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			}
 		
 		}
-		if ( !$db and defined('DATAFACE_DB_HANDLE') ){
+		if ( !$db  ){
 			
-			$db = DATAFACE_DB_HANDLE;
-		} else {
-			$db = $app->_db;
-		}
+			$db = $app->db();
+		} 
 			
 		$this->db = $db;
 		$this->_query = is_array($query) ? $query : array();

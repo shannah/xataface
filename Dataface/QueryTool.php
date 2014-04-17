@@ -72,7 +72,7 @@ class Dataface_QueryTool {
 		$this->_tablename = $tablename;
 		if ( !is_array($query) ) $query= array();
 		if ( $db === null ){
-			$db = DATAFACE_DB_HANDLE;
+			$db = $this->dbObj->_db;
 		}
 		$this->_db = $db;
 		$this->_query = $query;
@@ -633,7 +633,7 @@ class Dataface_QueryTool {
 	}
 	
 	public static function &loadResult($tablename, $db=null, $query=''){
-		if ( $db === null and defined('DATAFACE_DB_HANDLE') ) $db = DATAFACE_DB_HANDLE;
+		if ( $db === null ) $db = $this->dbObj->_db;
 		if ( !isset( $resultDescriptors ) ){
 			static $resultDescriptors = array();
 		}

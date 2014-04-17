@@ -52,12 +52,11 @@ class Dataface_DB {
 	var $blobs = array();  // Blobs.
 	
 	function Dataface_DB($db=null){
+		$this->app =& Dataface_Application::getInstance();
 		if ( $db === null ){
-			$db = DATAFACE_DB_HANDLE;
+			$db = $this->app->db();
 		}
 		$this->_db = $db;
-		$this->app =& Dataface_Application::getInstance();
-		
 		if ( @$this->app->_conf['cache_queries'] and !$this->_fcache_base_path ){
 			if ( is_writable(DATAFACE_SITE_PATH.'/templates_c') ){
 				$this->_fcache_base_path = DATAFACE_SITE_PATH.'/templates_c/query_results';

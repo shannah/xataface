@@ -476,7 +476,7 @@ class Dataface_Table {
 			throw new Exception("In Dataface_Table::loadTable() expected first argument to be a string but received '".get_class($name)."'", E_USER_ERROR);
 		}
 		
-		if ( $db === null and defined('DATAFACE_DB_HANDLE')) $db = DATAFACE_DB_HANDLE;
+		if ( $db === null ) $db = Dataface_Application::getInstance()->db();
 		if ( !isset( $_tables ) ){
 			static $_tables = array();
 			
@@ -525,7 +525,7 @@ class Dataface_Table {
 		// caching.
 		$this->app->tableNamesUsed[] = $tablename;
 		$this->tablename = $tablename;
-		if ( $db === null and defined('DATAFACE_DB_HANDLE') ) $db = DATAFACE_DB_HANDLE;
+		if ( $db === null  ) $db = $this->app->db();
 		$this->db = $db;
 		$this->_permissions = Dataface_PermissionsTool::getRolePermissions($this->app->_conf['default_table_role']);
 		
