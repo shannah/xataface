@@ -145,7 +145,11 @@ class dataface_actions_export_json {
 			if ( $query['-mode'] == 'list' ){
 				$records = df_get_records_array($query['-table'], $query);
 			} else {
-				$records = array( $app->getRecord() );
+				$records = array( );
+				$r =  $app->getRecord();
+				if ( $r ){
+					$records[] = $r;
+				}
 			}
 		}
 		
