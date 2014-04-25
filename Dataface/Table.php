@@ -2019,7 +2019,7 @@ class Dataface_Table {
 				}
 				if ( $bestCandidate === null ){
 					$keynames = array_keys($this->keys());
-					$bestCandidate = "CONCAT(".implode(",", $keynames).")";
+					$bestCandidate = "CONCAT(`".implode("`,`", $keynames)."`)";
 				}
 				$this->_atts['title'] = $bestCandidate;
 			}
