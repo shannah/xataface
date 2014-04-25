@@ -635,7 +635,7 @@ class Dataface_QueryBuilder {
 					$low = $this->prepareValue( $key, $table->parse($key, $low), true);
 					$high = $this->prepareValue( $key, $table->parse($key, $high), true);
 					$where .= $this->wc($tableAlias, $key)." >= $low AND ".$this->wc($tableAlias, $key)." <= $high AND ";
-				} else if ( !$exact and strpos($value, '~') === 0 ){
+				} else if ( !$exact and (strpos($value, '~') === 0 )){
 					$value = substr($value,1);
 					$oldval = $value;
 					$oper = 'LIKE';
@@ -646,6 +646,16 @@ class Dataface_QueryBuilder {
 						$where .= '('.$this->wc($tableAlias,$key)." $oper '' OR ".$this->wc($tableAlias,$key)." IS NULL) AND ";
 					}
 				
+				} else if ( !$exact and (strpos($value, '!~') === 0) ){
+					$value = substr($value,2);
+					$oldval = $value;
+					$oper = 'NOT LIKE';
+					$value = $this->prepareValue( $key, $table->parse($key, $value), true);
+					if (  strlen($oldval) > 0 ){
+						$where .= $this->wc($tableAlias,$key)." $oper $value AND ";
+					} else {
+						$where .= '('.$this->wc($tableAlias,$key)." $oper '' OR ".$this->wc($tableAlias,$key)." IS NULL) AND ";
+					}
 				
 				} else if ( $repeat ){
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true); 
