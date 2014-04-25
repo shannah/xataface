@@ -633,7 +633,7 @@ class Dataface_QueryTool {
 	}
 	
 	public static function &loadResult($tablename, $db=null, $query=''){
-		if ( $db === null ) $db = $this->dbObj->_db;
+		if ( $db === null ) $db = Dataface_Application::getInstance()->db();
 		if ( !isset( $resultDescriptors ) ){
 			static $resultDescriptors = array();
 		}
