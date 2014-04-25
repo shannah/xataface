@@ -230,7 +230,7 @@ class Dataface_RecordView {
 			foreach ( $this->record->_table->relationships() as $relname=>$relationship ){
 				$schema =& $relationship->_schema;
 				
-				if ( isset($schema['section']['visible']) and !$schema['section']['visible'] ) continue;
+				if ( isset($schema['section']['visible']) and !intval($schema['section']['visible']) ) continue;
 				if ( isset($schema['section']['condition']) and !$app->testCondition($schema['section']['condition'], array('record'=>&$this->record,'relationship'=>&$relationship))){
 					continue;
 				}
