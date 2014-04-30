@@ -378,6 +378,11 @@
             var thisTable = this;
             var fieldName = $(this).attr('data-field-name');
             var rows = jQuery('tbody tr', this);
+            if ( rows.length === 0 ){
+            	// In some cases due to permissions the grid widget will be empty (no rows)
+            	// In such cases we don't proceed any further.
+            	return;
+            }
             var lastRow = rows.get(rows.size()-1);
             var template = $(lastRow).clone();
             $('script[src]', template).remove();
