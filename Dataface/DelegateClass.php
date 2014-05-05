@@ -1606,6 +1606,51 @@ interface DelegateClass {
 	
 	// @}
 	
+	
+	// @{
+	/** @name Relationship Customization */
+	
+	/**
+	 * Overrides the list of records that can be added to a relationship of a given record.  This should
+	 * return an array where the value represents the label to display for the related record, and the key
+	 * is the related record's primary key (in cases where the table has a single column primary key) or
+	 * a URL encoded string representing the primary key (in cases where there is a multi-column primary key).
+	 *
+	 * <p>Note:  An alternative to this approach is to specify the vocabulary:existing directive
+	 * in the relationship, then define a vocabulary for the addable values.  This wouldn't allow you
+	 * to filter the addable values based on the source record, but it would allow you to provide
+	 * static customizations.  See the <a href="http://xataface.com/wiki/relationships.ini_file">relationships.ini docs</a> for more info.</p>
+	 *
+	 * @param Dataface_Record $record The source record of the relationship for which we are retrieving
+	 * the values that can be added.
+	 * @return array Array mapping primary key to labels.
+	 *
+	 * <h4>Example</h4>
+	 * <p>In the example below we wanted to make it so that, when adding students to the "enrolled_students" 
+	 * relationship of the courses table, we only wanted to show students who are registered.</p>
+	 * 
+	 * @code
+	 * class tables_courses {
+	 *   ...
+	 *   function enrolled_students__getAddableValues(Dataface_Record $record){
+	 *       $out = array();
+	 *       $res = df_q("select student_id, full_name, student_number from students where registered=1");
+	 *       while ( $o = mysql_fetch_object($res) ){
+	 *          $out[$o->student_id] = $o->full_name.' ('.$o->student_number.')';
+	 *       }
+	 *       @mysql_free_result($res);
+	 *       return $out;
+	 *   }
+	 *   ...
+	 * }
+	 * @endcode
+	 * 
+	 * @since 1.0
+	 */
+	function relationshipname__getAddableValues(Dataface_Record $record);
+	
+	// @}
+	
 	// @{
 	/** @name List Tab Customization */
 	
