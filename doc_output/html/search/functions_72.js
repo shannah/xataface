@@ -35,6 +35,7 @@ var searchData=
   ['rel_5frelationshipname_5f_5froles',['rel_relationshipname__roles',['../group__delegate_class.html#ga04e54e80c2dc2ada41e7423fa8dc2917',1,'DelegateClass']]],
   ['related_5flist',['related_list',['../class_dataface___skin_tool.html#a5bc6f28df05b945e3d0cf521c695e8d0',1,'Dataface_SkinTool']]],
   ['related_5frec2data',['related_rec2data',['../classdataface__actions__export__csv.html#ae5de1bae8f01d5516970017b2fff12f1',1,'dataface_actions_export_csv']]],
+  ['relationshipname_5f_5fgetaddablevalues',['relationshipname__getAddableValues',['../group__delegate_class.html#ga75891e788f7e4e38de2690669f864e9c',1,'DelegateClass']]],
   ['relationships',['relationships',['../class_dataface___table.html#aa1617047e561ef4ed5e0566fc7ce8920',1,'Dataface_Table']]],
   ['relativefieldname',['relativeFieldName',['../class_dataface___table.html#a309349d8ec3c27ff0bd717b3d8fbdcbd',1,'Dataface_Table']]],
   ['removeaction',['removeAction',['../class_dataface___action_tool.html#ac0516e31606333efd6f6d7c351cfcada',1,'Dataface_ActionTool']]],

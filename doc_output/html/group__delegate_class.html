@@ -290,6 +290,11 @@ Glance List Customization</h2></td></tr>
 <tr class="separator:ga82f17d1fdfc94d4b5882102cb5e99c75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Relationship Customization</h2></td></tr>
+<tr class="memitem:ga75891e788f7e4e38de2690669f864e9c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#ga75891e788f7e4e38de2690669f864e9c">relationshipname__getAddableValues</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $record)</td></tr>
+<tr class="separator:ga75891e788f7e4e38de2690669f864e9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 List Tab Customization</h2></td></tr>
 <tr class="memitem:ga50a35c246310d118e55ae72237106638"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#ga50a35c246310d118e55ae72237106638">css__tableHeaderCellClass</a> ($colname)</td></tr>
 <tr class="memdesc:ga50a35c246310d118e55ae72237106638"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a CSS class to be added to the table header cell (th tag) for a specified column of the table in list view.  <a href="#ga50a35c246310d118e55ae72237106638">More...</a><br/></td></tr>
@@ -3146,6 +3151,47 @@ Synopsis</h1>
 
 </div>
 </div>
+<a class="anchor" id="ga75891e788f7e4e38de2690669f864e9c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">relationshipname__getAddableValues </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_dataface___record.html">Dataface_Record</a>&#160;</td>
+          <td class="paramname"><em>$record</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Overrides the list of records that can be added to a relationship of a given record. This should return an array where the value represents the label to display for the related record, and the key is the related record's primary key (in cases where the table has a single column primary key) or a URL encoded string representing the primary key (in cases where there is a multi-column primary key).</p>
+<p>Note: An alternative to this approach is to specify the vocabulary:existing directive in the relationship, then define a vocabulary for the addable values. This wouldn't allow you to filter the addable values based on the source record, but it would allow you to provide static customizations. See the <a href="http://xataface.com/wiki/relationships.ini_file">relationships.ini docs</a> for more info.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype"><a class="el" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a></td><td class="paramname">$record</td><td>The source record of the relationship for which we are retrieving the values that can be added. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>array Array mapping primary key to labels.</dd></dl>
+<h4>Example</h4>
+<p>In the example below we wanted to make it so that, when adding students to the "enrolled_students" relationship of the courses table, we only wanted to show students who are registered.</p>
+<div class="fragment"><div class="line"><span class="keyword">class </span>tables_courses {</div>
+<div class="line">  ...</div>
+<div class="line">  <span class="keyword">function</span> enrolled_students__getAddableValues(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $record){</div>
+<div class="line">      <a class="code" href="ini2csv_8php.html#a48cb304902320d173a4eaa41543327b9">$out</a> = array();</div>
+<div class="line">      $res = df_q(<span class="stringliteral">&quot;select student_id, full_name, student_number from students where registered=1&quot;</span>);</div>
+<div class="line">      <span class="keywordflow">while</span> ( $o = mysql_fetch_object($res) ){</div>
+<div class="line">         <a class="code" href="ini2csv_8php.html#a48cb304902320d173a4eaa41543327b9">$out</a>[$o-&gt;student_id] = $o-&gt;full_name.<span class="stringliteral">&#39; (&#39;</span>.$o-&gt;student_number.<span class="charliteral">&#39;)&#39;</span>;</div>
+<div class="line">      }</div>
+<div class="line">      @mysql_free_result($res);</div>
+<div class="line">      <span class="keywordflow">return</span> <a class="code" href="ini2csv_8php.html#a48cb304902320d173a4eaa41543327b9">$out</a>;</div>
+<div class="line">  }</div>
+<div class="line">  ...</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="section since"><dt>Since</dt><dd>1.0 </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga442231547ab990e73764366cda633282"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3391,7 +3437,7 @@ All &lt;td&gt; and &lt;th&gt; tags that you want to have displayed must include 
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon May 5 2014 09:16:21 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 5 2014 09:52:19 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

@@ -52,6 +52,7 @@ var searchData=
   ['relationship_2ephp',['Relationship.php',['../_relationship_8php.html',1,'']]],
   ['relationshipcheckboxform_2ephp',['RelationshipCheckboxForm.php',['../_relationship_checkbox_form_8php.html',1,'']]],
   ['relationshipform_2ephp',['RelationshipForm.php',['../_relationship_form_8php.html',1,'']]],
+  ['relationshipname_5f_5fgetaddablevalues',['relationshipname__getAddableValues',['../group__delegate_class.html#ga75891e788f7e4e38de2690669f864e9c',1,'DelegateClass']]],
   ['relationships',['relationships',['../class_dataface___table.html#aa1617047e561ef4ed5e0566fc7ce8920',1,'Dataface_Table']]],
   ['relationships_2dini_2ephp',['relationships-ini.php',['../relationships-ini_8php.html',1,'']]],
   ['relationships_2eini_20file',['relationships.ini file',['../group__relationships_ini.html',1,'']]],
