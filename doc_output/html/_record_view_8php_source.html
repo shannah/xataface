@@ -326,7 +326,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                        <span class="keywordflow">foreach</span> ( $this-&gt;record-&gt;_table-&gt;relationships() as $relname=&gt;$relationship ){</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                                $schema =&amp; $relationship-&gt;_schema;</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                                </div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                                <span class="keywordflow">if</span> ( isset($schema[<span class="stringliteral">&#39;section&#39;</span>][<span class="stringliteral">&#39;visible&#39;</span>]) and !$schema[<span class="stringliteral">&#39;section&#39;</span>][<span class="stringliteral">&#39;visible&#39;</span>] ) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                                <span class="keywordflow">if</span> ( isset($schema[<span class="stringliteral">&#39;section&#39;</span>][<span class="stringliteral">&#39;visible&#39;</span>]) and !intval($schema[<span class="stringliteral">&#39;section&#39;</span>][<span class="stringliteral">&#39;visible&#39;</span>]) ) <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                                <span class="keywordflow">if</span> ( isset($schema[<span class="stringliteral">&#39;section&#39;</span>][<span class="stringliteral">&#39;condition&#39;</span>]) and !<a class="code" href="blob_8php.html#adfb117f244076aa9bc269269f7e57403">$app</a>-&gt;testCondition($schema[<span class="stringliteral">&#39;section&#39;</span>][<span class="stringliteral">&#39;condition&#39;</span>], array(<span class="stringliteral">&#39;record&#39;</span>=&gt;&amp;$this-&gt;record,<span class="stringliteral">&#39;relationship&#39;</span>=&gt;&amp;$relationship))){</div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;                                        <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                                }</div>
@@ -422,7 +422,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 31 2014 08:54:52 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 5 2014 09:16:20 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

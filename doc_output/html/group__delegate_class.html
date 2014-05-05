@@ -281,7 +281,16 @@ Template Customization</h2></td></tr>
 <tr class="separator:gadfe361752713868652012ed9734fbc8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-List Tab Cutomization</h2></td></tr>
+Glance List Customization</h2></td></tr>
+<tr class="memitem:ga3a3c8e823f84ee12b17ee3fd858119f9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#ga3a3c8e823f84ee12b17ee3fd858119f9">oneLineDescription</a> (<a class="el" href="class_dataface___record.html">Dataface_Record</a> $record)</td></tr>
+<tr class="memdesc:ga3a3c8e823f84ee12b17ee3fd858119f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides the one-line description that is used as the label for a record in a GlanceList. The GlanceList is used to render the portlets in the left column of the view tab that shows related records.  <a href="#ga3a3c8e823f84ee12b17ee3fd858119f9">More...</a><br/></td></tr>
+<tr class="separator:ga3a3c8e823f84ee12b17ee3fd858119f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga82f17d1fdfc94d4b5882102cb5e99c75"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#ga82f17d1fdfc94d4b5882102cb5e99c75">rel_relationshipname__oneLineDescription</a> (<a class="el" href="class_dataface___related_record.html">Dataface_RelatedRecord</a> $record)</td></tr>
+<tr class="memdesc:ga82f17d1fdfc94d4b5882102cb5e99c75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides the one-line description that is used as the label for a related record in a GlanceList. The GlanceList is used to render the portlets in the left column of the view tab that shows related records. If this is not provided, then <a class="el" href="group__delegate_class.html#ga3a3c8e823f84ee12b17ee3fd858119f9" title="Overrides the one-line description that is used as the label for a record in a GlanceList. The GlanceList is used to render the portlets in the left column of the view tab that shows related records.">oneLineDescription()</a> will be used on the target record of the relationship.  <a href="#ga82f17d1fdfc94d4b5882102cb5e99c75">More...</a><br/></td></tr>
+<tr class="separator:ga82f17d1fdfc94d4b5882102cb5e99c75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+List Tab Customization</h2></td></tr>
 <tr class="memitem:ga50a35c246310d118e55ae72237106638"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__delegate_class.html#ga50a35c246310d118e55ae72237106638">css__tableHeaderCellClass</a> ($colname)</td></tr>
 <tr class="memdesc:ga50a35c246310d118e55ae72237106638"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a CSS class to be added to the table header cell (th tag) for a specified column of the table in list view.  <a href="#ga50a35c246310d118e55ae72237106638">More...</a><br/></td></tr>
 <tr class="separator:ga50a35c246310d118e55ae72237106638"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2978,6 +2987,81 @@ Dataface_Record::secureDisplay </dd>
 
 </div>
 </div>
+<a class="anchor" id="ga3a3c8e823f84ee12b17ee3fd858119f9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">oneLineDescription </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_dataface___record.html">Dataface_Record</a>&#160;</td>
+          <td class="paramname"><em>$record</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Overrides the one-line description that is used as the label for a record in a GlanceList. The GlanceList is used to render the portlets in the left column of the view tab that shows related records. </p>
+<p>If this is not defined, <a class="el" href="group__delegate_class.html#gab719e66308698d3597572a2465f04788" title="Returns the record&#39;s title. This is used in Xataface to return the title of a record when the Datafac...">getTitle()</a> will be used.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype"><a class="el" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a></td><td class="paramname">$record</td><td>The record described. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String A one-line description to display in the Glance list entry. This should HTML output (i.e. may contain HTML tags, and all content should be escaped properly).</dd></dl>
+<h4>Example</h4>
+<div class="fragment"><div class="line"><span class="keyword">class </span>tables_students {</div>
+<div class="line">        ...</div>
+<div class="line">  <span class="keyword">function</span> <a class="code" href="group__delegate_class.html#ga3a3c8e823f84ee12b17ee3fd858119f9" title="Overrides the one-line description that is used as the label for a record in a GlanceList. The GlanceList is used to render the portlets in the left column of the view tab that shows related records.">oneLineDescription</a>(<a class="code" href="class_dataface___record.html" title="Represents a single record from a table.">Dataface_Record</a> $record){</div>
+<div class="line">     <span class="comment">// Note: we use htmlValue() instead of display() so that it is HTML escaped.</span></div>
+<div class="line">     <span class="keywordflow">return</span> $record-&gt;<a class="code" href="class_dataface___record.html#a0b32ce1eadc2f8eb66ca99c7a3700ac9" title="Returns an HTML-friendly value of a field.">htmlValue</a>(<span class="stringliteral">&#39;full_name&#39;</span>);</div>
+<div class="line">  }</div>
+<div class="line"> ...</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="section since"><dt>Since</dt><dd>1.0 </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd>rel_relationshipname_oneLineDescription() </dd>
+<dd>
+ApplicationDelegate::oneLineDescription() </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga82f17d1fdfc94d4b5882102cb5e99c75"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">rel_relationshipname__oneLineDescription </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_dataface___related_record.html">Dataface_RelatedRecord</a>&#160;</td>
+          <td class="paramname"><em>$record</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Overrides the one-line description that is used as the label for a related record in a GlanceList. The GlanceList is used to render the portlets in the left column of the view tab that shows related records. If this is not provided, then <a class="el" href="group__delegate_class.html#ga3a3c8e823f84ee12b17ee3fd858119f9" title="Overrides the one-line description that is used as the label for a record in a GlanceList. The GlanceList is used to render the portlets in the left column of the view tab that shows related records.">oneLineDescription()</a> will be used on the target record of the relationship. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype"><a class="el" href="class_dataface___related_record.html" title="Encapsulates a row in a relationship. This may contain fields that span across multiple tables...">Dataface_RelatedRecord</a></td><td class="paramname">$record</td><td>The related record that is being described. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String the one-line description. This should HTML output (i.e. may contain HTML tags, and all content should be escaped properly).</dd></dl>
+<h4>Example</h4>
+<p>The following example shows a one line description for the "enrolled_students" relationship of the "courses" table:</p>
+<div class="fragment"><div class="line"><span class="keyword">class </span>tables_courses {</div>
+<div class="line">   ...</div>
+<div class="line">   <span class="keyword">function</span> rel_enrolled_students__oneLineDescription(<a class="code" href="class_dataface___related_record.html" title="Encapsulates a row in a relationship. This may contain fields that span across multiple tables...">Dataface_RelatedRecord</a> $record){</div>
+<div class="line">       <span class="keywordflow">return</span> $record-&gt;<a class="code" href="class_dataface___related_record.html#a474f4e49375584f9c96eddfb3fafca2f" title="Gets a field value as HTML.">htmlValue</a>(<span class="stringliteral">&#39;full_name&#39;</span>);</div>
+<div class="line">   }</div>
+<div class="line">   ...</div>
+<div class="line">}</div>
+</div><!-- fragment --> <dl class="section since"><dt>Since</dt><dd>1.0 </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__delegate_class.html#ga3a3c8e823f84ee12b17ee3fd858119f9" title="Overrides the one-line description that is used as the label for a record in a GlanceList. The GlanceList is used to render the portlets in the left column of the view tab that shows related records.">oneLineDescription()</a> </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga77f45067fe23edd1c4d514cc2d444a19"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3307,7 +3391,7 @@ All &lt;td&gt; and &lt;th&gt; tags that you want to have displayed must include 
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 31 2014 08:54:53 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 5 2014 09:16:21 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

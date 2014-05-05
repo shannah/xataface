@@ -100,6 +100,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0f2f08315cc97d16c0dee640ed309134"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a0f2f08315cc97d16c0dee640ed309134">Dataface_Relationship</a> ($tablename, $relationshipName, &amp;$values)</td></tr>
 <tr class="separator:a0f2f08315cc97d16c0dee640ed309134"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aada528bf0798a2226312ecba1f598dc5"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#aada528bf0798a2226312ecba1f598dc5">getFieldDefOverride</a> ($field_name, $default=array())</td></tr>
+<tr class="separator:aada528bf0798a2226312ecba1f598dc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ee4507b3fb6b215707f3160289a1fa3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a6ee4507b3fb6b215707f3160289a1fa3">setFieldDefOverride</a> ($field_name, array $field_def)</td></tr>
+<tr class="separator:a6ee4507b3fb6b215707f3160289a1fa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b5faf2781bf224ea8d674cf60e63885"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a1b5faf2781bf224ea8d674cf60e63885">fields</a> ($includeAll=false, $includeTransient=false)</td></tr>
 <tr class="separator:a1b5faf2781bf224ea8d674cf60e63885"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a020383a71bc545d1c6f78a56d5602dae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a020383a71bc545d1c6f78a56d5602dae">getCardinality</a> ()</td></tr>
@@ -138,8 +142,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a429204a1e7dc8b189e1ac299e935865e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa597dce7b2a4a9c4e9554731848ec9af"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#aa597dce7b2a4a9c4e9554731848ec9af">getTableAlias</a> ($tableName)</td></tr>
 <tr class="separator:aa597dce7b2a4a9c4e9554731848ec9af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a745e45e8706e19673d67511542ac52ce"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a745e45e8706e19673d67511542ac52ce">getField</a> ($fieldname)</td></tr>
-<tr class="separator:a745e45e8706e19673d67511542ac52ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32f8cf70d008ff4d9e599b02614234fa"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a32f8cf70d008ff4d9e599b02614234fa">getField</a> ($fieldname, $with_override=true)</td></tr>
+<tr class="separator:a32f8cf70d008ff4d9e599b02614234fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8001dc32630bf855e33c4f9f4ea38ef4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a8001dc32630bf855e33c4f9f4ea38ef4">getDomainSQL</a> ()</td></tr>
 <tr class="separator:a8001dc32630bf855e33c4f9f4ea38ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07c4a2d9cf60c5a1215a614166eae170"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a07c4a2d9cf60c5a1215a614166eae170">getDomainTable</a> ()</td></tr>
@@ -196,6 +200,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:ad86f0aac1c5254c623bf3a6683ed56e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cd22b424a02f3b947e639a89ca3925c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#a7cd22b424a02f3b947e639a89ca3925c">$_keys</a></td></tr>
 <tr class="separator:a7cd22b424a02f3b947e639a89ca3925c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab48d6c104e1e2dd7248d7e59344a1157"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#ab48d6c104e1e2dd7248d7e59344a1157">$_field_def_overrides</a> = array()</td></tr>
+<tr class="separator:ab48d6c104e1e2dd7248d7e59344a1157"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5b073bcac954eb3cfd7ac4beef2dcfc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#ab5b073bcac954eb3cfd7ac4beef2dcfc">$_sql_generated</a> = array()</td></tr>
 <tr class="separator:ab5b073bcac954eb3cfd7ac4beef2dcfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac201b610c2fda489d0b1ce2841fb0894"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___relationship.html#ac201b610c2fda489d0b1ce2841fb0894">$_permissions</a> = array()</td></tr>
@@ -237,7 +243,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00214">214</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00235">235</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -280,7 +286,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01404">1404</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01433">1433</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -330,7 +336,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01435">1435</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01464">1464</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -348,7 +354,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Scans the columns of a relationship and resolves wildcards and unqualified column names into fully qualified column names. </p>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00406">406</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00427">427</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -376,7 +382,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01807">1807</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01836">1836</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -418,7 +424,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00104">104</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00106">106</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -454,7 +460,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00131">131</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00152">152</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -491,7 +497,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array Associative array where the keys are of the form key1=value1&amp;key2=value2 and the values are the title of the record. </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01344">1344</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01373">1373</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -508,7 +514,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01321">1321</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01350">1350</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -525,7 +531,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00156">156</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00177">177</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -544,7 +550,7 @@ Data Fields</h2></td></tr>
 <p>Returns array of references to all of the destination tables in this relationship. </p>
 <dl class="section return"><dt>Returns</dt><dd>array(Dataface_Table) </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00883">883</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00904">904</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -569,7 +575,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01311">1311</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01340">1340</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -587,7 +593,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns an SQL query that will obtain the domain of this relationship. The Domain is slightly different than the actual relationship, in that it returns all eligible rows that can be added to the relationship (and rows already in the relationship). </p>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01004">1004</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01033">1033</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -606,11 +612,11 @@ Data Fields</h2></td></tr>
 <p>Returns the name of the "domain table" for this relationship. The domain table is the main table that comprises the data of a related record. I.e., it is the destination table that is not a join table. The join tables serve to join the source table to the domain table. </p>
 <dl class="section return"><dt>Returns</dt><dd>string Name of the domain table. </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01130">1130</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01159">1159</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a745e45e8706e19673d67511542ac52ce"></a>
+<a class="anchor" id="a32f8cf70d008ff4d9e599b02614234fa"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -618,8 +624,18 @@ Data Fields</h2></td></tr>
           <td class="memname">&amp; getField </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$fieldname</em></td><td>)</td>
+          <td class="paramname"><em>$fieldname</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$with_override</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -632,7 +648,35 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array or null if field doesn't exist. </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00964">964</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00985">985</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aada528bf0798a2226312ecba1f598dc5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">&amp; getFieldDefOverride </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$field_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$default</em> = <code>array()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00124">124</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -681,7 +725,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01157">1157</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01186">1186</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -702,7 +746,7 @@ Data Fields</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>string </dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_dataface___relationship.html#ad8cf547494af21baaf5d7b08334b4216" title="Returns the label of this relationship as a singular term. This uses the action:singular_label direct...">getSingularLabel()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00753">753</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00774">774</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -719,7 +763,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01620">1620</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01649">1649</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -736,7 +780,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01606">1606</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01635">1635</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -753,7 +797,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00525">525</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00546">546</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -784,7 +828,7 @@ Data Fields</h2></td></tr>
 <dd>
 <a class="el" href="class_dataface___record.html#a4bf68cf77a0aa879d9d18a706c5ca8a0">Dataface_Record::sortRelationship()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01534">1534</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01563">1563</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -812,7 +856,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01650">1650</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01679">1679</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -833,7 +877,7 @@ Data Fields</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>string</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd>df_singularize() </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00767">767</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00788">788</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -851,7 +895,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dataface___table.html" title="A class that represents the table of a table in a database.">Dataface_Table</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00857">857</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00878">878</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -899,7 +943,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>SQL Query  string </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00542">542</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00563">563</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -925,7 +969,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dataface___table.html" title="A class that represents the table of a table in a database.">Dataface_Table</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00918">918</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00939">939</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -944,7 +988,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the alias for the given table according to the SQL used to define the relationship - or null. </p>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00946">946</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00967">967</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -988,7 +1032,7 @@ Data Fields</h2></td></tr>
 <p>In this relationship the lastName field may be part of the people table, but it is not explicitly selected in the relationship. So if we issue: <code> $relationship-&gt;hasField('people.lastName'); // false $relationship-&gt;hasField('people.lastName', true); //true </code> </p>
 <dl class="section return"><dt>Returns</dt><dd>boolean </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00190">190</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00211">211</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1009,7 +1053,7 @@ Data Fields</h2></td></tr>
 <p>A relationship cann be declared to be a "children" relationship in the relationships.ini file by adding "meta:class = children" </p>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if the relationship is a children relationship. </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01569">1569</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01598">1598</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1029,7 +1073,7 @@ Data Fields</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if the relationship is many-to-many. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.6.1 </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01601">1601</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01630">1630</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1047,7 +1091,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01298">1298</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01327">1327</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1067,7 +1111,7 @@ Data Fields</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if the relationship is one-to-many. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.6.1 </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01585">1585</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01614">1614</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1084,7 +1128,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01635">1635</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01664">1664</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1101,7 +1145,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01639">1639</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01668">1668</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1122,7 +1166,7 @@ Data Fields</h2></td></tr>
 <p>A relationship can be declared to be a parent relationship in the relationships.ini file by adding "meta:class = parent".</p>
 <dl class="section return"><dt>Returns</dt><dd>boolean True if the relationship is a parent relationship. </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01554">1554</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l01583">1583</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1140,7 +1184,35 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns array of references to key fields in relationship. </p>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00864">864</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00885">885</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6ee4507b3fb6b215707f3160289a1fa3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setFieldDefOverride </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$field_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">array&#160;</td>
+          <td class="paramname"><em>$field_def</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00136">136</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1157,7 +1229,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00848">848</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00869">869</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1176,7 +1248,7 @@ Data Fields</h2></td></tr>
 <p>Indicates whether existing records can be added to this relationship.</p>
 <dl class="section return"><dt>Returns</dt><dd>false if, in the relationships.ini file the actions:addexisting directive is false or 0. Otherwise returns true. </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00803">803</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00824">824</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1195,7 +1267,7 @@ Data Fields</h2></td></tr>
 <p>Indicates whether new records can be added to this relationship.</p>
 <dl class="section return"><dt>Returns</dt><dd>false if, in the relationships.ini file the actions:addnew directive is false or 0 Otherwise this returns true. </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00790">790</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00811">811</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1214,7 +1286,7 @@ Data Fields</h2></td></tr>
 <p>Indicates whether records can be removed from this relationship.</p>
 <dl class="section return"><dt>Returns</dt><dd>false if, in the relationships.ini file, the actions:remove directive is false or 0 Otherwise returns true. </dd></dl>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00842">842</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00863">863</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1229,7 +1301,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00087">87</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00089">89</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1244,6 +1316,20 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="_relationship_8php_source.html#l00053">53</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab48d6c104e1e2dd7248d7e59344a1157"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$_field_def_overrides = array()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00071">71</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1299,7 +1385,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00079">79</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00081">81</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1343,7 +1429,7 @@ Data Fields</h2></td></tr>
 <p>Flag to indicate whether or not the sql has been generated. (Used in particular by the <a class="el" href="class_dataface___relationship.html#a45b8b88ab3cec5c671ed98335d8097a9">getSQL()</a> method.</p>
 <p>boolean </p>
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00077">77</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00079">79</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1357,7 +1443,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00090">90</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00092">92</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1371,7 +1457,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00089">89</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00091">91</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1385,7 +1471,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00081">81</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
+<p>Definition at line <a class="el" href="_relationship_8php_source.html#l00083">83</a> of file <a class="el" href="_relationship_8php_source.html">Relationship.php</a>.</p>
 
 </div>
 </div>
@@ -1395,7 +1481,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 31 2014 08:54:54 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 5 2014 09:16:22 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

@@ -8,6 +8,7 @@ var searchData=
   ['setconfigparam_2efunction_2ephp',['setConfigParam.function.php',['../set_config_param_8function_8php.html',1,'']]],
   ['setup_2ephp',['setup.php',['../setup_8php.html',1,'']]],
   ['shortrelatedrecordform_2ephp',['ShortRelatedRecordForm.php',['../_short_related_record_form_8php.html',1,'']]],
+  ['show_5fhide_5fcolumns_2ephp',['show_hide_columns.php',['../show__hide__columns_8php.html',1,'']]],
   ['single_5frecord_5fsearch_2ephp',['single_record_search.php',['../single__record__search_8php.html',1,'']]],
   ['skintool_2ephp',['SkinTool.php',['../_skin_tool_8php.html',1,'']]],
   ['sortcontrol_2ephp',['SortControl.php',['../_sort_control_8php.html',1,'']]],

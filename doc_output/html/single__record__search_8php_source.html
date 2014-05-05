@@ -120,7 +120,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                <span class="keywordflow">if</span> ( @$query[<span class="stringliteral">&#39;--format&#39;</span>] == <span class="stringliteral">&#39;RSS2.0&#39;</span> ){</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                        $this-&gt;<a class="code" href="classdataface__actions__single__record__search.html#a3b9edbe988ef297993f4fc0ed5c08c2b">handleRSS</a>($results);</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                        df_display(array(<span class="stringliteral">&#39;results&#39;</span>=&gt;&amp;$results, <span class="stringliteral">&#39;queryString&#39;</span>=&gt;$query[<span class="stringliteral">&#39;--subsearch&#39;</span>]), <span class="stringliteral">&#39;Dataface_single_record_search.html&#39;</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                        df_display(array(<span class="stringliteral">&#39;results&#39;</span>=&gt;&amp;$results, <span class="stringliteral">&#39;queryString&#39;</span>=&gt;$query[<span class="stringliteral">&#39;--subsearch&#39;</span>], <span class="stringliteral">&#39;record&#39;</span>=&gt;$record), <span class="stringliteral">&#39;Dataface_single_record_search.html&#39;</span>);</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                }</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        }</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        </div>
@@ -194,7 +194,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 31 2014 08:54:52 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 5 2014 09:16:20 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

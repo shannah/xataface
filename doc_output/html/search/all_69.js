@@ -46,6 +46,7 @@ var searchData=
   ['invalidate_5ftranslations_2ephp',['invalidate_translations.php',['../invalidate__translations_8php.html',1,'']]],
   ['invalidatetranslations',['invalidateTranslations',['../class_dataface___translation_tool.html#ae85875a58dfef00f0433218568c243fb',1,'Dataface_TranslationTool']]],
   ['io_2ephp',['IO.php',['../_i_o_8php.html',1,'']]],
+  ['is_5fchecked',['is_checked',['../classdataface__actions__show__hide__columns.html#a6c0b3193a061103397ba41e4db9b2ba8',1,'dataface_actions_show_hide_columns']]],
   ['is_5futf8',['is_utf8',['../ini2csv_8php.html#a910914ae8bfb813f5d49c67d3897af38',1,'ini2csv.php']]],
   ['isaddable',['isAddable',['../class_dataface___relationship_tool.html#a0d4624f5bb3c4cc34e74665ed3696568',1,'Dataface_RelationshipTool']]],
   ['isadmin',['isAdmin',['../functions_8inc_8php.html#aabf23b66cd362adaa508de5bfb22706a',1,'functions.inc.php']]],

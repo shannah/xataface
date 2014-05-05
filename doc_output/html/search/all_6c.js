@@ -34,6 +34,7 @@ var searchData=
   ['loadtable',['loadTable',['../class_dataface___table.html#afcddcbfca2d29748c1c610e2323ea44f',1,'Dataface_Table']]],
   ['loadtabledata',['loadTableData',['../class_d_b___sync.html#a6a6f2dabbb3f1f476c6c13560a872bdd',1,'DB_Sync']]],
   ['loadtotals',['loadTotals',['../class_dataface___query_tool.html#a264dcda75bd32341c66d8447da20cd4a',1,'Dataface_QueryTool']]],
+  ['loaduserconfig',['loadUserConfig',['../class_dataface___config_tool.html#a80b36bb96e7d79dc595a75f4ff82a56d',1,'Dataface_ConfigTool']]],
   ['log',['log',['../class_dataface___logger.html#aed226eebcdf7077715c4e46ee415bf6d',1,'Dataface_Logger']]],
   ['logerror',['logError',['../class_dataface___clipboard.html#a60f87f82bffb45cfb98244fac35e9c3c',1,'Dataface_Clipboard']]],
   ['logfield',['logField',['../class_dataface___history_tool.html#a9eea3536087dac06901abeab905823f7',1,'Dataface_HistoryTool']]],
@@ -44,7 +45,7 @@ var searchData=
   ['logrecord',['logRecord',['../class_dataface___history_tool.html#a20eb5996ee886b3be8bb151283327ddf',1,'Dataface_HistoryTool']]],
   ['logtablename',['logTableName',['../class_dataface___history_tool.html#a0d3bd51da7e9ed1d06ad060c6c9276a8',1,'Dataface_HistoryTool']]],
   ['logwarning',['logWarning',['../class_dataface___clipboard.html#a62c09e2b11584612922defae14a0be28',1,'Dataface_Clipboard']]],
-  ['lookup_2ephp',['lookup.php',['../_h_t_m_l_2_quick_form_2lookup_8php.html',1,'']]],
   ['lookup_2ephp',['lookup.php',['../_dataface_2_form_tool_2lookup_8php.html',1,'']]],
+  ['lookup_2ephp',['lookup.php',['../_h_t_m_l_2_quick_form_2lookup_8php.html',1,'']]],
   ['ls',['ls',['../class_f_t_p.html#a02aa73c111c10af43a743009d9c9c7ed',1,'FTP']]]
 ];

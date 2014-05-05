@@ -345,9 +345,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ( isset($parentPerms[<span class="stringliteral">&#39;edit related records&#39;</span>]) and !@$parentPerms[<span class="stringliteral">&#39;edit related records&#39;</span>] ){</div>
 <div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                        $perms[<span class="stringliteral">&#39;edit&#39;</span>] = 0;</div>
 <div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                }</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                <span class="keywordflow">if</span> ( @$parentPerms[<span class="stringliteral">&#39;view related records&#39;</span>] ){</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                <span class="keywordflow">if</span> ( @$parentPerms[<span class="stringliteral">&#39;view related records override&#39;</span>] ){</div>
 <div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                        $perms[<span class="stringliteral">&#39;view&#39;</span>] = 1;</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ( isset($parentPerms[<span class="stringliteral">&#39;view related records&#39;</span>]) and !@$parentPerms[<span class="stringliteral">&#39;view related records&#39;</span>] ){</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ( isset($parentPerms[<span class="stringliteral">&#39;view related records override&#39;</span>]) and !@$parentPerms[<span class="stringliteral">&#39;view related records override&#39;</span>] ){</div>
 <div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                        $perms[<span class="stringliteral">&#39;view&#39;</span>] = 0;</div>
 <div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                }</div>
 <div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                <span class="keywordflow">if</span> ( @$parentPerms[<span class="stringliteral">&#39;find related records&#39;</span>] ){</div>
@@ -758,7 +758,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 31 2014 08:54:52 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 5 2014 09:16:20 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

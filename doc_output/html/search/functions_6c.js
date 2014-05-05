@@ -29,6 +29,7 @@ var searchData=
   ['loadtable',['loadTable',['../class_dataface___table.html#afcddcbfca2d29748c1c610e2323ea44f',1,'Dataface_Table']]],
   ['loadtabledata',['loadTableData',['../class_d_b___sync.html#a6a6f2dabbb3f1f476c6c13560a872bdd',1,'DB_Sync']]],
   ['loadtotals',['loadTotals',['../class_dataface___query_tool.html#a264dcda75bd32341c66d8447da20cd4a',1,'Dataface_QueryTool']]],
+  ['loaduserconfig',['loadUserConfig',['../class_dataface___config_tool.html#a80b36bb96e7d79dc595a75f4ff82a56d',1,'Dataface_ConfigTool']]],
   ['log',['log',['../class_dataface___logger.html#aed226eebcdf7077715c4e46ee415bf6d',1,'Dataface_Logger']]],
   ['logerror',['logError',['../class_dataface___clipboard.html#a60f87f82bffb45cfb98244fac35e9c3c',1,'Dataface_Clipboard']]],
   ['logfield',['logField',['../class_dataface___history_tool.html#a9eea3536087dac06901abeab905823f7',1,'Dataface_HistoryTool']]],

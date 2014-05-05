@@ -115,8 +115,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8a89232edb42318063b90fee5f608ec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5757a4c4f4c0b2b247532dffcae6cde"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#ae5757a4c4f4c0b2b247532dffcae6cde">display</a> ($context, $template=null, $compile_id=null)</td></tr>
 <tr class="separator:ae5757a4c4f4c0b2b247532dffcae6cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a411d0f3c4ba4c000c0c0992d1d87f137"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#a411d0f3c4ba4c000c0c0992d1d87f137">register_skin</a> ($name, $template_dir)</td></tr>
-<tr class="separator:a411d0f3c4ba4c000c0c0992d1d87f137"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfe395ea818c91d51cb2b9f6f81c6450"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#abfe395ea818c91d51cb2b9f6f81c6450">_cmp_template_dirs</a> ($a, $b)</td></tr>
+<tr class="separator:abfe395ea818c91d51cb2b9f6f81c6450"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b4ddf91be357362e7fbb30ea1b57a2b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#a0b4ddf91be357362e7fbb30ea1b57a2b">register_skin</a> ($name, $template_dir, $priority=0)</td></tr>
+<tr class="separator:a0b4ddf91be357362e7fbb30ea1b57a2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1666eaf13babb54645c2ecce1e008e12"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#a1666eaf13babb54645c2ecce1e008e12">register_plugins</a> ($plugin_dir)</td></tr>
 <tr class="separator:a1666eaf13babb54645c2ecce1e008e12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab39bf2ec83770111cf6967b8d27e1c7c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#ab39bf2ec83770111cf6967b8d27e1c7c">load_record</a> ($params, &amp;$smarty)</td></tr>
@@ -201,6 +203,10 @@ Data Fields</h2></td></tr>
 <tr class="separator:a18c1cc12c6c30c5e2b3ef9849bc97c16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a44a205e187c7e7155a754ec7d975b7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#a2a44a205e187c7e7155a754ec7d975b7">$skins</a> = array()</td></tr>
 <tr class="separator:a2a44a205e187c7e7155a754ec7d975b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa89c658cc64d5e4fa10f31a97d2ecb3d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#aa89c658cc64d5e4fa10f31a97d2ecb3d">$skinPriorities</a> = array('templates' =&gt; 100)</td></tr>
+<tr class="separator:aa89c658cc64d5e4fa10f31a97d2ecb3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ec799d1313df4df335cd6bd92a2e1c7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#a7ec799d1313df4df335cd6bd92a2e1c7">$skinsSorted</a> = false</td></tr>
+<tr class="separator:a7ec799d1313df4df335cd6bd92a2e1c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6e3940134fce0265d23b74eaf851eda"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#aa6e3940134fce0265d23b74eaf851eda">$locals</a> = array()</td></tr>
 <tr class="separator:aa6e3940134fce0265d23b74eaf851eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28dbb0bf2cfb996dc9548dff3472fc5f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___skin_tool.html#a28dbb0bf2cfb996dc9548dff3472fc5f">$languageTool</a></td></tr>
@@ -264,6 +270,34 @@ df_register_skin()</dd></dl>
 
 <p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00081">81</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="abfe395ea818c91d51cb2b9f6f81c6450"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">_cmp_template_dirs </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00341">341</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a8a89232edb42318063b90fee5f608ec0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -287,7 +321,7 @@ df_register_skin()</dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>string results of <a class="el" href="">_get_auto_filename()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00262">262</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00266">266</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -321,7 +355,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01092">1092</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01113">1113</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -359,7 +393,7 @@ df_register_skin()</dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00584">584</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00605">605</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -387,7 +421,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00600">600</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00621">621</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -415,7 +449,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01044">1044</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01065">1065</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -443,7 +477,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00952">952</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00973">973</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -460,7 +494,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00092">92</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00094">94</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -500,7 +534,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00781">781</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00802">802</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -542,7 +576,7 @@ df_register_skin()</dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00320">320</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00324">324</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -576,7 +610,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00766">766</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00787">787</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -604,7 +638,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01053">1053</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01074">1074</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -638,7 +672,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00820">820</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00841">841</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -666,7 +700,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00897">897</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00918">918</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -694,7 +728,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01096">1096</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01117">1117</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -721,7 +755,7 @@ df_register_skin()</dd></dl>
 <p>Returns a singleton instance to the skin tool. </p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dataface___skin_tool.html">Dataface_SkinTool</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00338">338</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00356">356</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -740,7 +774,7 @@ df_register_skin()</dd></dl>
 <p>Obtains a reference to the result controller for this request. The result controller is the control that allows users to navigate between records of the current result set.</p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dataface___result_controller.html">Dataface_ResultController</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00241">241</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00245">245</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -768,7 +802,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00724">724</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00745">745</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -809,7 +843,7 @@ df_register_skin()</dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00483">483</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00504">504</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -852,7 +886,7 @@ df_register_skin()</dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01017">1017</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01038">1038</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -887,7 +921,7 @@ df_register_skin()</dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00531">531</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00552">552</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -915,7 +949,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00868">868</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00889">889</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -943,7 +977,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01039">1039</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01060">1060</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -971,7 +1005,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00873">873</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00894">894</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1010,7 +1044,7 @@ df_register_skin()</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>void</dd></dl>
 <p>-function load_record -param string table The name of the table from which to load the record. (Optional - will default to current table). -param string var The name of the variable into which the record should be loaded. -param % Optional key-value pairs of field names / values to find a particular record. If none are provided, the current record will be returned. </p>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00424">424</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00445">445</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1038,7 +1072,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00857">857</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00878">878</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1066,7 +1100,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00863">863</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00884">884</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1094,7 +1128,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00699">699</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00720">720</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1122,7 +1156,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00704">704</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00725">725</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1150,7 +1184,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00460">460</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00481">481</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1178,7 +1212,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00910">910</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00931">931</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1204,11 +1238,11 @@ df_register_skin()</dd></dl>
 </dl>
 <dl class="section since"><dt>Since</dt><dd>2.0  OODavo </dd></dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00386">386</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00407">407</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a411d0f3c4ba4c000c0c0992d1d87f137"></a>
+<a class="anchor" id="a0b4ddf91be357362e7fbb30ea1b57a2b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1222,7 +1256,13 @@ df_register_skin()</dd></dl>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$template_dir</em>&#160;</td>
+          <td class="paramname"><em>$template_dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$priority</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1240,7 +1280,7 @@ df_register_skin()</dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00360">360</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00378">378</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1268,7 +1308,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00930">930</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00951">951</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1296,7 +1336,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00840">840</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00861">861</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1324,7 +1364,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00878">878</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00899">899</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1352,7 +1392,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00882">882</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00903">903</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1380,7 +1420,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00994">994</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l01015">1015</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1408,7 +1448,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00730">730</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00751">751</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1436,7 +1476,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00718">718</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00739">739</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1470,7 +1510,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00831">831</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00852">852</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1504,7 +1544,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00746">746</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00767">767</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1519,7 +1559,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00089">89</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00091">91</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1561,7 +1601,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00088">88</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00090">90</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1575,7 +1615,7 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00087">87</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00089">89</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1589,7 +1629,21 @@ df_register_skin()</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00090">90</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00092">92</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa89c658cc64d5e4fa10f31a97d2ecb3d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$skinPriorities = array('templates' =&gt; 100)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00087">87</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
 
 </div>
 </div>
@@ -1607,13 +1661,27 @@ df_register_skin()</dd></dl>
 
 </div>
 </div>
+<a class="anchor" id="a7ec799d1313df4df335cd6bd92a2e1c7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$skinsSorted = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_skin_tool_8php_source.html#l00088">88</a> of file <a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>Dataface/<a class="el" href="_skin_tool_8php_source.html">SkinTool.php</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 31 2014 08:54:54 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 5 2014 09:16:22 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

@@ -11,5 +11,6 @@ var searchData=
   ['writeconfigfiles',['writeConfigFiles',['../class_dataface___table__builder.html#ada5414f2ffd9a167fe36cc7cf3aaee04',1,'Dataface_Table_builder']]],
   ['writeconfigtodb',['writeConfigToDB',['../class_dataface___config_writer.html#ad29239f367eb6ea929cf0670a827c308',1,'Dataface_ConfigWriter']]],
   ['writeoutput',['writeOutput',['../classdataface__actions__export__csv.html#a313c9cd6952cee98bcad241d87015a4a',1,'dataface_actions_export_csv']]],
-  ['writerow',['writeRow',['../classdataface__actions__export__csv.html#a1c5e35591c19dd77153d0c4d48c4d019',1,'dataface_actions_export_csv']]]
+  ['writerow',['writeRow',['../classdataface__actions__export__csv.html#a1c5e35591c19dd77153d0c4d48c4d019',1,'dataface_actions_export_csv']]],
+  ['writeuserconfig',['writeUserConfig',['../class_dataface___config_tool.html#a2cec2a41eec159d9dc011ebb71b801b5',1,'Dataface_ConfigTool']]]
 ];

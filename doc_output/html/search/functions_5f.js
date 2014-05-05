@@ -21,6 +21,7 @@ var searchData=
   ['_5fbuildwidget',['_buildWidget',['../class_dataface___quick_form.html#aa60deff6da5db6d8112beb627d94478c',1,'Dataface_QuickForm\_buildWidget()'],['../class_dataface___translation_form.html#a20aedb3352af83f98d0e8d98cd3dac4b',1,'Dataface_TranslationForm\_buildWidget()']]],
   ['_5fcachetableexists',['_cacheTableExists',['../class_dataface___output_cache.html#abdab67852a0b21c3f40b65b25feab1b9',1,'Dataface_OutputCache']]],
   ['_5fcheckdelexpect',['_checkDelExpect',['../class_p_e_a_r.html#ad3c74bbdfad535266bcb1a0d51dd9e4c',1,'PEAR']]],
+  ['_5fcmp_5ftemplate_5fdirs',['_cmp_template_dirs',['../class_dataface___skin_tool.html#abfe395ea818c91d51cb2b9f6f81c6450',1,'Dataface_SkinTool']]],
   ['_5fcmp_5fwords_5fby_5flength',['_cmp_words_by_length',['../class_dataface___index.html#aeb04936880f6950d1a9c7bac6279d636',1,'Dataface_Index']]],
   ['_5fcompareactions',['_compareActions',['../class_dataface___action_tool.html#aedb479cd49b2d137d8ffb3a96cdc9673',1,'Dataface_ActionTool']]],
   ['_5fcompile',['_compile',['../class_dataface___javascript_tool.html#acb28f1ee6caebc749bcd8a0fb7c2489d',1,'Dataface_JavascriptTool']]],

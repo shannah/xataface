@@ -103,6 +103,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a932d9c60f7a2c49a4b0b6d0192a0d1df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9531c5c4fafcab26d078d3bebfebb65"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#aa9531c5c4fafcab26d078d3bebfebb65">loadConfig</a> ($type=null, $table=null)</td></tr>
 <tr class="separator:aa9531c5c4fafcab26d078d3bebfebb65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80b36bb96e7d79dc595a75f4ff82a56d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#a80b36bb96e7d79dc595a75f4ff82a56d">loadUserConfig</a> ()</td></tr>
+<tr class="memdesc:a80b36bb96e7d79dc595a75f4ff82a56d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the user config file settings from the user config file. This is a single file including all overridden settings as one large <a class="el" href="class_j_s_o_n.html">JSON</a> data structure. It is much like a session structure.  <a href="#a80b36bb96e7d79dc595a75f4ff82a56d">More...</a><br/></td></tr>
+<tr class="separator:a80b36bb96e7d79dc595a75f4ff82a56d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cec2a41eec159d9dc011ebb71b801b5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#a2cec2a41eec159d9dc011ebb71b801b5">writeUserConfig</a> ()</td></tr>
+<tr class="memdesc:a2cec2a41eec159d9dc011ebb71b801b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the user config data to the user config file.  <a href="#a2cec2a41eec159d9dc011ebb71b801b5">More...</a><br/></td></tr>
+<tr class="separator:a2cec2a41eec159d9dc011ebb71b801b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2fa6360b98c9e5afcdb779b3500486b"><td class="memItemLeft" align="right" valign="top">&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#ab2fa6360b98c9e5afcdb779b3500486b">loadConfigFromINI</a> ($type=null, $tablename='__global__')</td></tr>
 <tr class="separator:ab2fa6360b98c9e5afcdb779b3500486b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a243fe49bea7fc2ae6148c2f91713e67b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#a243fe49bea7fc2ae6148c2f91713e67b">apc_save</a> ()</td></tr>
@@ -145,6 +151,10 @@ Data Fields</h2></td></tr>
 <tr class="separator:a960da48b1907ea258ad50111b74742f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcc33bf66dfdd7260ffbea46a19f1d08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#adcc33bf66dfdd7260ffbea46a19f1d08">$configTableName</a> = 'dataface__config'</td></tr>
 <tr class="separator:adcc33bf66dfdd7260ffbea46a19f1d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad88d13a2e937dea17971508c3e1fa65a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#ad88d13a2e937dea17971508c3e1fa65a">$userConfig</a> = null</td></tr>
+<tr class="separator:ad88d13a2e937dea17971508c3e1fa65a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d8f2f90aee08c6b300868e45c374d1f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#a5d8f2f90aee08c6b300868e45c374d1f">$userConfigLoaded</a> = false</td></tr>
+<tr class="separator:a5d8f2f90aee08c6b300868e45c374d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c44905c7ed6788bd425c32a598b3f95"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dataface___config_tool.html#a6c44905c7ed6788bd425c32a598b3f95">$nameLookup</a> = array('actions'=&gt;array(), 'fields'=&gt;array(), 'table'=&gt;array(), 'relationships'=&gt;array(), 'valuelists'=&gt;array(),'lang'=&gt;array())</td></tr>
 <tr class="separator:a6c44905c7ed6788bd425c32a598b3f95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -166,7 +176,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00276">276</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00392">392</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -183,7 +193,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00269">269</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00385">385</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -200,7 +210,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00261">261</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00377">377</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -240,7 +250,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00394">394</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00510">510</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -292,7 +302,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00419">419</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00535">535</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -309,7 +319,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00409">409</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00525">525</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -326,7 +336,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00042">42</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00044">44</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -351,7 +361,7 @@ Data Fields</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00052">52</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00055">55</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -368,7 +378,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00305">305</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00421">421</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -386,7 +396,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Scours the tables directory to load all configuration information from the ini files. </p>
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00286">286</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00402">402</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -423,7 +433,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A 2-dimensional associative array modelling the configuration information that has been returned. </dd></dl>
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00066">66</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00069">69</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -460,7 +470,27 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Associative array of configuration options in the same form as they would be returned by <a class="el" href="class_dataface___config_tool.html#ac0c9c81a14989cf636eef17a81e1e1dd">parse_ini_file()</a>. </dd></dl>
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00079">79</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00144">144</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a80b36bb96e7d79dc595a75f4ff82a56d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">loadUserConfig </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads the user config file settings from the user config file. This is a single file including all overridden settings as one large <a class="el" href="class_j_s_o_n.html">JSON</a> data structure. It is much like a session structure. </p>
+<dl class="section since"><dt>Since</dt><dd>2.1 </dd></dl>
+
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00080">80</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -488,7 +518,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00323">323</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00439">439</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -546,7 +576,27 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00414">414</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00530">530</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2cec2a41eec159d9dc011ebb71b801b5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">writeUserConfig </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Saves the user config data to the user config file. </p>
+<dl class="section since"><dt>Since</dt><dd>2.1 </dd></dl>
+
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00114">114</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -632,7 +682,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Array to lookup the name of an entity based on its ID. </p>
 
-<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00050">50</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00053">53</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
 
 </div>
 </div>
@@ -650,13 +700,41 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ad88d13a2e937dea17971508c3e1fa65a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$userConfig = null</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00041">41</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5d8f2f90aee08c6b300868e45c374d1f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$userConfigLoaded = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_config_tool_8php_source.html#l00042">42</a> of file <a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>Dataface/<a class="el" href="_config_tool_8php_source.html">ConfigTool.php</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 31 2014 08:54:54 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 5 2014 09:16:22 for Xataface by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

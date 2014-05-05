@@ -20,5 +20,6 @@ var searchData=
   ['values',['values',['../class_dataface___record.html#a419fdc8f0e190a9551547aa16cee8e70',1,'Dataface_Record\values()'],['../class_dataface___related_record.html#a8e213f9ff51a30430ef3546206a42b47',1,'Dataface_RelatedRecord\values()']]],
   ['view',['view',['../class_dataface___permissions_tool.html#a859dc3aceb0549307d7023c825de118b',1,'Dataface_PermissionsTool\view()'],['../class_dataface___permissions_tool___instance.html#ae234762f74664fefd254993f85421e04',1,'Dataface_PermissionsTool_Instance\view()']]],
   ['view_5fhistory_5frecord_5fdetails_2ephp',['view_history_record_details.php',['../view__history__record__details_8php.html',1,'']]],
+  ['view_5frelated_5frecord_2ephp',['view_related_record.php',['../view__related__record_8php.html',1,'']]],
   ['vocabulary_2ephp',['Vocabulary.php',['../_vocabulary_8php.html',1,'']]]
 ];

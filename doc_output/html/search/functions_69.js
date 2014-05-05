@@ -25,6 +25,7 @@ var searchData=
   ['installdb',['installDB',['../class_dataface___installer.html#a76c0a285094c487f4570b939bacb02f6',1,'Dataface_Installer']]],
   ['installfiles',['installFiles',['../class_dataface___installer.html#aaebed2be494e14a2337a9e0b0b292f50',1,'Dataface_Installer']]],
   ['invalidatetranslations',['invalidateTranslations',['../class_dataface___translation_tool.html#ae85875a58dfef00f0433218568c243fb',1,'Dataface_TranslationTool']]],
+  ['is_5fchecked',['is_checked',['../classdataface__actions__show__hide__columns.html#a6c0b3193a061103397ba41e4db9b2ba8',1,'dataface_actions_show_hide_columns']]],
   ['is_5futf8',['is_utf8',['../ini2csv_8php.html#a910914ae8bfb813f5d49c67d3897af38',1,'ini2csv.php']]],
   ['isaddable',['isAddable',['../class_dataface___relationship_tool.html#a0d4624f5bb3c4cc34e74665ed3696568',1,'Dataface_RelationshipTool']]],
   ['isadmin',['isAdmin',['../functions_8inc_8php.html#aabf23b66cd362adaa508de5bfb22706a',1,'functions.inc.php']]],
