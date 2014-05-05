@@ -730,6 +730,39 @@ interface ApplicationDelegateClass {
 	// @}
 	
 	// @{
+	/** @name Glance List Customization */
+	
+	/**
+	 * @brief Overrides the one-line description that is used as the label for a record in
+	 * a GlanceList.  The GlanceList is used to render the portlets in the left column of
+	 * the view tab that shows related records.
+	 *
+	 * <p>If this is not defined, getTitle() will be used.</p>
+	 *
+	 * @param Dataface_Record $record The record described.
+	 * @return String A one-line description to display in the Glance list entry.  This should HTML output (i.e. may contain HTML tags, and all content should be escaped properly).
+	 *
+	 * <h4>Example</h4>
+	 * 
+	 * @code
+	 * class tables_students {
+	 * 	...
+	 *   function oneLineDescription(Dataface_Record $record){
+	 *      // Note: we use htmlValue() instead of display() so that it is HTML escaped.
+	 *      return $record->htmlValue('full_name');
+	 *   }
+	 *  ...
+	 * }
+	 * @endcode
+	 *
+	 * @since 1.0
+	 * @see DelegateClass::oneLineDescription()
+	 */
+	function oneLineDescription(Dataface_Record $record);
+	
+	// @}
+	
+	// @{
 	/** @name Valuelist Customization */
 	
 	function valuelist__valuelistname();

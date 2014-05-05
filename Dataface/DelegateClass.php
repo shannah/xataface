@@ -1544,9 +1544,70 @@ interface DelegateClass {
 	
 	// @}
 	
+	// @{
+	/** @name Glance List Customization */
+	
+	/**
+	 * @brief Overrides the one-line description that is used as the label for a record in
+	 * a GlanceList.  The GlanceList is used to render the portlets in the left column of
+	 * the view tab that shows related records.
+	 *
+	 * <p>If this is not defined, getTitle() will be used.</p>
+	 *
+	 * @param Dataface_Record $record The record described.
+	 * @return String A one-line description to display in the Glance list entry.  This should HTML output (i.e. may contain HTML tags, and all content should be escaped properly).
+	 *
+	 * <h4>Example</h4>
+	 * 
+	 * @code
+	 * class tables_students {
+	 * 	...
+	 *   function oneLineDescription(Dataface_Record $record){
+	 *      // Note: we use htmlValue() instead of display() so that it is HTML escaped.
+	 *      return $record->htmlValue('full_name');
+	 *   }
+	 *  ...
+	 * }
+	 * @endcode
+	 *
+	 * @since 1.0
+	 * @see rel_relationshipname_oneLineDescription()
+	 * @see ApplicationDelegate::oneLineDescription()
+	 */
+	function oneLineDescription(Dataface_Record $record);
+	
+	/**
+	 * @brief Overrides the one-line description that is used as the label for a related
+	 * record in a GlanceList.  The GlanceList is used to render the portlets in the left
+	 * column of the view tab that shows related records. If this is not provided, then 
+	 * oneLineDescription() will be used on the target record of the relationship.
+	 *
+	 * @param Dataface_RelatedRecord $record The related record that is being described.
+	 * @return String the one-line description. This should HTML output (i.e. may contain HTML tags, and all content should be escaped properly).
+	 *
+	 * <h4>Example</h4>
+	 *
+	 * <p>The following example shows a one line description for the "enrolled_students" relationship
+	 * of the "courses" table:</p>
+	 *
+	 * @code
+	 * class tables_courses {
+	 *    ...
+	 *    function rel_enrolled_students__oneLineDescription(Dataface_RelatedRecord $record){
+	 *        return $record->htmlValue('full_name');
+	 *    }
+	 *    ...
+	 * }
+	 * @endcode
+	 * @since 1.0
+	 * @see oneLineDescription()
+	 */
+	function rel_relationshipname__oneLineDescription(Dataface_RelatedRecord $record);
+	
+	// @}
 	
 	// @{
-	/** @name List Tab Cutomization */
+	/** @name List Tab Customization */
 	
     /**
      * @brief Returns a CSS class to be added to the table header cell (th tag) for a specified 
