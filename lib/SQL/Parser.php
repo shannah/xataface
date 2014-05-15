@@ -863,7 +863,7 @@ class SQL_Parser
 					//else return $this->raiseError("Unexpected token '".$this->token.'"');
 					//else $this->lexer->pushBack();
 					
-					$opts[] = array('type'=>'subselect', 'table'=>'', 'value'=>$result, 'alias'=>$columnAlias);
+					$opts[] = array('type'=>'subselect', 'table'=>'', 'value'=>$result, 'alias'=>'');
 				} else {	
 					$opt  = $this->parseExpression();
 					if ( PEAR::isError($opt) ) return $opt;
