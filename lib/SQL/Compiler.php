@@ -89,6 +89,15 @@ class SQL_Compiler {
 				$out .= $this->compileExpression($func_arg['type'], $func_arg['value']).", ";
                         } else if ( $func_arg['type'] == 'boolean_expression' ){
                                 $out .= $this->compileSearchClause($func_arg).", ";
+            } else if ( $func_arg['type'] == 'subselect' ){
+            	$compiler = SQL_Compiler::newInstance($this->type);
+				$compiler->version = $this->version;
+				$temp = $compiler->compile($func_arg['value']);
+				if ( PEAR::isError($temp) ){
+					return $temp;
+				}
+				$out .= '('.$temp.'), ';
+            	
 			} else {
 				$out .= $func_arg['value'].', ';
 			}
@@ -642,6 +651,7 @@ class SQL_Compiler {
     			return '('.$out.')';
     		case 'operator':
     			return $val;
+    		
     		
     	}
     }

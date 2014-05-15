@@ -1001,9 +1001,9 @@ class SQL_Parser
 				$opts['args'][] =& $arg;
 				unset($arg);
 			} else if ( $this->token == '(' ){
-				$this->getTok();
+				//$this->getTok();
 				$arg = $this->parseExpression();
-				$this->getTok();
+				//$this->getTok();
 				if ( $this->isExpressionOperator() ){
 					$arg = $this->parseExpression($arg);
 					if ( PEAR::isError($arg) ) return $arg;
