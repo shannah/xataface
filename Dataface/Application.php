@@ -1230,6 +1230,12 @@ class Dataface_Application {
 	 */
 	function &getResultSet(){
 		if ( $this->queryTool === null ){
+			$this->fireEvent('beforeLoadResultSet');
+			$applicationDelegate = $this->getDelegate();
+			if ( isset($applicationDelegate) and method_exists($applicationDelegate, 'beforeLoadResultSet') ){
+				// Do whatever we need to do before the request is handled.
+				$applicationDelegate->beforeLoadResultSet();
+			}
 			import('Dataface/QueryTool.php');
 			$this->queryTool = Dataface_QueryTool::loadResult($this->_query['-table'], $this->db(), $this->_query);
 		}
