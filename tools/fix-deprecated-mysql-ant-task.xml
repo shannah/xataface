@@ -4,64 +4,67 @@
 <property name="excludes" value="db/drivers/**"/>
 <target name="convert-mysqli">
 	 <replace token="mysql_query" value="xf_db_query">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_fetch_row" value="xf_db_fetch_row">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_fetch_assoc" value="xf_db_fetch_assoc">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_fetch_object" value="xf_db_fetch_object">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_affected_rows" value="xf_db_affected_rows">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_connect" value="xf_db_connect">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_free_result" value="xf_db_free_result">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_escape_string" value="xf_db_escape_string">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_real_escape_string" value="xf_db_real_escape_string">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_error" value="xf_db_error">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_errno" value="xf_db_errno">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_fetch_array" value="xf_db_fetch_array">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_fetch_lengths" value="xf_db_fetch_lengths">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_num_rows" value="xf_db_num_rows">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_pconnect" value="xf_db_pconnect">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_insert_id" value="xf_db_insert_id">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_select_db" value="xf_db_select_db">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_data_seek" value="xf_db_data_seek">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_client_encoding" value="xf_db_character_set_name">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 <replace token="mysql_close" value="xf_db_close">
-		<fileset dir="${basedir}" includes="**/*.php"/>
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
+	 </replace>
+	 <replace token="mysql_get_server_info" value="xf_db_get_server_info">
+		<fileset dir="${basedir}" includes="**/*.php" excludes="${excludes}"/>
 	 </replace>
 	 
 	 
