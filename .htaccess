@@ -1,0 +1,8 @@
+Deny from all
+ErrorDocument 403 "403 Access Restricted.  <a href='installer.php'>Go to installer</a>"
+<FilesMatch "\.(png|jpg|gif|GIF|PNG|JPG|jpeg|JPEG|ICO|js|css|html)$">
+	Allow from all
+</FilesMatch>
+<FilesMatch "(installer\.php|index\.php)$">
+	Allow from all
+</FilesMatch>
