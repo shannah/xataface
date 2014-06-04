@@ -1,12 +1,13 @@
 <?php
 /**
- * Tool for helping to produce RSS feeds.
+ * Tool for helping to produce iCal feeds.
  *
- * @author Steve Hannah <shannah@sfu.ca>
- * @created Feb. 17, 2007
+ * @author Stephane Mourey <stephane.mourey@impossible-exil.info>
+ * @created June. 6, 2014
+ * @licence http://www.gnu.org/licenses/agpl.html GNU Affero General Public License
  *
  */
-class Dataface_FeedTool {
+class Dataface_IcalTool {
 
 
 	function buildFeedItemData(&$record){
@@ -22,14 +23,14 @@ class Dataface_FeedTool {
 		if ( !isset($res['date']) ) $res['date'] = $this->getItemDate($record);
 		if ( !isset($res['author']) ) $res['author'] = $this->getItemAuthor($record);
 		if ( !isset($res['source']) ) $res['source'] = $this->getItemSource($record);
-		
+
 		return $res;
-		
+
 	}
-	
+
 	function buildFeedData($query=null){
 		$app =& Dataface_Application::getInstance();
-		
+
 		$appDelegate =& $app->getDelegate();
 		if ( !isset($query) ){
 
@@ -37,7 +38,7 @@ class Dataface_FeedTool {
 		}
 		$table =& Dataface_Table::loadTable($query['-table']);
 		$delegate =& $table->getDelegate();
-		
+
 		if ( isset($query['-relationship']) ){
 			// we are building a set of related records.
 			$record =& $app->getRecord();
@@ -48,16 +49,16 @@ class Dataface_FeedTool {
 			} else {
 				$feed = array();
 			}
-			
+
 			if ( !isset($feed['title']) ) $feed['title'] =$this->getRelatedTitle($record, $query['-relationship']);
 			if ( !isset($feed['description']) )  $feed['description'] = $this->getRelatedDescription($record, $query['-relationship']);
 			if ( !isset($feed['link']) ) $feed['link'] = $this->getRelatedLink($record, $query['-relationship']);
 			if ( !isset($feed['syndicationURL']) ) $feed['syndicationURL'] = $this->getRelatedSyndicationURL($record, $query['-relationship']);
-			
+
 			return $feed;
-			
+
 		} else {
-			
+
 			if ( isset($delegate) and method_exists($delegate, 'getFeed') ){
 				$feed = $delegate->getFeed($query);
 			} else if ( isset($appDelegate) and method_exists($appDelegate,'getFeed') ){
@@ -65,18 +66,18 @@ class Dataface_FeedTool {
 			} else {
 				$feed = array();
 			}
-			
+
 			if ( !isset($feed['title']) ) $feed['title'] = $this->getTitle($query);
 			if ( !isset($feed['description']) ) $feed['description'] = $this->getDescription($query);
 			if ( !isset($feed['link']) ) $feed['link'] = $this->getLink($query);
 			if ( !isset($feed['syndicationURL']) ) $feed['syndicationURL'] = $this->getSyndicationURL($query);
 			return $feed;
-			
-		
+
+
 		}
-	
+
 	}
-	
+
 	function getParsedConfigSetting($name, $context=array()){
 		$app =& Dataface_Application::getInstance();
 		$conf =& $this->getConfig();
@@ -86,10 +87,10 @@ class Dataface_FeedTool {
 			return null;
 		}
 	}
-	
+
 	function getTitle($query){
 		$title = $this->getParsedConfigSetting('title', $query);
-		
+
 		if ( !$title ){
 			$table =& Dataface_Table::loadTable($query['-table']);
 			$searchparams = preg_grep('/^-/', array_keys($query), PREG_GREP_INVERT);
@@ -112,22 +113,22 @@ class Dataface_FeedTool {
 			} else {
 				$search_params = '';
 			}
-			
+
 			if ( @$query['-search'] ){
 				$search_params = ' search for "'.$query['-search'].'" '.$search_params;
 			}
-			
+
 			$app =& Dataface_Application::getInstance();
-			
-			
+
+
 			$title= $app->getSiteTitle().' | '.$table->getLabel().' '.$search_params;
 		}
 		return $title;
-		
+
 	}
 	function getRelatedTitle($record, $relationshipName){
 		return ucwords($relationshipName)." of ".$record->getTitle();
-	
+
 	}
 	function getDescription($query){
 		$description = $this->getParsedConfigSetting('description', $query);
@@ -158,11 +159,11 @@ class Dataface_FeedTool {
 	function getRelatedSyndicationURL($record, $relationshipName){
 		return $record->getURL('-relationship='.urlencode($relationshipName).'&-action=related_records_list');
 	}
-	
+
 	function getItemLink(&$record){
 		return $record->getPublicLink();
 	}
-	
+
 	function getItemDescription(&$record){
 		$delegate =& $record->_table->getDelegate();
 		if ( isset($delegate) and method_exists($delegate, 'getRSSDescription') ){
@@ -180,16 +181,16 @@ class Dataface_FeedTool {
 			}
 			$out .= '</tbody></table>';
 			return $out;
-		
+
 		}
-		
+
 		//return $record->getDescription();
 	}
-	
+
 	function getItemTitle(&$record){
 		return $record->getTitle();
 	}
-	
+
 	function getItemDate(&$record){
 		$mod = $record->getLastModified();
 		if ( !$mod ){
@@ -197,7 +198,7 @@ class Dataface_FeedTool {
 		}
 		return $mod;
 	}
-	
+
 	function getItemAuthor(&$record){
 		$creator = $record->getCreator();
 		if ( !$creator ){
@@ -206,7 +207,7 @@ class Dataface_FeedTool {
 		if ( !$creator ) $creator = "Site administrator";
 		return $creator;
 	}
-	
+
 	function getItemSource(&$record){
 		$delegate =& $record->_table->getDelegate();
 		if ( isset($delegate) && method_exists($delegate, 'getFeedSource') ){
@@ -219,26 +220,26 @@ class Dataface_FeedTool {
 		}
 		return $_SERVER['HOST_URI'].DATAFACE_SITE_HREF;
 	}
-	
+
 	function createFeedItem(&$record){
 		$data = $this->buildFeedItemData($record);
-		$item = new FeedItem(); 
+		$item = new FeedItem();
 		$item->title = $data['title'];
 		$item->link = $data['link'];
-		$item->description = $data['description']; 
-		
+		$item->description = $data['description'];
+
 		//optional
 		//item->descriptionTruncSize = 500;
 		//item->descriptionHtmlSyndicated = true;
-		
-		$item->date = $data['date']; 
 
-		$item->source = $data['source']; 
+		$item->date = $data['date'];
+
+		$item->source = $data['source'];
 		$item->author = $data['author'];
 		return $item;
 	}
-	
-	
+
+
 	function &getConfig(){
 		$app =& Dataface_Application::getInstance();
 		if ( !isset($app->_conf['_feed']) ){
@@ -246,28 +247,28 @@ class Dataface_FeedTool {
 		}
 		return $app->_conf['_feed'];
 	}
-	
+
 	function createFeed($query=null){
-		import('feedcreator.class.php');
+		import('iCalcreator-2.20.2/iCalcreator.class.php');
 		$app =& Dataface_Application::getInstance();
 		if ( !isset($query) ){
 			$query = $app->getQuery();
 		}
 		$feed_data = $this->buildFeedData($query);
-		
-		$rss = new UniversalFeedCreator(); 
+
+		$rss = new UniversalFeedCreator();
 		$rss->encoding = $app->_conf['oe'];
 		//$rss->useCached(); // use cached version if age<1 hour
-		$rss->title = $feed_data['title']; 
+		$rss->title = $feed_data['title'];
 		$rss->description = $feed_data['description'];
-		
+
 		//optional
 		//$rss->descriptionTruncSize = 500;
 		//$rss->descriptionHtmlSyndicated = true;
-		
+
 		$rss->link = htmlentities($feed_data['link']);
 		$rss->syndicationURL = htmlentities($feed_data['syndicationURL']);
-		
+
 		if ( isset($query['-relationship']) ){
 			// Do the related records thing
 			$record =& $app->getRecord();
@@ -282,16 +283,16 @@ class Dataface_FeedTool {
 					$query['-related:sort'] = $lastUpdatedColumn.' desc';
 					$rrecords =& df_get_related_records($query);
 					//$record->getRelatedRecordObjects($query['-relationship'], null,null, 0, $lastUpdatedColumn.' desc');
-					
+
 				} else {
 					unset($rrecords);
 					$query['-related:limit'] = 30;
 					$rrecords =& df_get_related_records($query); //$record->getRelatedRecordObjects($query['-relationship']);
-					
+
 				}
 				$records = array();
 				foreach ($rrecords as $rrec){
-					
+
 					$dfRecord =& $rrec->toRecord();
 					if ( $dfRecord->checkPermission('view', array('recordmask'=>array('view'=>1)  ) ) ){
 						$records[] =& $dfRecord;
@@ -305,10 +306,10 @@ class Dataface_FeedTool {
 			//trigger_error("Not implemented yet for related records", E_USER_ERROR);
 		} else {
 			$records =& df_get_records_array($query['-table'], $query);
-			
+
 		}
-		
-		
+
+
 		foreach ($records as $record){
 			if ( !$record->checkPermission('view') ) continue;
 			if ( !$record->checkPermission('view in rss') ) continue;
@@ -322,16 +323,16 @@ class Dataface_FeedTool {
 			$rss->addItem($item);
 			unset($item);
 		}
-		
+
 		return $rss;
 
 	}
-	
-	function getFeedXML($query, $format='RSS2.0'){
+
+	function getFeedIcal($query, $format='ical'){
 		$feed = $this->createFeed($query);
 		return $feed->createFeed($format);
-	}	
-	
-	
+	}
+
+
 
 }

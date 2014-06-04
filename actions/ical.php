@@ -1,9 +1,12 @@
 <?php
 /**
- * @file actions/feed.php
+ * @file actions/ica.php
  *
- * An action to produce a feed for the current result set.  This will work with
- * RSS, Atom.
+ * An action to produce a iCal feed for the current result set.
+ *
+ * @author Stephane Mourey <stephane.mourey@impossible-exil.info>
+ * @created June. 6, 2014
+ * @licence http://www.gnu.org/licenses/agpl.html GNU Affero General Public License
  *
  * @defgroup actions
  * Some action info
@@ -15,9 +18,9 @@ class dataface_actions_ical {
 	 * @ingroup actions
 	 */
 	function handle(&$params){
-		import('Dataface/FeedTool.php');
+		import('Dataface/IcalTool.php');
 		$app =& Dataface_Application::getInstance();
-		$ft = new Dataface_FeedTool();
+		$ft = new Dataface_IcalTool();
 
 
 		$query = $app->getQuery();
@@ -29,7 +32,11 @@ class dataface_actions_ical {
 
 		}
 
-		header("Content-Type: application/xml; charset=".$app->_conf['oe']);
+		header('Content-type: text/calendar; charset='.$app->_conf['oe']);
+		/** May have to use the next line in a way or another to be compatible with Google Agenda
+		 * @see http://stackoverflow.com/questions/1463480/how-can-i-use-php-to-dynamically-publish-an-ical-file-to-be-read-by-google-calen
+		* header('Content-Disposition: inline; filename=calendar.ics'); */
+
 		$conf = $ft->getConfig();
 
 		$query['-skip'] = 0;
@@ -52,9 +59,9 @@ class dataface_actions_ical {
 		if ( isset($query['--format']) ){
 			$format = $query['--format'];
 		} else {
-			$format = 'RSS1.0';
+			$format = 'ical';
 		}
-		echo $ft->getFeedXML($query,$format);
+		echo $ft->getFeedIcal($query,$format);
 		exit;
 	}
 }
