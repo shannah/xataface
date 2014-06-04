@@ -19,11 +19,11 @@ class BaseTest2 extends PHPUnit_TestCase {
 
 	function setUp(){
 		startTimer();
-		$this->db = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to db");
+		$this->db = xf_db_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to db");
 		endTimer("Connect to database");
 		
 		startTimer();
-		mysql_select_db("mysql");
+		xf_db_select_db("mysql");
 			
 	
 	}

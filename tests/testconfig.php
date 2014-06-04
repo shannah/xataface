@@ -27,8 +27,8 @@ define('DB_HOST', 'localhost');
 define('DB_NAME', 'test_contentmanager');
 define('DB_USER', 'tester');
 define('DB_PASSWORD', 'test');
-mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-@mysql_query("create database `".DB_NAME."`");
+xf_db_connect(DB_HOST, DB_USER, DB_PASSWORD);
+@xf_db_query("create database `".DB_NAME."`");
 
 /**
  * The URL of the testApp.php file which contains the test web application.

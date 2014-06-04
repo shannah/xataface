@@ -97,7 +97,7 @@ class dataface_actions_forgot_password {
 	 */
 	function create_reset_password_table(){
 		$table = self::$TABLE_RESET_PASSWORD;
-		$res = mysql_query("create table if not exists `{$table}` (
+		$res = xf_db_query("create table if not exists `{$table}` (
 			request_id int(11) auto_increment primary key,
 			request_uuid binary(32),
 			username varchar(255),
@@ -105,7 +105,7 @@ class dataface_actions_forgot_password {
 			date_created datetime,
 			expires int(11),
 			key (request_uuid) ) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		
 	}
 	
@@ -115,8 +115,8 @@ class dataface_actions_forgot_password {
 	 */
 	function clear_expired(){
 		$table = self::$TABLE_RESET_PASSWORD;
-		$res = mysql_query("delete from `{$table}` where expires < ".time(), df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		$res = xf_db_query("delete from `{$table}` where expires < ".time(), df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		
 		
 	
@@ -216,14 +216,14 @@ class dataface_actions_forgot_password {
 			(`request_uuid`, `username`, `request_ip`, `date_created`, `expires`)
 			values
 			(UUID(),'".addslashes($username)."','".addslashes($ip)."', NOW(), ".(time()+600).")";
-		$res = mysql_query($sql, df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
-		$id = mysql_insert_id(df_db());
+		$res = xf_db_query($sql, df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
+		$id = xf_db_insert_id(df_db());
 		
-		$res = mysql_query("select * from `{$table}` where request_id='".addslashes($id)."'", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		$res = xf_db_query("select * from `{$table}` where request_id='".addslashes($id)."'", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		
-		$row = mysql_fetch_assoc($res);
+		$row = xf_db_fetch_assoc($res);
 		if ( !$row ) throw new Exception(df_translate('actions.forgot_password.failed_fetch_password_row',"Failed to fetch reset password request row from database after it has been inserted.  This should never happen ... must be a bug"));
 		
 		$uuid = $row['request_uuid'];
@@ -299,9 +299,9 @@ END
 		$this->create_reset_password_table();
 		$this->clear_expired();
 		$table = self::$TABLE_RESET_PASSWORD;
-		$res = mysql_query("select * from `{$table}` where request_uuid='".addslashes($uuid)."' limit 1", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query("select * from `{$table}` where request_uuid='".addslashes($uuid)."' limit 1", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
+		$row = xf_db_fetch_assoc($res);
 		if ( !$row ) throw new Exception(df_translate('actions.forgot_password.no_such_reset_request_found',"No such reset request could be found"), self::$EX_NO_SUCH_UUID);
 		
 		if ( !$row['username'] ){
@@ -313,7 +313,7 @@ END
 		
 		
 		
-		@mysql_free_result($res);
+		@xf_db_free_result($res);
 		
 		
 		
@@ -422,8 +422,8 @@ END
 	
 	function delete_request_with_uuid($uuid){
 		$table = self::$TABLE_RESET_PASSWORD;
-		$res = mysql_query("delete from `{$table}` where request_uuid='".addslashes($uuid)."' limit 1", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		$res = xf_db_query("delete from `{$table}` where request_uuid='".addslashes($uuid)."' limit 1", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		
 	}
 }

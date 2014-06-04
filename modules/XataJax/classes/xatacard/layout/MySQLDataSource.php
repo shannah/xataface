@@ -22,8 +22,8 @@ class xatacard_layout_MySQLDataSource implements xatacard_layout_DataSource {
 			self::$RECORDS_TABLE
 		);
 		
-		$res = mysql_query($sql, df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		$res = xf_db_query($sql, df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		true;
 	
 	}
@@ -172,8 +172,8 @@ class xatacard_layout_MySQLDataSource implements xatacard_layout_DataSource {
 				addslashes($versionhash),
 				addslashes($rec->lang)
 			));
-		if ( mysql_num_rows($res) >= 0 ){
-			$row = mysql_fetch_row($res);
+		if ( xf_db_num_rows($res) >= 0 ){
+			$row = xf_db_fetch_row($res);
 			$out->setId($row[0]);
 		} else{
 			$res = $this->query(sprintf(
@@ -188,7 +188,7 @@ class xatacard_layout_MySQLDataSource implements xatacard_layout_DataSource {
 				addslashes($rec->lang),
 				addslashes(json_encode($recordData))
 			));
-			$out->setId(mysql_insert_id(df_db()));
+			$out->setId(xf_db_insert_id(df_db()));
 		}
 				
 		$out->clearSnapshot();
@@ -205,10 +205,10 @@ class xatacard_layout_MySQLDataSource implements xatacard_layout_DataSource {
 				str_replace('`', '',self::$RECORDS_TABLE),
 				intval($id)
 			));
-			if (mysql_num_rows($res) == 0 ){
+			if (xf_db_num_rows($res) == 0 ){
 				return null;
 			} else {
-				$row = mysql_fetch_assoc($res);
+				$row = xf_db_fetch_assoc($res);
 				if ( $row['schema_id'] != $schema->getId() ){
 					throw new Exception(sprintf(
 						"The record with id %d failed to load because it uses a different schema than expected.  Expected schema id %d but found %d",

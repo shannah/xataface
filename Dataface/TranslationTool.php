@@ -123,8 +123,8 @@ END;
 		}
 		$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8";
 		
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) {throw new Exception(mysql_error($app->db()), E_USER_ERROR);}
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) {throw new Exception(xf_db_error($app->db()), E_USER_ERROR);}
 		return true;
 		
 	}
@@ -134,18 +134,18 @@ END;
 			$this->createTranslationsTable();
 		}
 		
-		$res = mysql_query("show columns from `dataface__translations`", $app->db());
-		if ( !$res ) throw new Exception(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query("show columns from `dataface__translations`", $app->db());
+		if ( !$res ) throw new Exception(xf_db_error($app->db()), E_USER_ERROR);
 		$cols = array();
-		while ( $row = mysql_fetch_assoc($res) ){
+		while ( $row = xf_db_fetch_assoc($res) ){
 			$cols[$row['Field']] = $row;
 		}
 		foreach ($this->schema as $field ){
 			if (!isset($cols[$field['Field']]) ){
 				$default = (isset($field['Default']) ? "DEFAULT '{$field['Default']}'" : '');
 				$sql = "alter table `dataface__translations` add column `{$field['Field']}` {$field['Type']} {$field['Null']} {$default}";
-				$res = mysql_query($sql, $app->db());
-				if (!$res ) throw new Exception(mysql_error($app->db()), E_USER_ERROR);
+				$res = xf_db_query($sql, $app->db());
+				if (!$res ) throw new Exception(xf_db_error($app->db()), E_USER_ERROR);
 			}
 		}
 		
@@ -181,8 +181,8 @@ END;
 		}
 		$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8";
 		
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) {echo $sql;throw new Exception(mysql_error($app->db()), E_USER_ERROR);}
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) {echo $sql;throw new Exception(xf_db_error($app->db()), E_USER_ERROR);}
 		return true;
 		
 	}
@@ -192,18 +192,18 @@ END;
 			$this->createTranslationSubmissionsTable();
 		}
 		
-		$res = mysql_query("show columns from `dataface__translation_submissions`", $app->db());
-		if ( !$res ) throw new Exception(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query("show columns from `dataface__translation_submissions`", $app->db());
+		if ( !$res ) throw new Exception(xf_db_error($app->db()), E_USER_ERROR);
 		$cols = array();
-		while ( $row = mysql_fetch_assoc($res) ){
+		while ( $row = xf_db_fetch_assoc($res) ){
 			$cols[$row['Field']] = $row;
 		}
 		foreach ($this->submission_schema as $field ){
 			if (!isset($cols[$field['Field']]) ){
 				$default = (isset($field['Default']) ? "DEFAULT '{$field['Default']}'" : '');
 				$sql = "alter table `dataface__translation_submissions` add column `{$field['Field']}` {$field['Type']} {$field['Null']} {$default}";
-				$res = mysql_query($sql, $app->db());
-				if (!$res ) throw new Exception(mysql_error($app->db()), E_USER_ERROR);
+				$res = xf_db_query($sql, $app->db());
+				if (!$res ) throw new Exception(xf_db_error($app->db()), E_USER_ERROR);
 			}
 		}
 		
@@ -242,34 +242,34 @@ END;
 	function getTranslationId(&$record, $language){
 		$app =& Dataface_Application::getInstance();
 		$sql = "select `id` from `dataface__translations` where `record_id`='".addslashes($this->getRecordId($record))."' and `table`='".addslashes($record->_table->tablename)."' and `language`='".addslashes($language)."' limit 1";
-		$res = mysql_query($sql, $app->db());
+		$res = xf_db_query($sql, $app->db());
 		if ( !$res ){
 			$this->updateTranslationsTable();
-			$res = mysql_query($sql, $app->db());
+			$res = xf_db_query($sql, $app->db());
 			if ( !$res ){
-				throw new Exception(mysql_error($app->db()), E_USER_ERROR);
+				throw new Exception(xf_db_error($app->db()), E_USER_ERROR);
 			}
 		}
-		if ( mysql_num_rows($res) === 0 ){
-			@mysql_free_result($res);
+		if ( xf_db_num_rows($res) === 0 ){
+			@xf_db_free_result($res);
 			$sql = "insert into `dataface__translations` (`record_id`,`language`,`table`,`last_modified`) VALUES (
 					'".addslashes($this->getRecordId($record))."',
 					'".addslashes($language)."',
 					'".addslashes($record->_table->tablename)."',
 					NOW()
 					)";
-			$res = mysql_query($sql, $app->db());
+			$res = xf_db_query($sql, $app->db());
 			if ( !$res ) {
 				$this->updateTranslationsTable();
-				$res = mysql_query($sql, $app->db());
+				$res = xf_db_query($sql, $app->db());
 				if ( !$res ){
-					throw new Exception(mysql_error($app->db()), E_USER_ERROR);
+					throw new Exception(xf_db_error($app->db()), E_USER_ERROR);
 				}
 			}
-			$id = mysql_insert_id($app->db());
+			$id = xf_db_insert_id($app->db());
 		} else {
-			list($id) = mysql_fetch_row($res);
-			@mysql_free_result($res);
+			list($id) = xf_db_fetch_row($res);
+			@xf_db_free_result($res);
 		}
 		
 		return $id;
@@ -416,8 +416,8 @@ END;
 				} else {
 					$sql = "delete from `{$record->_table->tablename}_{$language}` where ".implode(' and ', $clauses)." limit 1";
 				}
-				$res = mysql_query($sql, $app->db());
-				if ( !$res ) throw new Exception(mysql_error($app->db()), E_USER_ERROR);
+				$res = xf_db_query($sql, $app->db());
+				if ( !$res ) throw new Exception(xf_db_error($app->db()), E_USER_ERROR);
 				return true;
 		}
 		return false;
@@ -481,12 +481,12 @@ END;
 			$t_tablename = $tablename.'_'.$app->_conf['default_language'];
 			
 			if ( !$table || PEAR::isError($table) ) continue;
-			$res = mysql_query("create table `{$tablename}_bu_".time()."` select * from `{$tablename}`", $app->db());
+			$res = xf_db_query("create table `{$tablename}_bu_".time()."` select * from `{$tablename}`", $app->db());
 			$sql = "select `".join('`,`', array_keys($table->keys()))."` from `".$tablename."`";
-			$res2 = mysql_query($sql, $app->db());
+			$res2 = xf_db_query($sql, $app->db());
 			$io = new Dataface_IO($tablename);
 			$io->lang = $newDefault;
-			while ( $rec = mysql_fetch_assoc($res2) ){
+			while ( $rec = xf_db_fetch_assoc($res2) ){
 				//foreach (array_keys($rec) as $colkey){
 				//	$rec[$colkey] = '='.$rec[$colkey];
 				//}
@@ -511,10 +511,10 @@ END;
 				
 				
 			}
-			mysql_free_result($res2);
+			xf_db_free_result($res2);
 			
-			$res = mysql_query("create table `{$t_tablename}_bu_".time()."` select * from `{$t_tablename}`", $app->db());
-			$res = mysql_query("truncate `{$t_tablename}`", $app->db());
+			$res = xf_db_query("create table `{$t_tablename}_bu_".time()."` select * from `{$t_tablename}`", $app->db());
+			$res = xf_db_query("truncate `{$t_tablename}`", $app->db());
 			
 			unset($io);
 			unset($table);
@@ -554,24 +554,24 @@ END;
 			// We are still using the old style of translations, so there is no migration required.
 			
 		$migrations = array();
-		$res = mysql_query("show tables", $app->db());
+		$res = xf_db_query("show tables", $app->db());
 		$tables = array();
-		while ( $row = mysql_fetch_row($res) ){
+		while ( $row = xf_db_fetch_row($res) ){
 			$tables[] = $row[0];
 		}
-		mysql_free_result($res);
+		xf_db_free_result($res);
 		foreach ($tables as $tablename){
 			$translation_tablename = $tablename."_".$app->_conf['default_language'];
-			if ( mysql_num_rows($res = mysql_query("show tables like '".addslashes($translation_tablename)."'", $app->db())) > 0){
-				@mysql_free_result($res);
-				list($num) = mysql_fetch_row($res = mysql_query("select count(*) from `".$translation_tablename."`",$app->db()));
+			if ( xf_db_num_rows($res = xf_db_query("show tables like '".addslashes($translation_tablename)."'", $app->db())) > 0){
+				@xf_db_free_result($res);
+				list($num) = xf_db_fetch_row($res = xf_db_query("select count(*) from `".$translation_tablename."`",$app->db()));
 				if ( $num > 0 ){
 					$migrations[] = $tablename;
 				}
 			} else {
 				
 			}
-			mysql_free_result($res);
+			xf_db_free_result($res);
 		}
 		return $migrations;
 	

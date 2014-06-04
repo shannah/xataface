@@ -44,9 +44,9 @@
  * echo $grid->toHTML();	// displays 3 column table.
  *
  * // Using grid with normal associative arrays
- * $res = mysql_query("SELECT * FROM Students");
+ * $res = xf_db_query("SELECT * FROM Students");
  * $records = array();
- * while ( $row = mysql_fetch_array($res) ){
+ * while ( $row = xf_db_fetch_array($res) ){
  * 		$record = array();
  * 		foreach ( $row as $key=>$value){
  *			if ( is_int($key) ) continue;

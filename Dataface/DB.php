@@ -25,7 +25,7 @@
  * Description:
  * -------------
  * Performs database queries on the database.  This is better than using direct
- * mysql_query calls because it analyzes queries first to make sure that Blobs are
+ * xf_db_query calls because it analyzes queries first to make sure that Blobs are
  * not loaded unnecessarily.  [To do] 
  */
 import( 'Dataface/Application.php'); 
@@ -231,7 +231,7 @@ class Dataface_DB {
 		//if ( !is_uploaded_file($blob) ) throw new Exception(df_translate('scripts.Dataface.DB._replaceBlobs.BLOB_NOT_UPLOADED',"Attempt to load blob that is not uploaded. "), E_USER_ERROR);
 		if ( PEAR::isError($blob) ) throw new Exception($blob->toString(), E_USER_ERROR);
 		
-		return mysql_real_escape_string(file_get_contents($blob));
+		return xf_db_real_escape_string(file_get_contents($blob));
 	}
 	
 
@@ -299,7 +299,7 @@ class Dataface_DB {
 	/**
 	 * Queries the database with the given sql query.
 	 * This currently passes the query straight through to
-	 * mysql_query, but it will be modified in the future to
+	 * xf_db_query, but it will be modified in the future to
 	 * automatically filter out blobs (because normally we don't want to 
 	 * retrieve blob columns.
 	 */
@@ -364,22 +364,22 @@ class Dataface_DB {
 			$loopctr = 0;
 			
 			foreach ($sql as $q){
-				if ( $loopctr++ > 0 and mysql_insert_id($db) ){
-					$this->_insert_id = mysql_insert_id($db);
+				if ( $loopctr++ > 0 and xf_db_insert_id($db) ){
+					$this->_insert_id = xf_db_insert_id($db);
 					$update_insert_id = false;
-					$q = str_replace("'%%%%%__MYSQL_INSERT_ID__%%%%%'", mysql_insert_id($db), $q );
+					$q = str_replace("'%%%%%__MYSQL_INSERT_ID__%%%%%'", xf_db_insert_id($db), $q );
 				}
 				if ( defined('DATAFACE_DEBUG_DB') or @$app->_conf['debug_sql']) echo "Performing query: '$q' <br>";
-				$res = mysql_query($q, $db);
+				$res = xf_db_query($q, $db);
 				
 			}
 		} else {
 			if ( defined('DATAFACE_DEBUG_DB') or @$app->_conf['debug_sql'] ) echo "Performing query: '$sql' <br>";
 			$this->db_hits++;
-			$res = mysql_query($sql, $db);
+			$res = xf_db_query($sql, $db);
 			
 		}
-		if ( $update_insert_id ) $this->_insert_id = mysql_insert_id($db);
+		if ( $update_insert_id ) $this->_insert_id = xf_db_insert_id($db);
 		if ( $res and $refreshModTimes) Dataface_Table::getTableModificationTimes(true);
 		if ( $as_array and $isSelect ){
 			if ( !$res  ) {
@@ -388,12 +388,12 @@ class Dataface_DB {
 			}
 			// We want to return this as an array rather than a resource
 			$out = array();
-			while ( $row = ($enumerated ? mysql_fetch_row($res) : mysql_fetch_assoc($res)) ){
+			while ( $row = ($enumerated ? xf_db_fetch_row($res) : xf_db_fetch_assoc($res)) ){
 				$out[] = $row;
 			}
 			
 			$this->memcache_set($orig_sql, $lang, $out);
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 			
 			return $out;
 		
@@ -476,9 +476,9 @@ class Dataface_DB {
 		return $blob;
 	}
 	
-	function startTransaction(){ return mysql_query('begin', df_db() ); }
-	function commitTransaction(){ return mysql_query('commit', df_db() ); }
-	function rollbackTransaction(){ return mysql_query('rollback', df_db() ); }
+	function startTransaction(){ return xf_db_query('begin', df_db() ); }
+	function commitTransaction(){ return xf_db_query('commit', df_db() ); }
+	function rollbackTransaction(){ return xf_db_query('rollback', df_db() ); }
 	
 	function memcache_get($sql, $lang=null){
 	

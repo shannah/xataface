@@ -228,7 +228,7 @@ class DB_mysql extends DB_common
                         ? $dsn['client_flags'] : null;
         }
 
-        $connect_function = $persistent ? 'mysql_pconnect' : 'mysql_connect';
+        $connect_function = $persistent ? 'xf_db_pconnect' : 'xf_db_connect';
 
         $ini = ini_get('track_errors');
         $php_errormsg = '';
@@ -243,7 +243,7 @@ class DB_mysql extends DB_common
         }
 
         if (!$this->connection) {
-            if (($err = @mysql_error()) != '') {
+            if (($err = @xf_db_error()) != '') {
                 return $this->raiseError(DB_ERROR_CONNECT_FAILED,
                                          null, null, null, 
                                          $err);
@@ -255,7 +255,7 @@ class DB_mysql extends DB_common
         }
 
         if ($dsn['database']) {
-            if (!@mysql_select_db($dsn['database'], $this->connection)) {
+            if (!@xf_db_select_db($dsn['database'], $this->connection)) {
                 return $this->mysqlRaiseError();
             }
             $this->_db = $dsn['database'];
@@ -274,7 +274,7 @@ class DB_mysql extends DB_common
      */
     function disconnect()
     {
-        $ret = @mysql_close($this->connection);
+        $ret = @xf_db_close($this->connection);
         $this->connection = null;
         return $ret;
     }
@@ -285,7 +285,7 @@ class DB_mysql extends DB_common
     /**
      * Sends a query to the database server
      *
-     * Generally uses mysql_query().  If you want to use
+     * Generally uses xf_db_query().  If you want to use
      * mysql_unbuffered_query() set the "result_buffering" option to 0 using
      * setOptions().  This option was added in Release 1.7.0.
      *
@@ -301,14 +301,14 @@ class DB_mysql extends DB_common
         $this->last_query = $query;
         $query = $this->modifyQuery($query);
         if ($this->_db) {
-            if (!@mysql_select_db($this->_db, $this->connection)) {
+            if (!@xf_db_select_db($this->_db, $this->connection)) {
                 return $this->mysqlRaiseError(DB_ERROR_NODBSELECTED);
             }
         }
         if (!$this->autocommit && $ismanip) {
             if ($this->transaction_opcount == 0) {
-                $result = @mysql_query('SET AUTOCOMMIT=0', $this->connection);
-                $result = @mysql_query('BEGIN', $this->connection);
+                $result = @xf_db_query('SET AUTOCOMMIT=0', $this->connection);
+                $result = @xf_db_query('BEGIN', $this->connection);
                 if (!$result) {
                     return $this->mysqlRaiseError();
                 }
@@ -318,7 +318,7 @@ class DB_mysql extends DB_common
         if (!$this->options['result_buffering']) {
             $result = @mysql_unbuffered_query($query, $this->connection);
         } else {
-            $result = @mysql_query($query, $this->connection);
+            $result = @xf_db_query($query, $this->connection);
         }
         if (!$result) {
             return $this->mysqlRaiseError();
@@ -372,17 +372,17 @@ class DB_mysql extends DB_common
     function fetchInto($result, &$arr, $fetchmode, $rownum = null)
     {
         if ($rownum !== null) {
-            if (!@mysql_data_seek($result, $rownum)) {
+            if (!@xf_db_data_seek($result, $rownum)) {
                 return null;
             }
         }
         if ($fetchmode & DB_FETCHMODE_ASSOC) {
-            $arr = @mysql_fetch_array($result, MYSQL_ASSOC);
+            $arr = @xf_db_fetch_array($result, MYSQL_ASSOC);
             if ($this->options['portability'] & DB_PORTABILITY_LOWERCASE && $arr) {
                 $arr = array_change_key_case($arr, CASE_LOWER);
             }
         } else {
-            $arr = @mysql_fetch_row($result);
+            $arr = @xf_db_fetch_row($result);
         }
         if (!$arr) {
             return null;
@@ -419,7 +419,7 @@ class DB_mysql extends DB_common
      */
     function freeResult($result)
     {
-        return @mysql_free_result($result);
+        return @xf_db_free_result($result);
     }
 
     // }}}
@@ -465,7 +465,7 @@ class DB_mysql extends DB_common
      */
     function numRows($result)
     {
-        $rows = @mysql_num_rows($result);
+        $rows = @xf_db_num_rows($result);
         if ($rows === null) {
             return $this->mysqlRaiseError();
         }
@@ -503,12 +503,12 @@ class DB_mysql extends DB_common
     {
         if ($this->transaction_opcount > 0) {
             if ($this->_db) {
-                if (!@mysql_select_db($this->_db, $this->connection)) {
+                if (!@xf_db_select_db($this->_db, $this->connection)) {
                     return $this->mysqlRaiseError(DB_ERROR_NODBSELECTED);
                 }
             }
-            $result = @mysql_query('COMMIT', $this->connection);
-            $result = @mysql_query('SET AUTOCOMMIT=1', $this->connection);
+            $result = @xf_db_query('COMMIT', $this->connection);
+            $result = @xf_db_query('SET AUTOCOMMIT=1', $this->connection);
             $this->transaction_opcount = 0;
             if (!$result) {
                 return $this->mysqlRaiseError();
@@ -529,12 +529,12 @@ class DB_mysql extends DB_common
     {
         if ($this->transaction_opcount > 0) {
             if ($this->_db) {
-                if (!@mysql_select_db($this->_db, $this->connection)) {
+                if (!@xf_db_select_db($this->_db, $this->connection)) {
                     return $this->mysqlRaiseError(DB_ERROR_NODBSELECTED);
                 }
             }
-            $result = @mysql_query('ROLLBACK', $this->connection);
-            $result = @mysql_query('SET AUTOCOMMIT=1', $this->connection);
+            $result = @xf_db_query('ROLLBACK', $this->connection);
+            $result = @xf_db_query('SET AUTOCOMMIT=1', $this->connection);
             $this->transaction_opcount = 0;
             if (!$result) {
                 return $this->mysqlRaiseError();
@@ -556,7 +556,7 @@ class DB_mysql extends DB_common
     function affectedRows()
     {
         if (DB::isManip($this->last_query)) {
-            return @mysql_affected_rows($this->connection);
+            return @xf_db_affected_rows($this->connection);
         } else {
             return 0;
         }
@@ -589,7 +589,7 @@ class DB_mysql extends DB_common
             $this->popErrorHandling();
             if ($result === DB_OK) {
                 // COMMON CASE
-                $id = @mysql_insert_id($this->connection);
+                $id = @xf_db_insert_id($this->connection);
                 if ($id != 0) {
                     return $id;
                 }
@@ -794,10 +794,10 @@ class DB_mysql extends DB_common
      */
     function escapeSimple($str)
     {
-        if (function_exists('mysql_real_escape_string')) {
-            return @mysql_real_escape_string($str, $this->connection);
+        if (function_exists('xf_db_real_escape_string')) {
+            return @xf_db_real_escape_string($str, $this->connection);
         } else {
-            return @mysql_escape_string($str);
+            return @xf_db_escape_string($str);
         }
     }
 
@@ -887,11 +887,11 @@ class DB_mysql extends DB_common
                 $this->errorcode_map[1048] = DB_ERROR_CONSTRAINT;
                 $this->errorcode_map[1062] = DB_ERROR_ALREADY_EXISTS;
             }
-            $errno = $this->errorCode(mysql_errno($this->connection));
+            $errno = $this->errorCode(xf_db_errno($this->connection));
         }
         return $this->raiseError($errno, null, null, null,
-                                 @mysql_errno($this->connection) . ' ** ' .
-                                 @mysql_error($this->connection));
+                                 @xf_db_errno($this->connection) . ' ** ' .
+                                 @xf_db_error($this->connection));
     }
 
     // }}}
@@ -904,7 +904,7 @@ class DB_mysql extends DB_common
      */
     function errorNative()
     {
-        return @mysql_errno($this->connection);
+        return @xf_db_errno($this->connection);
     }
 
     // }}}
@@ -987,7 +987,7 @@ class DB_mysql extends DB_common
 
         // free the result only if we were called on a table
         if ($got_string) {
-            @mysql_free_result($id);
+            @xf_db_free_result($id);
         }
         return $res;
     }

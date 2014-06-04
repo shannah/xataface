@@ -5,7 +5,7 @@
  * @see Dataface_PreferncesTool::_createPreferencesTable()
  */
 function Dataface_PreferencesTool__createPreferencesTable(){
-	$res = mysql_query(
+	$res = xf_db_query(
 		"create table if not exists `dataface__preferences` (
 			`pref_id` int(11) unsigned not null auto_increment,
 			`username` varchar(64) not null,
@@ -17,6 +17,6 @@ function Dataface_PreferencesTool__createPreferencesTable(){
 			index `username` (`username`),
 			index `table` (`table`),
 			index `record_id` (`record_id`))", df_db());
-	if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
+	if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 
 }

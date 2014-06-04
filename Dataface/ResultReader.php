@@ -152,16 +152,16 @@ class Dataface_ResultReader implements Iterator {
 		}
 		if ( $q['-limit'] > 0 ){
 			$this->buffer = array();
-			$res = mysql_query($this->getQuery($q['-skip'], $q['-limit']), $this->db);
-			if ( !$res ) throw new Exception(mysql_error($this->db));
+			$res = xf_db_query($this->getQuery($q['-skip'], $q['-limit']), $this->db);
+			if ( !$res ) throw new Exception(xf_db_error($this->db));
 			
-			while ($row = mysql_fetch_object($res) ){
+			while ($row = xf_db_fetch_object($res) ){
 				if ( isset($this->decorator) and is_callable($this->decorator) ){
 					$row = call_user_func($this->decorator, $row);
 				}
 				$this->buffer[] = $row;
 			}
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 		} else {
 			$this->buffer = array();
 		}

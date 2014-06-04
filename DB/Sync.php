@@ -83,27 +83,27 @@ class DB_Sync {
 	
 		$this->checkTableNames();
 		
-		$res = mysql_query("show full fields from `".$this->table1."`", $this->db1);
-		if ( !$res ) trigger_error(mysql_error($this->db1));
+		$res = xf_db_query("show full fields from `".$this->table1."`", $this->db1);
+		if ( !$res ) trigger_error(xf_db_error($this->db1));
 		
 		
 		$this->table1Data = array();
-		while ( $row = mysql_fetch_assoc($res) ){
+		while ( $row = xf_db_fetch_assoc($res) ){
 			$this->table1Data[$row['Field']] = $row;
 		}
 		
-		@mysql_free_result($res);
+		@xf_db_free_result($res);
 		
 		
-		$res = mysql_query("show columns from `".$this->table2."`", $this->db2);
-		if ( !$res ) trigger_error(mysql_error($this->db2));
+		$res = xf_db_query("show columns from `".$this->table2."`", $this->db2);
+		if ( !$res ) trigger_error(xf_db_error($this->db2));
 		
 		$this->table2Data = array();
-		while ( $row = mysql_fetch_assoc($res) ){
+		while ( $row = xf_db_fetch_assoc($res) ){
 			$this->table2Data[$row['Field']] = $row;
 		}
 		
-		@mysql_free_result($res);
+		@xf_db_free_result($res);
 		
 		
 	}
@@ -181,8 +181,8 @@ class DB_Sync {
 				}
 				
 				$sql = "alter table `{$this->table2}` change `{$fieldname}` ".$this->fieldArrayToSQLDef($this->table1Data[$newname]);
-				$res = mysql_query($sql, $this->db2);
-				if ( !$res ) trigger_error(mysql_error($this->db2), E_USER_ERROR);
+				$res = xf_db_query($sql, $this->db2);
+				if ( !$res ) trigger_error(xf_db_error($this->db2), E_USER_ERROR);
 				
 			} else {
 			
@@ -196,14 +196,14 @@ class DB_Sync {
 			if ( isset($after) ){
 				$sql .= "after `{$after}`";
 			}
-			$res = mysql_query($sql, $this->db2);
-			if ( !$res ) trigger_error($sql."\n".mysql_error($this->db2), E_USER_ERROR);
+			$res = xf_db_query($sql, $this->db2);
+			if ( !$res ) trigger_error($sql."\n".xf_db_error($this->db2), E_USER_ERROR);
 			
 		} else if ( $this->table1Data[$fieldname] != $this->table2Data[$fieldname] ) {
 			
 			$sql = "alter table `{$this->table2}` change `{$fieldname}` ".$this->fieldArrayToSQLDef($this->table1Data[$fieldname]);
-			$res = mysql_query($sql, $this->db2);
-			if ( !$res ) trigger_error(mysql_error($this->db2), E_USER_ERROR);
+			$res = xf_db_query($sql, $this->db2);
+			if ( !$res ) trigger_error(xf_db_error($this->db2), E_USER_ERROR);
 			
 		} else {
 		

@@ -1034,8 +1034,8 @@ interface DelegateClass {
 	 * @code
 	 * function owner_name_init(Dataface_Record $record){
 	 *     $res = df_q(sprintf("select owner_name from owners where owner_id=%d", intval($record->val('owner_id'))));
-	 *     $row = mysql_fetch_row($res);
-	 *     @mysql_free_result($res);
+	 *     $row = xf_db_fetch_row($res);
+	 *     @xf_db_free_result($res);
 	 *     if ( $row ) return $row[0];
 	 *	   else return null;
 	 * }
@@ -1635,10 +1635,10 @@ interface DelegateClass {
 	 *   function enrolled_students__getAddableValues(Dataface_Record $record){
 	 *       $out = array();
 	 *       $res = df_q("select student_id, full_name, student_number from students where registered=1");
-	 *       while ( $o = mysql_fetch_object($res) ){
+	 *       while ( $o = xf_db_fetch_object($res) ){
 	 *          $out[$o->student_id] = $o->full_name.' ('.$o->student_number.')';
 	 *       }
-	 *       @mysql_free_result($res);
+	 *       @xf_db_free_result($res);
 	 *       return $out;
 	 *   }
 	 *   ...

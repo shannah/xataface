@@ -136,7 +136,7 @@ class dataface_actions_edit {
 				$response =& Dataface_Application::getResponse();
 				
 				if ( !$result ){
-					error_log("Error occurred in save: ".mysql_error( $app->db()).Dataface_Error::printStackTrace());
+					error_log("Error occurred in save: ".xf_db_error( $app->db()).Dataface_Error::printStackTrace());
 					throw new Exception("An error occurred while attempting to save the record.  See error log for details.", E_USER_ERROR);
 				} else if ( PEAR::isError($result) && !Dataface_Error::isNotice($result) ){
 					

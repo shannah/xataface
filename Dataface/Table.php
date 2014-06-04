@@ -562,18 +562,18 @@ class Dataface_Table {
 			 
 			
 			
-			$res = mysql_query("SHOW COLUMNS FROM `".$this->tablename."`", $this->db);
+			$res = xf_db_query("SHOW COLUMNS FROM `".$this->tablename."`", $this->db);
 			if ( !$res ){
 				if ( $quiet ){
-					return PEAR::raiseError("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".mysql_error($this->db));
+					return PEAR::raiseError("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".xf_db_error($this->db));
 				} else {
-					throw new Exception("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".mysql_error($this->db), E_USER_ERROR);
+					throw new Exception("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".xf_db_error($this->db), E_USER_ERROR);
 				}
 				
 			}
 	
-			if ( mysql_num_rows($res) > 0 ){
-				while ( $row = mysql_fetch_assoc($res) ){
+			if ( xf_db_num_rows($res) > 0 ){
+				while ( $row = xf_db_fetch_assoc($res) ){
 					/*
 					 Example row as follows:
 					 Array
@@ -640,7 +640,7 @@ class Dataface_Table {
 				}
 			}
 			
-			mysql_free_result($res);
+			xf_db_free_result($res);
 			
 			
 			
@@ -928,7 +928,7 @@ class Dataface_Table {
 		static $index = 0;
 		if ($index === 0 ) $index = array();
 		if ( !isset($index[$tablename]) or !$usecache ) {
-			$index[$tablename] = mysql_num_rows(mysql_query("show tables like '".addslashes($tablename)."'", $app->db()));
+			$index[$tablename] = xf_db_num_rows(xf_db_query("show tables like '".addslashes($tablename)."'", $app->db()));
 		}
 		return $index[$tablename];
 	}
@@ -1279,12 +1279,12 @@ class Dataface_Table {
 	function &getIndexes(){
 		if ( !isset( $this->_indexes) ){
 			$this->_indexes = array();
-			$res = mysql_query("SHOW index FROM `".$this->tablename."`", $this->db);
+			$res = xf_db_query("SHOW index FROM `".$this->tablename."`", $this->db);
 			if ( !$res ){
-				throw new Exception("Failed to get index list due to a mysql error: ".mysql_error($this->db), E_USER_ERROR);
+				throw new Exception("Failed to get index list due to a mysql error: ".xf_db_error($this->db), E_USER_ERROR);
 			}
 			
-			while ( $row = mysql_fetch_array($res) ){
+			while ( $row = xf_db_fetch_array($res) ){
 				if ( !isset( $this->_indexes[ $row['Key_name'] ] ) )
 					$this->_indexes[ $row['Key_name'] ] = array();
 				$index =& $this->_indexes[$row['Key_name']];
@@ -1297,7 +1297,7 @@ class Dataface_Table {
 				$index['comment'] = $row['Comment'];
 				unset($index);
 			}
-			mysql_free_result($res);
+			xf_db_free_result($res);
 			
 		}
 		
@@ -1414,15 +1414,15 @@ class Dataface_Table {
 		if ( !isset($this->metadataColumns) ){
 			$metatablename = $this->tablename.'__metadata';
 			$sql = "SHOW COLUMNS FROM `{$metatablename}`";
-			$res = mysql_query($sql, $this->db);
-			if ( !$res || mysql_num_rows($res) == 0){
+			$res = xf_db_query($sql, $this->db);
+			if ( !$res || xf_db_num_rows($res) == 0){
 				Dataface_MetadataTool::refreshMetadataTable($this->tablename);
-				$res = mysql_query($sql, $this->db);
+				$res = xf_db_query($sql, $this->db);
 			}
-			if ( !$res ) throw new Exception(mysql_error($this->db), E_USER_ERROR);
-			if ( mysql_num_rows($res) == 0 ) throw new Exception("No metadata table set up for table '{$this->tablename}'", E_USER_ERROR);
+			if ( !$res ) throw new Exception(xf_db_error($this->db), E_USER_ERROR);
+			if ( xf_db_num_rows($res) == 0 ) throw new Exception("No metadata table set up for table '{$this->tablename}'", E_USER_ERROR);
 			$this->metadataColumns = array();
-			while ($row = mysql_fetch_assoc($res) ){
+			while ($row = xf_db_fetch_assoc($res) ){
 				if ( substr($row['Field'],0,2) == '__' ){
 					$this->metadataColumns[] =  $row['Field'];
 				}
@@ -1782,23 +1782,23 @@ class Dataface_Table {
 		//$app = Dataface_Application::getInstance();
 		//$dbname = $app->_conf['_database']['name'];
 		// Check if view already exists
-		//$res = mysql_query("select TABLE_NAME from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."' and TABLE_NAME='".addslashes($viewName)."' limit 1", df_db());
+		//$res = xf_db_query("select TABLE_NAME from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."' and TABLE_NAME='".addslashes($viewName)."' limit 1", df_db());
 		
-		$res = mysql_query("show tables like '".addslashes($viewName)."'", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
-		if ( mysql_num_rows($res) < 1 ){
-			@mysql_free_result($res);
+		$res = xf_db_query("show tables like '".addslashes($viewName)."'", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
+		if ( xf_db_num_rows($res) < 1 ){
+			@xf_db_free_result($res);
 			// The view doesn't exist yet
-			$res = mysql_query("create view `".str_replace('`','', $viewName)."` as ".$sql, df_db());
+			$res = xf_db_query("create view `".str_replace('`','', $viewName)."` as ".$sql, df_db());
 			if ( !$res ){
-				error_log(mysql_error(df_db()));
+				error_log(xf_db_error(df_db()));
 				$this->_proxyViews[$viewName] = false;
 				return null;
 			}
 				
 			
 		} else {
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 		}
 		$this->_proxyViews[$viewName] = true;
 		
@@ -2882,20 +2882,20 @@ class Dataface_Table {
 	function &getTranslations(){
 		if ( $this->translations === null ){
 			$this->translations = array();
-			$res = mysql_query("SHOW TABLES LIKE '".addslashes($this->tablename)."%'", $this->db);
+			$res = xf_db_query("SHOW TABLES LIKE '".addslashes($this->tablename)."%'", $this->db);
 			if ( !$res ){
 				
 				throw new Exception(
 					Dataface_LanguageTool::translate(
 						'MySQL query error loading translation tables',
-						'MySQL query error while trying to find translation tables for table "'.addslashes($this->tablename).'". '.mysql_error($this->db).'. ',
-						array('sql_error'=>mysql_error($this->db), 'stack_trace'=>'', 'table'=>$this->tablename)
+						'MySQL query error while trying to find translation tables for table "'.addslashes($this->tablename).'". '.xf_db_error($this->db).'. ',
+						array('sql_error'=>xf_db_error($this->db), 'stack_trace'=>'', 'table'=>$this->tablename)
 					),
 					E_USER_ERROR 
 				
 				);
 			}
-			if (mysql_num_rows($res) <= 0 ){
+			if (xf_db_num_rows($res) <= 0 ){
 				// there should at least be the current table returned.. there is a problem
 				// if nothing was returned.
 				throw new Exception(
@@ -2908,7 +2908,7 @@ class Dataface_Table {
 				);
 			}
 			
-			while ( $row = mysql_fetch_array($res ) ){
+			while ( $row = xf_db_fetch_array($res ) ){
 				$tablename = $row[0];
 				if ( $tablename == $this->tablename ){
 					continue;
@@ -2920,7 +2920,7 @@ class Dataface_Table {
 				}
 				
 			}
-			mysql_free_result($res);
+			xf_db_free_result($res);
 					
 			
 		}
@@ -2940,22 +2940,22 @@ class Dataface_Table {
 			// the translation exists
 			if ( !$translations[$name]  ){
 				// the columns are not loaded yet, we need to load them.
-				$res = mysql_query("SHOW COLUMNS FROM `".addslashes($this->tablename)."_".addslashes($name)."`", $this->db);
+				$res = xf_db_query("SHOW COLUMNS FROM `".addslashes($this->tablename)."_".addslashes($name)."`", $this->db);
 				if ( !$res ){
 					throw new Exception(
 						Dataface_LanguageTool::translate(
 							'Problem loading columns from translation table',
 							'Problem loading columns from translation table for table "'.$this->tablename.'" in language "'.$name.'". ',
-							array('table'=>$this->tablename,'langauge'=>$name,'stack_trace'=>'','sql_error'=>mysql_error($this->db))
+							array('table'=>$this->tablename,'langauge'=>$name,'stack_trace'=>'','sql_error'=>xf_db_error($this->db))
 						),
 						E_USER_ERROR
 					);
 				}
 				$translations[$name] = array();
-				while ( $row = mysql_fetch_assoc($res) ){
+				while ( $row = xf_db_fetch_assoc($res) ){
 					$translations[$name][] = $row['Field'];
 				}
-				mysql_free_result($res);
+				xf_db_free_result($res);
 			}
 
 			return $translations[$name];
@@ -3134,18 +3134,18 @@ class Dataface_Table {
 			 * Get the table status - when was it last updated, etc...
 			 */
 			if ( Dataface_Application::getInstance()->getMySQLMajorVersion() < 5 ){
-				$res = mysql_query("SHOW TABLE STATUS LIKE '".addslashes($this->tablename)."'",$this->db);
+				$res = xf_db_query("SHOW TABLE STATUS LIKE '".addslashes($this->tablename)."'",$this->db);
 			} else {
 				$dbname = Dataface_Application::getInstance()->_conf['_database']['name'];
-				$res = mysql_query("select CREATE_TIME as Create_time, UPDATE_TIME as Update_time from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."' and TABLE_NAME='".addslashes($this->tablename)."' limit 1", df_db());
+				$res = xf_db_query("select CREATE_TIME as Create_time, UPDATE_TIME as Update_time from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."' and TABLE_NAME='".addslashes($this->tablename)."' limit 1", df_db());
 				
 			}
 			if ( !$res ){
-				throw new Exception("Error performing mysql query to obtain status for table '".$this->tablename."': ".mysql_error($this->db), E_USER_ERROR);
+				throw new Exception("Error performing mysql query to obtain status for table '".$this->tablename."': ".xf_db_error($this->db), E_USER_ERROR);
 			}
 			
-			$this->status = mysql_fetch_array($res);
-			mysql_free_result($res);
+			$this->status = xf_db_fetch_array($res);
+			xf_db_free_result($res);
 		} 
 		
 		return $this->status;
@@ -3179,19 +3179,19 @@ class Dataface_Table {
 	public static function &getBackupModificationTimes($refresh=false){
 		static $backup_times = 0;
 		if ( $backup_times === 0 or $refresh ){
-			$res = mysql_query("select * from dataface__mtimes", df_db());
+			$res = xf_db_query("select * from dataface__mtimes", df_db());
 			if ( !$res ){
 				import('Dataface/IO.php');
 				Dataface_IO::createModificationTimesTable();
-				$res = mysql_query("select * from dataface__mtimes", df_db());
-				if ( !$res ) throw new Exception(mysql_error(df_db()));
+				$res = xf_db_query("select * from dataface__mtimes", df_db());
+				if ( !$res ) throw new Exception(xf_db_error(df_db()));
 				
 			}
 			$backup_times = array();
-			while ( $row = mysql_fetch_assoc($res) ){
+			while ( $row = xf_db_fetch_assoc($res) ){
 				$backup_times[$row['name']] = $row['mtime'];
 			}
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 		}
 		return $backup_times;
 	
@@ -3221,17 +3221,17 @@ class Dataface_Table {
 			$app = Dataface_Application::getInstance();
 			$dbname = $app->_conf['_database']['name'];
 			//if ( $app->getMySQLMajorVersion() < 5 ){
-			//	$res = mysql_query("show table status", df_db());
+			//	$res = xf_db_query("show table status", df_db());
 			//} else {
-			//	$res = mysql_query("select TABLE_NAME as Name, UPDATE_TIME as Update_time from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."'", df_db());
+			//	$res = xf_db_query("select TABLE_NAME as Name, UPDATE_TIME as Update_time from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."'", df_db());
 			//}
-			$res = mysql_query("show tables", df_db());
+			$res = xf_db_query("show tables", df_db());
 			if ( !$res ){
-				throw new Exception(mysql_error(df_db()));
+				throw new Exception(xf_db_error(df_db()));
 			}
 			$backup_times = null;
-			//while ( $row = mysql_fetch_assoc($res) ){
-			while ($row = mysql_fetch_row($res) ){
+			//while ( $row = xf_db_fetch_assoc($res) ){
+			while ($row = xf_db_fetch_row($res) ){
 				$row['Name'] = $row[0];
 				if ( @$row['Update_time'] ){
 					$mod_times[$row['Name']] = @strtotime($row['Update_time']);
@@ -3423,7 +3423,7 @@ class Dataface_Table {
 						// it will be used as both the key and value.
 						$res = df_query($value, null, true, true);
 						if ( is_array($res) ){
-							//while ($row = mysql_fetch_row($res) ){
+							//while ($row = xf_db_fetch_row($res) ){
 							foreach ($res as $row){
 								$valuekey = $row[0];
 								$valuevalue = count($row)>1 ? $row[1] : $row[0];
@@ -3433,9 +3433,9 @@ class Dataface_Table {
 									$valuelists[$vlname.'__meta'][$valuekey] = $row[2];
 								}
 							}
-							//mysql_free_result($res);
+							//xf_db_free_result($res);
 						} else {
-							throw new Exception("Valuelist query '".$value."' failed. :".mysql_error(df_db()), E_USER_NOTICE);
+							throw new Exception("Valuelist query '".$value."' failed. :".xf_db_error(df_db()), E_USER_NOTICE);
 						}
 					
 					} else {
@@ -3491,7 +3491,7 @@ class Dataface_Table {
 						// it will be used as both the key and value.
 						$res = df_query($value, null, true, true);
 						if ( is_array($res) ){
-							//while ($row = mysql_fetch_row($res) ){
+							//while ($row = xf_db_fetch_row($res) ){
 							foreach ($res as $row){
 								$valuekey = $row[0];
 								$valuevalue = count($row)>1 ? $row[1] : $row[0];
@@ -3501,7 +3501,7 @@ class Dataface_Table {
 									$valuelists[$vlname.'__meta'][$valuekey] = $row[2];
 								}
 							}
-							//mysql_free_result($res);
+							//xf_db_free_result($res);
 						} else {
 							throw new Exception("Valuelist query '".$value."' failed. ", E_USER_NOTICE);
 						}
@@ -4396,16 +4396,16 @@ class Dataface_Table {
 	 * @see createImportTable()
 	 */
 	function getImportTables(){
-		$res = mysql_query("SHOW TABLES LIKE '".$this->tablename."__import_%'", $this->db);
+		$res = xf_db_query("SHOW TABLES LIKE '".$this->tablename."__import_%'", $this->db);
 		if ( !$res ){
 			throw new Exception("Error getting import table list for table '".$this->tablename."'.", E_USER_ERROR);
 		}
 		
 		$tables = array();
-		while ( $row = mysql_fetch_row($res) ){
+		while ( $row = xf_db_fetch_row($res) ){
 			$tables[] = $row[0];
 		}
-		mysql_free_result($res);
+		xf_db_free_result($res);
 		return $tables;
 	}
 	
@@ -4429,9 +4429,9 @@ class Dataface_Table {
 		$rand = rand(10000,999999);
 		$name = $this->tablename.'__import_'.strval(time()).'_'.strval($rand);
 		$qb = new Dataface_QueryBuilder($this->tablename);
-		$res = mysql_query("CREATE TABLE `$name` SELECT * ".$qb->_from()." LIMIT 0", $this->db);
+		$res = xf_db_query("CREATE TABLE `$name` SELECT * ".$qb->_from()." LIMIT 0", $this->db);
 		if (!$res ){
-			throw new Exception("Failed to create import table `$name` because a mysql error occurred: ".mysql_error($this->db)."\n", E_USER_ERROR);
+			throw new Exception("Failed to create import table `$name` because a mysql error occurred: ".xf_db_error($this->db)."\n", E_USER_ERROR);
 		}
 		return $name;
 	
@@ -4454,9 +4454,9 @@ class Dataface_Table {
 			$matches =array();
 			if ( preg_match('/^'.$this->tablename.'__import_(\d+)_(\d)$/', $table,  $matches) ){
 				if ( time() - intval($matches[1]) > intval($garbageLifetime) ){
-					$res = mysql_query("DROP TABLE `$table`", $this->db);
+					$res = xf_db_query("DROP TABLE `$table`", $this->db);
 					if ( !$res ){
-						throw new Exception("Problem occurred attemtping to clean up old import table '$table'. MySQL returned an error: ".mysql_error($this->db)."\n", E_USER_ERROR);
+						throw new Exception("Problem occurred attemtping to clean up old import table '$table'. MySQL returned an error: ".xf_db_error($this->db)."\n", E_USER_ERROR);
 					}
 				}
 			}

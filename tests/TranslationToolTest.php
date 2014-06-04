@@ -34,8 +34,8 @@ class TranslationToolTest extends BaseTest {
 		parent::setUp();
 		$app =& Dataface_Application::getInstance();
 		$sql = "drop table if exists `dataface__translations`";
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 	}
 	
@@ -46,13 +46,13 @@ class TranslationToolTest extends BaseTest {
 		
 		$tt->createTranslationsTable();
 		$sql = "show columns from `dataface__translations`";
-		$res = mysql_query($sql, $app->db());
+		$res = xf_db_query($sql, $app->db());
 		if ( !$res ) {
-			trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
 		$cols = array();
-		while ( $row = mysql_fetch_assoc($res) ) $cols[$row['Field']] = $row;
+		while ( $row = xf_db_fetch_assoc($res) ) $cols[$row['Field']] = $row;
 		$this->assertEquals(
 			array_keys($tt->schema),
 			array_keys($cols)
@@ -67,13 +67,13 @@ class TranslationToolTest extends BaseTest {
 		
 		$tt->updateTranslationsTable();
 		$sql = "show columns from `dataface__translations`";
-		$res = mysql_query($sql, $app->db());
+		$res = xf_db_query($sql, $app->db());
 		if ( !$res ) {
-			trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
 		$cols = array();
-		while ( $row = mysql_fetch_assoc($res) ) $cols[$row['Field']] = $row;
+		while ( $row = xf_db_fetch_assoc($res) ) $cols[$row['Field']] = $row;
 		$this->assertEquals(
 			array_keys($tt->schema),
 			array_keys($cols)
@@ -82,13 +82,13 @@ class TranslationToolTest extends BaseTest {
 		$tt->schema['test_col'] = array('Field'=>'test_col', 'Type'=>"int(11)", 'Extra'=>'', 'Null'=>'');
 		$tt->updateTranslationsTable();
 		$sql = "show columns from `dataface__translations`";
-		$res = mysql_query($sql, $app->db());
+		$res = xf_db_query($sql, $app->db());
 		if ( !$res ) {
-			trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
 		$cols = array();
-		while ( $row = mysql_fetch_assoc($res) ) $cols[$row['Field']] = $row;
+		while ( $row = xf_db_fetch_assoc($res) ) $cols[$row['Field']] = $row;
 		$this->assertEquals(
 			array_keys($tt->schema),
 			array_keys($cols)
@@ -144,13 +144,13 @@ class TranslationToolTest extends BaseTest {
 	
 	function test_migrateDefaultLanguage(){
 		$app =& Dataface_Application::getInstance();
-		$vals = mysql_fetch_assoc(mysql_query("select * from PeopleIntl where PersonID=1", $app->db()));
+		$vals = xf_db_fetch_assoc(xf_db_query("select * from PeopleIntl where PersonID=1", $app->db()));
 		$this->assertEquals(
 			"Default Position",
 			$vals['Position']
 			);
 		
-		$vals2 = mysql_fetch_assoc(mysql_query("select * from PeopleIntl where PersonID=2", $app->db()));
+		$vals2 = xf_db_fetch_assoc(xf_db_query("select * from PeopleIntl where PersonID=2", $app->db()));
 		$this->assertEquals(
 			"Default Position 2",
 			$vals2['Position']
@@ -159,13 +159,13 @@ class TranslationToolTest extends BaseTest {
 		$tt = new Dataface_TranslationTool();
 		$tt->migrateDefaultLanguage('en', array('PeopleIntl'));
 		
-		$vals = mysql_fetch_assoc(mysql_query("select * from PeopleIntl where PersonID=1", $app->db()));
+		$vals = xf_db_fetch_assoc(xf_db_query("select * from PeopleIntl where PersonID=1", $app->db()));
 		$this->assertEquals(
 			"My English Position",
 			$vals['Position']
 			);
 		
-		$vals2 = mysql_fetch_assoc(mysql_query("select * from PeopleIntl where PersonID=2", $app->db()));
+		$vals2 = xf_db_fetch_assoc(xf_db_query("select * from PeopleIntl where PersonID=2", $app->db()));
 		$this->assertEquals(
 			"Default Position 2",
 			$vals2['Position']

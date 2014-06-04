@@ -26,22 +26,22 @@ class DB_Test extends BaseTest {
 		//exit;
 		$sql = 'select PubType, BiblioString from Publications limit 5';
 		$start = microtime_float();
-		$res = $this->DB->query($sql, $this->db) or die(mysql_error($this->db));
-		while ($row = mysql_fetch_assoc($res) ){
+		$res = $this->DB->query($sql, $this->db) or die(xf_db_error($this->db));
+		while ($row = xf_db_fetch_assoc($res) ){
 			print_r($row);
 		}
 		$stop1 = microtime_float() - $start;
 		
 		$start = microtime_float();
-		$res3 = $this->DB->query($sql, $this->db) or die(mysql_error($this->db));
-		while ($row = mysql_fetch_assoc($res3) ){
+		$res3 = $this->DB->query($sql, $this->db) or die(xf_db_error($this->db));
+		while ($row = xf_db_fetch_assoc($res3) ){
 			print_r($row);
 		}
 		$stop3 = microtime_float() - $start;
 		
 		$start = microtime_float();
-		$res2 = mysql_query($sql, $this->db) or die(mysql_error($this->db));
-		while ($row = mysql_fetch_assoc($res2) ){
+		$res2 = xf_db_query($sql, $this->db) or die(xf_db_error($this->db));
+		while ($row = xf_db_fetch_assoc($res2) ){
 			print_r($row);
 		}
 		$stop2 = microtime_float() - $start;
@@ -88,10 +88,10 @@ class DB_Test extends BaseTest {
 		$res = $this->DB->query($sql);
 		$this->assertTrue($res);
 		if (! $res ){
-			echo mysql_error();
+			echo xf_db_error();
 		}
 		
-		$row = mysql_fetch_assoc($res);
+		$row = xf_db_fetch_assoc($res);
 		$this->assertEquals(
 			array(
 				'PubType'=>'Refereed Journal',
@@ -104,19 +104,19 @@ class DB_Test extends BaseTest {
 		$res = $this->DB->query($sql);
 		$this->assertTrue($res);
 		if (! $res ){
-			echo mysql_error();
+			echo xf_db_error();
 		}
 		
-		$this->assertTrue(mysql_affected_rows() === 1);
+		$this->assertTrue(xf_db_affected_rows() === 1);
 		
 		$sql = "Insert into Publications (PubType) VALUES ('My new type')";
 		$res = $this->DB->query($sql);
 		$this->assertTrue($res);
 		if (! $res ){
-			echo mysql_error();
+			echo xf_db_error();
 		}
 		
-		$this->assertTrue(mysql_affected_rows() === 1);
+		$this->assertTrue(xf_db_affected_rows() === 1);
 		
 		
 		

@@ -43,8 +43,8 @@ header("Content-type: ".$table->getValue($mimetype, $index));
 echo $table->getValue($fieldname, $index);
 
 
-//$res = mysql_query("select small_image from unit_plans limit 1", $app->_db);
-//list($val2) = mysql_fetch_row($res);
+//$res = xf_db_query("select small_image from unit_plans limit 1", $app->_db);
+//list($val2) = xf_db_fetch_row($res);
 //echo "Len 1: ".strlen($val);
 //echo "Len 2: ".strlen($val2);
 //if ( $val === $val2 ) echo "They are the same";

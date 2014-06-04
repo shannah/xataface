@@ -82,7 +82,7 @@ class dataface_actions_ajax_form {
 			$response =& Dataface_Application::getResponse();
 			
 			if ( !$result ){
-				trigger_error("Error occurred in save: ".mysql_error( $app->db()).Dataface_Error::printStackTrace(), E_USER_ERROR);
+				trigger_error("Error occurred in save: ".xf_db_error( $app->db()).Dataface_Error::printStackTrace(), E_USER_ERROR);
 				exit;
 			} else if ( PEAR::isError($result) && !Dataface_Error::isNotice($result) ){
 

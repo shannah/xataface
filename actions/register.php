@@ -211,8 +211,8 @@ class dataface_actions_register {
 				// on the record.
 				
 				
-			$res = mysql_query($sql, df_db());
-			if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
+			$res = xf_db_query($sql, df_db());
+			if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 		}
 		return true;
 	
@@ -243,10 +243,10 @@ class dataface_actions_register {
 		
 		
 		// Check for a duplicate username
-		$res = mysql_query("select count(*) from `".$conf['users_table']."` where `".$conf['username_column']."` = '".addslashes($values[$conf['username_column']])."'", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
+		$res = xf_db_query("select count(*) from `".$conf['users_table']."` where `".$conf['username_column']."` = '".addslashes($values[$conf['username_column']])."'", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 		
-		list($num) = mysql_fetch_row($res);
+		list($num) = xf_db_fetch_row($res);
 		if ( $num>0 ){
 			return PEAR::raiseError(
 				df_translate('actions.register.MESSAGE_USERNAME_ALREADY_TAKEN', 'Sorry, that username is already in use by another user.')
@@ -315,8 +315,8 @@ class dataface_actions_register {
 			do {
 				$code = md5(rand());
 			} while ( 
-				mysql_num_rows(
-					mysql_query(
+				xf_db_num_rows(
+					xf_db_query(
 						"select registration_code 
 						from dataface__registrations 
 						where registration_code='".addslashes($code)."'", 
@@ -335,8 +335,8 @@ class dataface_actions_register {
 							$this->form->_record->getValues()
 							)
 						)."')";
-			$res = mysql_query($sql, df_db());
-			if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
+			$res = xf_db_query($sql, df_db());
+			if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 			
 			$activation_url = $_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?-action=activate&code='.urlencode($code);
 			

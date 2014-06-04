@@ -61,10 +61,10 @@ class Dataface_Index {
 			fulltext index `searchable_text_index` (`searchable_text`),
 			unique key `record_key` (`record_id`,`lang`),
 			primary key (`index_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8";
-		$res = mysql_query($sql, df_db());
+		$res = xf_db_query($sql, df_db());
 		
 		if ( !$res ){
-			trigger_error(mysql_error(df_db()), E_USER_ERROR);
+			trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 		}
 	}
 	
@@ -129,10 +129,10 @@ class Dataface_Index {
 			'".addslashes($lang)."',
 			'".addslashes($searchable_text)."'
 			)";
-		if ( !@mysql_query($sql, df_db()) ){
+		if ( !@xf_db_query($sql, df_db()) ){
 			$this->createIndexTable();
-			if ( !mysql_query($sql, df_db()) ){
-				trigger_error(mysql_error(df_db()), E_USER_ERROR);
+			if ( !xf_db_query($sql, df_db()) ){
+				trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			}
 		}
 		
@@ -158,7 +158,7 @@ class Dataface_Index {
 	function buildIndex($tables=null, $lang='*', $clear=true){
 		if ( $clear ){
 			$sql = "delete from dataface__index";
-			if ( !mysql_query($sql, df_db()) ){
+			if ( !xf_db_query($sql, df_db()) ){
 				$this->createIndexTable();
 			}
 		}
@@ -168,10 +168,10 @@ class Dataface_Index {
 			}
 		}
 		$sql = "optimize table dataface__index";
-		if ( !mysql_query($sql, df_db()) ){
+		if ( !xf_db_query($sql, df_db()) ){
 			$this->createIndexTable();
 			$sql = "optimize table dataface__index";
-			mysql_query($sql, df_db());
+			xf_db_query($sql, df_db());
 		}
 		
 
@@ -252,12 +252,12 @@ class Dataface_Index {
 		$sql .= " limit $skip, $limit";
 		$sql = $select.$sql;
 		
-		$res = @mysql_query($sql, df_db());
+		$res = @xf_db_query($sql, df_db());
 		if ( !$res ){
 			$this->createIndexTable();
-			$res = mysql_query($sql, df_db());
+			$res = xf_db_query($sql, df_db());
 			if ( !$res ){
-				trigger_error(mysql_error(df_db()), E_USER_ERROR);
+				trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			}
 		}
 		
@@ -287,7 +287,7 @@ class Dataface_Index {
 		
 		usort($words, array($this, '_cmp_words_by_length'));
 		
-		while ( $row = mysql_fetch_assoc($res) ){
+		while ( $row = xf_db_fetch_assoc($res) ){
 			$st = strip_tags($row['searchable_text']);
 			$st = html_entity_decode($st, ENT_COMPAT, Dataface_Application::getInstance()->_conf['oe']);
 			
@@ -323,16 +323,16 @@ class Dataface_Index {
 			$out[] = $row;
 			
 		}
-		@mysql_free_result($res);
+		@xf_db_free_result($res);
 		if ( $returnMetadata ){
 			$app =& Dataface_Application::getInstance();
-			$res = @mysql_query($countsql, df_db());
-			if ( !$res ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
+			$res = @xf_db_query($countsql, df_db());
+			if ( !$res ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			$found = 0;
 			$total_found = 0;
 			$tables_matches = array();
 
-			while ($row = mysql_fetch_row($res) ){
+			while ($row = xf_db_fetch_row($res) ){
 				
 				$label = @$app->_conf['table_labels'][$row[1]];
 				if ( !$label ) $label = @$app->tables[$row[1]];
@@ -341,7 +341,7 @@ class Dataface_Index {
 				$total_found += intval($row[0]);
 				if ( !@$query['-table'] or $query['-table'] == $row[1]  )$found += intval($row[0]);
 			}
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 		
 			$meta = array();
 			$meta['found'] = $found;

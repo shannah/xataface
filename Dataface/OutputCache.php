@@ -115,16 +115,16 @@ class Dataface_OutputCache {
 			$DataColumn = 'Data';
 		}
 		
-		$res = mysql_query("select `".addslashes($DataColumn)."`, UNIX_TIMESTAMP(`LastModified`) as `TimeStamp`, `Dependencies`, `Headers` from `".addslashes($this->tableName)."` 
+		$res = xf_db_query("select `".addslashes($DataColumn)."`, UNIX_TIMESTAMP(`LastModified`) as `TimeStamp`, `Dependencies`, `Headers` from `".addslashes($this->tableName)."` 
 			".$this->_buildPageSelect($params)." LIMIT 1", $this->app->db());
 			
 		if ( !$res ){
-			 throw new Exception(mysql_error($this->app->db()), E_USER_ERROR);
+			 throw new Exception(xf_db_error($this->app->db()), E_USER_ERROR);
 		}
 		
-		if ( mysql_num_rows($res) == 0 ) return null;
+		if ( xf_db_num_rows($res) == 0 ) return null;
 		//echo "here";
-		list($data, $lastModified, $dependencies, $headers) = mysql_fetch_row($res);
+		list($data, $lastModified, $dependencies, $headers) = xf_db_fetch_row($res);
 		$this->lastModified=$lastModified;
 		$tables = explode(',',$dependencies);
 		if ( $headers ) $this->headers = unserialize($headers);
@@ -132,7 +132,7 @@ class Dataface_OutputCache {
 		if ( $this->isModified($lastModified, $tables) ){
 			return null;
 		}
-		if ( is_resource($res) ) mysql_free_result($res);
+		if ( is_resource($res) ) xf_db_free_result($res);
 		return $data;	
 	}
 	
@@ -149,14 +149,14 @@ class Dataface_OutputCache {
 	 * @returns Integer number of current versions.
 	 */
 	function numCurrentVersions($params=array()){
-		$res = mysql_query("
+		$res = xf_db_query("
 			SELECT COUNT(*) FROM `".addslashes($this->tableName)."` ".
 			$this->_buildPageSelect($params), $this->app->db());
 		if ( !$res ){
-			throw new Exception(mysql_error($this->app->db()), E_USER_ERROR);
+			throw new Exception(xf_db_error($this->app->db()), E_USER_ERROR);
 		}
-		list($num) = mysql_fetch_row($res);
-		mysql_free_result($res);
+		list($num) = xf_db_fetch_row($res);
+		xf_db_free_result($res);
 		return $num;
 			
 	}
@@ -400,7 +400,7 @@ class Dataface_OutputCache {
 			// is the number specified in the $randomize parameter.  The 
 			// $randomize parameter is the number of versions of this page
 			// that should be used on random rotation.
-			$res = mysql_query("
+			$res = xf_db_query("
 				DELETE FROM `".addslashes($this->tableName)."`
 				WHERE 
 					`PageID`='".addslashes($PageID)."' AND
@@ -418,19 +418,19 @@ class Dataface_OutputCache {
 				)", $this->app->db() );
 			
 			if ( !$res ){
-				throw new Exception(mysql_error($this->app->db()), E_USER_ERROR);
+				throw new Exception(xf_db_error($this->app->db()), E_USER_ERROR);
 			}
 		} else {
 			// We are not randomizing.  We delete any existing pages.
 			/*
-			$res = mysql_query("
+			$res = xf_db_query("
 				DELETE low_priority FROM `".addslashes($this->tableName)."`
 				WHERE
 					`PageID`='".addslashes($PageID)."' AND
 					`Language`='".addslashes($Language)."' AND
 					`UserID`='".addslashes($UserID)."'", $this->app->db());
 			if ( !$res ){
-				throw new Exception(mysql_error($this->app->db()), E_USER_ERROR);
+				throw new Exception(xf_db_error($this->app->db()), E_USER_ERROR);
 			}
 			*/
 		}
@@ -466,10 +466,10 @@ class Dataface_OutputCache {
 			 '".addslashes(serialize($headers))."'
 			)";
 			//file_put_contents('/tmp/dump.sql',$sql);
-		$res = mysql_query($sql, $this->app->db());
+		$res = xf_db_query($sql, $this->app->db());
 		
 		if ( !$res ){
-			throw new Exception(mysql_error($this->app->db()), E_USER_ERROR);
+			throw new Exception(xf_db_error($this->app->db()), E_USER_ERROR);
 		}
 	
 		if ( @$this->app->_conf['_output_cache']['cachedir'] ){
@@ -526,7 +526,7 @@ class Dataface_OutputCache {
 	 * Creates the table to store the cached pages.
 	 */
 	function _createCacheTable(){
-		$res = mysql_query("create table IF NOT EXISTS `".addslashes($this->tableName)."`(
+		$res = xf_db_query("create table IF NOT EXISTS `".addslashes($this->tableName)."`(
 			`GenID` INT(11) auto_increment,
 			`PageID` VARCHAR(64),
 			`Language` CHAR(2),
@@ -541,7 +541,7 @@ class Dataface_OutputCache {
 			INDEX `LookupIndex` (`Language`,`UserID`,`PageID`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8", $this->app->db());
 		if ( !$res ){
-			return PEAR::raiseError('Could not create cache table: '.mysql_error($this->app->db()));
+			return PEAR::raiseError('Could not create cache table: '.xf_db_error($this->app->db()));
 		}	
 		
 	}
@@ -553,18 +553,18 @@ class Dataface_OutputCache {
 	 */
 	function _cacheTableExists(){
 		if ( isset($this->_cacheTableExists) ) return $this->_cacheTableExists;
-		$res = mysql_query("SHOW TABLES LIKE '".addslashes($this->tableName)."'", $this->app->db());
+		$res = xf_db_query("SHOW TABLES LIKE '".addslashes($this->tableName)."'", $this->app->db());
 		if ( !$res ){
-			throw new Exception(mysql_error($this->app->db()), E_USER_ERROR);
+			throw new Exception(xf_db_error($this->app->db()), E_USER_ERROR);
 		}
-		return (mysql_num_rows($res) > 0);
+		return (xf_db_num_rows($res) > 0);
 	}
 	
 	/**
 	 * Deletes all expired pages from the cache.
 	 */
 	function cleanCache(){
-		$res = mysql_query("delete low_priority from `".addslashes($this->tableName)."` where `Expires` < NOW()", $this->app->db());
+		$res = xf_db_query("delete low_priority from `".addslashes($this->tableName)."` where `Expires` < NOW()", $this->app->db());
 	}
 	
 	/**

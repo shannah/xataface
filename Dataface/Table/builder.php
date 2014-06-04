@@ -44,7 +44,7 @@ class Dataface_Table_builder {
 	function Dataface_Table_builder($name){
 		$app =& Dataface_Application::getInstance();
 		$this->name = $name;
-		if ( mysql_num_rows(mysql_query('show tables like \''.addslashes($name).'\'', $app->db())) > 0 ){
+		if ( xf_db_num_rows(xf_db_query('show tables like \''.addslashes($name).'\'', $app->db())) > 0 ){
 			$this->table =& Dataface_Table::loadTable($name);
 		}
 	
@@ -114,8 +114,8 @@ class Dataface_Table_builder {
 		$sql .= ' PRIMARY KEY (`'.implode('`,`',array_keys($this->keys())).'`)
 			)';
 		
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) return PEAR::raiseError(mysql_error($app->db()));
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) return PEAR::raiseError(xf_db_error($app->db()));
 		
 		$res = $this->writeConfigFiles();
 		if ( PEAR::isError($res) ) return $res;
@@ -131,9 +131,9 @@ class Dataface_Table_builder {
 	 */
 	function update(){
 		$app =& Dataface_Application::getInstance();
-		$res = mysql_query("show columns from `".str_replace('`','\\`',$this->table->tablename)."`", $app->db());
+		$res = xf_db_query("show columns from `".str_replace('`','\\`',$this->table->tablename)."`", $app->db());
 		$existing_fields = array();
-		while ( $row = mysql_fetch_assoc($res) ){
+		while ( $row = xf_db_fetch_assoc($res) ){
 			$existing_fields[$row['Field']] = $row;
 		}
 		
@@ -181,9 +181,9 @@ class Dataface_Table_builder {
 		if ( isset($field['Extra']) ) $sql .= ' '.$field['Extra'];
 		if ( !isset($field['Null']) ) $sql .= ' NOT NULL';
 		if ( isset($field['Default']) ) $sql .= ' DEFAULT \''.$field['Default'].'\'';
-		$res = mysql_query($sql, $app->db());
+		$res = xf_db_query($sql, $app->db());
 		if ( !$res ){
-			return PEAR::raiseError("Unable to add field '$field[Field]': ".mysql_error($app->db()));
+			return PEAR::raiseError("Unable to add field '$field[Field]': ".xf_db_error($app->db()));
 		}
 		return true;
 	}
@@ -203,9 +203,9 @@ class Dataface_Table_builder {
 	 */
 	function removeFieldFromDB($field){
 		$app =& Dataface_Application::getInstance();
-		$res = mysql_query("alter table `".str_replace('`','\\`', $this->table->tablename)."` 
+		$res = xf_db_query("alter table `".str_replace('`','\\`', $this->table->tablename)."` 
 			drop `".str_replace('`','\\`', $field['Field'])."`", $app->db());
-		if ( !$res ) return PEAR::raiseError("Failed to remove field '$field[Field]': ".mysql_error($app->db()));
+		if ( !$res ) return PEAR::raiseError("Failed to remove field '$field[Field]': ".xf_db_error($app->db()));
 		return true;
 	}
 	

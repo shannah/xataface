@@ -32,11 +32,11 @@ class Database {
     public function db() {
         if (!isset($this->db)) {
             $conf = $this->conf;
-            $this->db = mysql_connect($conf['host'], $conf['user'], $conf['password'], true /* necessary to force new link */);
-            mysql_select_db($conf['name'], $this->db);
-            mysql_query('set character_set_results = \'utf8\'', $this->db);
-            mysql_query("SET NAMES utf8", $this->db);
-            mysql_query('set character_set_client = \'utf8\'', $this->db);
+            $this->db = xf_db_connect($conf['host'], $conf['user'], $conf['password'], true /* necessary to force new link */);
+            xf_db_select_db($conf['name'], $this->db);
+            xf_db_query('set character_set_results = \'utf8\'', $this->db);
+            xf_db_query("SET NAMES utf8", $this->db);
+            xf_db_query('set character_set_client = \'utf8\'', $this->db);
             unset($this->conf);
         }
         return $this->db;
@@ -80,63 +80,63 @@ class Database {
         if (isset($this->translator)) {
             $sql = $this->translator->translateQuery($sql);
         }
-        $res = mysql_query($sql, $this->db());
+        $res = xf_db_query($sql, $this->db());
         if (!$res) {
             //echo $sql;
             error_log("Query Failed: " . $sql);
-            throw new \Exception(mysql_error($this->db()));
+            throw new \Exception(xf_db_error($this->db()));
         }
         return $res;
     }
 
     public function getRow($sql, $vars = null) {
         $res = $this->query($sql, $vars);
-        $row = mysql_fetch_row($res);
-        @mysql_free_result($res);
+        $row = xf_db_fetch_row($res);
+        @xf_db_free_result($res);
         return $row;
     }
 
     public function getAssoc($sql, $vars = null) {
         $res = $this->query($sql, $vars);
-        $row = mysql_fetch_assoc($res);
-        @mysql_free_result($res);
+        $row = xf_db_fetch_assoc($res);
+        @xf_db_free_result($res);
         return $row;
     }
 
     public function getObject($sql, $vars = null) {
         $res = $this->query($sql, $vars);
-        $row = mysql_fetch_object($res);
-        @mysql_free_result($res);
+        $row = xf_db_fetch_object($res);
+        @xf_db_free_result($res);
         return $row;
     }
 
     public function getRows($sql, $vars = null) {
         $out = array();
         $res = $this->query($sql, $vars);
-        while ($row = mysql_fetch_row($res)) {
+        while ($row = xf_db_fetch_row($res)) {
             $out[] = $row;
         }
-        @mysql_free_result($res);
+        @xf_db_free_result($res);
         return $out;
     }
 
     public function getAssocs($sql, $vars = null) {
         $out = array();
         $res = $this->query($sql, $vars);
-        while ($row = mysql_fetch_assoc($res)) {
+        while ($row = xf_db_fetch_assoc($res)) {
             $out[] = $row;
         }
-        @mysql_free_result($res);
+        @xf_db_free_result($res);
         return $out;
     }
 
     public function getObjects($sql, $vars = null) {
         $out = array();
         $res = $this->query($sql, $vars);
-        while ($row = mysql_fetch_object($res)) {
+        while ($row = xf_db_fetch_object($res)) {
             $out[] = $row;
         }
-        @mysql_free_result($res);
+        @xf_db_free_result($res);
         return $out;
     }
 
@@ -194,7 +194,7 @@ class Database {
     }
 
     public function getInsertId() {
-        return mysql_insert_id($this->db());
+        return xf_db_insert_id($this->db());
     }
 
 }

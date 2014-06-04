@@ -242,9 +242,9 @@ class IOTest extends BaseTest {
 		// First we try to import the data into a temporary import table.
 		
 		$importTablename = $io->importData($record, $data);
-		$res = mysql_query("SELECT * FROM `$importTablename`", $this->db);
+		$res = xf_db_query("SELECT * FROM `$importTablename`", $this->db);
 		$rows = array();
-		while ( $row = mysql_fetch_array($res) ){
+		while ( $row = xf_db_fetch_array($res) ){
 			$rows[] = $row;
 		}
 		$this->assertEquals(2, count($rows), "Incorrect number of rows in import table: '$importTablename'");
@@ -286,13 +286,13 @@ class IOTest extends BaseTest {
 		$io->read(array('id'=>10), $record);
 		$importTablename = $io->importData($record, $data, 'xml', 'appointments');
 		
-		$res = mysql_query("SELECT * FROM `$importTablename`", $this->db);
+		$res = xf_db_query("SELECT * FROM `$importTablename`", $this->db);
 		if ( !$res ){
-			trigger_error("Error selecting records from import table '$importTablename'.  A mysql error occurred: ".mysql_error($this->db)."\n".Dataface_Error::printStackTrace(), E_USER_ERROR);
+			trigger_error("Error selecting records from import table '$importTablename'.  A mysql error occurred: ".xf_db_error($this->db)."\n".Dataface_Error::printStackTrace(), E_USER_ERROR);
 		}
-		$this->assertEquals(2, mysql_num_rows($res) );
+		$this->assertEquals(2, xf_db_num_rows($res) );
 		$rows = array();
-		while ( $row = mysql_fetch_array($res) ){
+		while ( $row = xf_db_fetch_array($res) ){
 			$rows[] = $row;
 		}
 		
@@ -311,9 +311,9 @@ class IOTest extends BaseTest {
 		$this->assertEquals('Trucker', $records[0]->val('Appointments.position'));
 		//print_r($records[0]->getValues());
 		
-		$res = mysql_query("select * from `Appointments`", $this->db);
+		$res = xf_db_query("select * from `Appointments`", $this->db);
 		$rows = array();
-		while ( $row = mysql_fetch_array($res) ){
+		while ( $row = xf_db_fetch_array($res) ){
 			$rows[] = $row;
 		}
 		
@@ -342,13 +342,13 @@ class IOTest extends BaseTest {
 		if ( PEAR::isError($importTablename) ){
 			trigger_error( $importTablename->toString().Dataface_Error::printStackTrace(), E_USER_ERROR);
 		}
-		$res = mysql_query("SELECT * FROM `$importTablename`", $this->db);
+		$res = xf_db_query("SELECT * FROM `$importTablename`", $this->db);
 		if ( !$res ){
-			trigger_error("Error selecting records from import table '$importTablename'.  A mysql error occurred: ".mysql_error($this->db)."\n".Dataface_Error::printStackTrace(), E_USER_ERROR);
+			trigger_error("Error selecting records from import table '$importTablename'.  A mysql error occurred: ".xf_db_error($this->db)."\n".Dataface_Error::printStackTrace(), E_USER_ERROR);
 		}
-		$this->assertEquals(2, mysql_num_rows($res) );
+		$this->assertEquals(2, xf_db_num_rows($res) );
 		$rows = array();
-		while ( $row = mysql_fetch_array($res) ){
+		while ( $row = xf_db_fetch_array($res) ){
 			$rows[] = $row;
 		}
 		
@@ -367,13 +367,13 @@ class IOTest extends BaseTest {
 		$this->assertEquals('Math', $records[0]->val('dept'));
 		$this->assertEquals('CMPT', $records[1]->val('dept'));
 		
-		$res = mysql_query("SELECT * FROM Courses c inner join Student_Courses sc on c.id=sc.courseid inner join Profiles p on p.id=sc.studentid where p.id='10'", $this->db);
+		$res = xf_db_query("SELECT * FROM Courses c inner join Student_Courses sc on c.id=sc.courseid inner join Profiles p on p.id=sc.studentid where p.id='10'", $this->db);
 		if ( !$res ){
-			trigger_error(mysql_error($this->db).Dataface_Error::printStackTrace(), E_USER_ERROR);
+			trigger_error(xf_db_error($this->db).Dataface_Error::printStackTrace(), E_USER_ERROR);
 		}
-		$this->assertEquals(2, mysql_num_rows($res));
-		$course1 = mysql_fetch_array($res);
-		$course2 = mysql_fetch_array($res);
+		$this->assertEquals(2, xf_db_num_rows($res));
+		$course1 = xf_db_fetch_array($res);
+		$course2 = xf_db_fetch_array($res);
 		$this->assertEquals(10, $course1['studentid']);
 		$this->assertTrue( $course1['courseid'] > 0 );
 		$this->assertEquals( 10, $course2['studentid']);
@@ -407,13 +407,13 @@ class IOTest extends BaseTest {
 		
 		$res = $s->_addRelatedRecordSQL("courses", array("Courses.dept"=>"Computing", "Courses.coursenumber"=>"CMPT118"));
 		print_r($res);
-		$this->assertEquals( 1, mysql_num_rows(mysql_query("SELECT * FROM Courses", $s->db)));
+		$this->assertEquals( 1, xf_db_num_rows(xf_db_query("SELECT * FROM Courses", $s->db)));
 		$s->_performSQL($res);
-		$this->assertEquals(2, mysql_num_rows(mysql_query("SELECT * FROM Courses", $s->db)));
+		$this->assertEquals(2, xf_db_num_rows(xf_db_query("SELECT * FROM Courses", $s->db)));
 		
-		$res = mysql_query("SELECT * FROM Courses", $s->db);
+		$res = xf_db_query("SELECT * FROM Courses", $s->db);
 		$found = false;
-		while ( $row = mysql_fetch_array($res) ){
+		while ( $row = xf_db_fetch_array($res) ){
 			if ( $row['id'] == 2 ){
 				$found = true;
 				$this->assertEquals("Computing", $row['dept']);
@@ -478,17 +478,17 @@ class IOTest extends BaseTest {
 	
 	
 	function test_removeRelatedRecord(){
-		$this->assertTrue(mysql_num_rows(mysql_query("SELECT * FROM `Appointments` where `id`=2"))==1);
+		$this->assertTrue(xf_db_num_rows(xf_db_query("SELECT * FROM `Appointments` where `id`=2"))==1);
 		$record =& Dataface_IO::loadRecordById('Profiles/appointments?id=10&appointments::id=2');
 		$res = Dataface_IO::removeRelatedRecord($record);
 			// This should fail to remove the record because it is a one-to-many relationship,
 			// and you can only remove the record if you add the 'delete' flag to allow it 
 			// to delete the domain record.
 		$this->assertTrue(!$res);
-		$this->assertTrue(mysql_num_rows(mysql_query("SELECT * FROM `Appointments` where `id`=2"))==1);
+		$this->assertTrue(xf_db_num_rows(xf_db_query("SELECT * FROM `Appointments` where `id`=2"))==1);
 		$res = Dataface_IO::removeRelatedRecord($record,true);
 		$this->assertTrue($res);
-		$this->assertTrue(mysql_num_rows(mysql_query("SELECT * FROM `Appointments` where `id`=2"))==0);
+		$this->assertTrue(xf_db_num_rows(xf_db_query("SELECT * FROM `Appointments` where `id`=2"))==0);
 	
 	}
 	

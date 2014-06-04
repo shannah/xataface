@@ -65,16 +65,16 @@ class Dataface_DeleteForm extends HTML_QuickForm {
 				$this->setDefaults( array( '-delete-one'=>1) );
 				$q = array('-skip'=>$this->_query['-cursor'], '-limit'=>1);
 				$sql = $b->select('', $q);
-				$res = mysql_query($sql, $this->_db);
+				$res = xf_db_query($sql, $this->_db);
 				if ( !$res ){
-					throw new Exception( df_translate('scripts.Dataface.DeleteForm._build.ERROR_TRYING_TO_FETCH',"Error trying to fetch element to be deleted.: ").mysql_error($this->_db), E_USER_ERROR);
+					throw new Exception( df_translate('scripts.Dataface.DeleteForm._build.ERROR_TRYING_TO_FETCH',"Error trying to fetch element to be deleted.: ").xf_db_error($this->_db), E_USER_ERROR);
 
 				}
-				if ( mysql_num_rows($res)==0 ) {
+				if ( xf_db_num_rows($res)==0 ) {
 					throw new Exception( df_translate('scripts.Dataface.DeleteForm._build.ERROR_NO_RECORD_SELECTED',"No record is currently selected so no record can be deleted."), E_USER_ERROR);
 
 				} else {
-					$row = mysql_fetch_array($res);
+					$row = xf_db_fetch_array($res);
 					$fields =& $this->_table->keys();
 					
 					$keys = array_keys($fields);
@@ -111,16 +111,16 @@ class Dataface_DeleteForm extends HTML_QuickForm {
 		if ( isset( $this->_query['-delete-one'] ) ){
 			$q = array('-skip'=>$this->_query['-cursor'], '-limit'=>1);
 			$sql = $b->select('', $q);
-			$res = mysql_query($sql, $this->_db);
+			$res = xf_db_query($sql, $this->_db);
 			if ( !$res ){
-				throw new Exception( df_translate('scripts.Dataface.DeleteForm._build.ERROR_TRYING_TO_FETCH',"Error trying to fetch element to be deleted.: ").mysql_error($this->_db), E_USER_ERROR);
+				throw new Exception( df_translate('scripts.Dataface.DeleteForm._build.ERROR_TRYING_TO_FETCH',"Error trying to fetch element to be deleted.: ").xf_db_error($this->_db), E_USER_ERROR);
 
 			}
-			if ( mysql_num_rows($res)==0 ) {
+			if ( xf_db_num_rows($res)==0 ) {
 				$msg = df_translate('scripts.Dataface.DeleteForm._build.ERROR_NO_RECORD_SELECTED',"No record is currently selected so no record can be deleted.");
 				$showform = false;
 			} else {
-				$row = mysql_fetch_array($res);
+				$row = xf_db_fetch_array($res);
 				$rowRec = new Dataface_Record($this->_tablename, $row);
 				$displayCol = $rowRec->getTitle();
 				
@@ -129,13 +129,13 @@ class Dataface_DeleteForm extends HTML_QuickForm {
 			
 		} else if ( isset($this->_query['-delete-found']) ) {
 			$q = $b->select_num_rows();
-			$res = mysql_query($q, $this->_db);
+			$res = xf_db_query($q, $this->_db);
 			if ( !$res ){
-				throw new Exception( df_translate('scripts.Dataface.DeleteForm.display.ERROR_ESTIMATING',"Error estimating number of rows that will be deleted: "). mysql_error($this->_db), E_USER_ERROR);
+				throw new Exception( df_translate('scripts.Dataface.DeleteForm.display.ERROR_ESTIMATING',"Error estimating number of rows that will be deleted: "). xf_db_error($this->_db), E_USER_ERROR);
 
 			}
 			
-			list( $num ) = mysql_fetch_row($res);
+			list( $num ) = xf_db_fetch_row($res);
 			if ( $num <= 0 ){
 				$msg = df_translate('scripts.Dataface.DeleteForm.display.ERROR_NO_RECORDS_FOUND',"There are no records in the current found set so no records can be deleted.");
 				$showform = false;

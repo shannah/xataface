@@ -175,29 +175,29 @@ if ($phpThumb->config_nohotlink_enabled && $phpThumb->config_nohotlink_erase_ima
 	$phpThumb->ErrorImage($phpThumb->config_nohotlink_text_message);
 }
 
-if ($phpThumb->config_mysql_query) {
-	if ($cid = @mysql_connect($phpThumb->config_mysql_hostname, $phpThumb->config_mysql_username, $phpThumb->config_mysql_password)) {
-		if (@mysql_select_db($phpThumb->config_mysql_database, $cid)) {
-			if ($result = @mysql_query($phpThumb->config_mysql_query, $cid)) {
-				if ($row = @mysql_fetch_array($result)) {
+if ($phpThumb->config_xf_db_query) {
+	if ($cid = @xf_db_connect($phpThumb->config_mysql_hostname, $phpThumb->config_mysql_username, $phpThumb->config_mysql_password)) {
+		if (@xf_db_select_db($phpThumb->config_mysql_database, $cid)) {
+			if ($result = @xf_db_query($phpThumb->config_xf_db_query, $cid)) {
+				if ($row = @xf_db_fetch_array($result)) {
 
-					mysql_free_result($result);
-					mysql_close($cid);
+					xf_db_free_result($result);
+					xf_db_close($cid);
 					$phpThumb->setSourceData($row[0]);
 					unset($row);
 
 				} else {
-					mysql_free_result($result);
-					mysql_close($cid);
+					xf_db_free_result($result);
+					xf_db_close($cid);
 					$phpThumb->ErrorImage('no matching data in database.');
 				}
 			} else {
-				mysql_close($cid);
-				$phpThumb->ErrorImage('Error in MySQL query: "'.mysql_error($cid).'"');
+				xf_db_close($cid);
+				$phpThumb->ErrorImage('Error in MySQL query: "'.xf_db_error($cid).'"');
 			}
 		} else {
-			mysql_close($cid);
-			$phpThumb->ErrorImage('cannot select MySQL database: "'.mysql_error($cid).'"');
+			xf_db_close($cid);
+			$phpThumb->ErrorImage('cannot select MySQL database: "'.xf_db_error($cid).'"');
 		}
 	} else {
 		$phpThumb->ErrorImage('cannot connect to MySQL server');

@@ -38,32 +38,32 @@ class dataface_actions_activate {
 			$time_limit = intval($params['time_limit']);
 		}
 		
-		$res = mysql_query(
+		$res = xf_db_query(
 			"delete from dataface__registrations 
 				where registration_date < '".addslashes(date('Y-m-d H:i:s', time()-$time_limit))."'",
 			df_db()
 			);
 		if ( !$res ){
-			error_log(mysql_error(df_db()));
+			error_log(xf_db_error(df_db()));
 			throw new Exception("Failed to delete registrations due to an SQL error.  See error log for details.", E_USER_ERROR);
 			
 		}
 		
 		// Step 2: Load the specified registration information
 		
-		$res = mysql_query(
+		$res = xf_db_query(
 			"select registration_data from dataface__registrations
 				where registration_code = '".addslashes($_GET['code'])."'",
 			df_db()
 			);
 		
 		if ( !$res ){
-			error_log(mysql_error(df_db()));
+			error_log(xf_db_error(df_db()));
 			throw new Exception("Failed to load registration information due to an SQL error.  See error log for details.", E_USER_ERROR);
 			
 		}
 		
-		if ( mysql_num_rows($res) == 0 ){
+		if ( xf_db_num_rows($res) == 0 ){
 			// We didn't find any records matching the prescribed code, so
 			// we redirect the user to their desired page and inform them
 			// that the registration didn't work.
@@ -78,7 +78,7 @@ class dataface_actions_activate {
 		// Step 3: Check to make sure that there are no other users with the
 		// same name.
 		
-		list($raw_data) = mysql_fetch_row($res);
+		list($raw_data) = xf_db_fetch_row($res);
 		$values = unserialize($raw_data);
 		$appdel = $app->getDelegate();
 		if ( isset($appdel) and method_exists($appdel, 'validateRegistrationForm') ){
@@ -88,16 +88,16 @@ class dataface_actions_activate {
 				$app->redirect($url.'&--msg='.urlencode($msg));
 			}
 		} else {
-			$res = mysql_query("select count(*) from 
+			$res = xf_db_query("select count(*) from 
 				`".str_replace('`','',$app->_conf['_auth']['users_table'])."` 
 				where `".str_replace('`','',$app->_conf['_auth']['username_column'])."` = '".addslashes($values[$app->_conf['_auth']['username_column']])."'
 				", df_db());
 			if ( !$res ){
-				error_log(mysql_error(df_db()));
+				error_log(xf_db_error(df_db()));
 				throw new Exception("Failed to find user records due to an SQL error.  See error log for details.", E_USER_ERROR);
 				
 			}
-			list($num) = mysql_fetch_row($res);
+			list($num) = xf_db_fetch_row($res);
 			if ( $num > 0 ){
 				$msg = df_translate(
 					'actions.activate.MESSAGE_DUPLICATE_USER',
@@ -115,14 +115,14 @@ class dataface_actions_activate {
 		if ( PEAR::isError($res) ){
 			$app->redirect($url.'&--msg='.urlencode($res->getMessage()));
 		} else {
-			$res = mysql_query(
+			$res = xf_db_query(
 				"delete from dataface__registrations
 					where registration_code = '".addslashes($_GET['code'])."'",
 				df_db()
 				);
 			
 			if ( !$res ){
-				error_log(mysql_error(df_db()));
+				error_log(xf_db_error(df_db()));
 				throw new Exception("Failed to clean up old registrations due to an SQL error.  See error log for details.", E_USER_ERROR);
 				
 			}

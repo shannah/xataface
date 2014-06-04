@@ -64,10 +64,10 @@ class xataface_Dataface_RecordTest extends PHPUnit_TestCase {
 		$row1Copy = df_get_record('test_versions', array('test_versions_id'=>'=1'));
 		$this->assertTrue(4, $row1Copy->getVersion(), 'Version of row 1 copy should be incremented after save');
 		
-		$res = mysql_query("select version from test_versions where test_versions_id=1", df_db());
-		$row = mysql_fetch_row($res);
-		$this->assertEquals(4, $row[0], 'Version of row 1 straight out of db with mysql_query');
-		@mysql_free_result($res);
+		$res = xf_db_query("select version from test_versions where test_versions_id=1", df_db());
+		$row = xf_db_fetch_row($res);
+		$this->assertEquals(4, $row[0], 'Version of row 1 straight out of db with xf_db_query');
+		@xf_db_free_result($res);
 		
 		
 		$row2->setValue('varchar_field', 'new value for row 2');
@@ -649,8 +649,8 @@ class xataface_Dataface_RecordTest extends PHPUnit_TestCase {
 			
 	
 	static function q($sql){
-		$res = mysql_query($sql, df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		$res = xf_db_query($sql, df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		return $res;
 	}
 	

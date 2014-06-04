@@ -135,7 +135,7 @@ class Dataface_AuthenticationTool {
 			}
 			import('Dataface/Serializer.php');
 			$serializer = new Dataface_Serializer($this->usersTable);
-			//$res = mysql_query(
+			//$res = xf_db_query(
 			$sql =	"SELECT `".$this->usernameColumn."` FROM `".$this->usersTable."`
 				 WHERE `".$this->usernameColumn."`='".addslashes(
 					$serializer->serialize($this->usernameColumn, $creds['UserName'])
@@ -145,20 +145,20 @@ class Dataface_AuthenticationTool {
 						$this->passwordColumn,
 						"'".addslashes($serializer->serialize($this->passwordColumn, $creds['Password']))."'"
 					);
-			$res = mysql_query($sql, $app->db());
-			if ( !$res ) throw new Exception(mysql_error($app->db()), E_USER_ERROR);
+			$res = xf_db_query($sql, $app->db());
+			if ( !$res ) throw new Exception(xf_db_error($app->db()), E_USER_ERROR);
 				
-			if ( mysql_num_rows($res) === 0 ){
+			if ( xf_db_num_rows($res) === 0 ){
 				return false;
 			}
 			$found = false;
-			while ( $row = mysql_fetch_row($res) ){
+			while ( $row = xf_db_fetch_row($res) ){
 				if ( strcmp($row[0], $creds['UserName'])===0 ){
 					$found=true;
 					break;
 				}
 			}
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 			return $found;
 		}
 	
@@ -422,13 +422,13 @@ class Dataface_AuthenticationTool {
 		
 	}
 	function _createFailedLoginsTable(){
-		$res = mysql_query("create table if not exists `dataface__failed_logins` (
+		$res = xf_db_query("create table if not exists `dataface__failed_logins` (
 			`attempt_id` int(11) not null auto_increment primary key,
 			`ip_address` varchar(32) not null,
 			`username` varchar(32) not null,
 			`time_of_attempt` int(11) not null
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
+		if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 	}
 	
 	function flagFailedAttempt($credentials){
@@ -439,30 +439,30 @@ class Dataface_AuthenticationTool {
 			$del->$method($credentials['UserName'], $_SERVER['REMOTE_ADDR'], time() );
 		}
 		$this->_createFailedLoginsTable();
-		$res = mysql_query("insert into `dataface__failed_logins` (ip_address,username,time_of_attempt) values (
+		$res = xf_db_query("insert into `dataface__failed_logins` (ip_address,username,time_of_attempt) values (
 			'".addslashes($_SERVER['REMOTE_ADDR'])."',
 			'".addslashes($credentials['UserName'])."',
 			'".addslashes(time())."'
 			)", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
+		if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 		
 		
 	}
 	
 	function clearFailedAttempts(){
 		$this->_createFailedLoginsTable();
-		$res = mysql_query("delete from `dataface__failed_logins` where ip_address='".addslashes($_SERVER['REMOTE_ADDR'])."'", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		$res = xf_db_query("delete from `dataface__failed_logins` where ip_address='".addslashes($_SERVER['REMOTE_ADDR'])."'", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 	}
 	
 	function isLockedOut(){
 		$this->_createFailedLoginsTable();
-		$res = mysql_query("delete from `dataface__failed_logins` where `time_of_attempt` < ".(time()-(60*30)), df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
-		$res = mysql_query("select count(*) from `dataface__failed_logins` where `ip_address`='".addslashes($_SERVER['REMOTE_ADDR'])."'", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
-		list($num) = mysql_fetch_row($res);
-		@mysql_free_result($res);
+		$res = xf_db_query("delete from `dataface__failed_logins` where `time_of_attempt` < ".(time()-(60*30)), df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
+		$res = xf_db_query("select count(*) from `dataface__failed_logins` where `ip_address`='".addslashes($_SERVER['REMOTE_ADDR'])."'", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
+		list($num) = xf_db_fetch_row($res);
+		@xf_db_free_result($res);
 		return ($num > 20);
 	}
 	

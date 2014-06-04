@@ -38,16 +38,16 @@ class MetadataToolTest extends BaseTest {
 				lname varchar(32) NOT NULL,
 				age int(11) default 10,
 				primary key (`fname`,`lname`))";
-		$res = mysql_query($sql, $app->db());
-		if (!$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if (!$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 		$sql = "create table `md_test1__metadata` (
 			   fname varchar(32) NOT NULL,
 			   lname varchar(32) NOT NULL,
 			   __translation_state int(5) default 0,
 			   primary key (`fname`,`lname`))";
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 		
 	}
@@ -55,12 +55,12 @@ class MetadataToolTest extends BaseTest {
 	function tearDown(){
 		$app=& Dataface_Application::getInstance();
 		$sql = "drop table if exists `md_test1`";
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 		$sql = "drop table if exists `md_test1__metadata`";
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		parent::tearDown();
 	}
 	
@@ -82,8 +82,8 @@ class MetadataToolTest extends BaseTest {
 			);
 			
 		$sql = "alter table `md_test1__metadata` add column `__state` int(5) default 0";
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 		$cols = $mt->getColumns();
 		$this->assertEquals(
@@ -128,13 +128,13 @@ class MetadataToolTest extends BaseTest {
 				lname varchar(32) NOT NULL,
 				age int(11) default 10,
 				primary key (`fname`,`lname`))";
-		$res = mysql_query($sql, $app->db());
-		if (!$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if (!$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 		$mt = new Dataface_MetadataTool('md_test2');
 		$this->assertTrue($mt->createMetadataTable());
 		
-		$this->assertEquals(1, mysql_num_rows(mysql_query("show tables like 'md_test2__metadata'", $app->db())));
+		$this->assertEquals(1, xf_db_num_rows(xf_db_query("show tables like 'md_test2__metadata'", $app->db())));
 		$cols = $mt->getColumns(null, false);
 		$this->assertEquals(
 			array('fname','lname','__translation_state','__published_state'),
@@ -150,11 +150,11 @@ class MetadataToolTest extends BaseTest {
 				lname varchar(32) NOT NULL,
 				age int(11) default 10,
 				primary key (`fname`,`lname`))";
-		$res = mysql_query($sql, $app->db());
-		if (!$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if (!$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		$mt = new Dataface_MetadataTool('md_test3');
 		$this->assertTrue($mt->refreshMetadataTable());
-		$this->assertEquals(1, mysql_num_rows(mysql_query("show tables like 'md_test3__metadata'", $app->db())));
+		$this->assertEquals(1, xf_db_num_rows(xf_db_query("show tables like 'md_test3__metadata'", $app->db())));
 		$cols = $mt->getColumns(null, false);
 		$this->assertEquals(
 			array('fname','lname','__translation_state','__published_state'),

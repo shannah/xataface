@@ -43,7 +43,7 @@ class ReferenceBrowser {
 		}
 		
 		$domainSQL = $this->_table->getRelationshipDomainSQL($this->_relationshipName);
-		$res = mysql_query($domainSQL, $this->_table->db);
+		$res = xf_db_query($domainSQL, $this->_table->db);
 		
 	
 	}

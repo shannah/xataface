@@ -136,16 +136,16 @@ class Dataface_ResultController {
             $res = $db->query($sqlStats, $this->_table->db, null, true);
             //if ( !$res and !is_array($res) ){
             $this->_totalRecords = $res[0]['num'];
-            //list($this->_totalRecords) = mysql_fetch_row( mysql_query( $sqlStats, $this->_db ) );
-            //$res = mysql_query($sql, $this->_db);
+            //list($this->_totalRecords) = xf_db_fetch_row( xf_db_query( $sqlStats, $this->_db ) );
+            //$res = xf_db_query($sql, $this->_db);
             $res = $db->query($sql, $this->_table->db, null, true);
 
             if (!$res and !is_array($res)) {
-                throw new Exception("An error occurred attempting to retrieve records from the database.: " . mysql_error($this->db), E_USER_ERROR);
+                throw new Exception("An error occurred attempting to retrieve records from the database.: " . xf_db_error($this->db), E_USER_ERROR);
             }
             $this->_displayedRecords = count($res);
 
-            //while ( $row = mysql_fetch_array($res) ){
+            //while ( $row = xf_db_fetch_array($res) ){
             foreach ($res as $row) {
                 $this->_records[] = $row;
             }
@@ -177,7 +177,7 @@ class Dataface_ResultController {
             $db = & Dataface_DB::getInstance();
             $res = $db->query($this->_queryBuilder->select_num_rows(), $this->_table->db, null, true);
             $this->_totalRecords = $res[0]['num'];
-            //list($this->_totalRecords) = mysql_fetch_row( mysql_query( $this->_queryBuilder->select_num_rows() ) );
+            //list($this->_totalRecords) = xf_db_fetch_row( xf_db_query( $this->_queryBuilder->select_num_rows() ) );
         }
 
         return $this->_totalRecords;
@@ -236,13 +236,13 @@ class Dataface_ResultController {
                 //		array($this->_titleColumn), 
                 //		array('-skip'=>null, '-limit'=>null) 
                 //	);
-                //$res = mysql_query( 
+                //$res = xf_db_query( 
                 //	$sql, 
                 //	$this->_db 
                 //);
                 $titles = $this->_resultSet->getTitles(false, true, false);
                 $index = 0;
-                //while ( $row = mysql_fetch_array($res) ){
+                //while ( $row = xf_db_fetch_array($res) ){
                 $len = count($titles);
 
                 for ($index = 0; $index < $len; $index++) {

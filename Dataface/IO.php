@@ -214,11 +214,11 @@ class Dataface_IO {
 						"Error reading table '".
 						$this->_table->tablename.
 						"' from the database: ".
-						mysql_error($this->_table->db),
+						xf_db_error($this->_table->db),
 						/* i18n parameters */
 					
 						array('table'=>$this->_table->tablename, 
-							'mysql_error'=>mysql_error(), 
+							'xf_db_error'=>xf_db_error(), 
 							'line'=>0, 
 							'file'=>'_',
 							'sql'=>$sql
@@ -230,7 +230,7 @@ class Dataface_IO {
 			}
 		}
 		
-		//if ( mysql_num_rows($res) == 0 ){
+		//if ( xf_db_num_rows($res) == 0 ){
 		if ( count($res) == 0 ){
 			return PEAR::raiseError(
 				Dataface_LanguageTool::translate(
@@ -247,9 +247,9 @@ class Dataface_IO {
 			);
 		}
 		
-		//$row = mysql_fetch_assoc($res);
+		//$row = xf_db_fetch_assoc($res);
 		$row = $res[0];
-		//mysql_free_result($res);
+		//xf_db_free_result($res);
 		$record->setValues($row);
 		$record->setSnapshot();
 			// clear all flags that may have been previously set to indicate that the data is old or needs to be updated.
@@ -329,11 +329,11 @@ class Dataface_IO {
                     $sql = $builder->delete($query);
                     if ( PEAR::isError($sql) ) return $sql;
 
-                    //$res = mysql_query($sql);
+                    //$res = xf_db_query($sql);
                     $res = $this->dbObj->query($sql, null, $this->lang);
                     if ( !$res || PEAR::isError($res)){
                             if ( PEAR::isError($res) ) $msg = $res->getMessage();
-                            else $msg = mysql_error(df_db());
+                            else $msg = xf_db_error(df_db());
                             return PEAR::raiseError(
 
                                     Dataface_LanguageTool::translate(
@@ -342,9 +342,9 @@ class Dataface_IO {
                                             /* default error message */
                                             'Failed to delete record '.
                                             $record->getTitle().
-                                            ' because of an sql error. '.mysql_error(df_db()),
+                                            ' because of an sql error. '.xf_db_error(df_db()),
                                             /* i18n parameters */
-                                            array('title'=>$record->getTitle(), 'sql'=>$sql, 'mysql_error'=>$msg)
+                                            array('title'=>$record->getTitle(), 'sql'=>$sql, 'xf_db_error'=>$msg)
                                     ),
                                     DATAFACE_E_DELETE_FAILED
                             );
@@ -846,9 +846,9 @@ class Dataface_IO {
 		$sql .= implode(' AND ', $where).' limit 1';
 		
 		$res = df_q($sql, $this->_table->db);
-		$num = mysql_num_rows($res);
-		$row = mysql_fetch_row($res);
-		@mysql_free_result($res);
+		$num = xf_db_num_rows($res);
+		$row = xf_db_fetch_row($res);
+		@xf_db_free_result($res);
 		if ( $num === 1 ){
 			// We have the correct number...
 			// let's check the version
@@ -1008,11 +1008,11 @@ class Dataface_IO {
 		
 			
 			
-			//$res = mysql_query($sql, $s->db);
+			//$res = xf_db_query($sql, $s->db);
 			$res =$this->dbObj->query($sql, $s->db, $this->lang);
 			if ( !$res || PEAR::isError($res) ){
 				
-			    if ( in_array(mysql_errno($this->_table->db), array(MYSQL_ER_DUP_KEY,MYSQL_ER_DUP_ENTRY)) ){
+			    if ( in_array(xf_db_errno($this->_table->db), array(MYSQL_ER_DUP_KEY,MYSQL_ER_DUP_ENTRY)) ){
 					/*
 					 * This is a duplicate entry.  We will handle this as an exception rather than an error because
 					 * cases may arise in a database application when a duplicate entry will happen and the application
@@ -1032,7 +1032,7 @@ class Dataface_IO {
 					df_translate(
 						'scripts.Dataface.IO._update.SQL_ERROR',
 						"Failed to update due to sql error: ")
-					.mysql_error($s->db), E_USER_ERROR);
+					.xf_db_error($s->db), E_USER_ERROR);
 			}
 			
 			//$record->clearFlags();
@@ -1130,10 +1130,10 @@ class Dataface_IO {
 		}
 		
 
-		//$res = mysql_query($sql, $s->db);
+		//$res = xf_db_query($sql, $s->db);
 		$res = $this->dbObj->query($sql, $s->db, $this->lang);
 		if ( !$res || PEAR::isError($res)){
-			if ( in_array(mysql_errno($this->_table->db), array(MYSQL_ER_DUP_KEY,MYSQL_ER_DUP_ENTRY)) ){
+			if ( in_array(xf_db_errno($this->_table->db), array(MYSQL_ER_DUP_KEY,MYSQL_ER_DUP_ENTRY)) ){
 				/*
 				 * This is a duplicate entry.  We will handle this as an exception rather than an error because
 				 * cases may arise in a database application when a duplicate entry will happen and the application
@@ -1156,7 +1156,7 @@ class Dataface_IO {
 				df_translate(
 					'scripts.Dataface.IO._insert.ERROR_INSERTING_RECORD',
 					"Error inserting record: ")
-				.(PEAR::isError($res)?$res->getMessage():mysql_error(df_db())).": SQL: $sql", E_USER_ERROR);
+				.(PEAR::isError($res)?$res->getMessage():xf_db_error(df_db())).": SQL: $sql", E_USER_ERROR);
 		}
 		$id = df_insert_id($s->db);
 		$this->insertIds[$this->_table->tablename] = $id;
@@ -1277,14 +1277,14 @@ class Dataface_IO {
 				
 				$sql = $sql.$set.$where.' LIMIT 1';
 				
-				//$res = mysql_query($sql, $s->db);
+				//$res = xf_db_query($sql, $s->db);
 				$res = $this->dbObj->query($sql, $s->db, $this->lang);
 				if ( !$res || PEAR::isError($res) ){
 					throw new Exception( 
 						df_translate(
 							'scripts.Dataface.IO._writeRelationship.ERROR_UPDATING_DATABASE',
-							"Error updating database with query '$sql': ".mysql_error($s->db),
-							array('sql'=>$sql,'mysql_error'=>mysql_error($s->db))
+							"Error updating database with query '$sql': ".xf_db_error($s->db),
+							array('sql'=>$sql,'xf_db_error'=>xf_db_error($s->db))
 							)
 						, E_USER_ERROR);
 				}
@@ -1349,15 +1349,15 @@ class Dataface_IO {
 			}
 			
 
-			//$res = mysql_query($current_query, $this->_table->db);
+			//$res = xf_db_query($current_query, $this->_table->db);
 			$res = $this->dbObj->query($current_query, $this->_table->db, $this->lang);
 			if ( !$res || PEAR::isError($res) ){
-				if ( in_array(mysql_errno($this->_table->db), array(MYSQL_ER_DUP_KEY,MYSQL_ER_DUP_ENTRY)) ){
+				if ( in_array(xf_db_errno($this->_table->db), array(MYSQL_ER_DUP_KEY,MYSQL_ER_DUP_ENTRY)) ){
 					/*
 					 * This is a duplicate record (ie: it already exists)
 					 */
 					$duplicates[] = $current_table;
-				} else if ( $queryAttempts[$current_query] < 3 and in_array(mysql_errno($this->_table->db), array(MYSQL_ER_NO_REFERENCED_ROW, MYSQL_ER_NO_REFERENCED_ROW_2, MYSQL_ER_ROW_IS_REFERENCED_2)) ){
+				} else if ( $queryAttempts[$current_query] < 3 and in_array(xf_db_errno($this->_table->db), array(MYSQL_ER_NO_REFERENCED_ROW, MYSQL_ER_NO_REFERENCED_ROW_2, MYSQL_ER_ROW_IS_REFERENCED_2)) ){
 					/**
 					 * There is a foreign key constraint that is preventing us from inserting
 					 * this row.  Perhaps we are just adding this row in the wrong order.
@@ -1368,7 +1368,7 @@ class Dataface_IO {
 					 
 				
 				} else {
-					if ( in_array(mysql_errno($this->_table->db), array(MYSQL_ER_NO_REFERENCED_ROW, MYSQL_ER_NO_REFERENCED_ROW_2)) ){
+					if ( in_array(xf_db_errno($this->_table->db), array(MYSQL_ER_NO_REFERENCED_ROW, MYSQL_ER_NO_REFERENCED_ROW_2)) ){
 						/*
 							THis failed due to a foreign key constraint. 
 						*/
@@ -1378,7 +1378,7 @@ class Dataface_IO {
 								'scripts.Dataface.IO.performSQL.ERROR_FOREIGN_KEY',
 								'Failed to save record because a foreign key constraint failed: %s'
 								),
-								mysql_error(df_db())
+								xf_db_error(df_db())
 							),
 								
 							DATAFACE_E_NOTICE
@@ -1393,7 +1393,7 @@ class Dataface_IO {
 							"Error performing query '$current_query'",
 							array('line'=>0,'file'=>'_','current_query'=>$current_query)
 							)
-						.mysql_errno($this->_table->db).': '.mysql_error($this->_table->db));
+						.xf_db_errno($this->_table->db).': '.xf_db_error($this->_table->db));
 					throw new Exception($err->toString(), E_USER_ERROR);
 				}
 			}
@@ -2552,17 +2552,17 @@ class Dataface_IO {
 			`name` varchar(255) not null primary key,
 			`mtime` int(11)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-		$res = mysql_query($sql, df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		$res = xf_db_query($sql, df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 	}
 	
 	static function touchTable($table){
 		$sql = "replace into dataface__mtimes (`name`,`mtime`) values ('".addslashes($table)."','".addslashes(time())."')";
-		$res = mysql_query($sql, df_db());
+		$res = xf_db_query($sql, df_db());
 		if ( !$res ){
 			self::createModificationTimesTable();
-			$res = mysql_query($sql, df_db());
-			if ( !$res ) throw new Exception(mysql_error(df_db()));
+			$res = xf_db_query($sql, df_db());
+			if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		}
 	}
 	

@@ -38,7 +38,7 @@ class Table_builderTest extends BaseTest {
 		$app =& Dataface_Application::getInstance();
 		$path = DATAFACE_SITE_PATH.'/tables/'.$this->mytable;
 		if ( file_exists($path) ) @rmdir($path);
-		mysql_query('drop table if exists `'.$this->mytable.'`', $app->db()) or die(mysql_error().' on line '.__LINE__.' of file '.__FILE__);
+		xf_db_query('drop table if exists `'.$this->mytable.'`', $app->db()) or die(xf_db_error().' on line '.__LINE__.' of file '.__FILE__);
 		parent::setUp();
 	}
 	
@@ -48,7 +48,7 @@ class Table_builderTest extends BaseTest {
 		$this->assertTrue(!isset($builder->table));
 		$this->assertEquals(
 			0,
-			mysql_num_rows(mysql_query("show tables like '".$this->mytable."'", $app->db()))
+			xf_db_num_rows(xf_db_query("show tables like '".$this->mytable."'", $app->db()))
 			);
 		
 		$builder->addField(
@@ -68,7 +68,7 @@ class Table_builderTest extends BaseTest {
 		
 		$this->assertEquals(
 			1,
-			mysql_num_rows(mysql_query("show tables like '".$this->mytable."'", $app->db()))
+			xf_db_num_rows(xf_db_query("show tables like '".$this->mytable."'", $app->db()))
 			);
 		
 		
@@ -89,7 +89,7 @@ class Table_builderTest extends BaseTest {
 		
 		$this->assertEquals(
 			1,
-			mysql_num_rows(mysql_query("show tables like '".$this->mytable."'", $app->db()))
+			xf_db_num_rows(xf_db_query("show tables like '".$this->mytable."'", $app->db()))
 			);
 		
 		

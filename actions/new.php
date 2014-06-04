@@ -119,7 +119,7 @@ class dataface_actions_new {
 			$response =& Dataface_Application::getResponse();
 			
 			if ( !$result ){
-				throw new Exception("Error occurred in save: ".mysql_error( $app->db()), E_USER_ERROR);
+				throw new Exception("Error occurred in save: ".xf_db_error( $app->db()), E_USER_ERROR);
 			} else if ( PEAR::isError($result) && !Dataface_Error::isNotice($result) ){
 				//echo "Error..";
 				if ( Dataface_Error::isDuplicateEntry($result) ){

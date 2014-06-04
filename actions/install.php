@@ -42,14 +42,14 @@ class dataface_actions_install {
 			$app->redirect(DATAFACE_SITE_HREF.'?--msg='.urlencode('The database version is greater than the file system version.  Please upgrade your application to match the version in the database (version '.df_get_database_version()));
 		}
 		
-		$res = mysql_query("select count(*) from dataface__version", df_db());
+		$res = xf_db_query("select count(*) from dataface__version", df_db());
 		if ( !$res ){
-			throw new Exception(mysql_error(df_db()));
+			throw new Exception(xf_db_error(df_db()));
 		}
-		$row = mysql_fetch_row($res);
+		$row = xf_db_fetch_row($res);
 		if ( $row[0] == 0 ){
-			$res2 = mysql_query("insert into dataface__version (`version`) values (0)", df_db());
-			if ( !$res2 ) throw new Exception(mysql_error(df_db()));
+			$res2 = xf_db_query("insert into dataface__version (`version`) values (0)", df_db());
+			if ( !$res2 ) throw new Exception(xf_db_error(df_db()));
 		}
 		
 		if ( file_exists('conf/Installer.php') ){
@@ -75,8 +75,8 @@ class dataface_actions_install {
 				$method = 'update_'.$update;
 				$res = $installer->$method();
 				if ( PEAR::isError($res) ) return $res;
-				$res = mysql_query("update dataface__version set `version`='".addslashes($update)."'", df_db());
-				if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);	
+				$res = xf_db_query("update dataface__version set `version`='".addslashes($update)."'", df_db());
+				if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);	
 			}
 			
 			
@@ -84,8 +84,8 @@ class dataface_actions_install {
 		}
 		
 		
-		$res = mysql_query("update dataface__version set `version`='".addslashes(df_get_file_system_version())."'", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
+		$res = xf_db_query("update dataface__version set `version`='".addslashes(df_get_file_system_version())."'", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 		
                 if ( function_exists('apc_clear_cache') ){
                     apc_clear_cache('user');

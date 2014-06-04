@@ -43,14 +43,14 @@ class Dataface_PreferencesTool {
 		}
 		$sql = "select * from `dataface__preferences` where `username` in ('*','".addslashes($username)."') and `table` in ('*','".addslashes($table)."')";
 		
-		$res = mysql_query($sql, df_db());
+		$res = xf_db_query($sql, df_db());
 		if ( !$res ){
 			$this->_createPreferencesTable();
-			$res = mysql_query($sql, df_db());
-			if ( !$res ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
+			$res = xf_db_query($sql, df_db());
+			if ( !$res ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 		}
 		
-		while ($row = mysql_fetch_assoc($res) ){
+		while ($row = xf_db_fetch_assoc($res) ){
 			if ( $row['table'] == '*' ){
 				$this->prefs['*'][ $row['key'] ] = $row['value'];
 			} else {
@@ -58,7 +58,7 @@ class Dataface_PreferencesTool {
 			}
 		}
 		
-		@mysql_free_result($res);
+		@xf_db_free_result($res);
 
 		$this->refreshTimes[ $table ] = time();
 		
@@ -165,22 +165,22 @@ class Dataface_PreferencesTool {
 				$sql .= " and `username` = '".addslashes($username)."'";
 			}
 			
-			$res = mysql_query($sql, df_db());
+			$res = xf_db_query($sql, df_db());
 			if ( !$res ){
 				$this->_createPreferencesTable();
-				$res = mysql_query($sql, df_db());
-				if ( !$res ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
+				$res = xf_db_query($sql, df_db());
+				if ( !$res ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			}
 			
 			$sql = "insert into `dataface__preferences` 
 				(`table`,`record_id`,`username`,`key`,`value`) values
 				('".addslashes($parts['table'])."','".addslashes($uri)."','".addslashes($username)."','".addslashes($key)."','".addslashes($value)."')";
 				
-			$res = mysql_query($sql, df_db());
+			$res = xf_db_query($sql, df_db());
 			if ( !$res ){
 				$this->createPreferencesTable();
-				$res = mysql_query($sql, df_db());
-				if ( !$res ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
+				$res = xf_db_query($sql, df_db());
+				if ( !$res ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			}
 		}
 		

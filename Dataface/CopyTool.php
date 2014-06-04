@@ -83,7 +83,7 @@ class Dataface_CopyTool {
 		}
 		$res = df_query($query);
 		if ( !$res ){
-			return PEAR::raiseError("Failed to copy record '".$record->getTitle()."' due to an SQL error:".mysql_error());
+			return PEAR::raiseError("Failed to copy record '".$record->getTitle()."' due to an SQL error:".xf_db_error());
 		}
 		if ( PEAR::isError($res) ) return $res;
 		

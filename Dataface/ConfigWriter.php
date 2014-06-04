@@ -40,9 +40,9 @@ class Dataface_ConfigWriter {
 		$config = file_get_contents(DATAFACE_PATH.'/install/dbconfig.sql');
 		foreach ( explode(';',$config) as $query){
 			if (!trim($query)) continue;
-			$res = mysql_query($query, $app->db());
+			$res = xf_db_query($query, $app->db());
 			if ( !$res ){
-				throw new Exception("Could not set up configuration database: ".mysql_error($app->db()), E_USER_ERROR);
+				throw new Exception("Could not set up configuration database: ".xf_db_error($app->db()), E_USER_ERROR);
 			}
 		}
 		return true;
@@ -81,13 +81,13 @@ class Dataface_ConfigWriter {
 		// first let's make copies of the current configuration.
 		$timestamp = time();
 		foreach ( $this->configTypes as $type ){
-			$res = mysql_query("CREATE TABLE `__".addslashes($type)."__".$timestamp."` SELECT * FROM `__".addslashes($type)."__`", $app->db());
+			$res = xf_db_query("CREATE TABLE `__".addslashes($type)."__".$timestamp."` SELECT * FROM `__".addslashes($type)."__`", $app->db());
 			if ( !$res ){
-				throw new Exception("Failed to make backup of table '__".$type."__'.". mysql_error($app->db()), E_USER_ERROR);
+				throw new Exception("Failed to make backup of table '__".$type."__'.". xf_db_error($app->db()), E_USER_ERROR);
 			}
 		}
 		
-		$res = mysql_query("CREATE TABLE `__properties__".$timestamp."` SELECT * FROM `__properties__`", $app->db());
+		$res = xf_db_query("CREATE TABLE `__properties__".$timestamp."` SELECT * FROM `__properties__`", $app->db());
 		if ( !$res ){
 			throw new Exception("Failed to make backup of table '__properties__'.", $app->db());
 		}
@@ -96,7 +96,7 @@ class Dataface_ConfigWriter {
 		//print_r($this->config);
 		foreach ( $this->configTypes as $type ){
 		
-			$res = mysql_query("DELETE FROM `__".addslashes($type)."__`", $app->db());
+			$res = xf_db_query("DELETE FROM `__".addslashes($type)."__`", $app->db());
 			if ( !$res ){
 				throw new Exception("Failed to delete all records from table '__".$type."__'", $app->db());
 			}
@@ -132,7 +132,7 @@ class Dataface_ConfigWriter {
 					
 					// now for the rest of the properties.
 					foreach ( $section as $propertyName=>$propertyValue ){
-						$res = mysql_query("
+						$res = xf_db_query("
 							INSERT INTO 
 							 `__properties__` 
 							 (`parent_id`,`parent_type`,`property_name`,`property_value`)
@@ -142,7 +142,7 @@ class Dataface_ConfigWriter {
 							 '".addslashes($propertyName)."',
 							 '".addslashes($propertyValue)."')", $app->db());
 						if ( !$res ){
-							throw new Exception("Failed to add property '$propertyName' to table '__properties__' with value '$propertyValue'".mysql_error($app->db()), E_USER_ERROR);
+							throw new Exception("Failed to add property '$propertyName' to table '__properties__' with value '$propertyValue'".xf_db_error($app->db()), E_USER_ERROR);
 						}
 					}
 					

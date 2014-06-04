@@ -21,20 +21,20 @@ class DB_Sync_Test extends BaseTest {
 		require_once 'Dataface/Application.php';
 		$app =& Dataface_Application::getInstance();
 		
-		$res = mysql_query("create table a (
+		$res = xf_db_query("create table a (
 			id int(11) not null auto_increment,
 			a varchar(32) default 'b',
 			b datetime not null,
 			primary key (`id`))", $app->db());
 			
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 		
-		$res = mysql_query("create table b (
+		$res = xf_db_query("create table b (
 			id int(12) not null auto_increment,
 			b datetime not null,
 			primary key (`id`))", $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);	
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);	
 	}
 	
 	function testSync1(){
@@ -42,10 +42,10 @@ class DB_Sync_Test extends BaseTest {
 		$s = new DB_Sync($app->db(), $app->db(), 'a','b');
 		$s->syncTables();
 		
-		$res = mysql_query("show create table b", $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
-		$row = mysql_fetch_assoc($res);
-		@mysql_free_result($res);
+		$res = xf_db_query("show create table b", $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
+		$row = xf_db_fetch_assoc($res);
+		@xf_db_free_result($res);
 		
 		$this->assertEquals(
 			"CREATE TABLE `b` (

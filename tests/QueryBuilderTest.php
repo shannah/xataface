@@ -354,8 +354,8 @@ class QueryBuilderTest extends BaseTest {
 		$builder = new Dataface_QueryBuilder('Profiles');
 		echo ($from = $builder->_from());
 		$sql = "select * {$from} where id='10'";
-		//$res = mysql_query($sql, $app->db());
-		//if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		//$res = xf_db_query($sql, $app->db());
+		//if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 		
 		

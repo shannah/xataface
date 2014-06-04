@@ -32,13 +32,13 @@ function Dataface_ConfigTool_setConfigParam($file, $section, $key, $value, $user
 	$where = implode(' and ',$where);
 	$sql = "select `config_id` from `".$self->configTableName."` where $where limit 1";
 
-	$res = mysql_query($sql,df_db());
+	$res = xf_db_query($sql,df_db());
 	if ( !$res ){
 		$self->createConfigTable();
-		$res = mysql_query($sql, df_db());
+		$res = xf_db_query($sql, df_db());
 	}
 	if ( !$res ){
-		return PEAR::raiseError("Failed to get config parameter: ".mysql_error(df_db()));
+		return PEAR::raiseError("Failed to get config parameter: ".xf_db_error(df_db()));
 	}
 	
 	$vals = array(
@@ -49,8 +49,8 @@ function Dataface_ConfigTool_setConfigParam($file, $section, $key, $value, $user
 			"lang"=>"'".addslashes($lang)."'",
 			"priority"=>$priority
 			);
-	if ( mysql_num_rows($res) > 0 ){
-		$row = mysql_fetch_assoc($res);
+	if ( xf_db_num_rows($res) > 0 ){
+		$row = xf_db_fetch_assoc($res);
 
 		// We need to perform an update
 		
@@ -73,10 +73,10 @@ function Dataface_ConfigTool_setConfigParam($file, $section, $key, $value, $user
 		$sql = "insert into `".$self->configTableName."` ($cols) VALUES ($values)";
 		
 	}
-	@mysql_free_result($res);
-	$res = mysql_query($sql, df_db());
+	@xf_db_free_result($res);
+	$res = xf_db_query($sql, df_db());
 	if ( !$res ){
-		return PEAR::raiseError("Could not write config value: ".mysql_error(df_db()));
+		return PEAR::raiseError("Could not write config value: ".xf_db_error(df_db()));
 	}
 	return true;
 }

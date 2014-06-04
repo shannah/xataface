@@ -387,7 +387,7 @@ class Dataface_LanguageTool_Instance {
 		
 		// First we need to create the translation table for webpages if it isn't created already
                 $res = df_q("show create table `".$table."_en`");
-                $row = mysql_fetch_row($res);
+                $row = xf_db_fetch_row($res);
                 $sql = null;
                 foreach ($row as $k=>$v){
                     if ( stripos($v, 'CREATE') !== false ){
@@ -395,7 +395,7 @@ class Dataface_LanguageTool_Instance {
                         break;
                     }
                 }
-		@mysql_free_result($res);
+		@xf_db_free_result($res);
 		$sql = str_replace('`'.$table.'_en`', '`'.$table.'_'.$lang.'`', $sql);
 		$sql = str_replace('CREATE TABLE', 'CREATE TABLE IF NOT EXISTS', $sql);
 		$res = df_q($sql);
@@ -406,12 +406,12 @@ class Dataface_LanguageTool_Instance {
         
         public function addLanguageTables($lang){
             $res = df_q("show tables like '%_en'");
-            while ( $row = mysql_fetch_row($res) ){
+            while ( $row = xf_db_fetch_row($res) ){
                 if ( preg_match('/^(.*)_en$/', $row[0], $matches)){
                     $this->addLanguageTable($matches[1], $lang);
                 }
             }
-            @mysql_free_result($res);
+            @xf_db_free_result($res);
         }
 	
 	

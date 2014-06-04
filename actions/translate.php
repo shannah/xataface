@@ -71,7 +71,7 @@ class dataface_actions_translate {
 				$response =& Dataface_Application::getResponse();
 				
 				if ( !$result ){
-					error_log("Error occurred in save: ".mysql_error( $app->db()).Dataface_Error::printStackTrace());
+					error_log("Error occurred in save: ".xf_db_error( $app->db()).Dataface_Error::printStackTrace());
 					throw new Exception("Error occurred in save.  See error log for details.");
 					
 					

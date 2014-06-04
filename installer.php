@@ -163,14 +163,14 @@ class Dataface_Installer {
 		$root = $files[0]['filename'];
 		
 		$install = $archive->extractInString($root.'install/install.sql');
-		$res = mysql_select_db($values['database_name'], db());
+		$res = xf_db_select_db($values['database_name'], db());
 		if ( !$res ){
 			$dbname = str_replace('`','',$values['database_name']);
-			$res = mysql_query("create database `".addslashes($dbname)."`", db());
+			$res = xf_db_query("create database `".addslashes($dbname)."`", db());
 			if ( !$res ){
 				return PEAR::raiseError("Failed to create database '$dbname'");
 			}
-			$res = mysql_select_db($dbname);
+			$res = xf_db_select_db($dbname);
 			if ( !$res ){
 				return PEAR::raiseError("Problem selecting database $dbname.");
 			}
@@ -196,9 +196,9 @@ class Dataface_Installer {
 			//$file = implode("",$out);
 			foreach ($queries as $query){
 			
-				$res = @mysql_query($query, $db);
+				$res = @xf_db_query($query, $db);
 				if ( !$res ){
-					$my_errs[]  = mysql_error($db);
+					$my_errs[]  = xf_db_error($db);
 				}
 			}
 		}
@@ -250,10 +250,10 @@ class Dataface_Installer {
 	function db2app(){
 		require_once 'HTML/QuickForm.php';
 		$form = new HTML_QuickForm('db2app');
-		$res = mysql_query("SHOW DATABASES", db());
-		if ( !$res ) trigger_error(mysql_error(db()), E_USER_ERROR);
+		$res = xf_db_query("SHOW DATABASES", db());
+		if ( !$res ) trigger_error(xf_db_error(db()), E_USER_ERROR);
 		$options = array('' => 'Please Select Database ...');
-		while ( $row = mysql_fetch_row($res) ) $options[$row[0]] = $row[0];
+		while ( $row = xf_db_fetch_row($res) ) $options[$row[0]] = $row[0];
 		$form->addElement('hidden','-action','db2app');
 		$form->addElement('select', 'database_name','Select Database'.$this->infoLink('archive2app.database_name'), $options, array('onchange'=>'listeners.database_name.onchange(this)'));
 		$form->addElement('header','db_info','Database connection details');
@@ -331,11 +331,11 @@ Deny from all
 		
 		
 
-		mysql_select_db($values['database_name'], db());
-		$res = mysql_query('show tables', db());
-		if ( !$res ) trigger_error(mysql_error(db()), E_USER_ERROR);
+		xf_db_select_db($values['database_name'], db());
+		$res = xf_db_query('show tables', db());
+		if ( !$res ) trigger_error(xf_db_error(db()), E_USER_ERROR);
 		$tables = array();
-		while ( $row = mysql_fetch_row($res) ){
+		while ( $row = xf_db_fetch_row($res) ){
 			if ( $row[0]{0} == '_' ) continue;
 			if ( strpos($row[0], 'dataface_') === 0 ) continue;
 			if ( preg_match('/__history$/', $row[0]) ) continue;
@@ -409,12 +409,12 @@ df_init(__FILE__, "'.addslashes(dirname($_SERVER['PHP_SELF'])).'")->display();
 	}
 	
 	function test_db_access($dbname, $username, $password){
-		$db = @mysql_connect(DB_HOST, $username, $password);
+		$db = @xf_db_connect(DB_HOST, $username, $password);
 		if ( !$db ){
 			return PEAR::raiseError("Could not connect to the MySQL server with username $username.");
 		}
 		
-		$res = mysql_select_db($dbname, $db);
+		$res = xf_db_select_db($dbname, $db);
 		if ( !$res ) return PEAR::raiseError("Could not access the database $dbname as user $username.");
 		
 		return true;
@@ -508,7 +508,7 @@ function db(){
 		if (!@$_SERVER['PHP_AUTH_USER'] || !$_COOKIE['logged_in'] ){
 			$installer->authenticate();
 		}
-		$db = @mysql_connect(DB_HOST,@$_SERVER['PHP_AUTH_USER'], @$_SERVER['PHP_AUTH_PW']);
+		$db = @xf_db_connect(DB_HOST,@$_SERVER['PHP_AUTH_USER'], @$_SERVER['PHP_AUTH_PW']);
 		if ( !$db ){
 			$installer->authenticate();
    		}

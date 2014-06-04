@@ -459,22 +459,22 @@ class Dataface_ConfigTool {
 				
 				
 				$sql = $this->buildConfigQuery($path, $username, $app->_conf['lang']);
-				$res = @mysql_query($sql, $app->db());
+				$res = @xf_db_query($sql, $app->db());
 				if (!$res ){
 					$this->createConfigTable();
-					$res = mysql_query($sql, $app->db());
+					$res = xf_db_query($sql, $app->db());
 				}
 				if ( !$res ){
 					return $config;
 				}
-				while ( $row = mysql_fetch_assoc($res) ){
+				while ( $row = xf_db_fetch_assoc($res) ){
 					if ( !$row['section'] ){
 						$config[$row['file']][$row['key']] = $row['value'];
 					} else {
 						$config[$row['file']][$row['section']][$row['key']] = $row['value'];
 					}
 				}
-				@mysql_free_result($res);
+				@xf_db_free_result($res);
 				
 			
 			}

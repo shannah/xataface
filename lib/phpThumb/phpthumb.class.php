@@ -126,7 +126,7 @@ class phpthumb {
 	var $config_cache_prefix                         = '';    // default value set in the constructor below
 
 	// * MySQL
-	var $config_mysql_query                          = null;
+	var $config_xf_db_query                          = null;
 	var $config_mysql_hostname                       = null;
 	var $config_mysql_username                       = null;
 	var $config_mysql_password                       = null;

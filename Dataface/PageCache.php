@@ -48,9 +48,9 @@ class Dataface_PageCache extends Cache_Lite {
 		$tables =& $this->tables;
 		$lookup = array_flip($tables);
 		$app =& Dataface_Application::getInstance();
-		$res = mysql_query("SHOW TABLE STATUS", $app->_db);
+		$res = xf_db_query("SHOW TABLE STATUS", $app->_db);
 		$latestMod = 0;
-		while ( $row = mysql_fetch_array($res) ){
+		while ( $row = xf_db_fetch_array($res) ){
 			if ( (sizeof($tables) === 0 || isset( $lookup[$row['Name']] ) ) && strtotime($row['Update_time']) > $latestMod ){
 				$latestMod = strtotime($row['Update_time']);
 			}

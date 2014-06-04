@@ -27,9 +27,9 @@ class QueryTranslator_Test extends BaseTest {
 			$tsql
 			);
 			
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 		$this->assertEquals(
 			array(
 				'PersonID'=>'1',
@@ -48,9 +48,9 @@ class QueryTranslator_Test extends BaseTest {
 			array("select `PeopleIntl`.`PersonID`, `PeopleIntl`.`Name`, ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) as `Position`, ifnull(`PeopleIntl__en`.`Blurb`, `PeopleIntl`.`Blurb`) as `Blurb` from `PeopleIntl` left join `PeopleIntl_en` as `PeopleIntl__en` on `PeopleIntl`.`PersonID` = `PeopleIntl__en`.`PersonID` limit 1"),
 			$tsql
 			);
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 		$this->assertEquals(
 			array(
 				'PersonID'=>'1',
@@ -68,9 +68,9 @@ class QueryTranslator_Test extends BaseTest {
 		
 		$tsql = $translator->translateQuery($sql);
 		
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 		$this->assertEquals(
 			array("select `PeopleIntl`.`PersonID`, `PeopleIntl`.`Name`, ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) as `Position`, ifnull(`PeopleIntl__en`.`Blurb`, `PeopleIntl`.`Blurb`) as `Blurb`, `PeopleIntl`.`Photo`, `PeopleIntl`.`Photo_mimetype` from `PeopleIntl` left join `PeopleIntl_en` as `PeopleIntl__en` on `PeopleIntl`.`PersonID` = `PeopleIntl__en`.`PersonID` limit 1"),
 			$tsql
@@ -91,9 +91,9 @@ class QueryTranslator_Test extends BaseTest {
 		// Now the same query with french translation
 		$translator = new Dataface_QueryTranslator('fr');
 		$tsql = $translator->translateQuery($sql);
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 		$this->assertEquals(
 			array("select `PeopleIntl`.`PersonID`, `PeopleIntl`.`Name`, ifnull(`PeopleIntl__fr`.`Position`, `PeopleIntl`.`Position`) as `Position`, ifnull(`PeopleIntl__fr`.`Blurb`, `PeopleIntl`.`Blurb`) as `Blurb`, `PeopleIntl`.`Photo`, `PeopleIntl`.`Photo_mimetype` from `PeopleIntl` left join `PeopleIntl_fr` as `PeopleIntl__fr` on `PeopleIntl`.`PersonID` = `PeopleIntl__fr`.`PersonID` limit 1"),
 			$tsql
@@ -115,9 +115,9 @@ class QueryTranslator_Test extends BaseTest {
 		$sql = 'select * from PeopleIntl where PersonID=\'1\' limit 1';
 		$translator = new Dataface_QueryTranslator('en');
 		$tsql = $translator->translateQuery($sql);
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 	
 		$this->assertEquals(
 			array("select `PeopleIntl`.`PersonID`, `PeopleIntl`.`Name`, ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) as `Position`, ifnull(`PeopleIntl__en`.`Blurb`, `PeopleIntl`.`Blurb`) as `Blurb`, `PeopleIntl`.`Photo`, `PeopleIntl`.`Photo_mimetype` from `PeopleIntl` left join `PeopleIntl_en` as `PeopleIntl__en` on `PeopleIntl`.`PersonID` = `PeopleIntl__en`.`PersonID` where `PeopleIntl`.`PersonID` = '1' limit 1"),
@@ -139,9 +139,9 @@ class QueryTranslator_Test extends BaseTest {
 		// Try the same query in french
 		$translator = new Dataface_QueryTranslator('fr');
 		$tsql = $translator->translateQuery($sql);
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 	
 		$this->assertEquals(
 			array("select `PeopleIntl`.`PersonID`, `PeopleIntl`.`Name`, ifnull(`PeopleIntl__fr`.`Position`, `PeopleIntl`.`Position`) as `Position`, ifnull(`PeopleIntl__fr`.`Blurb`, `PeopleIntl`.`Blurb`) as `Blurb`, `PeopleIntl`.`Photo`, `PeopleIntl`.`Photo_mimetype` from `PeopleIntl` left join `PeopleIntl_fr` as `PeopleIntl__fr` on `PeopleIntl`.`PersonID` = `PeopleIntl__fr`.`PersonID` where `PeopleIntl`.`PersonID` = '1' limit 1"),
@@ -165,9 +165,9 @@ class QueryTranslator_Test extends BaseTest {
 		$translator = new Dataface_QueryTranslator('en');
 		$tsql = $translator->translateQuery($sql);
 		
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 
 		$this->assertEquals(
 			array("select `PeopleIntl`.`PersonID`, `PeopleIntl`.`Name`, ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) as `Position` from `PeopleIntl` left join `PeopleIntl_en` as `PeopleIntl__en` on `PeopleIntl`.`PersonID` = `PeopleIntl__en`.`PersonID` where ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) = 'My English Position' limit 1"),
@@ -188,9 +188,9 @@ class QueryTranslator_Test extends BaseTest {
 		$translator = new Dataface_QueryTranslator('en');
 		$tsql = $translator->translateQuery($sql);
 		
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 
 		$this->assertEquals(
 			array("select `PeopleIntl`.`PersonID`, `PeopleIntl`.`Name`, ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) as `Position` from `PeopleIntl` left join `PeopleIntl_en` as `PeopleIntl__en` on `PeopleIntl`.`PersonID` = `PeopleIntl__en`.`PersonID` where ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) = 'My English Position' limit 1"),
@@ -210,9 +210,9 @@ class QueryTranslator_Test extends BaseTest {
 		$sql = 'select count(*) from PeopleIntl';
 		$translator = new Dataface_QueryTranslator('en');
 		$tsql = $translator->translateQuery($sql);
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 
 		$this->assertEquals(
 			array("select count(*) from `PeopleIntl`"),
@@ -231,9 +231,9 @@ class QueryTranslator_Test extends BaseTest {
 		$tsql = $translator->translateQuery($sql);
 				//print_r($translator->_data);
 		//print_r($translator->_data_translated);
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 
 		$this->assertEquals(
 			array("select `PeopleIntl`.`PersonID`, `PeopleIntl`.`Name`, ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) as `Position` from `PeopleIntl` left join `PeopleIntl_en` as `PeopleIntl__en` on `PeopleIntl`.`PersonID` = `PeopleIntl__en`.`PersonID` where ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) = 'My English Position' and ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) in (select ifnull(`PeopleIntl__en`.`Position`, `PeopleIntl`.`Position`) as `Position` from `PeopleIntl` left join `PeopleIntl_en` as `PeopleIntl__en` on `PeopleIntl`.`PersonID` = `PeopleIntl__en`.`PersonID`) limit 1"),
@@ -261,9 +261,9 @@ class QueryTranslator_Test extends BaseTest {
 			);
 		
 			
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 		$this->assertEquals(
 			array(
 				'PersonID'=>'2',
@@ -288,9 +288,9 @@ class QueryTranslator_Test extends BaseTest {
 			);
 		
 			
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 		$this->assertEquals(
 			array(
 				'PersonID'=>'2',
@@ -333,9 +333,9 @@ class QueryTranslator_Test extends BaseTest {
 			$tsql
 			);
 			
-		$res = mysql_query($tsql[0], $app->db());
-		if ( !$res ) die(mysql_error($app->db()));
-		$row = mysql_fetch_assoc($res);
+		$res = xf_db_query($tsql[0], $app->db());
+		if ( !$res ) die(xf_db_error($app->db()));
+		$row = xf_db_fetch_assoc($res);
 		$this->assertEquals(
 			array(
 				'PersonID'=>'1',
@@ -360,11 +360,11 @@ class QueryTranslator_Test extends BaseTest {
 		//print_r($tsql);exit;
 		$affected_rows = array();
 		foreach ( $tsql as $q ){
-			$res = mysql_query($q, $app->db());
+			$res = xf_db_query($q, $app->db());
 			if ( !$res ){
-				die( mysql_error($app->db()) );
+				die( xf_db_error($app->db()) );
 			}
-			$affected_rows[$q] = mysql_affected_rows($app->db());
+			$affected_rows[$q] = xf_db_affected_rows($app->db());
 		}
 
 
@@ -390,11 +390,11 @@ class QueryTranslator_Test extends BaseTest {
 		//print_r($tsql);exit;
 		$affected_rows = array();
 		foreach ( $tsql as $q ){
-			$res = mysql_query($q, $app->db());
+			$res = xf_db_query($q, $app->db());
 			if ( !$res ){
-				die( mysql_error($app->db()) );
+				die( xf_db_error($app->db()) );
 			}
-			$affected_rows[$q] = mysql_affected_rows($app->db());
+			$affected_rows[$q] = xf_db_affected_rows($app->db());
 		}
 
 
@@ -418,11 +418,11 @@ class QueryTranslator_Test extends BaseTest {
 		//print_r($tsql);exit;
 		$affected_rows = array();
 		foreach ( $tsql as $q ){
-			$res = mysql_query($q, $app->db());
+			$res = xf_db_query($q, $app->db());
 			if ( !$res ){
-				die( mysql_error($app->db()) );
+				die( xf_db_error($app->db()) );
 			}
-			$affected_rows[$q] = mysql_affected_rows($app->db());
+			$affected_rows[$q] = xf_db_affected_rows($app->db());
 		}
 
 
@@ -448,11 +448,11 @@ class QueryTranslator_Test extends BaseTest {
 		//print_r($tsql);exit;
 		$affected_rows = array();
 		foreach ( $tsql as $q ){
-			$res = mysql_query($q, $app->db());
+			$res = xf_db_query($q, $app->db());
 			if ( !$res ){
-				die( mysql_error($app->db()) );
+				die( xf_db_error($app->db()) );
 			}
-			$affected_rows[$q] = mysql_affected_rows($app->db());
+			$affected_rows[$q] = xf_db_affected_rows($app->db());
 		}
 
 
@@ -482,11 +482,11 @@ class QueryTranslator_Test extends BaseTest {
 		//print_r($tsql);exit;
 		$affected_rows = array();
 		foreach ( $tsql as $q ){
-			$res = mysql_query($q, $app->db());
+			$res = xf_db_query($q, $app->db());
 			if ( !$res ){
-				die( mysql_error($app->db()) );
+				die( xf_db_error($app->db()) );
 			}
-			$affected_rows[$q] = mysql_affected_rows($app->db());
+			$affected_rows[$q] = xf_db_affected_rows($app->db());
 		}
 
 
@@ -525,11 +525,11 @@ class QueryTranslator_Test extends BaseTest {
 		//print_r($tsql);exit;
 		$affected_rows = array();
 		foreach ( $tsql as $q ){
-			$res = mysql_query($q, $app->db());
+			$res = xf_db_query($q, $app->db());
 			if ( !$res ){
-				die( mysql_error($app->db()) );
+				die( xf_db_error($app->db()) );
 			}
-			$affected_rows[$q] = mysql_affected_rows($app->db());
+			$affected_rows[$q] = xf_db_affected_rows($app->db());
 		}
 
 
@@ -554,11 +554,11 @@ class QueryTranslator_Test extends BaseTest {
 		//print_r($tsql);exit;
 		$affected_rows = array();
 		foreach ( $tsql as $q ){
-			$res = mysql_query($q, $app->db());
+			$res = xf_db_query($q, $app->db());
 			if ( !$res ){
-				die( mysql_error($app->db()) );
+				die( xf_db_error($app->db()) );
 			}
-			$affected_rows[$q] = mysql_affected_rows($app->db());
+			$affected_rows[$q] = xf_db_affected_rows($app->db());
 		}
 
 
@@ -589,11 +589,11 @@ class QueryTranslator_Test extends BaseTest {
 		//print_r($tsql);exit;
 		$affected_rows = array();
 		foreach ( $tsql as $q ){
-			$res = mysql_query($q, $app->db());
+			$res = xf_db_query($q, $app->db());
 			if ( !$res ){
-				die( mysql_error($app->db()) );
+				die( xf_db_error($app->db()) );
 			}
-			$affected_rows[$q] = mysql_affected_rows($app->db());
+			$affected_rows[$q] = xf_db_affected_rows($app->db());
 		}
 
 

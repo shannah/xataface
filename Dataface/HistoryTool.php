@@ -132,18 +132,18 @@ class Dataface_HistoryTool {
 			select *, '".addslashes($lang)."','".addslashes($comments)."','".addslashes($user)."','".addslashes($state)."', NOW() 
 			from (".$sql.") as t";
 		
-		$res = mysql_query($insertsql, $app->db());
+		$res = xf_db_query($insertsql, $app->db());
 		if ( !$res ){
 			$this->updateHistoryTable($record->_table->tablename);
-			$res = mysql_query($insertsql, $app->db());
+			$res = xf_db_query($insertsql, $app->db());
 		}
 		if ( !$res ){
 			echo $insertsql;
-			trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
 		// Now for the individual fields
-		$hid = mysql_insert_id($app->db());
+		$hid = xf_db_insert_id($app->db());
 		foreach ($fieldnames as $fieldname){
 			$this->logField($record, $fieldname, $hid);
 		}
@@ -236,17 +236,17 @@ class Dataface_HistoryTool {
 		$name = $this->logTableName($tablename);
 		
 		//first check to see if the table exists
-		if ( mysql_num_rows(mysql_query("show tables like '".$name."'", $app->db())) == 0 ){
+		if ( xf_db_num_rows(xf_db_query("show tables like '".$name."'", $app->db())) == 0 ){
 			$this->createHistoryTable($tablename);
 		}
 		
-		$res = mysql_query("show columns from `".$this->logTableName($tablename)."`", $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query("show columns from `".$this->logTableName($tablename)."`", $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		$history_fields = array();
-		while ( $row = mysql_fetch_assoc($res) ){
+		while ( $row = xf_db_fetch_assoc($res) ){
 			$history_fields[$row['Field']] = $row;
 		}
-		@mysql_free_result($res);
+		@xf_db_free_result($res);
 		
 		$table =& Dataface_Table::loadTable($tablename);
 		$fieldnames = array_keys($table->fields());
@@ -256,9 +256,9 @@ class Dataface_HistoryTool {
 				$field =& $table->getField($fieldname);
 				$type = (( strcasecmp($field['Type'],'container') === 0 ) ? 'varchar(64)' : $field['Type'] );
 				$sql = "alter table `".$name."` add column `".$fieldname."` {$type} DEFAULT NULL";
-				$res = mysql_query($sql, $app->db());
+				$res = xf_db_query($sql, $app->db());
 				if ( !$res ){
-					trigger_error(mysql_error($app->db()), E_USER_ERROR);
+					trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 				}
 				unset($field);
 			}
@@ -269,9 +269,9 @@ class Dataface_HistoryTool {
 		foreach ( array_keys($meta_fields) as $fieldname){
 			if ( !isset($history_fields[$fieldname]) ){
 				$sql = "alter table `".$name."` add column `".$fieldname."` ".$history_fields[$fieldname]['Type'].' '.@$history_fields[$fieldname]['Extra'];
-				$res = mysql_query($sql, $app->db());
+				$res = xf_db_query($sql, $app->db());
 				if ( !$res ){
-					trigger_error(mysql_error($app->db()), E_USER_ERROR);
+					trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 				}
 				
 			}
@@ -297,7 +297,7 @@ class Dataface_HistoryTool {
 		
 		$table =& Dataface_Table::loadTable($tablename);
 		$res = df_q("SHOW TABLE STATUS LIKE '".addslashes($tablename)."'");
-		$status = mysql_fetch_assoc($res);
+		$status = xf_db_fetch_assoc($res);
 		$charset = substr($status['Collation'],0, strpos($status['Collation'],'_'));
 		$collation = $status['Collation'];
 		$fieldnames = array_keys($table->fields());
@@ -315,9 +315,9 @@ class Dataface_HistoryTool {
 			KEY prikeys using hash (`".implode('`,`', array_keys($table->keys()))."`),
 			KEY datekeys using btree (`history__modified`)) ".(@$status['Engine'] ? "ENGINE=".$status['Engine']:'')." ".($charset ? "DEFAULT CHARSET=".$charset.($collation ? " COLLATE $collation":''):'');
 		
-		$res = mysql_query($sql, $app->db());
+		$res = xf_db_query($sql, $app->db());
 		if ( !$res ){
-			trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 	}
 	
@@ -419,24 +419,24 @@ class Dataface_HistoryTool {
 		$sql1 = $sql . " and `history__modified` <= '".addslashes($date1)."' order by `history__modified` desc limit 1";
 		$sql2 = $sql . " and `history__modified` <= '".addslashes($date2)."' order by `history__modified` desc limit 1";
 		
-		$res2 = mysql_query($sql2, $app->db());
+		$res2 = xf_db_query($sql2, $app->db());
 		if ( !$res2 ){
 			//echo $sql2;
-			trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
-		if ( mysql_num_rows($res2) == 0 ){
+		if ( xf_db_num_rows($res2) == 0 ){
 			if (isset($fieldname) ) return '';
 			else return new Dataface_Record($htablename, array());
 		} 
-		list($id2) = mysql_fetch_row($res2);
-		@mysql_free_result($res2);
+		list($id2) = xf_db_fetch_row($res2);
+		@xf_db_free_result($res2);
 		
-		$res1 = mysql_query($sql1, $app->db());
+		$res1 = xf_db_query($sql1, $app->db());
 		if ( !$res1 ){
 			//echo $sql1;
-			trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
-		if ( mysql_num_rows($res1) == 0 ){
+		if ( xf_db_num_rows($res1) == 0 ){
 			$rec = df_get_record($htablename, array('history__id'=>$id2));
 			if ( !isset($rec) ) 
 				trigger_error(
@@ -448,8 +448,8 @@ class Dataface_HistoryTool {
 			if ( isset($fieldname) ) return $rec->val($fieldname);
 			return $rec;
 		}
-		list($id1) = mysql_fetch_row($res1);
-		@mysql_free_result($res1);
+		list($id1) = xf_db_fetch_row($res1);
+		@xf_db_free_result($res1);
 		$out = $this->getDiffs($record->_table->tablename, $id1, $id2, $fieldname);
 		return $out;
 		
@@ -475,17 +475,17 @@ class Dataface_HistoryTool {
 			$fieldnames = $tmp;
 		}
 		$htablename = $record->_table->tablename.'__history';
-		$res = mysql_query("select `".implode('`,`', $fieldnames)."`,`history__language` from `{$htablename}` where `history__id`='".addslashes($id)."'", $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
-		if ( mysql_num_rows($res) == 0 ) 
+		$res = xf_db_query("select `".implode('`,`', $fieldnames)."`,`history__language` from `{$htablename}` where `history__id`='".addslashes($id)."'", $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
+		if ( xf_db_num_rows($res) == 0 ) 
 			return PEAR::raiseError(
 				df_translate(
 					'scripts.Dataface.HistoryTool.restore.ERROR_NO_SUCH_RECORD',
 					"Could not restore record with id {$id} in table {$htablename} because no such record exists.  Perhaps the history was cleaned out.",
 					array('id'=>$id, 'tablename'=>$htablename)
 					), DATAFACE_E_ERROR);
-		$vals = mysql_fetch_assoc($res);
-		@mysql_free_result($res);
+		$vals = xf_db_fetch_assoc($res);
+		@xf_db_free_result($res);
 		$old_record = new Dataface_Record($record->_table->tablename, $record->getValues());
 		$lang = $vals['history__language'];
 		unset($vals['history__language']);
@@ -554,13 +554,13 @@ class Dataface_HistoryTool {
 		/*
 		$sql = "select * from `{$record->_table->_tablename}__history}` where `history__id` = '{$id}' limit 1";
 		
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
-		if ( mysql_num_rows($res) == 0 ){
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
+		if ( xf_db_num_rows($res) == 0 ){
 			return PEAR::raiseError("Attempt to restore record \"{$record->getTitle()}\" to nonexistent history record with id '{$id}'", DATAFACE_E_ERROR);
 		}
-		$row = mysql_fetch_assoc($res);
-		@mysql_free_result($res);
+		$row = xf_db_fetch_assoc($res);
+		@xf_db_free_result($res);
 		$old_record = new Dataface_Record($record->_table->tablename, $record->getValues());
 		$record->setValues($row);
 		$res = $record->save($lang);
@@ -605,13 +605,13 @@ class Dataface_HistoryTool {
 		$sql = "select `history__id` from `{$htablename}` where ".implode(' and ',$clauses)."
 				and `history__modified` <= '".addslashes($date)."' order by `history__modified` desc limit 1";
 		
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
-		if ( mysql_num_rows($res) == 0 ){
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
+		if ( xf_db_num_rows($res) == 0 ){
 			return null;
 		} 
-		list($id) = mysql_fetch_row($res);
-		@mysql_free_result($res);
+		list($id) = xf_db_fetch_row($res);
+		@xf_db_free_result($res);
 		if ( $idonly ) return $id;
 		$out = $this->getRecordById($record->_table->tablename, $id);
 		
@@ -667,11 +667,11 @@ class Dataface_HistoryTool {
 		
 		$sql = "select `".implode('`,`', array_keys($this->meta_fields))."` from `{$history_tablename}` where {$where} order by `history__modified` desc {$limit}";
 		//echo $sql;
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		$out = array();
-		while ( $row = mysql_fetch_assoc($res) ) $out[] = $row;
-		@mysql_free_result($res);
+		while ( $row = xf_db_fetch_assoc($res) ) $out[] = $row;
+		@xf_db_free_result($res);
 		return $out;
 		
 		
@@ -695,10 +695,10 @@ class Dataface_HistoryTool {
 		if ( $idsOnly ){
 			$qbuilder = new Dataface_QueryBuilder($htablename, $query);
 			$sql = $qbuilder->select(array('history__id'), $query);
-			$res = mysql_query($sql, df_db());
+			$res = xf_db_query($sql, df_db());
 			$ids = array();
-			while ( $row = mysql_fetch_row($res) ) $ids[] = $row[0];
-			@mysql_free_result($res);
+			while ( $row = xf_db_fetch_row($res) ) $ids[] = $row[0];
+			@xf_db_free_result($res);
 			return $ids;
 		} else {
 			return df_get_records_array($htablename, $query);

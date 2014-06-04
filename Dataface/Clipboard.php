@@ -30,7 +30,7 @@ class Dataface_Clipboard {
 		if ( $isInstalled == -1 ){
 		
 			$app =& Dataface_Application::getInstance();
-			$isInstalled = ( mysql_num_rows(mysql_query("show tables like '".Dataface_Clipboard_tablename."'", $app->db())) == 0 );
+			$isInstalled = ( xf_db_num_rows(xf_db_query("show tables like '".Dataface_Clipboard_tablename."'", $app->db())) == 0 );
 		}
 		return $isInstalled;
 	}
@@ -43,7 +43,7 @@ class Dataface_Clipboard {
 	function install(){
 		if ( !Dataface_Clipboard::isInstalled() ){
 			$app =& Dataface_Application::getInstance();
-			mysql_query(
+			xf_db_query(
 				"CREATE TABLE `".Dataface_Clipboard_tablename."` (
 					`clipid` INT(11) auto_increment NOT NULL,
 					`clipperid` VARCHAR(32) NOT NULL,
@@ -51,7 +51,7 @@ class Dataface_Clipboard {
 					`recordids` TEXT,
 					`lastmodified` datetime,
 					PRIMARY KEY (`clipid`),
-					UNIQUE (`clipperid`))", $app->db()) or trigger_error("Failed to create clipboard table: ".mysql_error($app->db()), E_USER_ERROR);
+					UNIQUE (`clipperid`))", $app->db()) or trigger_error("Failed to create clipboard table: ".xf_db_error($app->db()), E_USER_ERROR);
 			return true;
 		}
 		return false;
@@ -65,8 +65,8 @@ class Dataface_Clipboard {
 	 */
 	function clean(){
 		$app =& Dataface_Application::getInstance();
-		mysql_query("delete from `".Dataface_Clipboard_tablename."` where UNIX_TIMESTAMP(`lastmodified`) > ".(time()-Dataface_Clipboard_lifetime),
-			$app->db()) or trigger_error("Failed to clean old data from the clipboard: ".mysql_error($app->db()), E_USER_ERROR);
+		xf_db_query("delete from `".Dataface_Clipboard_tablename."` where UNIX_TIMESTAMP(`lastmodified`) > ".(time()-Dataface_Clipboard_lifetime),
+			$app->db()) or trigger_error("Failed to clean old data from the clipboard: ".xf_db_error($app->db()), E_USER_ERROR);
 	}
 	
 	
@@ -123,7 +123,7 @@ class Dataface_Clipboard {
 	 * @return boolean True if the clipboard is empty for the current user.
 	 */
 	function empty(){
-		return (mysql_num_rows(mysql_query("select count(*) from `".Dataface_Clipboard_tablename."` where `clipperid`='".addslashes($this->id)."'")) == 0);
+		return (xf_db_num_rows(xf_db_query("select count(*) from `".Dataface_Clipboard_tablename."` where `clipperid`='".addslashes($this->id)."'")) == 0);
 	}
 	
 	
@@ -142,7 +142,7 @@ class Dataface_Clipboard {
 		$this->clearLogs();
 		$app =& Dataface_Application::getInstance();
 		Dataface_Clipboard::shotgunClean();
-		$res = mysql_query(
+		$res = xf_db_query(
 			"REPLACE INTO `".Dataface_Clipboard_tablename."` 
 			(`clipperid`,`cut`,`recordids`,`lastmodified`)
 			VALUES
@@ -150,7 +150,7 @@ class Dataface_Clipboard {
 			0,'".addslashes(implode("\n",$recordids))."', NOW()
 			)", $app->db();
 		if ( !$res ){
-			return PEAR::raiseError(mysql_error($app->db()));
+			return PEAR::raiseError(xf_db_error($app->db()));
 		}
 		return true;
 	
@@ -168,7 +168,7 @@ class Dataface_Clipboard {
 		$this->clearLogs();
 		$app =& Dataface_Application::getInstance();
 		Dataface_Clipboard::shotgunClean();
-		$res = mysql_query(
+		$res = xf_db_query(
 			"REPLACE INTO `".Dataface_Clipboard_tablename."` 
 			(`clipperid`,`cut`,`recordids`,`lastmodified`)
 			VALUES
@@ -176,7 +176,7 @@ class Dataface_Clipboard {
 			1,'".addslashes(implode("\n",$recordids))."', NOW()
 			)", $app->db();
 		if ( !$res ){
-			return PEAR::raiseError(mysql_error($app->db()));
+			return PEAR::raiseError(xf_db_error($app->db()));
 		}
 		return true;
 	}
@@ -197,9 +197,9 @@ class Dataface_Clipboard {
 		$this->clearLogs();
 		$app =& Dataface_Application::getInstance();
 		Dataface_Clipboard::shotgunClean();
-		$res = mysql_query("SELECT * FROM `".Dataface_Clipboard_tablename."` where `clipperid`='".addslashes($this->id)."'", $app->db());
-		if ( mysql_num_rows($res)>0 ){
-			$row = mysql_fetch_assoc($res);
+		$res = xf_db_query("SELECT * FROM `".Dataface_Clipboard_tablename."` where `clipperid`='".addslashes($this->id)."'", $app->db());
+		if ( xf_db_num_rows($res)>0 ){
+			$row = xf_db_fetch_assoc($res);
 		} else {
 			return PEAR::raiseError('The clipboard is empty.');
 		}

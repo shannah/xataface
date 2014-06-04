@@ -576,17 +576,22 @@ class Dataface_Application {
 					 </pre>', E_USER_ERROR);
 
 			}
-			if ( @$dbinfo['persistent'] ){
-				$this->_db = mysql_pconnect( $dbinfo['host'], $dbinfo['user'], $dbinfo['password'] );
-			} else {
-				$this->_db = mysql_connect( $dbinfo['host'], $dbinfo['user'], $dbinfo['password'] );
+			if ( !isset($dbinfo['driver']) ){
+				$dbinfo['driver'] = 'mysql';
 			}
+			require_once 'xf/db/drivers/'.basename($dbinfo['driver']).'.php';
+			//if ( @$dbinfo['persistent'] ){
+			//	$this->_db = xf_db_pconnect( $dbinfo['host'], $dbinfo['user'], $dbinfo['password'] );
+			//} else {
+			
+			$this->_db = xf_db_connect( $dbinfo['host'], $dbinfo['user'], $dbinfo['password'] );
+			//}
 			if ( !$this->_db ){
-				throw new Exception('Error connecting to the database: '.mysql_error());
+				throw new Exception('Error connecting to the database: '.xf_db_error());
 
 			}
-			$this->mysqlVersion = mysql_get_server_info($this->_db);
-			mysql_select_db( $dbinfo['name'] ) or die("Could not select DB: ".mysql_error($this->_db));
+			$this->mysqlVersion = xf_db_get_server_info($this->_db);
+			xf_db_select_db( $dbinfo['name'], $this->_db) or die("Could not select DB: ".xf_db_error($this->_db));
 		}
 		//if ( !defined( 'DATAFACE_DB_HANDLE') ) define('DATAFACE_DB_HANDLE', $this->_db);
 		
@@ -665,8 +670,8 @@ class Dataface_Application {
 		
 		if ( @$this->_conf['support_transactions'] ){
 			// We will support transactions
-			@mysql_query('SET AUTOCOMMIT=0', $this->_db);
-			@mysql_query('START TRANSACTION', $this->_db);
+			@xf_db_query('SET AUTOCOMMIT=0', $this->_db);
+			@xf_db_query('START TRANSACTION', $this->_db);
 		
 		}
 		if ( !isset($this->_conf['default_ie']) ) $this->_conf['default_ie'] = 'UTF-8';
@@ -703,11 +708,11 @@ class Dataface_Application {
                 define('XF_OUTPUT_ENCODING', $this->_conf['oe']);
                 
 		if ( $this->_conf['oe'] == 'UTF-8' ){
-			$res = mysql_query('set character_set_results = \'utf8\'', $this->_db);
-			mysql_query("SET NAMES utf8", $this->_db);
+			$res = xf_db_query('set character_set_results = \'utf8\'', $this->_db);
+			xf_db_query("SET NAMES utf8", $this->_db);
 		}
 		if ( $this->_conf['ie'] == 'UTF-8' ){
-			$res = mysql_query('set character_set_client = \'utf8\'', $this->_db);
+			$res = xf_db_query('set character_set_client = \'utf8\'', $this->_db);
 			
 		}
 		
@@ -1108,7 +1113,7 @@ class Dataface_Application {
 	 */
 	function getMySQLMajorVersion(){
 		if ( !isset($this->mysqlVersion) ){
-			$this->mysqlVersion = mysql_get_server_info($this->_db);
+			$this->mysqlVersion = xf_db_get_server_info($this->_db);
 		}
 		list($mv) = explode('.',$this->mysqlVersion);
 		return intval($mv);
@@ -3184,7 +3189,7 @@ class Dataface_Application {
 			$this->writeSessionData();
 		}
 		if ( @$this->_conf['support_transactions'] ){
-			@mysql_query('COMMIT', $this->_db);
+			@xf_db_query('COMMIT', $this->_db);
 		}
 	}
 	

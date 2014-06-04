@@ -641,12 +641,12 @@ END;
 			echo '<li> '.df_escape($field['widget']['label']).' <select onchange="resultlist__updateFilters(\''.addslashes($col).'\', this);"><option value="">'.df_translate('scripts.GLOBAL.LABEL_ALL', 'All').'</option>';
 			
 			$res = df_query("select `$col`, count(*) as `num` ".$qb->_from()." ".$qb->_secure( $qb->_where(array($col=>null)) )." group by `$col`", null, true);
-			if ( !$res and !is_array($res)) trigger_error(mysql_error(df_db()), E_USER_ERROR);
+			if ( !$res and !is_array($res)) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			if ( @$query[$col] and $query[$col]{0} == '=' ) $queryColVal = substr($query[$col],1);
 			
 			else $queryColVal = @$query[$col];
 			
-			//while ( $row = mysql_fetch_assoc($res) ){
+			//while ( $row = xf_db_fetch_assoc($res) ){
 			foreach ($res as $row){
 				if ( isset($vocab) and isset($vocab[$row[$col]]) ){
 					$val = $vocab[$row[$col]];
@@ -659,7 +659,7 @@ END;
 				echo '<option value="'.df_escape($row[$col]).'"'.$selected.'>'.df_escape($val).' ('.$row['num'].')</option>';
 				
 			}
-			//@mysql_free_result($res);
+			//@xf_db_free_result($res);
 			echo '</select></li>';
 		}
 		echo '</ul></div>';

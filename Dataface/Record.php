@@ -698,21 +698,21 @@ class Dataface_Record {
 		$sql .= " LIMIT ".addslashes($start).",".addslashes($limit);
 		
 
-		//$res = mysql_query($sql, $this->_table->db);
+		//$res = xf_db_query($sql, $this->_table->db);
 		$db =& Dataface_DB::getInstance();
 		$res = $db->query($sql, $this->_table->db, null, true);
 		if ( !$res and !is_array($res) ){
 			
-			throw new Exception( mysql_error($this->_table->db).
+			throw new Exception( xf_db_error($this->_table->db).
 				df_translate(
 					'scripts.Dataface.Record._loadRelatedRecordBlock.ERROR_LOADING_RELATED_RECORDS',
-					"Error loading related records for relationship '$relname' in table '".$this->_table->tablename."'.  There was a problem performing the sql query '$sql'. The Mysql error returned was '".mysql_error($this->_table->db),
-					array('relationship'=>$relname,'table'=>$this->_table->tablename, 'mysql_error'=>mysql_error($this->_table->db), 'sql'=>$sql)
+					"Error loading related records for relationship '$relname' in table '".$this->_table->tablename."'.  There was a problem performing the sql query '$sql'. The Mysql error returned was '".xf_db_error($this->_table->db),
+					array('relationship'=>$relname,'table'=>$this->_table->tablename, 'xf_db_error'=>xf_db_error($this->_table->db), 'sql'=>$sql)
 					)
 				,E_USER_ERROR);
 		}
 		$index = $start;
-		//while ( $row = mysql_fetch_assoc($res) ){
+		//while ( $row = xf_db_fetch_assoc($res) ){
 		foreach ($res as $row){
 			$record_row = array();
 			$meta_row = array();
@@ -783,8 +783,8 @@ class Dataface_Record {
 			$sql = stristr($sql, ' FROM ');
 			$sql = "SELECT COUNT(*) as num".$sql;
 			//$dbObj = 
-			//$res = mysql_query($sql, $this->_table->db);
-			//$res = mysql_query($sql, $this->_table->db);
+			//$res = xf_db_query($sql, $this->_table->db);
+			//$res = xf_db_query($sql, $this->_table->db);
 			$db =& Dataface_DB::getInstance();
 			$res = $db->query($sql, $this->_table->db, null, true);
 			if ( !$res and !is_array($res) ){
@@ -792,8 +792,8 @@ class Dataface_Record {
 				throw new Exception(
 					df_translate(
 						'scripts.Dataface.Record.numRelatedRecords.ERROR_CALCULATING_NUM_RELATED_RECORDS',
-						"Error calculating the number of related records there are for the relationship '$relname' in the table '".$this->_table->tablename."'.  There was a problem performing the sql query '$sql'.  The MYSQL error returned was '".mysql_error($this->_table->db)."'.\n<br>",
-						array('relationship'=>$relname,'table'=>$this->_table->tablename,'mysql_error'=>mysql_error($this->_table->db),'sql'=>$sql)
+						"Error calculating the number of related records there are for the relationship '$relname' in the table '".$this->_table->tablename."'.  There was a problem performing the sql query '$sql'.  The MYSQL error returned was '".xf_db_error($this->_table->db)."'.\n<br>",
+						array('relationship'=>$relname,'table'=>$this->_table->tablename,'xf_db_error'=>xf_db_error($this->_table->db),'sql'=>$sql)
 						), E_USER_ERROR);
 			}
 			
@@ -4193,8 +4193,8 @@ class Dataface_Record {
 				    Dataface_IO::createRecordMtimes();
 				    $res = df_q($sql);
 				}
-				list($mtime) = mysql_fetch_row($res);
-				@mysql_free_result($res);
+				list($mtime) = xf_db_fetch_row($res);
+				@xf_db_free_result($res);
 				$this->pouch['__mtime'] = intval($mtime);
 			} catch (Exception $ex){
 				error_log("Failed SQL query $sql");

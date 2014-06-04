@@ -65,14 +65,14 @@ class Dataface_MetadataTool {
 		if ( !isset($this->columns) || !$usecache ){
 			$this->columns = array();
 			$sql = "show columns from `".$md_tablename."`";
-			$res = mysql_query($sql, $app->db());
-			if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
-			if ( mysql_num_rows($res) == 0) trigger_error("No metadata table '{$md_tablename}' could be found.", E_USER_ERROR);
+			$res = xf_db_query($sql, $app->db());
+			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
+			if ( xf_db_num_rows($res) == 0) trigger_error("No metadata table '{$md_tablename}' could be found.", E_USER_ERROR);
 			
-			while ( $row = mysql_fetch_assoc($res) ){
+			while ( $row = xf_db_fetch_assoc($res) ){
 				$this->columns[$row['Field']] = $row;
 			}
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 		}
 		return $this->columns;
 	
@@ -166,8 +166,8 @@ class Dataface_MetadataTool {
 			
 			$keynames = array_keys($table->keys());
 			$sql .= "primary key (`".implode('`,`', $keynames)."`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-			$res = mysql_query($sql, $app->db());
-			if ( !$res ) trigger_error(mysql_error($res), E_USER_ERROR);
+			$res = xf_db_query($sql, $app->db());
+			if ( !$res ) trigger_error(xf_db_error($res), E_USER_ERROR);
 			return true;
 				
 		} 
@@ -205,8 +205,8 @@ class Dataface_MetadataTool {
 				$updatePrimaryKey=true;
 				$default = ( @$field['Default'] ? " DEFAULT {$field['Default']}" : '');
 				$sql = "alter table `{$md_tablename}` add column `{$field['Field']}` {$field['Type']}{$default}";
-				$res = mysql_query($sql, $app->db());
-				if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+				$res = xf_db_query($sql, $app->db());
+				if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 			}
 		}
 		
@@ -218,8 +218,8 @@ class Dataface_MetadataTool {
 			if ( !isset($table_keys[$field['Field']]) ){
 				$updatePrimaryKey = true;
 				$sql = "alter table `{$md_tablename}` drop column `{$field['Field']}`";
-				$res = mysql_query($sql, $app->db());
-				if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+				$res = xf_db_query($sql, $app->db());
+				if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 			}
 		}
 		
@@ -227,10 +227,10 @@ class Dataface_MetadataTool {
 		if ( $updatePrimaryKey ){
 			// The primary key needs to be updated
 			$sql = "drop primary key";
-			@mysql_query($sql, $app->db());
+			@xf_db_query($sql, $app->db());
 			$sql = "alter table `{$md_tablename}` add primary key (`".implode('`,`',array_keys($table->keys()))."`)";
-			$res = mysql_query($sql, $app->db());
-			if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			$res = xf_db_query($sql, $app->db());
+			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		
 		}
 		
@@ -244,8 +244,8 @@ class Dataface_MetadataTool {
 			if ( !isset($cols[$field['Field']]) ){
 				$default = (@$field['Default'] ? " DEFAULT {$field['Default']}": '');
 				$sql = "alter table `{$md_tablename}` add column `{$field['Field']}` {$field['Type']}{$default}";
-				$res = mysql_query($sql, $app->db());
-				if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+				$res = xf_db_query($sql, $app->db());
+				if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 			}
 		}
 		return true;

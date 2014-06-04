@@ -128,9 +128,9 @@ class Dataface_QueryTool {
 		
 			$res = $this->dbObj->query( $sql, $this->_db,null, true /*as array*/);
 			if ( !$res and !is_array($res) ){
-				throw new Exception(mysql_error($this->_db).$sql, E_USER_ERROR);
+				throw new Exception(xf_db_error($this->_db).$sql, E_USER_ERROR);
 			}
-			$this->_data['found'] = array_shift($res[0]);//mysql_fetch_row( $res );
+			$this->_data['found'] = array_shift($res[0]);//xf_db_fetch_row( $res );
 			$cache[$sql] = $this->_data['found'];
 		}
 		
@@ -195,10 +195,10 @@ class Dataface_QueryTool {
 							'scripts.Dataface.QueryTool.getTitles.ERROR_ERROR_RETRIEVING_TITLES',
 							"Error retrieving title from database in Dataface_QueryTool::getTitles(): "
 							)
-						.$sql.mysql_error($this->_table->db), E_USER_ERROR);
+						.$sql.xf_db_error($this->_table->db), E_USER_ERROR);
 			}
 			$titles = array();
-			//while ( $row = mysql_fetch_row($res) ){
+			//while ( $row = xf_db_fetch_row($res) ){
 			foreach ( $res as $row ){
 				$title = array_pop($row); 
 				if ( !$genericKeys) {
@@ -220,7 +220,7 @@ class Dataface_QueryTool {
 				}
 				
 			}
-			//@mysql_free_result($res);
+			//@xf_db_free_result($res);
 
 			$this->_titles[$ordered][$genericKeys][$ignoreLimit] =& $titles;
 		}
@@ -326,11 +326,11 @@ class Dataface_QueryTool {
             
             $res = df_query($sql);
             if ( !$res ){
-                throw new Exception(mysql_error(df_db()));
+                throw new Exception(xf_db_error(df_db()));
             } else {
-                $out = mysql_fetch_assoc($res);
+                $out = xf_db_fetch_assoc($res);
                 
-                @mysql_free_result($res);
+                @xf_db_free_result($res);
                 return $out;
             }
             
@@ -397,12 +397,12 @@ class Dataface_QueryTool {
 							'scripts.Dataface.QueryTool.loadSet.ERROR_LOADING_RECORDS',
 							"Error loading records in Dataface_QueryTool::loadSet(): "
 							)
-						.mysql_error($this->_db)."\n<br>".$sql, E_USER_ERROR);
+						.xf_db_error($this->_db)."\n<br>".$sql, E_USER_ERROR);
 			}
 			if ( !isset( $this->_data['start'] ) )
 				$this->_data['start'] = $this->_query['-skip'];
 			if ( !isset( $this->_data['end'] ) )
-				$this->_data['end'] = $this->_query['-skip'] + count($res);//mysql_num_rows($res);
+				$this->_data['end'] = $this->_query['-skip'] + count($res);//xf_db_num_rows($res);
 			
 			if ( !isset( $this->_data['data'] ) ){
 				$this->_data['data'] = array();
@@ -432,7 +432,7 @@ class Dataface_QueryTool {
 					}
 				}
 			}
-			//@mysql_free_result($res);
+			//@xf_db_free_result($res);
 			
 			foreach ($cols as $col){
 				$loaded[$col] = true;
@@ -528,7 +528,7 @@ class Dataface_QueryTool {
 				$app->refreshSchemas($this->_table->tablename);
 				$res = $this->dbObj->query($sql, $this->_db, null,true /* as array */);
 				if ( !$res and !is_array($res) ){
-					error_log(df_translate('scripts.Dataface.QueryTool.loadCurrent.ERROR_COULD_NOT_LOAD_CURRENT_RECORD',"Error: Could not load current record: ").mysql_error( $this->_db)."\n$sql");
+					error_log(df_translate('scripts.Dataface.QueryTool.loadCurrent.ERROR_COULD_NOT_LOAD_CURRENT_RECORD',"Error: Could not load current record: ").xf_db_error( $this->_db)."\n$sql");
 					throw new Exception("Failed to load current record due to an SQL error");
 					
 				}
@@ -536,8 +536,8 @@ class Dataface_QueryTool {
 			if (count($res) <= 0 ){
 				return $false;
 			}
-			$row = $res[0]; //mysql_fetch_assoc($res);
-			//@mysql_free_result($row);
+			$row = $res[0]; //xf_db_fetch_assoc($res);
+			//@xf_db_free_result($row);
 			if ( !isset($this->_currentRecord) ){
 				$this->_currentRecord = new Dataface_Record($this->_table->tablename, $row);
 			} else {

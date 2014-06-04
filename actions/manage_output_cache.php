@@ -16,13 +16,13 @@ class dataface_actions_manage_output_cache {
 		
 		if ( @$_POST['--clear-cache'] ){
 			// We should clear the cache
-			@mysql_query("delete from `__output_cache`", df_db());
+			@xf_db_query("delete from `__output_cache`", df_db());
 			$app->redirect($app->url('').'&--msg='.urlencode('The output cache has been successfully cleared.'));
 		}
 		
-		$res = mysql_query("select count(*) from `__output_cache`", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
-		list($numrows) = mysql_fetch_row($res);
+		$res = xf_db_query("select count(*) from `__output_cache`", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
+		list($numrows) = xf_db_fetch_row($res);
 		$context['numrows'] = $numrows;
 		
 		df_display($context, 'manage_output_cache.html');

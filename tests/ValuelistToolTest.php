@@ -39,8 +39,8 @@ class ValuelistToolTest extends BaseTest {
 		$vt = Dataface_ValuelistTool::getInstance();
 		$people = Dataface_Table::loadTable('People');
 		$vt->addValueToValuelist($people, 'Publications', 'My Test Publication');
-		$res = mysql_query("select * from Publications where `BiblioString` = 'My Test Publication'");
-		$this->assertTrue( mysql_num_rows($res) === 1);
+		$res = xf_db_query("select * from Publications where `BiblioString` = 'My Test Publication'");
+		$this->assertTrue( xf_db_num_rows($res) === 1);
 		
 	}
 }

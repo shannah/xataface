@@ -91,7 +91,7 @@ class Dataface_ValuelistTool {
 						// it will be used as both the key and value.
 						$res = df_query($value, null, true, true);
 						if ( is_array($res) ){
-							//while ($row = mysql_fetch_row($res) ){
+							//while ($row = xf_db_fetch_row($res) ){
 							foreach ($res as $row){
 								$valuekey = $row[0];
 								$valuevalue = count($row)>1 ? $row[1] : $row[0];
@@ -101,7 +101,7 @@ class Dataface_ValuelistTool {
 									$valuelists[$vlname.'__meta'][$valuekey] = $row[2];
 								}
 							}
-							//mysql_free_result($res);
+							//xf_db_free_result($res);
 						} else {
 							throw new Exception("Valuelist query '".$value."' failed. ", E_USER_NOTICE);
 						}
@@ -139,7 +139,7 @@ class Dataface_ValuelistTool {
 							// it will be used as both the key and value.
 							$res = df_query($value, null, true, true);
 							if ( is_array($res) ){
-								//while ($row = mysql_fetch_row($res) ){
+								//while ($row = xf_db_fetch_row($res) ){
 								foreach ($res as $row){
 									$valuekey = $row[0];
 									$valuevalue = count($row)>1 ? $row[1] : $row[0];
@@ -150,7 +150,7 @@ class Dataface_ValuelistTool {
 									}
 								}
 							} else {
-								throw new Exception('Valuelist sql query failed: '.$value.': '.mysql_error(), E_USER_NOTICE);
+								throw new Exception('Valuelist sql query failed: '.$value.': '.xf_db_error(), E_USER_NOTICE);
 							}
 						
 						} else {

@@ -255,25 +255,25 @@ function df_clear_views(){
 
 	
 	
-	$res = mysql_query("show tables like 'dataface__view_%'", df_db());
+	$res = xf_db_query("show tables like 'dataface__view_%'", df_db());
 	$views = array();
-	while ( $row = mysql_fetch_row($res) ){
+	while ( $row = xf_db_fetch_row($res) ){
 		$views[] = $row[0];
 	}
 	if ( $views ) {
 		$sql = "drop view `".implode('`,`', $views)."`";
 		//echo $sql;
 		//echo "<br/>";
-		$res = mysql_query("drop view `".implode('`,`', $views)."`", df_db());
-		if ( !$res ) throw new Exception(mysql_error(df_db()));
+		$res = xf_db_query("drop view `".implode('`,`', $views)."`", df_db());
+		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 	}
 	
 	
 }
 
 function df_clear_cache(){
-	$res = @mysql_query("truncate table __output_cache", df_db());
-	//if ( !$res ) throw new Exception(mysql_error(df_db()));
+	$res = @xf_db_query("truncate table __output_cache", df_db());
+	//if ( !$res ) throw new Exception(xf_db_error(df_db()));
 	return $res;
 }
 
@@ -784,21 +784,21 @@ function df_tz_or_offset(){
 		static $version = -1;
 		if ( $version == -1 ){
 			$sql = "select `version` from dataface__version limit 1";
-			$res = @mysql_query($sql, $db);
+			$res = @xf_db_query($sql, $db);
 			if ( !$res ){
-				$res = mysql_query("create table dataface__version ( `version` int(5) not null default 0)", $db);
-				if ( !$res ) throw new Exception(mysql_error($db), E_USER_ERROR);
+				$res = xf_db_query("create table dataface__version ( `version` int(5) not null default 0)", $db);
+				if ( !$res ) throw new Exception(xf_db_error($db), E_USER_ERROR);
 				//$fs_version = df_get_file_system_version();
-				$res = mysql_query("insert into dataface__version values ('0')", $db);
-				if ( !$res ) throw new Exception(mysql_error($db), E_USER_ERROR);
+				$res = xf_db_query("insert into dataface__version values ('0')", $db);
+				if ( !$res ) throw new Exception(xf_db_error($db), E_USER_ERROR);
 				
-				$res = mysql_query($sql, $db);
+				$res = xf_db_query($sql, $db);
 				if ( !$res ){
-					throw new Exception(mysql_error($db), E_USER_ERROR);
+					throw new Exception(xf_db_error($db), E_USER_ERROR);
 				}
 			
 			}
-			list($version) = mysql_fetch_row($res);
+			list($version) = xf_db_fetch_row($res);
 		}
 		return $version;
 	}
@@ -814,11 +814,11 @@ function df_tz_or_offset(){
 			}
 			return $res;
 		} else {
-			$res = mysql_query($sql, df_db());
+			$res = xf_db_query($sql, df_db());
 			if ( !$res ){
 				error_log("Error executing SQL: $sql");
-				error_log(mysql_error(df_db()));
-				throw new Exception(mysql_error(df_db()));
+				error_log(xf_db_error(df_db()));
+				throw new Exception(xf_db_error(df_db()));
 			}
 			return $res;
 		}

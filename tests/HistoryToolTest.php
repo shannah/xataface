@@ -41,15 +41,15 @@ class HistoryToolTest extends BaseTest {
 			`container_field` varchar(32),
 			`container_field_mimetype` varchar(32),
 			PRIMARY KEY (`id`))";
-		$res = mysql_query($sql, $app->db());
-		if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+		$res = xf_db_query($sql, $app->db());
+		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		$sql = array();
 		$sql[] = "insert into `HistoryToolTest` (`name`,`container_field`,`container_field_mimetype`) values ('Johnny','john.gif','image/gif')";
 		$sql[] = "insert into `HistoryToolTest` (`name`,`container_field`,`container_field_mimetype`) values ('Betty','betty.jpg','image/jpg')";
 		$sql[] = "insert into `HistoryToolTest` (`name`) values ('Joseph')";
 		foreach ($sql as $q){
-			$res = mysql_query($q, $app->db());
-			if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			$res = xf_db_query($q, $app->db());
+			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
 		$savepath = dirname(__FILE__).'/tables/HistoryToolTest/container_field/';
@@ -81,7 +81,7 @@ class HistoryToolTest extends BaseTest {
 		$profile =& df_get_record('Profiles', array('id'=>10));
 		$ht = new Dataface_HistoryTool();
 		$ht->createHistoryTable($profile->_table->tablename);
-		$this->assertTrue( mysql_num_rows(mysql_query("show tables like '".$ht->logTableName($profile->_table->tablename)."'")) > 0 );
+		$this->assertTrue( xf_db_num_rows(xf_db_query("show tables like '".$ht->logTableName($profile->_table->tablename)."'")) > 0 );
 		
 
 	}
@@ -146,8 +146,8 @@ He is also a <del>great</del><ins>greater</ins> fisherman
 			);
 		//print_r($diff->strvals());
 		//print_r($diff->strvals());
-		//$res =mysql_query("select  * from `Profiles__history`");
-		//while ( $row = mysql_fetch_assoc($res)){
+		//$res =xf_db_query("select  * from `Profiles__history`");
+		//while ( $row = xf_db_fetch_assoc($res)){
 		//	print_r($row);
 		//}
 	}
@@ -166,8 +166,8 @@ He is also a <del>great</del><ins>greater</ins> fisherman
 		$sql[] = "update `Profiles__history` set `history__modified`='2006-05-04 12:22:00' where `history__id`=2";
 		$sql[] = "update `Profiles__history` set `history__modified`='2006-05-05 12:21:00' where `history__id`=3";
 		foreach ($sql as $query){
-			$res = mysql_query($query, $app->db());
-			if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			$res = xf_db_query($query, $app->db());
+			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
 		$diff = $ht->getDiffsByDate($profile, '2006-01-01');
@@ -282,8 +282,8 @@ He is also a greater fisherman</ins>
 		$sql = array();
 		$sql[] = "update `HistoryToolTest__history` set `history__modified` = '2004-01-02' where `history__id` = '$hid'";
 		foreach ($sql as $q){
-			$res = mysql_query($q, $app->db());
-			if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			$res = xf_db_query($q, $app->db());
+			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
 		$ht->restoreToDate($record, '2004-02-02');

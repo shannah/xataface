@@ -14,25 +14,25 @@ class TreeTableTest extends BaseTest {
 	
 	function setUp(){
 		parent::setUp();
-		mysql_query("CREATE TABLE `Pages` (
+		xf_db_query("CREATE TABLE `Pages` (
 			`PageID` INT(11) auto_increment NOT NULL,
 			`ParentID` INT(11),
 			`ShortName` VARCHAR(32) NOT NULL,
 			`Description` TEXT,
 			PRIMARY KEY (`PageID`),
-			UNIQUE (`ParentID`,`ShortName`))") or trigger_error(mysql_error().__LINE__);
-		mysql_query(
+			UNIQUE (`ParentID`,`ShortName`))") or trigger_error(xf_db_error().__LINE__);
+		xf_db_query(
 			"INSERT INTO `Pages` (`PageID`,`ShortName`,`Description`)
-			VALUES (1,'index_page','Main page')") or trigger_error(mysql_error().__LINE__);
-		mysql_query(
+			VALUES (1,'index_page','Main page')") or trigger_error(xf_db_error().__LINE__);
+		xf_db_query(
 			"INSERT INTO `Pages` (`ParentID`,`ShortName`,`Description`)
 			VALUES 
 			(1,'about','About us'),
 			(1,'jobs','Now hiring'),
 			(1,'products','About our products'),
 			(1,'services','About our services'),
-			(1,'contact','Contact us')") or trigger_error(mysql_error().__LINE__);
-		mysql_query(
+			(1,'contact','Contact us')") or trigger_error(xf_db_error().__LINE__);
+		xf_db_query(
 			"INSERT INTO `Pages` (`ParentID`,`ShortName`,`Description`)
 			VALUES
 			(2,'history','Our history'),
@@ -41,7 +41,7 @@ class TreeTableTest extends BaseTest {
 			(3,'current_listing', 'Current job listings'),
 			(4,'awards','Product awards'),
 			(4,'downloads','Product downlaods'),
-			(5,'consultation','Free consultation')") or trigger_error(mysql_error().__LINE__);
+			(5,'consultation','Free consultation')") or trigger_error(xf_db_error().__LINE__);
 			
 		$table =& Dataface_Table::loadTable('Pages');
 		$r =& $table->relationships();

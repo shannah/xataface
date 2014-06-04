@@ -551,7 +551,7 @@ class Dataface_Relationship {
 	 *
 	 * Returns the SQL query that can be used to obtain the related records of this 
 	 * relationship.  Note that the value returned from this method cannot be passed
-	 * directly to mysql_query().  It may still have unresolved wildcards and must
+	 * directly to xf_db_query().  It may still have unresolved wildcards and must
 	 * be passed through Dataface_Record::parseString() to replace all wildcards.
 	 *
 	 * @param getBlobs If true then Blob columns will also be returned.  Default is false.

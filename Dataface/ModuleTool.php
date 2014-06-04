@@ -29,20 +29,20 @@ class Dataface_ModuleTool {
 		if ( !isset($this->_db_versions) ){
 			$this->_db_versions = array();
 			$sql = "select module_name, module_version from dataface__modules";
-			$res = mysql_query($sql, df_db());
+			$res = xf_db_query($sql, df_db());
 			if ( !$res ){
-				$res = mysql_query("create table dataface__modules (
+				$res = xf_db_query("create table dataface__modules (
 					module_name varchar(255) not null primary key,
 					module_version int(11)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
-				if ( !$res ) throw new Exception(mysql_error(df_db()));
-				$res = mysql_query($sql, df_db());
+				if ( !$res ) throw new Exception(xf_db_error(df_db()));
+				$res = xf_db_query($sql, df_db());
 			}
-			if ( !$res ) throw new Exception(mysql_error(df_db()));
-			while ($row = mysql_fetch_assoc($res) ){
+			if ( !$res ) throw new Exception(xf_db_error(df_db()));
+			while ($row = xf_db_fetch_assoc($res) ){
 				$this->_db_versions[$row['module_name']] = $row['module_version'];
 			}
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 			
 		}
 		$out = @$this->_db_versions[$modname];
@@ -104,21 +104,21 @@ class Dataface_ModuleTool {
 			sort($updates);
 			
 			if ( $dbversion == 0 ){
-				$res = mysql_query("insert into dataface__modules (module_name,module_version)
+				$res = xf_db_query("insert into dataface__modules (module_name,module_version)
 					values ('".addslashes($modname)."',-1)", df_db());
-				if ( !$res ) throw new Exception(mysql_error(df_db()));
+				if ( !$res ) throw new Exception(xf_db_error(df_db()));
 			}
 			
 			foreach ($updates as $update ){
 				$method = 'update_'.$update;
 				$res = $installer->$method();
 				if ( PEAR::isError($res) ) return $res;
-				$res = mysql_query("update dataface__modules set `module_version`='".addslashes($update)."'", df_db());
-				if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);	
+				$res = xf_db_query("update dataface__modules set `module_version`='".addslashes($update)."'", df_db());
+				if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);	
 			}
 			
-			$res = mysql_query("update dataface__modules set `module_version`='".addslashes($fsversion)."'", df_db());
-			if ( !$res ) throw new Exception(mysql_error(df_db()), E_USER_ERROR);
+			$res = xf_db_query("update dataface__modules set `module_version`='".addslashes($fsversion)."'", df_db());
+			if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 			
 			
 		}
