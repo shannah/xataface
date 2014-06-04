@@ -7,8 +7,12 @@ $args = $_SERVER['argv'];
 if ( realpath($args[0]) == __FILE__ ) array_shift($args);
 
 $argnum=0;
+$database_driver='mysqli';
 foreach ($args as $arg ){
-	if ( strpos($arg, '--dataface_url=') === 0 ){
+	if ( strpos($arg, '--driver=') === 0 ){
+		$database_driver = substr( $arg, strpos($arg, '=')+1 );
+	}
+	else if ( strpos($arg, '--dataface_url=') === 0 ){
 		$dataface_url = substr( $arg, strpos($arg, '=')+1 );
 	} else if ( strpos($arg, '--site_path=') === 0 ){
 		$site_path = substr($arg, strpos($arg, '=')+1 );
@@ -48,30 +52,36 @@ foreach ($args as $arg ){
 
 }
 
+require_once 'xf/db/drivers/'.basename($database_driver).'.php';
+
 if ( !@$dataface_url || !@$site_path || !@$database_host || !@$database_username ||  !@$database_name){
 
 	$msg = "\nmakesite: invalid options entered.
 	
 Usage: 
-makesite <site_path> <db_user>:<db_pass>@<db_host>/<db_name> <dataface_url>
+makesite [--driver=<driver_name>] <site_path> <db_user>:<db_pass>@<db_host>/<db_name> <dataface_url>
 or
 php makesite <site_path> <db_user>:<db_pass>@<db_host>/<db_name> <dataface_url>
 	where 
-	<site_path> = The path to your application directory.
-	<db_user>	= The MySQL username to connect to the database
-	<db_pass>	= The User's password to connect to the database
-	<db_host>	= The MySQL host name.
-	<db_name>	= The name of the mysql database for the application.
-	<dataface_url> = The URL to the dataface installation
+	<driver_name>      = The database driver to use.  Current options are
+                         mysql and mysqli.  Default is mysqli.
+	<site_path>        = The path to your application directory.
+	<db_user>	       = The MySQL username to connect to the database
+	<db_pass>	       = The User's password to connect to the database
+	<db_host>	       = The MySQL host name.
+	<db_name>	       = The name of the mysql database for the application.
+	<dataface_url>     = The URL to the dataface installation
 	
 Examples:
 
-makesite ../FacultyOfWidgetry root:pass@localhost/FacultyOfWidgetry /dataface
+makesite --driver=mysqli ../FacultyOfWidgetry \
+ root:pass@localhost/FacultyOfWidgetry /dataface
 
-The above command would create a site at ../FacultyOfWidgetry (i.e., the Faculty 
-of Widgetry directory in the parent directory.  The database used for this site 
-is located at localhost, and the database name is FacultyOfWidgetry.  The 
-username to connect to the database is root and his password is password.
+The above command would create a site at ../FacultyOfWidgetry (i.e., the
+Faculty of Widgetry directory in the parent directory.  The database
+used for this site is located at localhost, and the database name is
+FacultyOfWidgetry. The username to connect to the database is root and
+his password is password.
 ";
 	fwrite(STDOUT, $msg);
 	exit;
@@ -96,13 +106,15 @@ if ( substr($site_path, strlen($site_path)-1, 1) == DIRECTORY_SEPARATOR){
 
 
 while ( strlen(@$dataface_url)<= 0 ){
-	fwrite(STDOUT, "Please enter the full URL to the dataface (e.g.,: http://www.yoursite.com/path/to/dataface:)");
+	fwrite(STDOUT, "Please enter the full URL to the xataface directory (e.g.,: http://www.yoursite.com/path/to/xataface:)");
 	$dataface_url = trim(fgets(STDIN));
 }
 
 if ( substr($dataface_url, strlen($dataface_url)-1, 1) == DIRECTORY_SEPARATOR){
 	$dataface_url = substr($dataface_url,0, strlen($dataface_url)-1);
 }
+
+
 
 while (strlen(@$database_host) <= 0 ){
 	fwrite(STDOUT, "MySQL Host [localhost]:");
@@ -128,25 +140,25 @@ while (strlen(@$database_password)<=0 ){
 	break;
 }
 
-$db = mysql_connect($database_host, $database_username, $database_password);
+$db = xf_db_connect($database_host, $database_username, $database_password);
 if ( !$db ){
-	fwrite(STDERR, "Failed to create site because we could not connect to the mysql database at host '$database_host' with username='$database_username' and password='$database_password'.  The mysql error was as follows: ".mysql_error());
+	fwrite(STDERR, "Failed to create site because we could not connect to the mysql database at host '$database_host' with username='$database_username' and password='$database_password'.  The mysql error was as follows: ".xf_db_error());
 	exit(1);
 }
-$res = mysql_select_db($database_name);
+$res = xf_db_select_db($database_name, $db);
 if ( !$res ){
-	fwrite(STDERR, "Failed to create site because the database '$database_name' does not yet exist or the user '$database_username' does not have access to it.  Please create this database before creating a database site for it: ".mysql_error($db));
+	fwrite(STDERR, "Failed to create site because the database '$database_name' does not yet exist or the user '$database_username' does not have access to it.  Please create this database before creating a database site for it: ".xf_db_error($db));
 	exit(1);
 }
 
-$res = mysql_query("SHOW TABLES", $db);
+$res = xf_db_query("SHOW TABLES", $db);
 if ( !$res ){
-	fwrite(STDERR, "Failed to create site because an error occurred:".mysql_error($db));
+	fwrite(STDERR, "Failed to create site because an error occurred:".xf_db_error($db));
 	exit(1);
 }
 
 $tables = array();
-while ( $row = mysql_fetch_row($res) ){
+while ( $row = xf_db_fetch_row($res) ){
 	if ( $row[0]{0} == '_' ) continue;
 	if ( strpos($row[0], 'dataface_') === 0 ) continue;
 	if ( preg_match('/__history$/', $row[0]) ) continue;
