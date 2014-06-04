@@ -51,7 +51,6 @@ foreach ($args as $arg ){
 	}
 
 }
-
 require_once 'xf/db/drivers/'.basename($database_driver).'.php';
 
 if ( !@$dataface_url || !@$site_path || !@$database_host || !@$database_username ||  !@$database_name){
@@ -142,7 +141,7 @@ while (strlen(@$database_password)<=0 ){
 
 $db = xf_db_connect($database_host, $database_username, $database_password);
 if ( !$db ){
-	fwrite(STDERR, "Failed to create site because we could not connect to the mysql database at host '$database_host' with username='$database_username' and password='$database_password'.  The mysql error was as follows: ".xf_db_error());
+	fwrite(STDERR, "Failed to create site because we could not connect to the mysql database at host '$database_host' with username='$database_username' and password='$database_password'.  The mysql error was as follows: ".xf_db_connect_error());
 	exit(1);
 }
 $res = xf_db_select_db($database_name, $db);
