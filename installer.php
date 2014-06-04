@@ -1,5 +1,11 @@
 <?php
+// Change this 
 require_once('PEAR.php');
+if ( !file_exists('installer.enabled') ){
+	die("The installer is currently disabled.  To enable it, please rename the 'installer.disabled' file to 'installer.enabled'.  You can find this file inside the root xataface directory.");
+	
+}
+
 if ( !defined('FILE_APPEND') ){
 	define('FILE_APPEND', 1);
 }
@@ -409,6 +415,9 @@ df_init(__FILE__, "'.addslashes(dirname($_SERVER['PHP_SELF'])).'")->display();
 	}
 	
 	function test_db_access($dbname, $username, $password){
+		if ( !function_exists('xf_db_connect') ){
+			require_once 'xf/db/drivers/'.basename(XF_DB_DRIVER).'.php';
+		}
 		$db = @xf_db_connect(DB_HOST, $username, $password);
 		if ( !$db ){
 			return PEAR::raiseError("Could not connect to the MySQL server with username $username.");
@@ -503,10 +512,13 @@ df_init(__FILE__, "'.addslashes(dirname($_SERVER['PHP_SELF'])).'")->display();
 //print_r($_SERVER);
 function db(){
 	static $db=-1;
-	if ( $db == -1 ){
+	if ( $db === -1 ){
 		$installer = new Dataface_Installer;
 		if (!@$_SERVER['PHP_AUTH_USER'] || !$_COOKIE['logged_in'] ){
 			$installer->authenticate();
+		}
+		if ( !function_exists('xf_db_connect') ){
+			require_once 'xf/db/drivers/'.basename(XF_DB_DRIVER).'.php';
 		}
 		$db = @xf_db_connect(DB_HOST,@$_SERVER['PHP_AUTH_USER'], @$_SERVER['PHP_AUTH_PW']);
 		if ( !$db ){
