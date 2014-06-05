@@ -10,7 +10,21 @@
 class Dataface_IcalTool {
 
 
-	function buildFeedItemData(&$record){
+	function buildFeedItemData(&$record,$query=null){
+		$app =& Dataface_Application::getInstance();
+
+		$appDelegate =& $app->getDelegate();
+		if ( !isset($query) ){
+
+			$query = $app->getQuery();
+		}
+
+
+		import('Dataface/Ontology.php');
+		Dataface_Ontology::registerType('Event', 'Dataface/Ontology/Event.php', 'Dataface_Ontology_Event');
+		$ontology =& Dataface_Ontology::newOntology('Event', $query['-table']);
+		$event = $ontology->newIndividual($record);
+
 		$delegate =& $record->_table->getDelegate();
 		if ( isset($delegate) and method_exists($delegate, 'getFeedItem') ){
 			$res = $delegate->getFeedItem($record);
@@ -20,7 +34,10 @@ class Dataface_IcalTool {
 		if ( !isset($res['title']) ) $res['title'] = $this->getItemTitle($record);
 		if ( !isset($res['description']) ) $res['description'] = $this->getItemDescription($record);
 		if ( !isset($res['link']) ) $res['link'] = $this->getItemLink($record);
-		if ( !isset($res['date']) ) $res['date'] = $this->getItemDate($record);
+		if ( !isset($res['date']) ) $res['date'] = $this->getItemDate($event,$ontology);
+		if ( !isset($res['dateend']) ) $res['dateend'] = $this->getItemDateend($event,$ontology);
+		if ( !isset($res['category']) ) $res['category'] = $this->getItemCategory($event,$ontology);
+		if ( !isset($res['location']) ) $res['location'] = $this->getItemLocation($event,$ontology);
 		if ( !isset($res['author']) ) $res['author'] = $this->getItemAuthor($record);
 		if ( !isset($res['source']) ) $res['source'] = $this->getItemSource($record);
 
@@ -42,10 +59,10 @@ class Dataface_IcalTool {
 		if ( isset($query['-relationship']) ){
 			// we are building a set of related records.
 			$record =& $app->getRecord();
-			if ( isset($delegate) and method_exists($delegate,'getRelatedFeed') ){
-				$feed = $delegate->getRelatedFeed($record, $query['-relationship']);
-			} else if ( isset($appDelegate) and method_exists($appDelegate, 'getRelatedFeed') ){
-				$feed = $appDelegate->getRelatedFeed($record, $query['-relationship']);
+			if ( isset($delegate) and method_exists($delegate,'getRelatedIcal') ){
+				$feed = $delegate->getRelatedIcal($record, $query['-relationship']);
+			} else if ( isset($appDelegate) and method_exists($appDelegate, 'getRelatedIcal') ){
+				$feed = $appDelegate->getRelatedIcal($record, $query['-relationship']);
 			} else {
 				$feed = array();
 			}
@@ -53,16 +70,15 @@ class Dataface_IcalTool {
 			if ( !isset($feed['title']) ) $feed['title'] =$this->getRelatedTitle($record, $query['-relationship']);
 			if ( !isset($feed['description']) )  $feed['description'] = $this->getRelatedDescription($record, $query['-relationship']);
 			if ( !isset($feed['link']) ) $feed['link'] = $this->getRelatedLink($record, $query['-relationship']);
-			if ( !isset($feed['syndicationURL']) ) $feed['syndicationURL'] = $this->getRelatedSyndicationURL($record, $query['-relationship']);
 
 			return $feed;
 
 		} else {
 
-			if ( isset($delegate) and method_exists($delegate, 'getFeed') ){
-				$feed = $delegate->getFeed($query);
-			} else if ( isset($appDelegate) and method_exists($appDelegate,'getFeed') ){
-				$feed = $appDelegate->getFeed($query);
+			if ( isset($delegate) and method_exists($delegate, 'getIcal') ){
+				$feed = $delegate->getIcal($query);
+			} else if ( isset($appDelegate) and method_exists($appDelegate,'getIcal') ){
+				$feed = $appDelegate->getIcal($query);
 			} else {
 				$feed = array();
 			}
@@ -70,7 +86,6 @@ class Dataface_IcalTool {
 			if ( !isset($feed['title']) ) $feed['title'] = $this->getTitle($query);
 			if ( !isset($feed['description']) ) $feed['description'] = $this->getDescription($query);
 			if ( !isset($feed['link']) ) $feed['link'] = $this->getLink($query);
-			if ( !isset($feed['syndicationURL']) ) $feed['syndicationURL'] = $this->getSyndicationURL($query);
 			return $feed;
 
 
@@ -151,35 +166,26 @@ class Dataface_IcalTool {
 	function getRelatedLink($record, $relationshipName){
 		return $record->getURL('-relationship='.urlencode($relationshipName).'&-action=related_records_list');
 	}
-	function getSyndicationURL($query){
-		$url = $this->getParsedConfigSetting('syndicationURL', $query);
-		if ( !$url ) $url = $this->getParsedConfigSetting('link', $query);
-		return $url;
-	}
-	function getRelatedSyndicationURL($record, $relationshipName){
-		return $record->getURL('-relationship='.urlencode($relationshipName).'&-action=related_records_list');
-	}
 
 	function getItemLink(&$record){
 		return $record->getPublicLink();
 	}
 
 	function getItemDescription(&$record){
+		$out="";
 		$delegate =& $record->_table->getDelegate();
-		if ( isset($delegate) and method_exists($delegate, 'getRSSDescription') ){
-			return $delegate->getRSSDescription($record);
+		if ( isset($delegate) and method_exists($delegate, 'getIcalDescription') ){
+			return $delegate->getIcalDescription($record);
 		} else {
-			$out = '<table><thead><tr><th>Field</th><th>Value</th></tr></thead>';
-			$out .= '<tbody>';
 			foreach ( $record->_table->fields() as $field){
 				if ( !$record->checkPermission('view') ) continue;
-				if ( @$field['visibility']['feed'] == 'hidden' ) continue;
+				if ( @$field['visibility'] == 'hidden' ) continue;
+				if ( @$field['visibility']['ical'] == 'hidden' ) continue;
 				if ( $disp = @$record->val($field['name']) ){
-					$out .= '<tr><td valign="top">'.df_escape($field['widget']['label']).'</td>';
-					$out .= '<td valign="top">'.@$record->htmlValue($field['name']).'</td></tr>';
+					$out .= df_escape($field['widget']['label']).': ';
+					$out .= @strip_tags($record->strval($field['name']))."\n";
 				}
 			}
-			$out .= '</tbody></table>';
 			return $out;
 
 		}
@@ -191,12 +197,23 @@ class Dataface_IcalTool {
 		return $record->getTitle();
 	}
 
-	function getItemDate(&$record){
-		$mod = $record->getLastModified();
-		if ( !$mod ){
-			$mod = $record->getCreated();
-		}
+	function getItemDate(&$event){
+		$mod = $event->getValue('date');
+		$mod2 = $event->getValue('start');
+		if ($mod2 && $mod2 != $mod) return $mod2;
 		return $mod;
+	}
+
+	function getItemDateend(&$event){
+		return $event->getValue('end');
+	}
+
+	function getItemLocation(&$event){
+		return $event->getValue('location');
+	}
+
+	function getItemCategory(&$event){
+		return $event->getValue('category');
 	}
 
 	function getItemAuthor(&$record){
@@ -221,13 +238,12 @@ class Dataface_IcalTool {
 		return $_SERVER['HOST_URI'].DATAFACE_SITE_HREF;
 	}
 
-	function createFeedItem(&$record){
-		$data = $this->buildFeedItemData($record);
-		$item = new FeedItem();
+	function createFeedItem(&$record,$query=null){
+		$data = $this->buildFeedItemData($record,$query);
+		$item = new StdClass();
 		$item->title = $data['title'];
 		$item->link = $data['link'];
 		$item->description = $data['description'];
-
 		//optional
 		//item->descriptionTruncSize = 500;
 		//item->descriptionHtmlSyndicated = true;
@@ -242,32 +258,36 @@ class Dataface_IcalTool {
 
 	function &getConfig(){
 		$app =& Dataface_Application::getInstance();
-		if ( !isset($app->_conf['_feed']) ){
-			$app->_conf['_feed'] = array();
+		if ( !isset($app->_conf['_ical']) ){
+			$app->_conf['_ical'] = array();
 		}
-		return $app->_conf['_feed'];
+		return $app->_conf['_ical'];
 	}
 
 	function createFeed($query=null){
-		import('iCalcreator-2.20.2/iCalcreator.class.php');
 		$app =& Dataface_Application::getInstance();
 		if ( !isset($query) ){
 			$query = $app->getQuery();
 		}
 		$feed_data = $this->buildFeedData($query);
 
-		$rss = new UniversalFeedCreator();
-		$rss->encoding = $app->_conf['oe'];
-		//$rss->useCached(); // use cached version if age<1 hour
-		$rss->title = $feed_data['title'];
-		$rss->description = $feed_data['description'];
+		import('iCalcreator-2.20.2/iCalcreator.class.php');
 
-		//optional
-		//$rss->descriptionTruncSize = 500;
-		//$rss->descriptionHtmlSyndicated = true;
+		$tz = isset($app->_conf['_ical']['timezone']) ? $app->_conf['_ical']['timezone'] : date_default_timezone_get();
+		$icalConfig = array (
+			"unique_id" => $feed_data['link'],
+			"TZID" => $tz
+		);
 
-		$rss->link = htmlentities($feed_data['link']);
-		$rss->syndicationURL = htmlentities($feed_data['syndicationURL']);
+		$ical = new vcalendar( $icalConfig );
+		$ical->setProperty( "method", "PUBLISH" );
+		$ical->setProperty( "x-wr-calname", $feed_data['title'] );
+		$ical->setProperty( "X-WR-CALDESC", $feed_data['description'] );
+		$ical->setProperty( "X-WR-TIMEZONE", $tz );
+		$xprops = array( "X-LIC-LOCATION" => $tz );
+		iCalUtilityFunctions::createTimezone( $ical, $tz, $xprops );
+
+		$ical->encoding = $app->_conf['oe'];
 
 		if ( isset($query['-relationship']) ){
 			// Do the related records thing
@@ -312,25 +332,47 @@ class Dataface_IcalTool {
 
 		foreach ($records as $record){
 			if ( !$record->checkPermission('view') ) continue;
-			if ( !$record->checkPermission('view in rss') ) continue;
-			$item = $this->createFeedItem($record);
+			if ( !$record->checkPermission('view in ical') ) continue;
+			$item = $this->createFeedItem($record,$query);
 			$del =& $record->_table->getDelegate();
-			if ( isset($del) and method_exists($del, 'canAddToFeed') and !$del->canAddToFeed($record, $rss) ){
+			if ( isset($del) and method_exists($del, 'canAddToIcal') and !$del->canAddToIcal($record, $ical) ){
 				unset($del);
 				continue;
 			}
 			unset($del);
-			$rss->addItem($item);
+			$this->addItem($ical,$item);
 			unset($item);
 		}
 
-		return $rss;
+		return $ical;
 
+	}
+
+	function addItem(&$ical,$item){
+		$vevent = & $ical->newComponent("vevent");
+		if (!array_key_exists('hours',$item)) $params['VALUE'] = "DATE";
+		$vevent->setProperty( "dtstart", $item->date['year'], $item->date['month'], $item->date['day'], $item->date['hours'], $item->date['minutes'],$item->date['seconds'], $params);
+		if (property_exists($item,"dateend")){
+			$end = array(
+				'year' => $item->dateend['year'],
+				'month' => $item->dateend['month'],
+				'day' => $item->dateend['day'],
+			);
+			if (array_key_exists('hours',$item)) $end['hour'] = $item->dateend['hours'];
+			if (array_key_exists('minutes',$item)) $end['min'] = $item->dateend['minutes'];
+			if (array_key_exists('seconds',$item)) $end['sec'] = $item->dateend['seconds'];
+			$vevent->setProperty( "dtend", $end );
+		}
+		if (property_exists($item,"location")){
+			$vevent->setProperty("LOCATION",$item->location);
+		}
+		$vevent->setProperty("summary",$item->title);
+		$vevent->setProperty("description",$item->description);
 	}
 
 	function getFeedIcal($query, $format='ical'){
 		$feed = $this->createFeed($query);
-		return $feed->createFeed($format);
+		return $feed->returnCalendar();
 	}
 
 

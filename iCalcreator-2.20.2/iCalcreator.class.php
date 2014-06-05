@@ -7544,7 +7544,7 @@ class iCalUtilityFunctions {
       return checkdate( (int) $input['month'], (int) $input['day'], (int) $input['year'] );
     if( isset( $input['day'] ) || isset( $input['hour'] ) || isset( $input['min'] ) || isset( $input['sec'] ))
       return FALSE;
-    if(( 0 == $input[0] ) || ( 0 == $input[1] ) || ( 0 == $input[2] ))
+    if(( 0 == @$input[0] ) || ( 0 == $input[1] ) || ( 0 == $input[2] ))
       return FALSE;
     if(( 1970 > $input[0] ) || ( 12 < $input[1] ) || ( 31 < $input[2] ))
       return FALSE;

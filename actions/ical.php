@@ -32,11 +32,6 @@ class dataface_actions_ical {
 
 		}
 
-		header('Content-type: text/calendar; charset='.$app->_conf['oe']);
-		/** May have to use the next line in a way or another to be compatible with Google Agenda
-		 * @see http://stackoverflow.com/questions/1463480/how-can-i-use-php-to-dynamically-publish-an-ical-file-to-be-read-by-google-calen
-		* header('Content-Disposition: inline; filename=calendar.ics'); */
-
 		$conf = $ft->getConfig();
 
 		$query['-skip'] = 0;
