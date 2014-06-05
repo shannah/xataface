@@ -2,9 +2,10 @@
 /**
  * Tool for helping to produce iCal feeds.
  *
+ * @author Steve Hannah <shannah@sfu.ca>
  * @author Stephane Mourey <stephane.mourey@impossible-exil.info>
  * @created June. 6, 2014
- * @licence http://www.gnu.org/licenses/agpl.html GNU Affero General Public License
+ * @licence https://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License v2
  *
  */
 class Dataface_IcalTool {
