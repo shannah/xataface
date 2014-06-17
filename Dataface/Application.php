@@ -2393,7 +2393,7 @@ class Dataface_Application {
 	 
 	 function display($main_content_only=false, $disableCache=false){
 		try {
-		throw new Exception("FOo", 100);
+		
 	 		$this->_display($main_content_only, $disableCache);
 	 		
 	 	} catch ( Exception $ex){
