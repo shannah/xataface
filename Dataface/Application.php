@@ -2391,7 +2391,18 @@ class Dataface_Application {
 	
 	}
 	 
-	 
+	 function display($main_content_only=false, $disableCache=false){
+		try {
+		throw new Exception("FOo", 100);
+	 		$this->_display($main_content_only, $disableCache);
+	 		
+	 	} catch ( Exception $ex){
+	 		if ( function_exists('apc_clear_cache') ){
+				echo 'SQL query failed.  If you have recently made a change to your database schema, try clicking <a href="'.htmlspecialchars($this->url('').'&--refresh-apc=1').'">here</a> to refresh the APC cache.  Otherwise, check your error log for clues.'; 
+				throw $ex;
+			}
+	 	}
+	 }
 	 
 	/**
 	 * @brief Displays the Dataface application.
@@ -2406,7 +2417,7 @@ class Dataface_Application {
 	 * <img src="http://media.weblite.ca/files/photos/Display_flow_control.png?max_width=640"/>
 	 * <a href="http://media.weblite.ca/files/photos/Display_flow_control.png" target="_blank" title="Enlarge">Enlarge</a>.
 	 */
-	function display($main_content_only=false, $disableCache=false){
+	function _display($main_content_only=false, $disableCache=false){
 		// ---------------- Set the Default Character set for output -----------
 		foreach ($this->_tables as $key=>$value){
 			$this->_tables[$key] = $this->_conf['_tables'][$key] = df_translate('tables.'.$key.'.label', $value);
