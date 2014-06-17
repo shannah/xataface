@@ -2393,14 +2393,18 @@ class Dataface_Application {
 	 
 	 function display($main_content_only=false, $disableCache=false){
 		try {
-		
-	 		$this->_display($main_content_only, $disableCache);
+			$this->_display($main_content_only, $disableCache);
 	 		
 	 	} catch ( Exception $ex){
-	 		if ( function_exists('apc_clear_cache') ){
-				echo 'SQL query failed.  If you have recently made a change to your database schema, try clicking <a href="'.htmlspecialchars($this->url('').'&--refresh-apc=1').'">here</a> to refresh the APC cache.  Otherwise, check your error log for clues.'; 
-				throw $ex;
-			}
+	 		echo '<p>Uncaught exception was thrown while processing this request.  Troubleshooting steps:</p> 
+	 		    <ol>
+	 			<li><a href="'.htmlspecialchars($this->url('').'&--refresh-apc=1').'">Refresh the APC Cache.</a> - This may help in cases where you have changed a table column definition and your server has the APC opcode cache installed.</li>
+	 			<li><a href="'.htmlspecialchars($this->url('-action=clear_views')).'">Clear Cache Views</a> - This may also help in cases where you have changed a table column definition and some tables include __sql__ definitions.</li>
+	 			<li>Check your PHP error log for a description of the error and go from there.  See <a href="http://xataface.com/wiki/Troubleshooting">this page</a> for troubleshooting tips.</li>
+	 			</ol>';
+	 		  
+			throw $ex;
+			
 	 	}
 	 }
 	 
