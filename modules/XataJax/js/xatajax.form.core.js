@@ -56,7 +56,6 @@
 				return;
 			}
 			field = $('[data-xf-field="'+fieldName+'"]', this).get(0);
-			console.log(field);
 		});
 		
 		if ( !field  ){
