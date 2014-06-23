@@ -83,7 +83,7 @@ class xatacard_layout_Record {
 	}
 	
 	public function clearSnapshot($paths = null){
-		if ( !isset($paths) {
+		if ( !isset($paths) ) {
 			$paths = array_keys($this->changed);
 		}
 		foreach ($paths as $p){
