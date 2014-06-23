@@ -117,7 +117,7 @@ class LiveUser_Perm_Storage_Cache extends LiveUser_Perm_Storage
         if ($result === false) {
             return false;
         }
-        write_into_cache
+        // write_into_cache
         return $result;
     }
 
@@ -142,7 +142,7 @@ class LiveUser_Perm_Storage_Cache extends LiveUser_Perm_Storage
         if ($result === false) {
             return false;
         }
-        write_into_cache
+        // write_into_cache
         return $result;
     }
 
@@ -155,7 +155,7 @@ class LiveUser_Perm_Storage_Cache extends LiveUser_Perm_Storage
         if ($result === false) {
             return false;
         }
-        write_into_cache
+        // write_into_cache
         return $result;
     }
 
@@ -178,7 +178,7 @@ class LiveUser_Perm_Storage_Cache extends LiveUser_Perm_Storage
         if ($result === false) {
             return false;
         }
-        write_into_cache
+        // write_into_cache
         return $result;
     } // end func readGroups
 
@@ -202,7 +202,7 @@ class LiveUser_Perm_Storage_Cache extends LiveUser_Perm_Storage
         if ($result === false) {
             return false;
         }
-        write_into_cache
+        // write_into_cache
         return $result;
     } // end func readGroupRights
 
@@ -224,7 +224,7 @@ class LiveUser_Perm_Storage_Cache extends LiveUser_Perm_Storage
         if ($result === false) {
             return false;
         }
-        write_into_cache
+        // write_into_cache
         return $result;
     }
 
@@ -237,7 +237,7 @@ class LiveUser_Perm_Storage_Cache extends LiveUser_Perm_Storage
         if ($result === false) {
             return false;
         }
-        write_into_cache
+        // write_into_cache
         return $result;
     }
 
@@ -250,7 +250,7 @@ class LiveUser_Perm_Storage_Cache extends LiveUser_Perm_Storage
         if ($result === false) {
             return false;
         }
-        write_into_cache
+        // write_into_cache
         return $result;
     }
 
