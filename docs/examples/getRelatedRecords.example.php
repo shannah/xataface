@@ -7,7 +7,7 @@ $student =& df_get_record('Students', array('LastName'=>'Hannah'));
 // The $student variable now contains a Dataface_Record object.
 
 // Get the first 30 courses that this student has enrolled in -- assumes that the 'Courses' relationship is defined appropriately in relationships.ini file.
-$courses =& $student->getRelatedRecords('Courses')
+$courses =& $student->getRelatedRecords('Courses');
 
 // $courses now contains an array of associative arrays with Course information.
 
