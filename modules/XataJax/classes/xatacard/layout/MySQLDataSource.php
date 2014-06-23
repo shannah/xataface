@@ -259,7 +259,7 @@ class xatacard_layout_MySQLDataSource implements xatacard_layout_DataSource {
 		
 	
 	}
-	public function newRecord( xatacard_layout_Schema $schema, array $values);
+	public function newRecord( xatacard_layout_Schema $schema, array $values) { };
 	public function loadRecords( xatacard_layout_Schema $schema, $query){
 		$tablename = $schema->getProperty('table');
 		if ( !$tablename ){
