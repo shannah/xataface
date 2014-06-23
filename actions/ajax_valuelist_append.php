@@ -36,7 +36,7 @@ class dataface_actions_ajax_valuelist_append {
 			echo JSON::error($res->getMessage());
 			exit;
 		}
-		echo JSON::json(array(
+		echo JSON::_json(array(
 			'success'=>1,
 			'value'=>array('key'=>$res['key'], 'value'=>$res['value'])
 			)
