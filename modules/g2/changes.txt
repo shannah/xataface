@@ -1,0 +1,6 @@
+0.1.1
+May 29, 2013
+=============
+
+    - Fixed issue with long text in table view getting mucked up when there are 
+        two cells in the same row that are truncated.

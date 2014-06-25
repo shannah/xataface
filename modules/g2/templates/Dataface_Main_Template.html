@@ -1,0 +1,258 @@
+<!doctype html>
+{define_slot name="html_tag"}<html lang="{$ENV.language|escape}">{/define_slot}
+
+	<head>
+		{if !$ENV.prefs.no_history}
+			{php}
+				$app =& Dataface_Application::getInstance();
+				$_SESSION['--redirect'] = $app->url('');
+			{/php}
+		{/if}
+		
+		{define_slot name="html_head"}
+			<meta http-equiv="Content-Type" content="text/html; charset={$ENV.APPLICATION.oe}"/>
+			<meta http-equiv="X-UA-Compatible" content="IE=Edge" /> 
+                        <title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
+			
+			{define_slot name="custom_stylesheets"}<!-- Stylesheets go here -->{/define_slot}
+			{block name="custom_stylesheets2"}
+			{define_slot name="dataface_javascripts"}
+				<script type="text/javascript" language="javascript">
+					DATAFACE_URL = '{$ENV.DATAFACE_URL}';
+					DATAFACE_SITE_URL = '{$ENV.DATAFACE_SITE_URL}';
+					DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF}';
+				</script>
+				<script src="{$G2->getBaseURL()}/js/xataface-global.js"></script>
+			{/define_slot}
+			{foreach from=$ENV.APPLICATION_OBJECT->headContent item=headContent}
+				{$headContent}
+			{/foreach}
+			{define_slot name="custom_javascripts"}
+			<!-- custom javascripts can go in slot "custom_javascripts" -->
+			{/define_slot}
+			
+			{define_slot name="head_slot"}
+			<!-- Place any other items in the head of the document by filling the "head_slot" slot -->
+			{/define_slot}
+			{include file="head_slot.html"}
+			{block name="head"}
+		{/define_slot}
+
+
+	</head>
+	<body onload="bodyOnload()" {block name="body_atts"}>
+
+		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')|escape}" title="RSS 2.0" type="application/rss+xml" />
+
+		{block name="before_body"}
+		{define_slot name="html_body"}<!-- Replace the entire HTML Body with the "html_body" slot -->
+			<div id="top-section">
+				{block name="before_header"}
+				{define_slot name="global_header"}{include file="global_header.html"}{/define_slot}
+				{block name="after_header"}
+				
+				<div id="top-menu-bar">
+					<div id="top-right-menu-bar">
+						{actions_menu category=top_right_menu_bar maxcount=$G2->get_property('top_right_menu_bar.size', 4) class="right"}
+					</div>
+				
+					<div id="top-left-menu-bar">
+						{actions_menu category=top_left_menu_bar maxcount=$G2->get_property('top_left_menu_bar.size', 7)}
+					</div>
+					<div style="clear:both; height: 1px;"></div>
+				
+				
+				</div>
+				
+				
+				
+				{if !$ENV.prefs.hide_language_selector}
+					{block name="before_language_selector"}
+					{define_slot name="language_selector"}<div id="language_selector">{language_selector autosubmit="true" type="ul" use_flags=false}</div>{/define_slot}
+					{block name="after_language_selector"}
+				{/if}
+					
+				
+			
+		
+			</div>
+			{block name="before_main_table"}
+			{define_slot name="main_table"}
+				<table width="100%" border="0" cellpadding="5" id="main_table">
+					<tr>
+						<td valign="top" id="left_column">
+							<div class="left-column-wrapper">
+							{block name="before_xf_logo"}
+							{define_slot name="xf_logo"}
+								<div id="xf-logo"><span>Xataface</span></div>
+							{/define_slot}
+							{block name="after_xf_logo"}
+							{block name="before_left_column"}
+							{define_slot name="left_column"}
+								
+								{block name="before_table_actions"}
+								{define_slot name="table_actions"}
+									<div id="xf-table-actions">
+										{actions_menu id="table_actions" id_prefix="table-actions-" class="tableActions" category="table_actions"}
+									</div>
+								{/define_slot}
+								{block name="after_table_actions"}
+								
+								{block name="before_table_quicklinks"}
+								{define_slot name="table_quicklinks"}
+									<div id="xf-table-quicklinks">
+										{actions_menu id="table_quicklinks" id_prefix="table-quicklinks-" class="tableQuicklinks" category="table_quicklinks"}
+									</div>
+								{/define_slot}
+								{block name="after_table_quicklinks"}
+								
+								{block name="before_application_menu"}
+								{define_slot name="application_menu"}{include file="Dataface_Application_Menu.html"}{/define_slot}
+								{block name="after_application_menu"}
+			
+							{/define_slot}<!-- left_column-->
+							{block name="after_left_column"}
+							</div>
+						</td>
+						<td valign="top" id="main_column">
+							{block name="before_main_column"}
+							{define_slot name="main_column"}
+								{if_allowed permission="find" table=$ENV.table }
+									{if $ENV.prefs.show_search}
+										{block name="before_search"}
+										{define_slot name="search_form"}
+											<div class="search_form" id="top-search-form">
+												<form method="GET" action="{$smarty.server.HOST_URI}{$ENV.DATAFACE_SITE_HREF}">
+													{form_context exclude="-action,-skip,-submit,-mode"}
+													
+													<input class="xf-search-field" type="text" name="-search" value="{$ENV.search|escape}"/>
+													{actions category="find_actions" var="find_actions"}
+													{if $find_actions|@count > 1}
+														<select name="-action">
+														{foreach from=$find_actions item="find_action"}
+															{assign var=option_label value=$find_action.label}
+															{if !$option_label}
+																{assign var=option_label value=$ENV.table_object->getLabel()}
+															{/if}
+															{assign var=option_value value=$find_action.action}
+															{if !$option_value}
+																{assign var=option_value value=$find_action.name}
+															{/if}
+															<option value="{$option_value|escape}">{$option_label|escape}</option>
+														{/foreach}
+														</select>
+													{else}
+														{foreach from=$find_actions item="find_action"}
+															
+															{assign var=option_value value=$find_action.action}
+															{if !$option_value}
+																{assign var=option_value value=$find_action.name}
+															{/if}
+															<input type="hidden" name="-action" value="{$option_value|escape}"/>
+														{/foreach}
+														
+													{/if}
+													<input class="xf-search-button" 
+                                                                                                               type="submit" 
+                                                                                                               name="-submit" 
+                                                                                                               value='{translate id="main.search.button.label" tableObj=$ENV.table_object}Search {$ENV.table_object->getLabel()|escape}{/translate}' 
+                                                                                                               id="search_submit_button" 
+                                                                                                        />
+													<a class="xf-show-advanced-find collapsed">
+														<span class="collapsed">{translate id="templates.G2.advanced_search.label"}Advanced Search{/translate}</span>
+														<span class="expanded">{translate id="templates.G2.hide_advanced_search.label"}Hide Advanced Search{/translate}</span>
+													</a>
+													{block name="after_search_form_submit"}
+												</form>
+											
+											</div>
+										{/define_slot}
+										{block name="after_search"}
+									
+					
+									{/if}
+								{/if_allowed}
+											
+		
+								{if $back and !$ENV.APPLICATION.hide_back}
+									<div class="browser_nav_bar">
+										<a href="{$back.link}" title="{translate id="scripts.GLOBAL.LABEL_BACK"}Back{/translate}">&lt;&lt; {translate id="scripts.GLOBAL.LABEL_GO_BACK"}Go Back{/translate}</a>
+									</div>
+								{/if}
+			
+	
+								<div class="horizontalDivider">&nbsp;</div>
+			
+								{define_slot name="xataface_notice_messages"}
+			
+									{if $ENV.APPLICATION_OBJECT->numMessages() > 0 }
+										{block name="before_message"}
+										<div class="portalMessage">
+											<ul>
+											{block name="message"}
+											{foreach from=$ENV.APPLICATION_OBJECT->getMessages() item="msg"}
+												<li>{$msg|nl2br}</li>
+											{/foreach}
+											</ul>
+										</div>
+										{block name="after_message"}
+									{/if}
+								{/define_slot}
+								{define_slot name="xataface_error_messages"}
+									{if $ENV.APPLICATION_OBJECT->numErrors() > 0 }
+										{block name="before_errors"}
+										<div class="portalMessage">
+											<h5>{translate id="scripts.GLOBAL.HEADING_ERRORS"}Errors{/translate}</h5>
+											<ul>
+												{block name="error"}
+												{foreach from=$ENV.APPLICATION_OBJECT->getErrors() item="error"}
+													<li>{$error->getMessage()|nl2br}</li>
+												{/foreach}
+											</ul>
+										</div>
+										{block name="after_errors"}
+									{/if}
+								{/define_slot}
+								
+			
+								
+			
+								
+								<div class="documentContent mainArea" id="region-content">
+								
+			
+									{block name="before_main_section"}
+									{define_slot name="main_section"}
+										
+										<div style="clear:both">
+											{block name="before_record_content"}
+											{define_slot name="record_content"}
+												{$body}
+											{/define_slot}
+											{block name="after_record_content"}
+									
+										</div>
+									{/define_slot}<!-- main_section-->
+									{block name="after_main_section"}
+		
+								</div>
+								
+							{/define_slot}<!-- main_column-->
+						</td>
+					</tr>
+				</table>
+	
+			{/define_slot}<!--main_table-->
+			{define_slot name="fineprint"}
+				{block name="before_fineprint"}
+				{include file="Dataface_Fineprint.html"}
+				{block name="after_fineprint"}
+			{/define_slot}
+			{block name="before_global_footer"}
+			{define_slot name="global_footer"}{include file="global_footer.html"}{/define_slot}
+				{block name="after_global_footer"}
+		
+		{/define_slot} <!-- html_body -->
+		{block name="javascript_tool_includes"}
+	</body>
+</html>

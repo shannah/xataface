@@ -1,0 +1,93 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{assign var="outputType" value="--outputType"}
+{if $smarty.request.$outputType == 'ajax'}
+	<div id="list-window" class="result-list-window">
+		{block name="before_result_list_content"}
+		{define_slot name="result_list_content"}
+			{result_list}
+		{/define_slot}
+		{block name="after_result_list_content}
+		
+		
+
+	</div>
+{else}
+	{use_macro file="Dataface_Main_Template.html"}
+	
+		{fill_slot name="main_section"}
+			{if $error}<div id="error">{translate id=$error_i18n}{$error}{/translate}</div>{/if}
+			
+			{block name="before_result_list"}
+			{define_slot name="result_list"}
+				<div class="result-list-header result-list-bar xf-button-bar">
+					<div class="result-list-actions list-actions xf-button-bar-actions">
+						{capture assign="result_list_actions_html"}
+							{actions_menu id="list-actions" id_prefix="list-actions-" category="result_list_actions" maxcount=7}
+						{/capture}
+						{$result_list_actions_html}
+					</div>
+					{capture assign="resultlist_controller_html"}
+						{if !$ENV.prefs.hide_resultlist_controller}
+							{include file="Dataface_ResultListController.html"}
+						{/if}
+					{/capture}
+					{$resultlist_controller_html}
+					<div class="search-info xf-button-bar-info">
+						{assign var=search_parameters value=$G2->getSearchParameters()}
+						{if $search_parameters}
+							<span class="search-results-for">Search Results For: </span>
+							<ul class="search-parameters">
+								{foreach from=$search_parameters item=sval key=skey}
+									<li>
+										<a title="{$skey|escape}=&quot;{$sval|escape}&quot;" href="{$ENV.APPLICATION_OBJECT->url('-action=find')|escape}">
+											<span class="search-key">{$skey|truncate:20|escape}</span> <span class="search-value">{$sval|truncate:20|escape}</span>
+										</a>
+									</li>
+								{/foreach}
+							</ul>
+							<div style="height: 1px; clear:both"></div>
+						{/if}
+					</div>
+				</div>
+			
+				<div id="list-window" class="result-list-window">
+					{block name="before_result_list_content"}
+					{define_slot name="result_list_content"}
+						{result_list}
+					{/define_slot}
+					{block name="after_result_list_content}
+					
+					
+	
+				</div>
+				<div class="result-list-footer result-list-bar xf-button-bar">
+					<div class="result-list-actions xf-button-bar-actions">
+						{$result_list_actions_html}
+					</div>
+					{$resultlist_controller_html}
+					<div class="search-info xf-button-bar-info"></div>
+				</div>
+				
+			{/define_slot}
+			{block name="after_result_list"}
+		{/fill_slot}
+	{/use_macro}
+{/if}

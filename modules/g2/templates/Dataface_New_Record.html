@@ -1,0 +1,79 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="main_section"}
+		
+		{block name="before_new_record_form"}
+		{define_slot name="new_record_form"}
+		
+		{capture assign="new_record_button_bar"}
+			<div class="xf-button-bar">
+				<div class="xf-button-bar-actions">
+					{actions_menu category=new_record_form_actions maxcount=7 }
+				</div>
+				<div style="clear:both; height: 1px;"></div>
+			</div>
+			
+		{/capture}
+		{$new_record_button_bar}
+		
+		<h3>Insert New {$ENV.table_object->getSingularLabel()|escape}</h3>
+		
+		{if $tabs and $tabs|@count>1}
+			<div id="edit-record-tabs-container" class="tabs-container">
+			<ul id="edit-record-tabs" class="tabs-nav">
+			
+			{foreach from=$tabs item=tab}
+				<li class="{$tab.css_class}"><a href="{$tab.url}">{$tab.label}</a><span></span></li>
+			{/foreach}
+			</ul>
+			<script language="javascript">
+			var head = document.getElementsByTagName('head');
+			var css = document.createElement('link');
+			css.type='text/css';
+			css.rel='stylesheet';
+			css.href='{$ENV.DATAFACE_URL}/css/jquery.tabs.css';
+			head[0].appendChild(css);
+			</script>
+			<!--[if lte IE 7]>
+			<script language="javascript">
+			var head = document.getElementsByTagName('head');
+			var css = document.createElement('link');
+			css.type='text/css';
+			css.rel='stylesheet';
+			css.href='{$ENV.DATAFACE_URL}/css/jquery.tabs-ie.css';
+			head[0].appendChild(css);
+			</script>
+			<![endif]-->
+			</div>
+			
+			<div class="tabs-panel">
+			<div>Remember to press <em>Save</em> when you're done.</div>
+		{/if}
+		{$form}
+		{if $tabs and $tabs|@count>1}
+			</div><!-- tabs-panel -->
+		{/if}
+		
+		{$new_record_button_bar}
+		{/define_slot}
+		{block name="after_new_record_form"}
+	{/fill_slot}
+{/use_macro}

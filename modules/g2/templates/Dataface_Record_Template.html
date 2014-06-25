@@ -1,0 +1,79 @@
+{*-------------------------------------------------------------------------------
+ * Dataface Web Application Framework
+ * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *-------------------------------------------------------------------------------
+ *}
+{load_record}
+{use_macro file="Dataface_Main_Template.html"}
+
+	{fill_slot name="main_section"}
+		<div class="xf-button-bar">
+			<div class="result-list-actions list-actions xf-button-bar-actions">
+				{actions_menu id="record-actions" id_prefix="record-actions-" category="record_actions" mincount=1 maxcount=7}
+			</div>
+			{if $ENV.prefs.show_result_controller}
+				{block name="before_details_controller"}
+				<div id="details-controller" class="details-controller">{include file="Dataface_Details_Controller.html"}</div>
+				{block name="after_details_controller"}
+			{/if}
+			
+			<div class="xf-button-bar-info"></div>
+		</div>
+		{block name="before_record_heading"}
+		{define_slot name="record_heading"}
+
+			
+		{/define_slot}
+		{block name="after_record_heading"}
+		{block name="before_record_tabs"}
+		
+		
+		<div class="documentContent" id="region-content" >
+		
+			{block name="before_record_heading"}
+			{define_slot name="record_heading"}
+				<div class="dataface-sections-top {if $ENV.prefs.hide_record_view_logo}dataface-sections-top-no-logo{/if}">
+					<h3>{if $ENV.record}{$ENV.record->getTitle()|escape}{/if}</h3>
+					
+				</div>
+			{/define_slot}
+			{block name="after_record_heading"}
+			{block name="before_record_subtabs"}
+			{define_slot name="record_subtabs"}
+				<div class="record-subtabs">
+					{record_tabs mincount=2 maxcount=7}
+					<div style="clear:both; height:1px;"></div>
+				</div>
+			{/define_slot}
+			{block name="after_record_subtabs"}
+		
+		
+			{block name="before_record_content"}
+			{define_slot name="record_content"}
+				Record Content goes here ...
+			{/define_slot}
+			{block name="after_record_content"}
+		</div>
+
+		{block name="before_record_footer"}
+		{define_slot name="record_footer"}{/define_slot}
+		{block name="after_record_footer"}
+		
+	
+	{/fill_slot}
+
+{/use_macro}
