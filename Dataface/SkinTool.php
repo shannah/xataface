@@ -229,8 +229,6 @@ class Dataface_SkinTool extends Smarty{
 		$this->register_block('editable', array(&$this, 'editable'));
 		$this->register_block('abs', array(&$this, 'abs'));
 		
-		
-		
 
 	}
 	
@@ -359,6 +357,7 @@ class Dataface_SkinTool extends Smarty{
 		if ( $count++ < 1 ) {
 
 			$instance = new Dataface_SkinTool();
+			Dataface_Application::getInstance()->fireEvent('SkinTool.ready', null);
 		}
 		
 		return $instance;

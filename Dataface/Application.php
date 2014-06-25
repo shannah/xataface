@@ -268,6 +268,9 @@ class Dataface_Application {
 	 */
 	var $eventListeners = array();
 	
+	
+	var $version = 2;
+	
 	/**
 	 * @brief User preferences matrix.
 	 */
@@ -1979,7 +1982,7 @@ class Dataface_Application {
 	 * Methods for dealing with the dispatch of events.
 	 */
 	 
-	 
+	 private $firedEvents = array();
 	 
 	 
 	/**
@@ -1996,22 +1999,31 @@ class Dataface_Application {
 			$res = call_user_func($listener, $params);
 			if ( PEAR::isError($res) ) return $res;
 		}
+		$this->firedEvents[$name] = true;
 		return true;
 	}
+	
+	
 	
 	/**
 	 * @brief Registers an event listener to respond to events of a certain type.
 	 * @param string $name The name of the event to register for. e.g. afterInsert
 	 * @param mixed $callback A standard PHP callback.  Either a function name or an array of the form array(&$object,'method-name').
+	 * @param boolean $execImmediately If true, then this will execute the callback immediately 
+	 * if the specified event had already been fired.
 	 * @returns void.
 	 *
 	 * @see fireEvent()
 	 * @see unregisterEventListener()
 	 *
 	 */
-	function registerEventListener($name, $callback){
-		if ( !isset($this->eventListeners[$name]) ) $this->eventListeners[$name] = array();
-		$this->eventListeners[$name][] = $callback;
+	function registerEventListener($name, $callback, $execImmediately = false){
+		if ( $execImmediately and isset($this->firedEvents[$name]) ){
+			call_user_func($callback, null);
+		} else {
+			if ( !isset($this->eventListeners[$name]) ) $this->eventListeners[$name] = array();
+			$this->eventListeners[$name][] = $callback;
+		}
 	}
 	
 	
