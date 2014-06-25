@@ -49,13 +49,20 @@
 	 * 
 	 */
 	function findField(startNode, fieldName){
+		var field = null;
 		
-		var parentGroup = $(startNode).parents('.xf-form-group').get(0);
-		if ( !parentGroup ) parentGroup = $(startNode).parents('form').get(0);
-		if ( !parentGroup ) return null;
-		//alert('here');
-		var fld = $('[data-xf-field="'+fieldName+'"]', parentGroup).get(0);
-		return fld;
+		$(startNode).parents('.xf-form-group').each(function(){
+			if ( field  ){
+				return;
+			}
+			field = $('[data-xf-field="'+fieldName+'"]', this).get(0);
+		});
+		
+		if ( !field  ){
+			var parentGroup = $(startNode).parents('form').get(0);
+			field = $('[data-xf-field="'+fieldName+'"]', parentGroup).get(0);
+		}
+		return field;
 	}
 	
 	

@@ -2403,7 +2403,22 @@ class Dataface_Application {
 	
 	}
 	 
-	 
+	 function display($main_content_only=false, $disableCache=false){
+		try {
+			$this->_display($main_content_only, $disableCache);
+	 		
+	 	} catch ( Exception $ex){
+	 		echo '<p>Uncaught exception was thrown while processing this request.  Troubleshooting steps:</p> 
+	 		    <ol>
+	 			<li><a href="'.htmlspecialchars($this->url('').'&--refresh-apc=1').'">Refresh the APC Cache.</a> - This may help in cases where you have changed a table column definition and your server has the APC opcode cache installed.</li>
+	 			<li><a href="'.htmlspecialchars($this->url('-action=clear_views')).'">Clear Cache Views</a> - This may also help in cases where you have changed a table column definition and some tables include __sql__ definitions.</li>
+	 			<li>Check your PHP error log for a description of the error and go from there.  See <a href="http://xataface.com/wiki/Troubleshooting">this page</a> for troubleshooting tips.</li>
+	 			</ol>';
+	 		  
+			throw $ex;
+			
+	 	}
+	 }
 	 
 	/**
 	 * @brief Displays the Dataface application.
@@ -2418,7 +2433,7 @@ class Dataface_Application {
 	 * <img src="http://media.weblite.ca/files/photos/Display_flow_control.png?max_width=640"/>
 	 * <a href="http://media.weblite.ca/files/photos/Display_flow_control.png" target="_blank" title="Enlarge">Enlarge</a>.
 	 */
-	function display($main_content_only=false, $disableCache=false){
+	function _display($main_content_only=false, $disableCache=false){
 		// ---------------- Set the Default Character set for output -----------
 		foreach ($this->_tables as $key=>$value){
 			$this->_tables[$key] = $this->_conf['_tables'][$key] = df_translate('tables.'.$key.'.label', $value);

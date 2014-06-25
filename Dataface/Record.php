@@ -2490,7 +2490,7 @@ class Dataface_Record {
 	 * @see http://xataface.com/wiki/Delegate_class_methods
 	 *
 	 */
-	function display($fieldname, $index=0, $where=0, $sort=0, $urlencode=false){
+	function display($fieldname, $index=0, $where=0, $sort=0, $urlencode=true){
 		if ( isset($this->cache[__FUNCTION__][$fieldname][$index][$where][$sort]) ){
 			return $this->cache[__FUNCTION__][$fieldname][$index][$where][$sort];
 		}
