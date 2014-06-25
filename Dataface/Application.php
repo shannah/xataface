@@ -654,6 +654,9 @@ class Dataface_Application {
 		
 		// Include XataJax module always.
 		$mods = array('modules_XataJax'=>'modules/XataJax/XataJax.php');
+		if ( !@$this->_conf['disable_g2'] ){
+			$mods['modules_g2'] = 'modules/g2/g2.php';
+		}
 		foreach ($this->_conf['_modules'] as $k=>$v){
 			$mods[$k] = $v;
 		}
