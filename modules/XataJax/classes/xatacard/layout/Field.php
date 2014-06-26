@@ -4,8 +4,7 @@ class xatacard_layout_Field {
 	
 	private $path;
 	private $schema;
-	private $readOnly = false;;
-	
+	private $readOnly = false;
 	
 	public function __construct(xatacard_layout_Schema $schema, $path){
 		$this->path = $path;

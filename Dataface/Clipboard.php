@@ -122,7 +122,7 @@ class Dataface_Clipboard {
 	 * Indicates whether the clipboard is empty.
 	 * @return boolean True if the clipboard is empty for the current user.
 	 */
-	function empty(){
+	function _empty(){
 		return (xf_db_num_rows(xf_db_query("select count(*) from `".Dataface_Clipboard_tablename."` where `clipperid`='".addslashes($this->id)."'")) == 0);
 	}
 	
