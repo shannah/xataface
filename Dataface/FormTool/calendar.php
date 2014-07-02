@@ -62,12 +62,12 @@ class Dataface_FormTool_calendar {
               return false; 
         
             $ret = array( 
-              "tm_sec"  => (int) $out['S'], 
-              "tm_min"  => (int) $out['M'], 
-              "tm_hour" => (int) $out['H'], 
-              "tm_mday" => (int) $out['d'], 
-              "tm_mon"  => $out['m']?$out['m']-1:0, 
-              "tm_year" => $out['Y'] > 1900 ? $out['Y'] - 1900 : 0, 
+              "tm_sec"  => (int) @$out['S'], 
+              "tm_min"  => (int) @$out['M'], 
+              "tm_hour" => (int) @$out['H'], 
+              "tm_mday" => (int) @$out['d'], 
+              "tm_mon"  => @$out['m']?@$out['m']-1:0, 
+              "tm_year" => @$out['Y'] > 1900 ? @$out['Y'] - 1900 : 0, 
             ); 
             return $ret; 
 	    
