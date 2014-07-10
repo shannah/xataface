@@ -2280,13 +2280,13 @@ class Dataface_Table {
 				
 				if ( !isset( $grp['label'] ) ) $grp['label'] = ucfirst($grp['name']);
 				if ( !isset( $grp['description']) ) $grp['description'] = '';
-				if ( !isset( $grp['display']) ) $grp['display'] = "block";
+				if ( !isset( $grp['display_style']) ) $grp['display_style'] = "block";
 				if ( !isset( $grp['element_label_visible'])) {
 					$grp['element_label_visible'] = true;
 				}
 				if ( !isset($grp['element_description_visible'])){
 					$grp['element_description_visible'] = 
-						($grp['display'] == 'inline' ? false : true);
+						($grp['display_style'] == 'inline' ? false : true);
 					
 				}
 				
@@ -2459,7 +2459,7 @@ class Dataface_Table {
 						"name"=>$grpname, 
 						"label"=>df_translate('tables.'.$this->tablename.'.fieldgroups.'.$grpname.'.label', ucfirst($grpname)),
 						"description"=>'',
-						"display"=>'block',
+						"display_style"=>'block',
 						"element_label_visible"=>true,
 						"element_description_visible"=>false,
 						'order'=>0

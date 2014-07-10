@@ -153,6 +153,7 @@ class Dataface_RecordView {
 				$this->fieldgroups[$group][$field['name']] = $field;
 				$fldgrp =& $this->record->_table->getFieldGroup($group);
 				$class = 'main';
+				$display = 'expanded';
 				if ( PEAR::isError($fldgrp) ){
 					$label = ucwords(str_replace('_',' ',$group));
 					if ( $group == '__main__' ){
@@ -177,6 +178,10 @@ class Dataface_RecordView {
 					if ( isset($fldgrp['section']['order']) ) $order = $fldgrp['section']['order'];
 					else $order = 0;
 					if ( isset($fldgrp['section']['class']) ) $class = $fldgrp['section']['class']; 
+					
+					if ( isset($fldgrp['display']) ){
+						$display = $fldgrp['display'];
+					}
 				}
 				$sec = array(
 					'name'=>$group.'__fieldgroup',
@@ -186,7 +191,7 @@ class Dataface_RecordView {
 					'fields'=>&$this->fieldgroups[$group],
 					'order'=> $order,
 					'class'=>$class,
-					'display'=>'expanded'
+					'display'=>$display
 					);
 				
 				if ( isset($prefs['tables.'.$tablename.'.sections.'.$sec['name'].'.order']) ){

@@ -1,7 +1,7 @@
 {if $section.field.description}<div class="formHelp">{$section.field.description|escape}</div>{/if}
 {block name="before_quickform_table"}
 
-{if $section.field.display=='inline'}
+{if $section.field.display_style=='inline'}
 	{assign var="table_tag" value="span"}
 	{assign var="tr_tag" value="span"}
 	{assign var="td_tag" value="span"}
@@ -16,7 +16,7 @@
 	{assign var="thead_tag" value="thead"}
 	{assign var="tbody_tag" value="tbody"}
 {/if}
-		<{$table_tag} width="100%" class="Dataface_QuickForm-table-wrapper xf-form-group {if $section.field.display=='inline'}xf-form-group-inline{/if} " data-xf-record-id="{$form_record_id|escape}">
+		<{$table_tag} width="100%" class="Dataface_QuickForm-table-wrapper xf-form-group {if $section.field.display_style=='inline'}xf-form-group-inline{/if} " data-xf-record-id="{$form_record_id|escape}">
 		
 			{* 
 				#03 - Inner elements loop
