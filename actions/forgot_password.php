@@ -99,9 +99,9 @@ class dataface_actions_forgot_password {
 		$table = self::$TABLE_RESET_PASSWORD;
 		$res = xf_db_query("create table if not exists `{$table}` (
 			request_id int(11) auto_increment primary key,
-			request_uuid binary(32),
+			request_uuid varchar(36),
 			username varchar(255),
-			request_ip int(11),
+			request_ip int(11) unsigned,
 			date_created datetime,
 			expires int(11),
 			key (request_uuid) ) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
@@ -207,6 +207,8 @@ class dataface_actions_forgot_password {
 		$val = ip2long($_SERVER['REMOTE_ADDR']);
 		if ( $val !== false ){
 			$ip = sprintf('%u', $val );
+		} else {
+		    $ip = 0; //If IP is empty MySQL throws Incorrect Integer value on insert
 		}
 		
 		// Insert the entry
