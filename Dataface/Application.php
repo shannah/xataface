@@ -1073,6 +1073,28 @@ class Dataface_Application {
 	}
 	
 	
+	public function addJSStrings($strings){
+	    $jsStrings = json_encode($strings);
+	    $this->addHeadContent(<<<END
+<script type="text/javascript">
+(function(){
+    window.xataface = window.xataface || {};
+    var strings = $jsStrings;
+    if ( typeof(window.xataface.lang) === 'undefined' ){
+        window.xataface.__strings__ = window.xataface.__strings__ || {};
+        var xfStrings = window.xataface.__strings__;
+        for ( var key in strings ){
+            xfStrings[key] = strings[key];
+        }
+    } else {
+        window.xataface.lang.set(strings);
+    }
+})();
+</script>
+END
+);
+	}
+	
 	
 	/**
 	 * @brief Returns the config array as loaded from the conf.ini file, except that 

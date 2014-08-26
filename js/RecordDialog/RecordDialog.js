@@ -1,3 +1,4 @@
+//require <xataface/lang.js>
 //require <jquery-ui.min.js>
 //require-css <jquery-ui/jquery-ui.css>
 //require-css <RecordDialog/RecordDialog.css>
@@ -7,7 +8,7 @@
 	}
 	
 	window.xataface.RecordDialog = RecordDialog;
-	
+	var _ = xataface.lang.get;
 	
 	/**
 	 * @name Callback
@@ -187,16 +188,19 @@
 						
 					}
 				},
-				buttons: {
-					OK : function(){
-						
-						if ( dialog.callback ){
-							dialog.callback();
-						}
-						$(this).dialog('close');
-					}
+				buttons: [
+				    {
+				        text : _('RecordDialog.OK_BUTTON_LABEL', 'OK'),
+                        click : function(){
+                            
+                            if ( dialog.callback ){
+                                dialog.callback();
+                            }
+                            $(this).dialog('close');
+                        }
+                    }
 					
-				},
+				],
 				height: $(window).height()-25,
 				width: $(window).width()-25,
 				title: (this.recordid?'Edit '+this.table+' Record':'Create New '+this.table+' Record'),

@@ -35,8 +35,9 @@ class modules_g2 {
 		$jt->ignore('jquery-ui.min.js');
 		$jt->ignore('xatajax.core.js');
 		$jt->ignore('xatajax.util.js');
+		$jt->ignore('xataface/lang.js');
 		$jt->ignoreCss('jquery-ui/jquery-ui.css');
-		
+		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/js/xataface/lang.js').'"></script>');
 		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/modules/XataJax/js/jquery.packed.js').'"></script>');
 		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/modules/XataJax/js/jquery-ui.min.js').'"></script>');
 		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/modules/XataJax/js/xatajax.core.js').'"></script>');
