@@ -36,7 +36,12 @@
 		{/capture}
 		{$new_related_record_button_bar}
 		{assign var="relationshipObject" value=$ENV.table_object->getRelationship($ENV.relationship)}
-		<h3>{$ENV.record->getTitle()|escape} &raquo; Add New {$relationshipObject->getSingularLabel()|escape}</h3>
+		<h3>
+		    {$ENV.record->getTitle()|escape} &raquo; 
+		    {translate id="add_new_x" x=$relationshipObject->getSingularLabel()|escape}
+		        Add New {$relationshipObject->getSingularLabel()|escape}
+		    {/translate}
+		</h3>
 		{$form}
 		
 		{$new_related_record_button_bar}
