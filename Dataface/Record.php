@@ -1432,7 +1432,7 @@ class Dataface_Record {
 			
 		}
 		
-		$it =& $this->getRelationshipIterator($relationship, 'all');
+		$it = $this->getRelationshipIterator($relationship, 'all');
 		$i = 1;
 		
 		while ( $it->hasNext() ){
