@@ -48,7 +48,10 @@ class modules_g2 {
 		$ct = Dataface_CSSTool::getInstance();
 		$ct->addPath(dirname(__FILE__).$s.'css', $this->getBaseURL().'/css');
 		$jt->import('xataface/modules/g2/global.js');
-		
+		$app->addJSStrings(array(
+		    'themes.g2.VIEW_SEARCH_RESULTS' => df_translate('themes.g2.VIEW_SEARCH_RESULTS', 'View Search Results'),
+		    'themes.g2.SEARCH_RESULTS' => df_translate('themes.g2.SEARCH_RESULTS', 'Search Results')
+		));
 		
 		// Let's create the actions for our tables.
 		

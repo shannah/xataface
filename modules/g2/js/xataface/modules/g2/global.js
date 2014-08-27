@@ -6,13 +6,14 @@
  * Copyright (c) 2011 Web Lite Solutions Corp.
  * All rights reserved.
  */
+//require <xataface/lang.js>
 //require <jquery.packed.js>
 //require <xatajax.util.js>
 //require <xatajax.actions.js>
 //require <xataface/modules/g2/advanced-find.js>
 (function(){
 	var $ = jQuery;
-	
+	var _ = xataface.lang.get;
 	
 	/**
 	 * Help to format the page when it is finished loading.  Attach listeners
@@ -564,8 +565,8 @@
 					if ( searchSelected ) item.addClass('selected');
 					var a = $('<a>')
 						.attr('href', currSearchUrl)
-						.attr('title', 'View Search results')
-						.text('Search Results');
+						.attr('title', _('themes.g2.VIEW_SEARCH_RESULTS', 'View Search results'))
+						.text(_('themes.g2.SEARCH_RESULTS', 'Search Results'));
 					item.append(a);
 					
 					$('.tableQuicklinks').append(item);
