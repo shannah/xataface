@@ -3903,6 +3903,9 @@ class Dataface_Table {
 				}
 				$actions[$key]['label'] = df_translate('tables.'.$srcTable->tablename.'.relationships.'.$key.'.label', @$actions[$key]['label']);
 				$actions[$key]['description'] = df_translate('tables.'.$srcTable->tablename.'.relationships.'.$key.'.description', @$actions[$key]['description']);
+				if (@$actions[$key]['singular_label'] ){
+				    $actions[$key]['singular_label'] = df_translate('tables.'.$srcTable->tablename.'.relationships.'.$key.'.singular_label', @$actions[$key]['singular_label']);
+				}
 				unset($srcTable);
 			 }
 			 $this->_cache['getRelationshipsAsActions'] = $actions;

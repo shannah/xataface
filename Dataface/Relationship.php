@@ -791,7 +791,7 @@ class Dataface_Relationship {
 		
 			$label = $this->getLabel();
 			$action['singular_label'] = df_singularize($label);
-			
+			$action['singular_label'] = df_translate('tables.'.$this->_sourceTable->tablename.'.relationships.'.$this->_name.'.singular_label', $action['singular_label']);
 		
 		}
 		
