@@ -108,8 +108,8 @@ class modules_g2 {
 		
 		$showAll = array(
 			'name' => 'show_all_records',
-			'label' => 'All '.$table->getLabel(),
-			'description' => 'Show all records in '.$table->getLabel(),
+			'label' => df_translate('actions.show_all_records.label', 'All '.$table->getLabel()),
+			'description' => df_translate('actions.show_all_records.description', 'Show all records in '.$table->getLabel()),
 			'selected' => !$search and (@$query['-mode'] == 'list'),
 			'url' => DATAFACE_SITE_HREF.'?-table='.htmlspecialchars($table->tablename),
 			'category' => 'table_quicklinks',
