@@ -342,7 +342,7 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 				if ( $groupEmpty ){
 					// This is the first field in the group, so we add a header for the 
 					// group.
-					if ( !$firstGroup ) $this->addElement('submit','','Save');
+					if ( !$firstGroup ) $this->addElement('submit','',df_translate('save_button_label', 'Save'));
 					$headerel =& $this->addElement('header', $group['label'], $group['label']);
 					$headerel->setFieldDef($group);
 					unset($headerel);
@@ -432,7 +432,7 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 		$this->addElement('hidden','-table');
 		$this->addElement('hidden','-relationship');
 		$this->addElement('hidden','-action');
-		$this->addElement('submit','-Save','Save');
+		$this->addElement('submit','-Save',df_translate('save_button_label', 'Save'));
 		$this->setDefaults(
 			array(
 				'-table'=>$this->_parentTable->tablename,
