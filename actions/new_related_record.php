@@ -89,12 +89,14 @@ class dataface_actions_new_related_record {
 				import('Dataface/Utilities.php');
 				Dataface_Utilities::fireEvent('after_action_new_related_record');
 				$fquery = array('-action'=>'browse');
+				$table = Dataface_Table::loadTable($query['-table']);
+                $rel = $table->getRelationship($query['-relationship']);
 				$msg = urlencode(
 					trim(
 						Dataface_LanguageTool::translate(
 							"Record successfully added to relationship",
-							"Record successfully added to ".$query['-relationship']." relationship.\n",
-							array('relationship'=>$query['-relationship'])
+							"Record successfully added to ".$rel->getLabel()." relationship.\n",
+							array('relationship'=>$rel->getLabel())
 						).
 						(isset($response['--msg']) ? $response['--msg'] : '')
 					)

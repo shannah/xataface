@@ -244,13 +244,13 @@ class Dataface_RemoveRelatedRecordForm extends HTML_QuickForm {
 		$io = new Dataface_IO($domainTable->tablename);
 		echo "<p>".df_translate(
 				'scripts.Dataface.RemoveRelatedRecordForm.display.MESSAGE_ARE_YOU_SURE',
-				"Are you sure you want to remove the following records from the relationship '".$this->_relationshipName."'?",
-				array('relationship'=>$this->_relationshipName)
+				"Are you sure you want to remove the following records from the relationship '".$this->_relationship->getLabel()."'?",
+				array('relationship'=>$this->_relationship->getLabel())
 				)
 			."</p>";
 		echo "<ul>";
 		
-		$records =& df_get_selected_records($this->query);
+		$records = df_get_selected_records($this->query);
 		
 		foreach ($records as $record){
 			
