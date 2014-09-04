@@ -98,7 +98,7 @@
 	{$moveUpForm}
 	{if !$relatedList->hideActions and $relatedList->_where}
 		{assign var=relatedSearchKey value="-related:search"}
-		<div>Showing matches for query <em>&quot;{$filterQuery.$relatedSearchKey|escape}&quot;</em>
+		<div>{translate id="scripts.GLOBAL.RECORDS_MATCHED_REQUEST"}Showing matches for query{/translate} <em>&quot;{$filterQuery.$relatedSearchKey|escape}&quot;</em>
 		<a href="{$app->url('-related:search=')|escape}" title="Remove this filter to show all records in this relationship">
 			<img src="{$smarty.const.DATAFACE_URL|escape}/images/delete.gif" alt="Remove filter" />
 		</a>
