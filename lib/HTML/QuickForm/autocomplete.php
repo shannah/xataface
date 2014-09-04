@@ -97,6 +97,9 @@ class HTML_QuickForm_autocomplete extends HTML_QuickForm_text
      */
     function setOptions($options)
     {
+        if ( !isset($options) ){
+            $options = array();
+        }
         $this->_options = array_values($options);
     } // end func setOptions
 
