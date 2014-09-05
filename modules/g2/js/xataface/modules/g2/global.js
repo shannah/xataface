@@ -28,12 +28,12 @@
 		 */
 		$('#dataface-sections-left-column').each(function(){
 			var txt = $(this).text().replace(/^\W+/,'').replace(/\W+$/);
-			if ( !txt ) $(this).hide();
+			if ( !txt && $('img', this).length == 0 ) $(this).hide();
 		});
 		
 		$('#left_column').each(function(){
 			var txt = $(this).text().replace(/^\W+/,'').replace(/\W+$/);
-			if ( !txt ) $(this).hide();
+			if ( !txt && $('img', this).length == 0) $(this).hide();
 		});
 		
 		// END Left column fixes
