@@ -1,17 +1,17 @@
 {*-------------------------------------------------------------------------------
  * Dataface Web Application Framework
  * Copyright (C) 2005-2006  Steve Hannah (shannah@sfu.ca)
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -27,25 +27,26 @@
 			$_SESSION['--redirect'] = $app->url('');
 		{/php}
 	{/if}
-	
+
 	{define_slot name="html_head"}
 		<meta http-equiv="Content-Type" content="text/html; charset={$ENV.APPLICATION.oe}"/>
-		<title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+                <title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
 		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL}/plone.css"/>{/define_slot}
 		{define_slot name="custom_stylesheets"}<!-- Stylesheets go here -->{/define_slot}
 		{block name="custom_stylesheets2"}
 		{define_slot name="dataface_javascripts"}
 		<!-- Common Plone ECMAScripts -->
-	
-		
-		
+
+
+
 		<script type="text/javascript" language="javascript"><!--
 		DATAFACE_URL = '{$ENV.DATAFACE_URL}';
 		DATAFACE_SITE_URL = '{$ENV.DATAFACE_SITE_URL}';
 		DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF}';
-		
+
 		//--></script>
-	
+
 		<script type="text/javascript"
 				src="{$ENV.DATAFACE_URL}/plone_javascripts.js">
 		</script>
@@ -54,7 +55,7 @@
 				src="{$ENV.DATAFACE_URL}/js/editable.js">
 		</script>
 		{/if}
-		
+
 		{/define_slot}
 		{* Add the head content that is to be inserted in the head of the document.
 		   This was added in version 1.0 to provide an easier way to add custom
@@ -66,20 +67,19 @@
 		{define_slot name="custom_javascripts"}
 		<!-- custom javascripts can go in slot "custom_javascripts" -->
 		{/define_slot}
-		
+
 		{define_slot name="head_slot"}
 		<!-- Place any other items in the head of the document by filling the "head_slot" slot -->
 		{/define_slot}
 		{include file="head_slot.html"}
 		{block name="head"}
 	{/define_slot}
-
+		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')}"
+          title="Subscribe to an RSS feed of these results" type="application/rss+xml" />
 
 	</head>
 	<body onload="bodyOnload()" {block name="body_atts"}>
 
-		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')}"
-          title="RSS 1.0" type="application/rss+xml" />
 
 	{block name="before_body"}
 	{define_slot name="html_body"}<!-- Replace the entire HTML Body with the "html_body" slot -->
@@ -87,7 +87,7 @@
 		{block name="before_header"}
 		{define_slot name="global_header"}{include file="global_header.html"}{/define_slot}
 		{block name="after_header"}
-			
+
 		{if $ENV.prefs.show_search}
 		{block name="before_search"}
 		{define_slot name="search_form"}
@@ -113,19 +113,19 @@
 			</select>
 			{else}
 			{foreach from=$find_actions item="find_action"}
-				
+
 				{assign var=option_value value=$find_action.action}
 				{if !$option_value}
 					{assign var=option_value value=$find_action.name}
 				{/if}
 				<input type="hidden" name="-action" value="{$option_value}"/>
 			{/foreach}
-				
+
 			{/if}
 			<input type="submit" name="-submit" value="{translate id="scripts.GLOBAL.LABEL_SUBMIT"}Search{/translate}" id="search_submit_button" />
 			{block name="after_search_form_submit"}
 			</form>
-		
+
 		</div>
 		{/define_slot}
 		{block name="after_search"}
@@ -144,7 +144,7 @@
 		{define_slot name="language_selector"}<div id="language_selector">{language_selector autosubmit="true" type="ul" use_flags=false}</div>{/define_slot}
 		{block name="after_language_selector"}
 		{/if}
-		
+
 		{if !$ENV.prefs.hide_user_status}
 		<div id="user-status">
 		{if $ENV.username}
@@ -175,8 +175,8 @@
 			{define_slot name="bread_crumbs"}<div class="bread-crumbs">{bread_crumbs}</div>{/define_slot}
 			{block name="after_bread_crumbs"}
 		{/if}
-		
-	
+
+
 	</div>
 	{block name="before_main_table"}
 	{define_slot name="main_table"}
@@ -199,7 +199,7 @@
 		{block name="before_application_menu"}
 		{define_slot name="application_menu"}{include file="Dataface_Application_Menu.html"}{/define_slot}
 		{block name="after_application_menu"}
-		
+
 	{/define_slot}
 	{block name="after_left_column"}
 
@@ -207,18 +207,18 @@
 	<td valign="top" id="main_column">
 	{block name="before_main_column"}
 	{define_slot name="main_column"}
-	
+
 		{if $back and !$ENV.APPLICATION.hide_back}
 		<div class="browser_nav_bar">
 			<a href="{$back.link}" title="{translate id="scripts.GLOBAL.LABEL_BACK"}Back{/translate}">&lt;&lt; {translate id="scripts.GLOBAL.LABEL_GO_BACK"}Go Back{/translate}</a>
 		</div>
 		{/if}
-		
+
 
 		<div class="horizontalDivider">&nbsp;</div>
-		
 
-		
+
+
 		{if $ENV.APPLICATION_OBJECT->numMessages() > 0 }
 			{block name="before_message"}
 			<div class="portalMessage">
@@ -231,7 +231,7 @@
 			</div>
 			{block name="after_message"}
 		{/if}
-		
+
 		{if $ENV.APPLICATION_OBJECT->numErrors() > 0 }
 			{block name="before_errors"}
 			<div class="portalMessage">
@@ -245,8 +245,8 @@
 			</div>
 			{block name="after_errors"}
 		{/if}
-		
-		{if $ENV.prefs.show_table_tabs} 
+
+		{if $ENV.prefs.show_table_tabs}
 	   		{block name="before_table_tabs"}
 			{define_slot name="table_tabs"}
 				{actions_menu id="table_tabs" id_prefix="table-tabs-" class="contentViews" category="table_tabs" selected_action=$ENV.mode}
@@ -255,11 +255,11 @@
 			{define_slot name="menus"}{include file="Dataface_TableView_menus.html"}{/define_slot}
 			{block name="after_menus"}
 		{/if}
-		
-		{if $ENV.prefs.show_table_tabs} 
+
+		{if $ENV.prefs.show_table_tabs}
 		<div class="documentContent" id="region-content" style="border: 1px solid gray">
 		{/if}
-	
+
 		{block name="before_main_section"}
 		{define_slot name="main_section"}
 			{if $history and !$ENV.APPLICATION.hide_history}
@@ -279,7 +279,7 @@
 				{$body}
 				{/define_slot}
 				{block name="after_record_content"}
-		
+
 			</div>
 		{/define_slot}
 		{block name="after_main_section"}
@@ -333,7 +333,7 @@
 				{/define_slot}
 				{* Content to be shown just after record content in the Main Template. *}
 				{block name="after_record_content"}
-		
+
 			</div>
 		{/define_slot}
 		{block name="after_main_section"}
