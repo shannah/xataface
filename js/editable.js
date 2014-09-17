@@ -85,7 +85,6 @@ function editElement(src,target){
 		if ( !dfid ) continue;
 		fields.push(dfid);
 	}
-		alert('here');
 	if ( fields.length == 0 ){
 		// There were no editable fields in this block, so we'll try to edit 
 		// this one
