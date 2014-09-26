@@ -34,7 +34,7 @@
 			{/if}
 			{if $import_related_records_query and $importTable->getImportFilters()|@count > 0 }
 				<li id="import">
-					<a id="import_related_records" href="{$link3|escape}">
+					<a id="import_related_records" href="{$import_related_records_link|escape}">
 						{translate id="scripts.Dataface.RelatedList.toHtml.LABEL_IMPORT_RELATED_RECORDS" relationship=$relationship_label|escape}
 							Import {$relationship_label|escape} Records
 						{/translate}
