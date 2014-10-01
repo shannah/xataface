@@ -1617,8 +1617,12 @@ class Dataface_IO {
 				
 				$drec_post_snapshot = $drecords[$recordIndex]->strvals();
 				
+				
 				foreach ( $drec_post_snapshot as $ss_key=>$ss_val ){
 					if ( $drec_snapshot[$ss_key] != $ss_val ){
+					    if ( $record->_relationship->hasField($ss_key, true, true) ){
+					        $record->setValue($ss_key, $ss_val);
+					    }
 						$drecords[$recordIndex]->setValue($ss_key,$ss_val);
 					}
 				}
