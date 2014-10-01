@@ -936,7 +936,9 @@ class Dataface_FormTool {
 			$form_data['sections'] = array('__global__'=>array('header'=>df_translate('scripts.Dataface_FormTool.LABEL_EDIT_DETAILS', 'Edit Details'), 'name'=>'Edit','elements'=>&$form_data['elements']));
 			unset($form_data['elements']);
 		}
+		//throw new Exception("here");
 		if ( $useTabs ){
+
 			$form_data['tabs'] = array();
 			if ( @is_array($form_data['elements']) ){
 				foreach ($form_data['elements'] as $key=>$element){
@@ -986,7 +988,6 @@ class Dataface_FormTool {
 					}
 				}
 			}
-			
 			uasort($form_data['tabs'], array(&$this, '_sortTabs'));
 		}
 		$context = array('form_data'=>$form_data);
@@ -1007,8 +1008,16 @@ class Dataface_FormTool {
 	 * @private
 	 */
 	function _sortTabs($a,$b){
-		if ( @$a['order'] == @$b['order'] ) return 0;
-		return (@$a['order'] < @$b['order']) ? -1 : 1;
+	    $aOrder = 0;
+	    $bOrder = 0;
+	    if ( @$a['order']){
+	        $aOrder = floatval($a['order']);
+	    }
+	    if ( @$b['order']){
+	        $bOrder = floatval($b['order']);
+	    }
+		if ( $aOrder === @$bOrder ) return 0;
+		return ($aOrder < $bOrder) ? -1 : 1;
 	}
 	
 	
@@ -1285,6 +1294,7 @@ class Dataface_FormTool {
 			$tab['css_class'] = 'edit-form-tab'. ( ( $tab['name'] == $selectedTab ) ? ' selected tabs-selected':'');
 			$out[] = $tab;
 		}
+		uasort($out, array($this, '_sortTabs'));
 		return $out;
 	}
 	

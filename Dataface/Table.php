@@ -4156,7 +4156,9 @@ class Dataface_Table {
 			$tabs = $del->__tabs__($record);
 			$i=0;
 			foreach ($tabs as $tkey=>$tdata){
-				$tabs[$tkey]['order'] = $i++;
+				if ( !isset($tabs[$tkey]['order'] ) ) {
+				    $tabs[$tkey]['order'] = $i++;
+				}
 			}
 			return $tabs;
 		} else {
@@ -4171,7 +4173,9 @@ class Dataface_Table {
 			}
 			$i=0;
 			foreach ($tabs as $tkey=>$tdata){
-				$tabs[$tkey]['order'] = $i++;
+			    if ( !isset($tabs[$tkey]['order'] ) ) {
+				    $tabs[$tkey]['order'] = $i++;
+				}
 			}
 			return $tabs;
 		}
