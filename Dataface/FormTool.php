@@ -1137,9 +1137,6 @@ class Dataface_FormTool {
 		
 		if ( count($tabs) <= 1 ) return true;
 			// There is only one tab so we don't have to do anything fancy.
-		//$post = $_POST;
-		//$_POST=array();
-		//echo "About to validate each tab";
 		$session_data =& $this->getSessionData();
 		foreach ( array_keys($tabs) as $tabname ){
 			if ($tabname == $tab) continue;
@@ -1187,13 +1184,12 @@ class Dataface_FormTool {
 			// We are working with tabs, so before we save, we should store the data in
 			// a session variable.
 			$this->storeSessionData(array('_submitValues'=>$form->_submitValues,'_submitFiles'=>$form->_submitFiles), $tab, null, $record->getId());
-			
+			//exit;
 		}
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 		
 		$targets = preg_grep('/^--session:target:/', array_keys($query));
-		
 		if ( isset($tab) and count($targets) >0  ){
 			// We aren't saving this session, so we'll just forward to 
 			// the next tab.
@@ -1207,14 +1203,14 @@ class Dataface_FormTool {
 			if ( $target == '__default__' ) $target = $query['--session:target:__default__'];
 			if ( $target == '__save__' ) return;
 			
-			$currentTabKey = intval(array_search($tab, $tabnames));
-			
+			$currentTabKey = array_search($tab, $tabnames);
 			if ( $currentTabKey === false ){
 				// Current tab was not in the list of tabs.. this si 
 				// a problem
 				return PEAR::raiseError("Sorry there was a problem finding the specified tab: ".$query['--tab']." in the tabs for the record ".$currentRecord->getId().".  The available tabs are '".implode(', ', $tabnames).".");
 					
 			} 
+			$currentTabKey = intval($currentTabKey);
 			if ( $target == '__next__' ){
 				// The user clicked the 'next' button so they should
 				// be directed to the next tab
@@ -1343,10 +1339,8 @@ class Dataface_FormTool {
 	 *		)
 	 */
 	function getSessionData($tab=null, $session_key = null){
-		
+		Dataface_Application::getInstance()->startSession();
 		if ( !isset($session_key) ) $session_key = $this->getSessionKey();
-		
-		
 		if ( isset($tab) and isset($_SESSION[$session_key]['tabs'][$tab]) ){
 		
 			return $_SESSION[$session_key]['tabs'][$tab];
@@ -1367,6 +1361,7 @@ class Dataface_FormTool {
 	 * @return void
 	 */
 	function clearSessionData($session_key=null){
+	   Dataface_Application::getInstance()->startSession();
 		if ( !isset($session_key) ) $session_key = $this->getSessionKey();
 		
 		unset($_SESSION[$session_key]);
@@ -1381,6 +1376,7 @@ class Dataface_FormTool {
 	 * entire record.
 	 */
 	function storeSessionData($data, $tab, $session_key = null, $record_id=null){
+	   Dataface_Application::getInstance()->startSession();
 		if ( !isset($session_key) ) $session_key = $this->getSessionKey();
 		if ( !isset($record_id) ){
 			$app =& Dataface_Application::getInstance();
