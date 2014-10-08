@@ -33,6 +33,7 @@ class dataface_actions_new {
 	function handle(){
 		import( 'Dataface/FormTool.php');
 		import( 'Dataface/QuickForm.php');
+		$formTool =& Dataface_FormTool::getInstance();
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 		
@@ -47,11 +48,13 @@ class dataface_actions_new {
 		$currentRecord = new Dataface_Record($query['-table'], array());
 		$currentTable =& Dataface_Table::loadTable($query['-table']);
 		if ( !isset($query['--tab']) and count($currentTable->tabs($currentRecord)) > 1 ){
-			list($query['--tab']) = array_keys($currentTable->tabs($currentRecord));
+		   $tabs = $currentTable->tabs($currentRecord);
+		   uasort($tabs, array($formTool, '_sortTabs'));
+			list($query['--tab']) = array_keys($tabs);
 		} else if ( count($currentTable->tabs($currentRecord)) <= 1 ){
 			unset($query['--tab']);
 		}
-		$formTool =& Dataface_FormTool::getInstance();
+		
 		$form = $formTool->createRecordForm($currentRecord, true, @$query['--tab'], $query, $includedFields);
 		
 		

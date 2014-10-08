@@ -33,6 +33,7 @@ class dataface_actions_edit {
 	function handle(&$params){
 		import( 'Dataface/FormTool.php');
 		import( 'Dataface/QuickForm.php');
+		$formTool =& Dataface_FormTool::getInstance();
 		
 				
 		$app =& Dataface_Application::getInstance();
@@ -42,7 +43,9 @@ class dataface_actions_edit {
 		$currentRecord =& $app->getRecord();
 		$currentTable =& Dataface_Table::loadTable($query['-table']);
 		if ( !isset($query['--tab']) and count($currentTable->tabs($currentRecord)) > 1 ){
-			list($query['--tab']) = array_keys($currentTable->tabs($currentRecord));
+		   $tabs = $currentTable->tabs($currentRecord);
+		   uasort($tabs, array($formTool, '_sortTabs'));
+			list($query['--tab']) = array_keys($tabs);
 		} else if ( count($currentTable->tabs($currentRecord)) <= 1 ){
 			unset($query['--tab']);
 		}
@@ -60,7 +63,6 @@ class dataface_actions_edit {
 		 *
 		 */
 		//$form = new Dataface_QuickForm($query['-table'], $app->db(),  $query);
-		$formTool =& Dataface_FormTool::getInstance();
 		
 		
 		if ( $resultSet->found()> @$query['-cursor']){
