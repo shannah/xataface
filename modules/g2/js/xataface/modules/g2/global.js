@@ -11,6 +11,7 @@
 //require <xatajax.util.js>
 //require <xatajax.actions.js>
 //require <xataface/modules/g2/advanced-find.js>
+//require <jquery.floatheader.js>
 (function(){
 	var $ = jQuery;
 	var _ = xataface.lang.get;
@@ -47,6 +48,7 @@
 		var resultListTable = $('#result_list').get(0);
 		
 		if ( resultListTable ){
+		   $(resultListTable).floatHeader({recalculate:true});
 			var rowPermissions = {};
 			$('input.rowSelectorCheckbox[data-xf-permissions]', resultListTable).each(function(){
 				var perms = $(this).attr('data-xf-permissions').split(',');
