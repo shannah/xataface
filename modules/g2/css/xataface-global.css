@@ -2918,3 +2918,7 @@ a.xf-show-advanced-find.expanded > span.collapsed {display:none;}
 }
 
 .xf-form-group-inline div.field {float:left;}
+
+#result_listFloatHeaderClone thead {
+   background-color:white;
+}
