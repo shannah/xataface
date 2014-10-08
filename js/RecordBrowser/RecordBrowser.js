@@ -227,6 +227,26 @@
 		this.callback = null;
 		
 		/**
+		 * @name editParams
+		 * @memberOf xataface.RecordBrowser#
+		 * @description
+		 * Extra GET parameters passed to the edit form when editing a selected record.
+		 * 
+		 * @var object
+		 */
+		this.editParams = {};
+		
+		/**
+		 * @name newParams
+		 * @memberOf xataface.RecordBrowser#
+		 * @description
+		 * Extra GET parameters passed to the new form when adding a new record.
+		 * 
+		 * @var object
+		 */
+		this.newParams = {};
+		
+		/**
 		 * @name el
 		 * @memberOf xataface.RecordBrowser#
 		 * @description The document element that is used to display the dialog.
@@ -305,7 +325,8 @@
 					callback: function(){
 						rb.dirty=true;
 						rb.updateRecords();
-					}
+					},
+					params : rb.newParams
 				});
 				
 				$(this).dialog({
@@ -532,7 +553,8 @@
 					var recordid = encodeURIComponent(options.table)+'?'+encodeURIComponent(keyColName)+'='+encodeURIComponent(id);
 					var dlg = new xataface.RecordDialog({
 						recordid: recordid,
-						table: options.table
+						table: options.table,
+						params : options.editParams || {}
 					});
 					dlg.display();
 				});

@@ -77,8 +77,7 @@ class HTML_QuickForm_lookup extends HTML_QuickForm_text {
      */
     function toHtml()
     {
-    	
-    	
+
         
 		$out = '';
 		
@@ -113,47 +112,12 @@ class HTML_QuickForm_lookup extends HTML_QuickForm_text {
 		  $selector = '.xf-lookup-'.$this->index_prefix.'-'.$this->index;
 	   }
 		
-		
-		/*
-		$out  .= '
-		<script type="text/javascript">
-		jQuery(document).ready(function($){
-			var options = '.json_encode($properties).';
-			if ( !options.filters ) options.filters = {};
-			options.dynFilters = {};
-			$.each(options.filters, function(key,val){
-				if ( val.indexOf("$")==0 ){
-					options.dynFilters[key] = val.substr(1);
-					delete options.filters[key];
-				}
-			});
-			options.callback = '.$properties['callback'].';
-			options.click = function(){
-				$.each(options.dynFilters, function(key,val){
-					delete options.filters[key];
-					$("form *[name="+val+"]").each(function(){
-						options.filters[key] = $(this).val();
-					});
-				});
-				
-			};
-			$("'.$selector.'").RecordBrowserWidget(options);
-		});
-		</script>';
-	   */
 		return '<span style="white-space:nowrap">'.$out.'</span>';
         
         	
         
     } //end func toHtml
     
-    
-    //function getFrozenHtml(){
-    //	return $this->getValue();
-    //}
-    
-    
-	
 	
 
 }
