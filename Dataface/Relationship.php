@@ -1778,7 +1778,7 @@ class Dataface_Relationship {
 				
 				
 			} else {
-				if ( $parentPerms['add new related record'] ){
+				if ( @$parentPerms['add new related record'] ){
 					$perms['new'] = 1;
 				} else if ( isset($parentPerms['add new related record']) and !@$parentPerms['add new related record'] ){
 					$perms['new'] = 0;

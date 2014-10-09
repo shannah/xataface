@@ -771,10 +771,11 @@ class Dataface_Record {
 	 * @see http://www.xataface.com/wiki/relationships.ini_file
 	 */
 	function numRelatedRecords($relname, $where=0){
-	
-		if ( !isset( $this->_numRelatedRecords[$relname][$where]) ){
+	   if ( !isset( $this->_numRelatedRecords[$relname][$where]) ){
 			$relationship =& $this->_table->getRelationship($relname);
-			
+			if ( PEAR::isError($relationship) ){
+			   throw new Exception($relationship->getMessage());
+			}
 			//if ( $where !== 0 ){
 				$sql = $this->parseString($relationship->getSQL($this->loadBlobs, $where));
 			//} else {
