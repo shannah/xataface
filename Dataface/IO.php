@@ -841,7 +841,7 @@ class Dataface_IO {
 		$sql = "select `".$table_keys[0]."`, $versionField from `".$this->tablename($tablename)."` where ";
 		$where = array();
 		foreach ($query as $key=>$val){
-			$where[] = '`'.$key.'`="'.addslashes($val).'"';
+			$where[] = '`'.$key."`='".addslashes($val)."'";
 		}
 		$sql .= implode(' AND ', $where).' limit 1';
 		
