@@ -326,7 +326,11 @@
 						rb.dirty=true;
 						rb.updateRecords();
 					},
-					params : rb.newParams
+					params : rb.newParams,
+					width : rb.width,
+					height : rb.height,
+					marginW : rb.marginW,
+					marginH : rb.marginH
 				});
 				
 				$(this).dialog({
@@ -554,7 +558,11 @@
 					var dlg = new xataface.RecordDialog({
 						recordid: recordid,
 						table: options.table,
-						params : options.editParams || {}
+						params : options.editParams || {},
+						width : options.width,
+                  height : options.height,
+                  marginW : options.marginW,
+                  marginH : options.marginH
 					});
 					dlg.display();
 				});
