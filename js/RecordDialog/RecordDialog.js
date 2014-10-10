@@ -7,6 +7,7 @@
 		window.xataface = {};
 	}
 	
+	
 	window.xataface.RecordDialog = RecordDialog;
 	var _ = xataface.lang.get;
 	
@@ -54,6 +55,8 @@
 		this.marginH = this.marginH || 25;
 		this.marginW = this.marginW || 25;
 	};
+	
+	RecordDialog.version = 1;
 	
 	RecordDialog.prototype = {
 	
@@ -210,7 +213,7 @@
 				//buttons:buttons,
 				height: dialog.height || $(window).height()-dialog.marginH,
 				width: dialog.width || $(window).width()-dialog.marginW,
-				title: (this.recordid?'Edit '+this.table+' Record':'Create New '+this.table+' Record'),
+				title: dialog.title || (this.recordid?'Edit '+this.table+' Record':'Create New '+this.table+' Record'),
 				modal: true
 			});
 			
