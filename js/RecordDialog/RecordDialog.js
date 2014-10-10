@@ -36,12 +36,20 @@
 	 * @property {String} recordid The ID of the record to edit (if null then this will be a new record form).
 	 * @property {String} table The table of the record to edit or to add to.
 	 * @property {String} baseURL The base URL of the RecordDialog folder.  Default is DATAFACE_URL+'/js/RecordDialog'
-	 * 
+	 * @property {String} title Optional title to be displayed in the title bar of the dialog.
+	 * @property {int} width Optional width for the dialog (in pixels)
+	 * @property {int} height Optional height for the dialog (in pixels)
+	 * @property {int} marginW Optional left/right margins (with respect to the window).
+	 * @property {int} marginH Optional top/bottom margins (with respect to the window).
 	 * @param {Object} o
 	 * @param {String} o.recordid The Record ID of the record to edit.
 	 * @param {String} o.table The name of the table to add new records to.
 	 * @param {xataface.RecordDialog.Callback} o.callback The callback method to be called when saving is complete.
-	 *
+	 * @param {String} o.title Optional title to be displayed in the title bar of the dialog.
+	 * @param {int} o.width Optional width for the dialog (in pixels)
+	 * @param {int} o.height Optional height for the dialog (in pixels)
+	 * @param {int} o.marginW Optional left/right margins (with respect to the window).
+	 * @param {int} o.marginH Optional top/bottom margins (with respect to the window).
 	 */
 	function RecordDialog(o){
 		this.el = document.createElement('div');
