@@ -37,6 +37,28 @@ var dialog = new xataface.RecordDialog({
 dialog.display();
 ~~~
 
+A Fuller Example
+
+~~~
+var dialog = new xataface.RecordDialog({
+   table : 'some_table',
+   recordid : 'some_table?id=25',
+   title : 'Edit Julie\'s Profile',
+   width : 600,
+   height : 250,
+   params : {
+      '-fields' : 'first_name last_name' // Only show first and last name fields
+   },
+   callback : function(data){
+      // Data contains all of the record data.  Use console.log to see what
+      // is here.  Also includes special __title__ and __id__ properties.
+      alert('You saved her profile.  Her name is now \''+data.first_name+'\'');
+   }
+});
+dialog.display();
+
+~~~
+
 ##Options
 
 | Option | Type | Description | Required | Since |
@@ -49,6 +71,7 @@ dialog.display();
 | height | Number | The height of the dialog in pixels | No | 2.0.4|
 | marginW | Number | Number of pixels between edge of window and the right/left edges of the dialog. | No | 2.0.4 |
 | marginH | Number | Number of pixels between edge of window and the top/bottom edges of the dialog. | No | 2.0.4 |
+| params | Object | Additional GET parameters that will be passed to the new/edit record forms. | No | 1.0 |
 
 ##How RecordDialog is Used in Xataface
 
