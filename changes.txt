@@ -1,3 +1,31 @@
+Xataface 2.1.0 4800
+October 13, 2014
+    - Added support for user-configuration overrides, including Show/Hide columns in 
+      list view.
+    - Improved options for RecordDialog - including width, height, and title support.
+    - G2 Theme now included and is default UI.
+    - Added DynamicTable class to improve performance of grafted fields.
+    - Added support for mysqli.
+    - added beforeLoadResultSet() hook in application delegate.
+    - added support for NOT LIKE queries.
+    - Added support for displaying field groups inline.
+    - Added support for overriding field definitions in relationships.
+        https://github.com/shannah/xataface/commit/6aed1c4813f977d7bc0db10cda827193896ad0ed
+    - Added getParentURL() method to related records.
+        https://github.com/shannah/xataface/commit/0345243910329ac79954f643c2749305fa9f8d5c
+    - Added view_related_record action to show a related record without having to navigate
+        to actual record.
+        https://github.com/shannah/xataface/commit/08502f57c30b57b30bfdcb78efabfcd12a228246
+    - Added CSS file that can be injected into pages that are shown inside iframes.
+        https://github.com/shannah/xataface/commit/8d2dda76838d6091df78d25ecdae769a4a62f509
+    - Added --include-title and --include-id query parameters for export_json action
+        https://github.com/shannah/xataface/commit/8cd717c68428b96c0ad1cb6ff9521ac49f387755
+    - Added support for modules to override HTML attributes
+        https://github.com/shannah/xataface/commit/838bd47d2aa740e36f4fc58d4180b1eed90bd697
+        
+    Many other improvements.  See all changes at https://github.com/shannah/xataface/commits/master
+        
+    
 Xataface 2.0.3 4798
 September 11, 2013
     - Fixed fatal error in installer.
