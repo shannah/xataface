@@ -55,6 +55,9 @@ class Dataface_FormTool_grid {
 			$subfactory = new HTML_QuickForm();
 			$dummyRelatedRecord = new Dataface_RelatedRecord($record, $relationship->getName());
 			//print_r($dummyRelatedRecord->getPermissions());
+			$orderCol = $relationship->getOrderColumn();
+			if ( !$orderCol or PEAR::isError($orderCol) ){ $el->reorder=false;}
+				
 			foreach ($columns as $column){
 				
 				$colTable =& $relationship->getTable($column);
@@ -87,8 +90,6 @@ class Dataface_FormTool_grid {
 				$el->defaults[$column] = $defaultValue;
 				$el->addField($colFieldDef, $columnElement, $colPerms );
 				
-				$orderCol = $relationship->getOrderColumn();
-				if ( PEAR::isError($orderCol) ){ $el->reorder=false;}
 				
 				unset($columnElement);
 				unset($colFieldDef);
