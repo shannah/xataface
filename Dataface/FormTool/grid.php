@@ -21,19 +21,33 @@ class Dataface_FormTool_grid {
 		$widget =& $field['widget'];
 		$el =& $factory->addElement('grid',$formFieldName, $widget['label']);
 		$el->setProperties($widget);
-		if ( !$record->checkPermission('delete related record', array('relationship'=>$field['relationship']))){
-			$el->delete=false;
-		}
+		$rperms = $record->getPermissions(array('relationship'=>$field['relationship']));
 		if ( !$record->checkPermission('add new related record', array('relationship'=>$field['relationship']))){
 			//echo "No add new ".$record->_table->tablename;
 			$el->addNew=false;
 		}
-                if ( !$record->checkPermission('add existing related record', array('relationship'=>$field['relationship']))){
+        if ( !$record->checkPermission('add existing related record', array('relationship'=>$field['relationship']))){
 			//echo "No add new ".$record->_table->tablename;
 			$el->addExisting=false;
 		}
 		if ( isset($field['relationship']) ){
 			$relationship =& $table->getRelationship($field['relationship']);
+			
+			if ( !$record->checkPermission(
+			            'remove related record', 
+			            array('relationship'=>$field['relationship'])
+			        )
+			        ){
+                $el->delete=false;
+            } else if ( $relationship->isOneToMany() and 
+                    isset($rperms['delete related record']) and
+                    !@$rperms['delete related record']){
+			    $el->delete=false;
+			} 
+			
+			if ( !$relationship->supportsRemove() ){
+			    $el->delete=false;
+			}
 			
 			if ( !$relationship->supportsAddNew() ){
 				$el->addNew=false;
