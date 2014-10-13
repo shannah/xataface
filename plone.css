@@ -2753,3 +2753,11 @@ table.xf-grid-table {
 table.xf-grid-table td {
     border-top: 1px solid #eaeaea;
 }
+#result-list-actions.icon-only a {
+    text-decoration: none;
+}
+
+#result-list-actions.icon-only img {
+    height: 14px;
+    
+}

@@ -1,4 +1,5 @@
 //require <jquery.packed.js>
+//require <xatajax.core.js>
 //require-css <xataface/actions/show_hide_columns.css>
 //require <jquery.noty.js>
 

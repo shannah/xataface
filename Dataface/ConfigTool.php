@@ -84,6 +84,7 @@ class Dataface_ConfigTool {
 			{
 				$config_dir = DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'user_config';
 				if ( file_exists($config_dir) ){
+				    Dataface_Application::getInstance()->_conf['user_config_enabled'] = 1;
 					$htaccess_file = $config_dir.DIRECTORY_SEPARATOR.'.htaccess';
 					if ( !file_exists($htaccess_file) ){
 						file_put_contents($htaccess_file, 'Deny from all');
