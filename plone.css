@@ -2745,3 +2745,11 @@ img.blob-preview {
 }
 
 .xf-form-group-inline div.field {float:left;}
+
+table.xf-grid-table {
+    border-collapse: collapse;
+}
+
+table.xf-grid-table td {
+    border-top: 1px solid #eaeaea;
+}

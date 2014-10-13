@@ -2922,3 +2922,8 @@ a.xf-show-advanced-find.expanded > span.collapsed {display:none;}
 #result_listFloatHeaderClone thead {
    background-color:white;
 }
+
+
+table.xf-grid-table {
+    border-collapse: collapse;
+}

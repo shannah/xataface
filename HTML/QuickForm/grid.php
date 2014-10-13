@@ -283,7 +283,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                         </td>
                         <td style="width: 20px">
                 
-                            <?php if ( !$this->_flagFrozen ): ?>
+                            <?php if ( !$this->_flagFrozen and $this->reorder ): ?>
                             <img src="<?php echo DATAFACE_URL.'/images/add_icon.gif';?>" 
                                style="cursor: pointer; display: none"
                                   
@@ -292,7 +292,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                              <?php endif; ?>
                         </td>
                         <td style="width: 20px">
-                        <?php if (!$this->_flagFrozen):?>
+                        <?php if (!$this->_flagFrozen and $this->reorder):?>
                            <img src="<?php echo DATAFACE_URL.'/images/arrowUp.gif';?>" 
                                 style="display: none; cursor: pointer;"
                                 alt="Move row up"  
