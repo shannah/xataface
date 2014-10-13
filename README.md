@@ -13,7 +13,7 @@ GPL
 
 ##Installation
 
-1. Clone the repository or [download](https://sourceforge.net/projects/dataface/files/xataface/) the latest release from Source Forge.
+1. Clone the repository or [download](https://github.com/shannah/xataface/releases) the latest release from Source Forge.
 2. Read "Creating the Application" section of [this page](http://xataface.com/wiki/How_to_build_a_PHP_MySQL_Application_with_4_lines_of_code)
 3. Read the [Getting Started Tutorial](http://xataface.com/documentation/tutorial/getting_started)
 4. Problems?  Read the [Troubleshooting](http://xataface.com/wiki/Troubleshooting) page
