@@ -195,6 +195,82 @@ E.g. Suppose you wanted to create an action "filtered_list" that is the same as 
     label="Approved List"
 ~~~
 
+###Overriding Existing Actions
+
+Actions, in Xataface, are loaded from various actions.ini files in the following order:
+
+1. `XATAFACE_PATH/actions.ini`
+2. `modules/MODULE_NAME/actions.ini`  (for each activated module *MODULE_NAME*)
+3. `APP_PATH/actions.ini`
+
+The *last* action loaded takes precedence in the case of a name conflict.  That means that you can override an action by simply defining an action with the same name in your app's *actions.ini* file.
+
+**WARNING: Overriding an action will replace ALL configuration properties of the action, including permissions.  Simply overriding a private action will cause it to be publicly accessible if you don't set the configuration directive.**
+
+E.g. You *could* override the *list* action by adding the following to your `actions.ini` file:
+
+~~~
+[list]
+~~~
+
+This would have the following consequences:
+
+1. The *list* action would now be effectively a blank action with no configuration properties.
+2. If there is a *list* action handler (e.g. in `actions/list.php` or `xataface/actions/list.php`, it would be open to the public because no *permission* directive was set).
+3. The *list* action would no longer be listed in any menus because it has no *category* directive.
+
+
+A better way to override the *list* action is to use inheritance.  E.g:
+
+~~~
+[list > list]
+~~~
+
+What this does is creates a new action named *list* that inherits all of the configuration directives from the existing action named *list*.  Overriding *list* in this manner would have no effect on program execution because it effectively replaces *list* with an exact duplicate of itself. Now we can override individual properties selectively.  E.g. If we wanted to change the label of the *list* action to "My List", we could do:
+
+~~~
+[list > list]
+   label="My List"
+~~~
+
+
+###Hiding Actions
+
+The vanilla Xataface install includes lots of menus with useful functions - but some applications don't require all of these functions.  For example, the list view includes an *Export XML* action.  If you want to hide this so that it doesn't show up, you can easily do this by overriding the *export_xml* action, and changing the category to something that isn't used, like an empty string:
+
+~~~
+[export_xml]
+   category=""
+~~~
+
+**NOTE: Before using this approach to hide actions from your UI, take a moment to consider whether you want to prevent users from accessing this functionality or if you just want the button hidden.  Hiding the menu item won't actually block users from accessing this functionality because they can still access it with a well-crafted URL.  If you actually want to block access, then you should use permissions instead to deny access to the action.**
+
+##Action Permissions
+
+By default all actions are publicly accessible.  There are two ways to limit access to an action:
+
+1. Using the `permission` directive of the actions.ini file.
+2. Using PHP logic inside the action handler to limit access to itself.
+
+The `permission` directive specifies the name of a permission that must be granted to a user in order to access the action.  If a request is made by a logged-in user for an action and the current user lacks the permission specified, then they will receive an error message. If the user isn't yet logged in, and they request an action for which they don't have permission, they will be redirected to the login page.
+
+You can see many examples of the `permission` directive inside Xataface's [actions.ini file](../actions.ini).  E.g. the *new* action:
+
+~~~
+[new]
+	label = New Record
+	description = Create a new record
+	url = "{$this->url('-action=new', false)}"
+	icon = "{$dataface_url}/images/add_icon.gif"
+	category = table_actions
+	accessKey = n
+	mode = browse
+	permission = new
+	order=1
+~~~
+
+The `permission` directive here specifies that users require the *new* permission in order to access the new record form.  This means that the "New Record" button won't appear in any menus for unauthorized users, and that cleverly crafted URLs for the *new* action will be blocked except for authorized users.
+
 
 
 
