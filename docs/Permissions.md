@@ -402,7 +402,7 @@ return Dataface_PermissionsTool::getRolePermissions('READ ONLY');
 Xataface defines the following core permissions:
 
 | Permission Name | Description | Included in  | Excluded in |
-|---|---|---|
+|---|---|---|---|
 | `view` | View record contents | `READ BASIC`, `READ ONLY` |  |
 | `link` | Link to given record. | `READ BASIC`, `READ ONLY` |  |
 | `view in rss` | View record as part of RSS feed | `READ ONLY` |  |
