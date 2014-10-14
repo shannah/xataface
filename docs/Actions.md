@@ -10,7 +10,7 @@
   1. [Core Action Categories](#core-action-categories)
 6. [Custom Actions](#custom-actions)
   1. [Hello World](#hello-world-action)
-  2. [actions.ini directives](#actions.ini-directives)
+  2. [actions.ini directives](#directives)
   3. [Inheritance](#action-inheritance)
   4. [Overriding Existing Actions](#overriding-existing-actions)
   5. [Hiding Actions](#hiding-actions)
@@ -182,6 +182,8 @@ This action would simply display:
 ~~~
 Hello World
 ~~~
+
+<a name="directives"></a>
 
 ###actions.ini Directives
 
