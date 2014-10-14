@@ -14,7 +14,9 @@
 6. [Custom Permission Sets](#custom-permission-sets)
    1. [The permissions.ini file](#permissions-ini-file)
    2. [Permission-Set Inheritance](#permission-set-inheritance)
-
+7. [Table-level Permissions](#table-level-permissions)
+8. [Field-level Permissions](#field-level-permissions)
+   1. [Default field permissions](#default-field-permissions)
 <a name="intro"></a>
 
 Xataface includes a fine-grained, extensible, expressive permissions infrastructure that allows you (the developer) to define exactly who gets access to which actions in which context.
@@ -735,5 +737,119 @@ function getPermissions(Dataface_Record $record = null){
    }
 }
 ~~~
+
+##Table-Level Permissions
+
+As the examples at the beginning of this article show, table-level permissions are those permissions that pertain to a particular table.  They are provided by the `getPermissions()` method of a table delegate class.  The `getPermissions()` method is called every time Xataface wants to know if a particular action is granted in a given context.  If Xataface is querying for the purpose of interacting with the table, but not with a particular record, it may pass `null` as the `$record` parameter.  
+
+Your `getPermissions($record)` method should answer the question:
+
+*"What can the current user do with the provided `$record` object?"*
+
+And it should answer with a permissions set (as an associative array).
+
+##Field-Level Permissions
+
+Xataface also allows you to limit access to the individual fields/columns in your table.  By default, your fields will inherit the permissions that you have assigned at the table level (if you have defined a `getPermissions()` method for the table), or at the application level (if you haven't defined any custom permissions at the table level).
+
+To limit access on a particular field, you should implement a `fieldname__permissions()` method in the table delegate class (where *fieldname* is the name of the field to limit access on).
+
+We had an example earlier in this article using this strategy to limit access to the `owner` field of a table so that users don't have edit access to it, even though they have been assigned `edit` access at the table/record-level:
+
+~~~
+function owner__permissions(Dataface_Record $record = null){
+   $user = Dataface_AuthenticationTool::getInstance()->getLoggedInUser();
+   if ( $user and $user->val('role') === 'USER' 
+           and $record and $user->val('username') === $record->val('owner')
+           ){
+      return array('edit' => 0);
+   } else {
+      return null;
+   }
+}
+~~~
+
+In this case, all we have done is return a permission set with the single permission, `edit`, denied. 
+
+ This highlights a key difference between Xataface's handling of *field* permissions and *record/table/app* permissions:
+ 
+ **Field permissions are calculated by merging field permissions with table-level permissions**
+ 
+ **Record/Table permissions are calculated by replacing the application-level permissions with the permissions defined at table level**
+ 
+ This is an important difference, as it means that the following won't work:
+ 
+ ~~~
+function owner__permissions(Dataface_Record $record = null){
+   $user = Dataface_AuthenticationTool::getInstance()->getLoggedInUser();
+   if ( $user and $user->val('role') === 'USER' 
+           and $record and $user->val('username') === $record->val('owner')
+           ){
+      return Dataface_PermissionsTool::READ_ONLY();
+   } else {
+      return null;
+   }
+}
+~~~
+
+
+This won't work because the `READ ONLY` permission set doesn't explicitly deny any permissions.  It just grants permissions, and omits other permissions.  That means that if it is merged with `Dataface_PermissionsTool::ALL()` or some other more permissive set of permissions, the result will effectively be all permissions!
+
+Using `READ_ONLY()` at the application-level or table level is fine because:
+
+1. The permissions at Application-level at the top level and thus aren't merged with anything.
+2. The permissions at the table/record level will replace the application-level permissions - they won't be merged together.
+
+###Default Field Permissions
+
+Being able to define permissions on each field individually is powerful, but it may be cumbersome in cases where the majority of fields in a table require the same custom permissions.
+
+For example, suppose, in our previous example with the product owner, we wanted a user to *only* be able to modify the `owner` field, but for all other fields to be *read only*.  A first instinct might be to assign `READ ONLY` permissions at the record level, and then grant the `edit` permission only on the `owner` field.  This won't work because, the user requires the `edit` permission to access the *Edit* form at all.  Therefore we need to express the following permissions:
+
+* Record Level: EDIT
+* All Fields : READ ONLY
+* `owner` field : EDIT
+
+Xataface allows you to implement a `__field__permissions()` method to define default permissions for all fields of a table.  So we could solve this problem as follows:
+
+~~~
+function getPermissions(Dataface_Record $record = null){
+   $user = Dataface_AuthenticationTool::getInstance()->getLoggedInUser();
+   if ( $user and $user->val('role') === 'USER' ){
+      if ( $record and $user->val('username') === $record->val('owner') ){
+          return Dataface_PermissionsTool::getRolePermissions('EDIT');
+      } else {
+          return Dataface_PermissionsTool::getRolePermissions('PRODUCTS USERS');
+      }
+   } else {
+       return null;
+   }
+}
+
+function __field__permissions(Dataface_Record $record = null){
+   $user = Dataface_AuthenticationTool::getInstance()->getLoggedInUser();
+   if ( $user and $user->val('role') === 'USER' 
+           and $record and $user->val('username') === $record->val('owner')
+           ){
+      return array('edit' => 0);
+   } else {
+      return null;
+   }
+}
+
+function owner__permissions(Dataface_Record $record = null){
+   $user = Dataface_AuthenticationTool::getInstance()->getLoggedInUser();
+   if ( $user and $user->val('role') === 'USER' 
+           and $record and $user->val('username') === $record->val('owner')
+           ){
+      return array('edit' => 1);
+   } else {
+      return null;
+   }
+}
+~~~
+
+##Relationship Permissions
+
 
 
