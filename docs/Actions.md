@@ -239,7 +239,7 @@ What this does is creates a new action named *list* that inherits all of the con
 The vanilla Xataface install includes lots of menus with useful functions - but some applications don't require all of these functions.  For example, the list view includes an *Export XML* action.  If you want to hide this so that it doesn't show up, you can easily do this by overriding the *export_xml* action, and changing the category to something that isn't used, like an empty string:
 
 ~~~
-[export_xml]
+[export_xml > export_xml]
    category=""
 ~~~
 
