@@ -1,5 +1,19 @@
 #Xataface Permissions
 
+##Contents
+
+1. [Intro](#intro)
+2. [Example Permission Configurations](#examples)
+   1. [Full Access to Admin - No access to Others](#full-admin-no-access-other)
+   2. [Regular Users READ ONLY access to Table](#read-only-to-table)
+   3. [Regular Users have EDIT access to own Records](#edit-access-to-own)
+3. [Using `Dataface_PermissionsTool` to get Permissions](#permissions-tool)
+   1. [Permission Sets / `getRolePermissions()`](#get-role-permissions)
+4. [Xataface Core Permissions](#xataface-core-permissions)
+5. [Xataface Core Permission-Sets](#xataface-core-permission-sets)
+
+<a name="intro"></a>
+
 Xataface includes a fine-grained, extensible, expressive permissions infrastructure that allows you (the developer) to define exactly who gets access to which actions in which context.
 
 You can define permission rules for your application at 4 different levels:
@@ -10,6 +24,8 @@ You can define permission rules for your application at 4 different levels:
 4. **Field Level** By defining `fieldname__permissions()` methods in your table delegate classes.
 
 It is recommended that you define very restrictive permissions at the application level, then selectively remove restrictions at the table level as required to provide users access to only those areas that they need.
+
+<a name="examples"></a>
 
 ##Example Permission Configurations
 
@@ -34,6 +50,7 @@ And that your `conf.ini` file contains the following:
    email_column=email
 ~~~
 
+<a name="full-admin-no-access-other"></a>
 
 ###Full Access to Administrator, No Access Otherwise
 
@@ -50,6 +67,7 @@ function getPermissions(Dataface_Record $record = null){
 }
 ~~~
 
+<a name="read-only-to-table"></a>
 
 ###Regular Users have READ-ONLY access to the "products" table
 
@@ -80,6 +98,9 @@ function getPermissions(Dataface_Record $record = null){
 ~~~
 
 **Notice** that we return null for all users except for logged in users with *role*="USER".  This means that, for other users, the default permissions (defined in the Application Delegate Class) should be used.
+
+
+<a name="edit-access-to-own"></a>
 
 ###Regular Users have EDIT access to their Own Product Records
 
@@ -168,6 +189,8 @@ In these examples we were introduced to 3 new concepts:
 1. The `Dataface_PermissionsTool::getRolePermissions()` method.
 2. That the `Dataface_PermissionsTool` methods simply return an associative array assigning `0` or `1` to each permission.
 3. The `fieldname__permissions()` method.
+
+<a name="permissions-tool"></a>
 
 ##Using `Dataface_PermissionsTool` To Get Permissions
 
@@ -361,7 +384,9 @@ Array
 
 These methods are just returning an associative array that indicates whether permissions are granted or disallowed in a particular context.  All of these permissions are defined in the [permissions.ini file](../permissions.ini).  In addition, modules can define their own permissions in their own `permissions.ini files`, and so can applications.  
 
-###Permission Groups / getRolePermissions()
+<a name="get-role-permissions"></a>
+
+###Permission Sets / getRolePermissions()
 
 If you look inside the [permissions.ini file](../permissions.ini), you'll notice that all of the individual permission names are defined at the beginning of the file as name/description pairs.  But the end of the file consists of named sections whose properties assign `0`-`1` values to the individual permissions.  These sections are permission sets (sometimes called *roles*).  For example, this section of the permissions.ini file defines the "READ ONLY" permission set, which is actually used by the `Dataface_PermissionsTool::READ_ONLY()` method as a source for its permission set:
 
