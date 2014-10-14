@@ -11,6 +11,9 @@
    1. [Permission Sets / `getRolePermissions()`](#get-role-permissions)
 4. [Xataface Core Permissions](#xataface-core-permissions)
 5. [Xataface Core Permission-Sets](#xataface-core-permission-sets)
+6. [Custom Permission Sets](#custom-permission-sets)
+   1. [The permissions.ini file](#permissions-ini-file)
+   2. [Permission-Set Inheritance](#permission-set-inheritance)
 
 <a name="intro"></a>
 
@@ -646,4 +649,91 @@ manage_migrate=1
 manage_build_index=1
 install = 1
 ~~~
+
+<a name="custom-permission-sets"></a>
+##Custom Permission-Sets
+
+Although Xataface provides a large set of built-in permission-sets, you are encouraged to create your own permission-sets to suit the access required to users of your application.  Any time you find yourself building custom permission sets inside your `getPermissions()` method, you should probably consider creating a custom permission set in your app's permissions.ini file.
+
+
+<a name="permissions-ini-file"></a>
+###The permissions.ini file
+
+In general, you should never modify any files inside the `xataface` directory, because that will make it more difficult for you to upgrade to newer versions later.  If you want to create a custom permission set, you should create a file named *permissions.ini* in the root directory of your application.  The format of this file should match the format of the Xataface *permissions.ini* file.  At the beginning this file will be empty.  
+
+**There is no need to copy the contents of the Xataface permissions.ini file into your app's permissions.ini file.  Xataface will load both of them**
+
+The `permissions.ini` file, just like most Xataface configuration files, can be defined in 3 places:
+
+1. The core Xataface permissions.ini file.
+2. Inside individual modules.
+3. Inside the application root.
+
+These files are loaded at the beginning of each request, in the following order:
+
+1. `XATAFACE_ROOT/permissions.ini`
+2. `modules/MODULE_NAME/permissions.ini` (for each active module)
+3. `APP_ROOT/permissions.ini`
+
+Permission sets that are loaded last take precedence, so you do have the ability to completely override core permission sets, by simply defining a permission set with the same name.
+
+E.g. You could redefine the `READ ONLY` permission set to grant no permissions by adding the following to your app's `permissions.ini` file:
+
+~~~
+[READ ONLY]
+~~~
+
+This probably isn't a good idea though because it doesn't make sense for "READ ONLY" to take on the same meaning as "NO ACCESS".
+
+<a name="permission-set-inheritance"></a>
+
+###Permission-Set Inheritance
+
+You can use the `extends` keyword to cause your permission set to inherit all of the permissions from an existing permission set.  In fact, if you look at the core Xataface [permissions.ini file](../permissions.ini), you'll see that many of the permission sets are defined as an extension of an existing one.  E.g. `EDIT` extends `READ ONLY`.  That way it only has to explicitly define those permissions that `READ ONLY` doesn't already define.
+
+One place where this would be useful is in our previous example when we wanted our users to have `READ ONLY` permissions, but also to be able to insert new records.  Our `getPermissions()` method looked like:
+
+~~~
+function getPermissions(Dataface_Record $record = null){
+   $user = Dataface_AuthenticationTool::getInstance()->getLoggedInUser();
+   if ( $user and $user->val('role') === 'USER' ){
+      if ( $record and $user->val('username') === $record->val('owner') ){
+          return Dataface_PermissionsTool::getRolePermissions('EDIT');
+      } else {
+          $perms = Dataface_PermissionsTool::READ_ONLY();
+          $perms['new'] = 1;
+          return $perms;
+      }
+   } else {
+       return null;
+   }
+}
+~~~
+
+Rather than explicitly add the 'new' permission inside this method, let's create a new permission set named *PRODUCTS USERS*.
+
+In our app's `permissions.ini` file:
+
+~~~
+[PRODUCTS USERS extends READ ONLY]
+   new=1
+~~~
+
+Then we can change the `getPermissions()` method to:
+
+~~~
+function getPermissions(Dataface_Record $record = null){
+   $user = Dataface_AuthenticationTool::getInstance()->getLoggedInUser();
+   if ( $user and $user->val('role') === 'USER' ){
+      if ( $record and $user->val('username') === $record->val('owner') ){
+          return Dataface_PermissionsTool::getRolePermissions('EDIT');
+      } else {
+          return Dataface_PermissionsTool::getRolePermissions('PRODUCTS USERS');
+      }
+   } else {
+       return null;
+   }
+}
+~~~
+
 
