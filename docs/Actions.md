@@ -271,6 +271,80 @@ You can see many examples of the `permission` directive inside Xataface's [actio
 
 The `permission` directive here specifies that users require the *new* permission in order to access the new record form.  This means that the "New Record" button won't appear in any menus for unauthorized users, and that cleverly crafted URLs for the *new* action will be blocked except for authorized users.
 
+If you require more precision in determination of whether the current user has authorization to perform an action, you may use logic inside the action itself.  E.g. The following snippet is from the [delete_file action](../actions/delete_file.php):
+
+~~~
+if ( !$record->checkPermission('edit', array('field'=>$fieldDef['Field'])) ){
+	return Dataface_Error::permissionDenied('You don\'t have permission to edit this field.');
+}
+~~~
+
+This uses the Xataface API (particularly the `Dataface_Record::checkPermission()` method) to check whether the current record has the edit permission on a particular field.  If not, it returns a *permission denied* error, which Xataface knows how to handle.
+
+##PHP Expressions in actions.ini Directives
+
+There are three types of directives that can be included in an action definition:
+
+1. **Static**.  These cannot contain any variables.  Examples of static directives include `category`, `table`, `relationship`, `name`, `id`, and `permission`.
+2. **Boolean Expressions**. These are evaluated as PHP expressions that resolve to a boolean value.  Any directive whose name ends with "condition" is treated as a *Boolean Expression*.
+3. **String**.  These are evaluated as PHP strings, so they can contain PHP expressions inside curly braces `{}`, just like double-quoted PHP strings can.  All non-static directives other than "condition" properties are treated as strings.
+
+###Expression Context
+
+PHP expressions run inside boolean expressions and String expressions are executed in a limited context with only a small handful of special variables accessible:
+
+| Variable Name | Description | Example |
+|---|---|---|
+| `$site_url` | The URL to the app directory.  Not including `index.php` | `url="{$site_url}/pages/mypage.html"`|
+| `site_href` | The URL to the app, including `index.php` | `url="{$site_href}?-action=foo"`|
+| `$dataface_url` | The URL to the Xataface directory | `icon="{$dataface_url}/images/myimg.png"`|
+| `$table` | The name of the current table (i.e. the value of the `-table` param for this request). | `condition="$table=='my_table'"` |
+| `$tableObj` | The `Dataface_Table` object for the current table. | `condition="$tableObj->hasField('some_field')"`|
+| `$query` | Associative array of the current request vars. | `condition="$query['-table'] == 'some_table'"`|
+| `$app` | Reference to the `Dataface_Application` object. | `url="{$app->url('-action=foo')"`|
+| `$this` | Alias for `$app` | `url="{$this->url('-action=foo')}"`|
+| `$record` | `Dataface_Record` object of the record passed to the current context.  This is used when building menus for a particular record.  May be null. | `url="$record->getURL('-action=some_action')"`|
+| `$relationship` | `Dataface_Relationship` object of the relationship passed to the current context.  This is used when building menus for a particular relationship.  May be null. | `condition="$relationship->hasField('some_field')"`|
+
+**WARNING: When using `$record` and `$relationship`, please be aware that these may be null in any given context.  You NEED to guard against this situation.**
+
+**Guarding against null `$record`**:
+
+If you call methods on `$record` or `$relationship` inside a `condition` directive (i.e. a Boolean expression), you should first check to see if they are null.  E.g.
+
+**WRONG**: `condition="$record->hasField('some_field')"`
+
+**CORRECT**: `condition="$record and $record->hasField('some_field')"`
+
+If you call methods on `$record` or `relationship` inside a string directive, you should add an associated `xxx_condition` directive to the action that only returns true if it is save to execute the string directive.  E.g.
+
+**WRONG:** 
+
+~~~
+url="{$record->getURL('-action=some_action')}"
+~~~
+
+**CORRECT**:
+
+~~~
+url="{$record->getURL('-action=some_action')}"
+url_condition="$record"
+~~~
+
+Xataface will always execute the `url_condition` directive before trying to parse the `url` directive.  If `$record` is null, it will not execute the `url` directive, and by doing so, avoid a fatal error.
+
+###Debugging Action Expressions
+
+In order to avoid PHP notices when executing string and boolean expressions, Xataface suppresses errors during their execution.  Unfortunately, this makes it difficult to debug fatal errors that may occur as a result of executing an action expression.  The common symptom is *the blank white screen of death*.  If you are getting a blank white screen and you have no viable clues in your PHP error log, there is a good chance that there is an error happening during the execution of your of your action expressions.
+
+You can debug such errors by enabling debugging in Xataface.  Simply add the following to the beginning of your `conf.ini` file:
+
+~~~
+debug=1
+~~~
+
+The refresh.  You'll see lots of debug messages.  Hopefully the last message will be your fatal error.
+
 
 
 
