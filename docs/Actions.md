@@ -197,6 +197,16 @@ Some of the key directives in the actions.ini file :
 | `url` | The URL that the action's associated menu item should link to.  This may include PHP expressions embedded in curly braces.  E.g. `category="{$this->url('-action=foo')}` |
 | `permission` | The name of the permission required to access this action. ** If this is omitted, then the action will be open to the public.** |
 | `condition` | A PHP boolean expression that is executed just prior to the menuitem being rendered.  If the expression resolves to `false`, then the menu item will not be rendered.|
+| `icon` | The path to an icon that can be displayed for an action.  These are used more in the old theme than in g2.|
+| `selected_condition` | A boolean expression that, if evaluated to true, will cause the action to be marked as *selected* in the UI.  Generally the UI marks the `<li>` tag with the *selected* CSS class when rendered in a menu, but different implementations may do it differently.  This is the mechanism used for tabs to show which one is currently selected. |
+| `class` | Optional CSS classes that can be added to the `<li>` tag when the action's menu item is rendered |
+| `accessKey` | Optional access key that may be used to trigger the action. |
+| `confirm` | Optional confirmation message to be shown when the user clicks on the action.|
+| `onclick` | Optional Javascript expression to be executed when the action's menuitem is clicked. |
+| `subcategory` | If this action is intended to be a parent menu with sub-items, you can specify the *category* from which its *children* are selected. |
+| `atts:xxx` | Additional HTML attributes that should be added to the the `<li>` tag in the actions menu. |
+
+To see how actions are rendered, you might find it helpful to look at the [Dataface_ActionsMenu.html template](../Dataface/templates/Dataface_ActionsMenu.html) which is used to render many of the action menus in Xataface.  Although it is important to note that the actions infrastructure is foundational to Xataface and can be used to generate menus in many different ways.
 
 
 ###Action Inheritance
