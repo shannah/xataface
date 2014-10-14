@@ -1,5 +1,26 @@
 #Xataface Actions
 
+##Contents
+
+1. [Synopsis](#synopsis)
+2. [Routing](#routing)
+3. [Core Xataface Actions](#core-xataface-actions)
+4. [Configuration](#action-configuration)
+5. [Menus](#action-menus)
+  1. [Core Action Categories](#core-action-categories)
+6. [Custom Actions](#custom-actions)
+  1. [Hello World](#hello-world-action)
+  2. [actions.ini directives](#actions.ini-directives)
+  3. [Inheritance](#action-inheritance)
+  4. [Overriding Existing Actions](#overriding-existing-actions)
+  5. [Hiding Actions](#hiding-actions)
+7. [Action Permissions](#action-permissions)
+8. [PHP Expressions in Action Directives](#expressions)
+  1. [Expression Context](#expression-context)
+  2. [Debugging Action Expressions](#debugging-action-expressions)
+
+<a name="synopsis"></a>
+
 Actions are the entry points to a Xataface application.  They are essentially PHP scripts the run in the context of a Xataface HTTP request/response cycle.  Xataface includes core actions to perform all of the common tasks of a database application (e.g. List, View, Edit Record, New Record, Add Related Record, Export CSV, etc...), and it also provides an API for you to define you to define your own actions.  You can define custom actions at the application level (i.e. that are for use only by a single application) and at the module level (i.e. that can be reused by multiple applications).
 
 ##Routing
@@ -280,6 +301,8 @@ if ( !$record->checkPermission('edit', array('field'=>$fieldDef['Field'])) ){
 ~~~
 
 This uses the Xataface API (particularly the `Dataface_Record::checkPermission()` method) to check whether the current record has the edit permission on a particular field.  If not, it returns a *permission denied* error, which Xataface knows how to handle.
+
+<a name="expressions"></a>
 
 ##PHP Expressions in actions.ini Directives
 
