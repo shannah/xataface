@@ -201,6 +201,7 @@ You can add comments to your fields.ini file using a `;`.  Any text occurring af
 
 | Name | Description |
 |---|---|
+| `label` | The label for the table as it will be rendered on tabs and buttons. |
 | `__sql__` | Defines a custom select query to override the default select query for the current table. (The default select query is generally "select * from tablename"). |
 | `__dependencies__` | A comma-delimited list of tables that this table is dependent upon for caching purposes. E.g. if any table in this list is modified, then the query cache is cleared for queries on this table. See this blog article for more information about query caching. |
 | `__isa__` | The name of the parent table of the current table. This directive allows you to have a heirarchical structure amongst the tables in your application. |
