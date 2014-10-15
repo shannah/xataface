@@ -104,7 +104,7 @@ In the above example we set the table label to "The People Table".
 
 You can add comments to your fields.ini file using a `;`.  Any text occurring after a `;` on a line are considered a comment. E.g.
 
-~~
+~~~
 [name] ; This is a comment
 ~~~
 
