@@ -24,3 +24,16 @@ CREATE TABLE `people` (
 )
 ~~~
 
+We create a *fields.ini* file for this table as follows:
+
+1. Create a *tables* directory inside the app root folder if it doesn't already exist.  I.e. `APP_ROOT/tables`, where *APP_ROOT* is the path to the application.
+2. Create directory named *people* inside the *tables* directory.  I.e. `APP_ROOT/tables/people`.  Note that this directory is called "people" because the table is named "people".  If it were named "foo", then the directory would be named "foo" as well.  **Note: This is case sensitive**
+3. Create a file named `fields.ini` inside the `people` directory.  I.e. `APP_ROOT/tables/people/fields.ini`.
+4. Verify that the fields.ini file is being picked up by trying to modify the label of one of the fields in our table.  E.g. Add the following content to the `fields.ini` file:
+
+ ~~~
+ [name]
+   widget:label="Name Test"
+ ~~~
+Try loading the *new record* form for the *people* table, and verify that the label for the *name* field is now "Name Test".  If it is not, see the [troubleshooting](#troubleshooting) section.
+
