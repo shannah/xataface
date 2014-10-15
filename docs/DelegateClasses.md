@@ -131,3 +131,23 @@ If your application runs normally except that it didn't seem to execute your `ec
  Then make sure that your `init()` method is named exactly that.
 
 If you are certain that the PHP file is named correctly, and located in the correct location, you may want to double-check the permissions on your `tables` directory to make sure that it is readable and navigable by the web server process.
+
+##Supported Methods
+
+Delegate classes support many different method interfaces, and they can be expanded to support an infinite number of methods.  E.g. Module developers can create their own protocols for delegate class methods for use in their modules.  In addition, many delegate classes simply follow naming conventions, giving you, as an app developer, to implement unlimited methods that affect the behaviour of your application.
+
+The following is a list of some of the common methods that are supported by delegate classes, but this list is by no means exhaustive
+
+###Triggers
+
+| Name | Description | Table | App |
+|---|---|---|---|
+| `beforeInsert` | Fired before a record is inserted | Y |  |
+| `afterInsert` | Fired after a record is inserted | Y |    |
+| `beforeSave` | Fired before a record is saved (inserted or updated) | Y | |
+| `afterSave` | Fired after a record is saved (inserted or updated) | Y | |
+| `beforeUpdate` | Fired before a record is updated | Y |  |
+| `afterUpdate ` | Fired after a record is updated | Y | |
+| `beforeHandleRequest` | Fired at the beginning of each request.  This is the most common place to add custom request handling - like modifying the query, etc... |  | Y |
+| `after_action_new` | Fired after the `new` action is completed successfully. | Y |  |
+| `after_action_edit` | Fired after the `edit` action is completed successfully. | Y | |
