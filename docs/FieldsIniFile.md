@@ -1,11 +1,32 @@
 #Xataface *fields.ini* File
 
+##Contents
+
+1. [Introduction](#introduction)
+2. [Creating a Fields.ini File](#creating-fields-ini-file)
+   1. [Troubleshooting](#troubleshooting)
+3. [Structure and Syntax](#structure-and-syntax)
+   1. [Table-level Directives](#table-level-directives)
+   2. [Comments](#comments)
+4. [Supported Field Directives](#supported-field-directives)
+   1. [Form-Related Directives](#form-related-directives)
+   2. [Field Content Management](#field-content-management)
+   3. [List Customization](#list-customization)
+   4. [Field Visibility](#field-visibility)
+   5. [Details-View Customization](#details-view-customization)
+5. [Supported Table Directives](#supported-table-directives)
+6. [Field Groups](#field-groups)
+   1. [Field-Group Directives](#field-group-directives)
+
+<a name="introduction"></a>
 In Xataface, the *fields.ini* files serves as the foundation for table configuration.  Each table may have a single *fields.ini* file and, if present, this file can customize many aspects of the table including:
 
 1. The widget labels, descriptions, and types that are used for the table on Xataface's forms, lists, and details views.
 2. The field ordering, grouping, and visibility in various parts of your application.
 3. Customizing the SQL query that is used to fetch records of the table (i.e. the `__sql__` directive).
 4. Other miscellaneous table configuration details.
+
+<a name="creating-fields-ini-file"></a>
 
 ##Creating a *fields.ini* file
 
