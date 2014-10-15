@@ -19,6 +19,8 @@ There are two types of delegate classes:
 
 There are many other things you can do with delegate classes also.  In fact most tutorials that involve customizing application behaviour will involve delegate classes in some form.
 
+<a name="application-delegate-example"></a>
+
 ##How to Add an Application Delegate Class to Your App
 
 1. Create a directory named *conf* in your application's root directory.
@@ -31,7 +33,7 @@ There are many other things you can do with delegate classes also.  In fact most
  }
  ~~~
 
-3. Verify that your application is picking it up, by implementing a method and checking to make sure that it is executed.  In this example, we'll implement the `beforeHandleRequest()` method, which is called before every HTTP request:
+3. Verify that your application is picking it up, by implementing a supported method and checking to make sure that it is executed.  In this example, we'll implement the `beforeHandleRequest()` method, which is called before every HTTP request:
 
  ~~~
  <?php
@@ -48,3 +50,60 @@ Now, try loading your app.  You should see:
  In beforeHandleRequest
  ~~~
 in your browser if the delegate class is being picked up.  If you don't see this, then either it isn't being picked up at all, or it isn't finding the `beforeHandleRequest` method.  In this case, see the [troubleshooting](#application-delegate-troubleshooting) section for more details.
+
+##How to Add a Table Delegate Class to Your App
+
+1. Create a directory named *tables* in your application's root directory.
+2. Create a directory with the same name as your table inside the *tables* directory.  If the table is named *people*, then this directory will be located at `APP_ROOT/tables/people`.
+3. Create a PHP file named after the table inside the directory you just created.  If the table is named *people*, this file will be located at `APP_ROOT/tables/people/people.php`.  It should have the following contents:
+
+ ~~~
+ <?php
+ class tables_people {
+ 
+ }
+ ~~~
+4. Verify that your application is picking it up by implementing a supported method and checking to make sure that it is executed.  In this example, we'll implement the `init()` method which is called the first time the table is loaded in a request:
+
+ ~~~
+ <?php
+ class tables_people {
+   function init(Dataface_Table $table){
+      echo "In people init()";
+      exit;
+   }
+ }
+ ~~~
+
+Now try loading your app in the context of your table.  E.g. If your table name is *people*, the app URL to test would be `index.php?-table=people`.  You should see:
+
+ ~~~
+ In people init()
+ ~~~
+If you don't see this, see the [troubleshooting](#table-delegate-troubleshooting) section.
+
+##Application Delegate Troubleshooting
+
+If your application doesn't seem to be picking up your application delegate class after following the [instructions above](#application-delegate-example), this section describes how to debug the issue.  There are two possible scenarios:
+
+1. There is an error.
+2. There is no error, the app just runs normally as if there is no Application delegate defined.
+
+##Resolving Errors
+
+If, after adding an Application Delegate, you either receive an error or a blank white screen in your app, you likely have a syntax error in your delegate class.  If you have a blank white screen, your first order of business is to locate the error log.  **Now is the best time to find your PHP error log!!**  If you don't know where your error log is you need to find it.  Without it, you are flying blind and you will begin to hate life before long.
+
+**Common Mistakes:**
+
+1. **Your class has the wrong name**. The class name must be exactly `conf_ApplicationDelegate`.  If you name this wrong, but your PHP file is named correctly, you will receive errors about "Class Not Found", etc..
+2. You simply have a syntax error.  Find out what the error is in your error log, and fix it.
+3. Your `<?php` open tag is missing or malformed.
+
+##Resolving "Nothing Happened"
+
+If your application runs normally except that it didn't seem to execute your `echo` statement, then either your PHP file is named incorrectly, it is in the wrong location, or the `beforeHandleRequest` method has been named incorrectly.  Make sure that the PHP file is exactly at `APP_ROOT/conf/ApplicationDelegate.php`.  Then make sure that your `beforeHandleRequest()` method is named exactly that.
+
+If you are certain that the PHP file is named correctly, and located in the correct location, you may want to double-check the permissions on your `conf` directory to make sure that it is readable and navigable by the web server process.
+
+##Table Delegate Troubleshooting
+
