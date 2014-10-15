@@ -148,6 +148,26 @@ The following is a list of some of the common methods that are supported by dele
 | `afterSave` | Fired after a record is saved (inserted or updated) | Y | |
 | `beforeUpdate` | Fired before a record is updated | Y |  |
 | `afterUpdate ` | Fired after a record is updated | Y | |
+| `beforeDelete` | Fired before a record is deleted | Y | |
+| `afterDelete` | Fired after a record is deleted | Y | |
+| `beforeCopy` | Fired before a record is copied | Y | |
+| `afterCopy` | Fired after a record is copied | Y | |
+| `beforeAddRelatedRecord` | Fired before a related record is added to a relationship. | Y | |
+| `afterAddRelatedRecord` | Fired after a related record is added. | Y | |
+| `beforeAddNewRelatedRecord` | Fired before a new record is added to a relationship. | Y | |
+| `afterAddNewRelatedRecord` | Fired after a new record is added to a relationship. | Y | |
+| `beforeAddExistingRelatedRecord` | Fired before an existing record is added to a relationship. | Y | |
+| `beforeRemoveRelatedRecord` | Fired before a related record is removed from a relationship. | Y | |
+| `afterRemoveRelatedRecord` | Fired after a related record is removed from a relationship. | Y |  |
 | `beforeHandleRequest` | Fired at the beginning of each request.  This is the most common place to add custom request handling - like modifying the query, etc... |  | Y |
-| `after_action_new` | Fired after the `new` action is completed successfully. | Y |  |
-| `after_action_edit` | Fired after the `edit` action is completed successfully. | Y | |
+| `after_action_new` | Fired after the `new` action is completed successfully. | Y | Y |
+| `after_action_edit` | Fired after the `edit` action is completed successfully. | Y | Y |
+| `after_action_delete` | Fired after the `delete` action is completed successfully. | Y | Y |
+| `after_action_login` | Fired after the login action successfully completes | | Y |
+| `after_action_logout` | Fired after the logout action successfully completes |  | Y |
+| `after_action_activate` | Trigger called after activation is complete. Activation occurs after a user registers and responds to the registration confirmation email. | | Y |
+| `before_authenticate` | Trigger called just before authentication is carried out. This allows you to change the authentication type based on such things as SESSION variables etc... | | Y |
+| `loginFailed` | Trigger called after a failed login attempt. Allows you to provide your own logging. | | Y |
+| `startSession` | If implemented, this overrides how Xataface starts its sessions. If you implement this method, your custom method should at least include a call to session_start. | | Y |
+
+| `init` | Fired after a table is loaded for the first time in a request. | Y | |
