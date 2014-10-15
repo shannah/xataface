@@ -132,6 +132,8 @@ You can add comments to your fields.ini file using a `;`.  Any text occurring af
 
 ###Field Content Management
 
+| Name | Description |
+|---|---|
 | `timestamp` | Indicates when a timestamp should be set in the field (only applicable for date and time fields). Possible values are "insert" and "update" |
 | `date_format` | Specifies how the field should be formatted when displayed. Takes same parameters as PHP strftime function. |
 | `display_format` | A pattern that can be used to define the display format of the field. This takes the same parameters as the PHP sprintf function. |
