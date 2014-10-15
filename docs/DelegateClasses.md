@@ -169,5 +169,36 @@ The following is a list of some of the common methods that are supported by dele
 | `before_authenticate` | Trigger called just before authentication is carried out. This allows you to change the authentication type based on such things as SESSION variables etc... | | Y |
 | `loginFailed` | Trigger called after a failed login attempt. Allows you to provide your own logging. | | Y |
 | `startSession` | If implemented, this overrides how Xataface starts its sessions. If you implement this method, your custom method should at least include a call to session_start. | | Y |
-
 | `init` | Fired after a table is loaded for the first time in a request. | Y | |
+
+###Permissions
+
+| Name | Description | Table | App |
+|---|---|---|---|
+| `getPermissions` | Returns the permissions available for a given record. | Y | Y |
+| `__field__permissions` | Returns the default permissions for a field of a given record. | Y | |
+| `fieldname__permissions` | Returns the permissions that are allowed for the field *fieldname* on a given record. | Y | |
+| `rel_relationshipname__permissions` | Returns the permissions pertaining to the relationship relationshipname on a given record. | Y | |
+
+###Field Formatting
+
+| Name | Description | Table | App |
+|---|---|---|---|
+| `fieldname__htmlValue` | Returns the value of the field "fieldname" for a given record as HTML. | Y | |
+| `fieldname__display` | Returns the value of the field "fieldname" appropriate for displaying. | Y | |
+| `fieldname__toString` | Converts the value of the field fieldname to a string. This string representation is used as the basis for most higher level data retrieval methods (such as serialize and display). This could be treated as an inverse to the `fieldname__parse` method. | Y | |
+
+###Record Metadata
+
+| Name | Description | Table | App |
+|---|---|---|---|
+| `getTitle` | Returns the title for a given record. The title is used in various parts of the application to represent the record. | Y | |
+| `titleColumn` | Returns a string SQL select expression that is used to describe the title of records.| Y | |
+| `getURL` | Overrides the getURL() method for a record. Returns the URL that should be used to display the given record. | Y | |
+| `getPublicLink` | Returns the public URL of this record (in case it is different than the standard URL). | Y | |
+| `getDescription` | Returns a string description summary of this record. This is used for indexing, RSS feeds, and anywhere that a brief summary of a record is appropriate. | Y | |
+| `getCreated` | Returns a unix timestamp marking the date that a record was created. | Y | |
+| `getChildren` | Returns a list of Dataface_Record objects that are to be considered children of the given record. | Y | |
+| `getBreadCrumbs` | Returns the bread crumbs (i.e. you are here) for a given record as an associative array of path parts. | Y | |
+
+
