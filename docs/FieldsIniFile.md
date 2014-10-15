@@ -169,10 +169,81 @@ You can add comments to your fields.ini file using a `;`.  Any text occurring af
 | `not_findable` | A flag to indicate that this field can not be used as part of a query. This is helpful if you want a field to remain completely confidential to prevent people from finding records based on the value of this field. This flag is even necessary if the permissions for the field don't permit viewing the value of the field.|
 | `xml` | A flag for use with calculated fields (i.e. fields defined in the delegate class? via the field__fieldname method) that will include the field in XML output produced by the export xml action?. Default is 0, but setting this value to 1 wil cause the field to be included. |
 
-##Details View Customization
+###Details View Customization
 
 | Name | Description |
 |---|---|
 | `viewgroup` | The name of the field grouping that this field will belong to in the view tab. If this is not present, then it will be grouped according to the group directive. |
 
+
+##Supported Table Directives
+
+| Name | Description |
+|---|---|
+| `__sql__` | Defines a custom select query to override the default select query for the current table. (The default select query is generally "select * from tablename"). |
+| `__dependencies__` | A comma-delimited list of tables that this table is dependent upon for caching purposes. E.g. if any table in this list is modified, then the query cache is cleared for queries on this table. See this blog article for more information about query caching. |
+| `__isa__` | The name of the parent table of the current table. This directive allows you to have a heirarchical structure amongst the tables in your application. |
+| `__source_tables__` | A comma-delimited list of tables that this table/view is derived from. This is used with the query caching feature and is necessary to use this directive if the table is actually a view. If this directive is not set, then any queries involving this view will not use the query cache because Xataface would have no way to discern the update time of the view. See [this blog article](http://xataface.blogspot.ca/2009/06/using-query-caching-in-xataface.html) for more information about query caching. |
+
+##Field Groups
+
+The group directive allows you to group multiple fields together so that they will be rendered in the same field group on forms. You can also configure these groups as a whole by defining a section named `[fieldgroup:GROUPNAME]` (where *GROUPNAME* is the name of the field group, corresponding to the group directive values for the fields) in the fields.ini file. This section provides a few basic directives to customize some aspects of the field group:
+
+* label
+* order
+* description
+* template
+* more...
+
+The most common use of these sections is to customize the label or order of groups, especially when there are multiple field groups in the table. For example, suppose we have a table *people* with fields `first_name`, `last_name`, `phone`, `fax`, `email`, `address`, `city`, and `country`. Suppose these fields are grouped as follows:
+
+* `first_name` and `last_name`
+* `phone`, `fax`, and `email`
+* `address`, `city`, and `country`
+
+so that the *fields.ini* file looks like:
+
+~~~
+[first_name]
+    group=name
+    
+[last_name]
+    group=name
+    
+[phone]
+    group=contact
+    
+[fax]
+    group=contact
+[email]
+    group=contact
+    
+[address]
+    group=address
+    
+[city]
+    group=address
+    
+[country]
+    group=address
+~~~
+
+By default, the `name` group will appear first in the form, followed by `contact` and `address`. If we want to place "address" first we could add the following section to our *fields.ini* file:
+
+~~~
+[fieldgroup:address]
+    order=-1
+~~~
+
+Since the default order value is 0 on other groups, setting the `order` parameter to `-1` will place the "address" group before all others.
+
+###Field-Group Directives
+
+| Name | Description |
+|---|---|
+|`order`|	Specifies the order of the group with respect to other groups on the form. Accepts any numerical value (e.g. 0, 1, -1, 25.43), with lower values appearing first. Default value is 0 |
+|`label` |	Specifies the label that should be used for the field group.|
+| `label_link` |	Specifies a URL that the field group label should link to.	|
+| `template` |	The path to a custom template that should be used to render the fields of the field group.|
+| `collapsed` |	Boolean value (0 or 1) indicating whether the field group should be collapsed by default (user can expand it).|
 
