@@ -1,11 +1,30 @@
 #Xataface Delegate Classes
 
+##Contents
+
+1. [Introduction](#introduction)
+2. [What Can You Do With A Delegate Class?](#what-can-you-do-with-delegate)
+3. [How to Add an Application Delegate Class to Your App](#application-delegate-example)
+4. [How to Add a Table Delegate Class to Your App](#table-delegate-example)
+5. [Application Delegate Troubleshooting](#application-delegate-troubleshooting)
+6. [Table Delegate Troubleshooting](#table-delegate-troubleshooting)
+7. [Supported Methods](#supported-methods)
+   1. [Triggers](#triggers)
+   2. [Permissions](#permissions)
+   3. [Field Formatting](#field-formatting)
+   4. [Record Metadata](#record-metadata)
+   5. [Query Customization](#query-customization)
+   6. [Feature-specific Methods](#feature-specific-methods)
+
+<a name="introduction"></a>
 Xataface applications provide quite a number of mechanisms for customizing application behaviour. One of the most fundamental of these is the *Delegate Class*.  A Delegate class is a class that can be implemented to provide customized functionality to your application by implementing methods that follow naming conventions.
 
 There are two types of delegate classes:
 
 1. **Table Delegate Classes** : Override behaviour pertaining to a particular table.
 2. **Application Delegate Class** : Override behaviour pertaining to the entire application.
+
+<a name="what-can-you-do-with-delegate"></a>
 
 ##What Can You Do With A Delegate Class?
 
@@ -201,4 +220,13 @@ The following is a list of some of the common methods that are supported by dele
 | `getChildren` | Returns a list of Dataface_Record objects that are to be considered children of the given record. | Y | |
 | `getBreadCrumbs` | Returns the bread crumbs (i.e. you are here) for a given record as an associative array of path parts. | Y | |
 
+###Query Customization
+
+| Name | Description | Table | App |
+|---|---|---|---|
+| `__sql__` | Defines the SQL query that can be used to fetch records of this table. This is identical to the fields.ini file `__sql__` directive, except that by defining it in the delegate class you have more flexibility. | Y | |
+
+###Feature-Specific Methods
+
+This page only lists some of the core methods supported by delegate classes.  However there are many more methods that pertain to specific features.  These methods will be documented on pages that cover those specific features.
 
