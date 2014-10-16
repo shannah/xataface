@@ -12,6 +12,7 @@ In addition Xataface's authentication is pluggable, meaning you can write your o
 ##Setting up Basic Authentication
 
 1. Create a table (if you haven't already) to store your application's users. At the bare minimum, this table should have fields to store the username and password (you may call these fields whatever you like). An example table might be:
+
  ~~~
  CREATE TABLE `users` (
    `username` VARCHAR(32) NOT NULL,
@@ -20,6 +21,7 @@ In addition Xataface's authentication is pluggable, meaning you can write your o
  )
  ~~~
 2. Add the following (`_auth` section) to your conf.ini file:
+
  ~~~
  [_auth]
       users_table=users
@@ -28,6 +30,7 @@ In addition Xataface's authentication is pluggable, meaning you can write your o
  ~~~
 This tells Xataface which table you are storing your user accounts in, and the names of the username and password columns.
 3. Add a sample user record to the users table if one does not exist yet.
+
  ~~~
  INSERT INTO `users` (`username`,`password`) VALUES ('steve','mypass')
  ~~~
