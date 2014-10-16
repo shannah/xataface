@@ -23,7 +23,7 @@ Xataface tries to use sensible defaults for session management, but it provides 
 | Name | Description | Default Value |
 |---|---|---|
 | `session_timeout` | Number of seconds of inactivity after which the user will be logged out. Note: Arithmetic don't work in the conf.ini, use seconds. | 24 hours (i.e. 86400) |
-| `cookie_path` | The [cookie path](http://en.wikipedia.org/wiki/HTTP_cookie#Domain_and_Path).  This may be a static string, or (if prefixed by `php:`) it may be a PHP expression that resolves to a string. | | The app root |
+| `cookie_path` | The [cookie path](http://en.wikipedia.org/wiki/HTTP_cookie#Domain_and_Path).  This may be a static string, or (if prefixed by `php:`) it may be a PHP expression that resolves to a string. | The app root |
 | `subdir` | The name of the subdirectory within the PHP sessions dir that should be used to store sessions. | An `md5` hash of the app path |
 | `session_name` | A session name.  This allows it to be distinguished from other PHP apps that may be using the same session path. | `null` |
 
