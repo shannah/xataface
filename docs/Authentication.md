@@ -8,6 +8,8 @@
 4. [Limiting Access Based on User](#limiting-access-based-on-user)
 5. [Checking Who is Logged In](#checking-who-is-logged-in)
 
+<a name="introduction"></a>
+
 Xataface comes with authentication ready to roll out of the box. With a couple of configuration options in the conf.ini file, you can activate the default authentication scheme which uses a table (of your choice) in the database to authenticate against. It supports password encryption, and even includes a registration form if you choose to allow registrations for your application.
 
 In addition Xataface's authentication is pluggable, meaning you can write your own plug-ins to integrate your application with any authentication scheme you choose. Some authentication modules that already exist include:
