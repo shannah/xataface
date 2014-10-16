@@ -1,6 +1,6 @@
 #Xataface Authentication
 
-Xataface comes with authentication ready to roll out of the box. With a couple of configuration options in the conf.ini file, you can activate the default authentication scheme which uses a table (of your choice) in the database to authenticate against. It supports password encryption?, and even includes a registration form if you choose to allow registrations for your application.
+Xataface comes with authentication ready to roll out of the box. With a couple of configuration options in the conf.ini file, you can activate the default authentication scheme which uses a table (of your choice) in the database to authenticate against. It supports password encryption, and even includes a registration form if you choose to allow registrations for your application.
 
 In addition Xataface's authentication is pluggable, meaning you can write your own plug-ins to integrate your application with any authentication scheme you choose. Some authentication modules that already exist include:
 
@@ -20,7 +20,7 @@ In addition Xataface's authentication is pluggable, meaning you can write your o
    PRIMARY KEY (`username`)
  )
  ~~~
-2. Add the following (`_auth` section) to your conf.ini file:
+2. Add the following (`_auth` section) to your `conf.ini` file:
 
  ~~~
  [_auth]
@@ -29,7 +29,7 @@ In addition Xataface's authentication is pluggable, meaning you can write your o
       password_column=password
  ~~~
 This tells Xataface which table you are storing your user accounts in, and the names of the username and password columns.
-3. Add a sample user record to the users table if one does not exist yet.
+3. Add a sample user record to the *users* table if one does not exist yet.
 
  ~~~
  INSERT INTO `users` (`username`,`password`) VALUES ('steve','mypass')
@@ -38,7 +38,7 @@ This tells Xataface which table you are storing your user accounts in, and the n
 
 ##Using MD5 Encryption for the Password
 
-It is good practice to perform some type of encryption on passwords that you store in a database, so that they will be safe, even if your server's security is compromised. One common form of encryption it MD5. You can apply encryption to your passwords by defining the encryption property to the [password] field's section of the users table [fields.ini file]. E.g.
+It is good practice to perform some type of encryption on passwords that you store in a database, so that they will be safe, even if your server's security is compromised. One common form of encryption it MD5. You can apply encryption to your passwords by defining the encryption property to the `password` field's section of the users table `fields.ini file`. E.g.
 
 ~~~
 [password]
@@ -50,8 +50,8 @@ This tells Xataface to save data to the password field of the users table with M
 In order to switch to MD5 encryption with an existing Xataface installation, all un-encrypted (plain text) passwords must be first converted to MD5. There are several ways to do this. One method is to directly convert the passwords in the database with the MySQL MD5 function. This can be done from the command-line or using a tool such as phpMyAdmin. It can also be done solely within Xataface as follows, assuming a small number of users where you either know all of the passwords or are planning to change them:
 
 1. Log in to your Xataface application as an existing user with ADMIN-level access.
-2. Navigate to the users table. If you do not already have a link to it, modify your URL to include "-table=" and the name of your users table.
-3. While logged in, add the encryption=md5 parameter to the fields.ini file as described above.
+2. Navigate to the users table. If you do not already have a link to it, modify your URL to include `-table=` and the name of your users table.
+3. While logged in, add the `encryption=md5` parameter to the fields.ini file as described above.
 4. Select each user and re-enter or reset their password. It will now be stored with MD5 encryption.
 5. After completing the above step for all users, you may log out and log back in to verify the change.
 
