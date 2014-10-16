@@ -27,7 +27,9 @@ class Dataface_Ontology_Event extends Dataface_Ontology {
 		
 		// First we'll check to see if any fields have been explicitly 
 		// flagged as email address fields.
-		foreach ( $this->table->fields(false,true) as $field ){
+		$flds = array_merge($this->table->fields(false,true), $this->table->delegateFields());
+		
+		foreach ( $flds as $field ){
 			if ( @$field['event.date'] ){
 				$date = $field['name'];
 				
