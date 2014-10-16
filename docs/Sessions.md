@@ -116,7 +116,9 @@ Xataface tries to be conservative about when it starts a session.  When a user i
 E.g. 
 
 ~~~
-Warning: session_start() [function.session-start]: open(/var/lib/php/session/66dfb80f5fe38bb49749552cd5432a36/sess_outsjoh0l0kvubgr64j95hdug1, O_RDWR) failed: Permission denied (13) in /var/www/webfiles/[site].com/web/[Xataface folder]/xataface/Dataface/Application.php on line 1653
+Warning: session_start() [function.session-start]: \
+open(/var/lib/php/session/66dfb80f5fe38bb49749552cd5432a36/sess_outsjoh0l0kvubgr64j95hdug1, O_RDWR) failed: \
+Permission denied (13) in /var/www/webfiles/[site].com/web/[Xataface folder]/xataface/Dataface/Application.php on line 1653
 ~~~
 
 This error happens if Xataface is unable to create its subdirectory for sessions inside the standard PHP session directory - or if it creates the directory but doesn't have read/write permissions to that directory.  If you have SSH access to the server, you should begin by looking at the session directory permissions.  In the example message above, the main PHP session directory is at `/var/lib/php/session` and the Xataface session directory is `66dfb80f5fe38bb49749552cd5432a36` (inside that directory).  Make sure that both of these directories are readable and writable by the web server process.
