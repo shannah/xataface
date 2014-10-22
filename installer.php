@@ -29,7 +29,9 @@ if ( !function_exists('file_put_contents')  ) {
 		}
 	}
 }
-
+if ( !defined('XF_DB_DRIVER') ){
+    define('XF_DB_DRIVER','mysql');
+}
 define('DB_HOST', 'localhost');  // This is the host of your mysql dbms
 ini_set('include_path','.'.PATH_SEPARATOR.'lib');
 set_time_limit(1500);
