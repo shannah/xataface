@@ -339,8 +339,8 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 				
 				
 				
-				if ( $groupEmpty ){
-					// This is the first field in the group, so we add a header for the 
+				if ( $groupEmpty and @$field['widget']['type'] !== 'hidden' ){
+				    // This is the first field in the group, so we add a header for the 
 					// group.
 					if ( !$firstGroup ) $this->addElement('submit','',df_translate('save_button_label', 'Save'));
 					$headerel =& $this->addElement('header', $group['label'], $group['label']);
