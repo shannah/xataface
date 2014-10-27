@@ -1,3 +1,8 @@
+Xataface 2.1.1 4801
+October 26, 2014
+    - Fixed fatal error with installer.
+    - Fixed issue with Authentication tool not loaded when auth not used but memcache enabled.
+
 Xataface 2.1.0 4800
 October 13, 2014
     - Added support for user-configuration overrides, including Show/Hide columns in 
