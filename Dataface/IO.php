@@ -1844,7 +1844,10 @@ class Dataface_IO {
 			// If security is on, and it is the domain table, and the user doesn't
 			// have the 'delete related record' permission  then we need to use
 			// security
-			if (($currTable == $domainTable->tablename) and $secure and !$related_record->_record->checkPermission('delete related record', array('relationship'=>$related_record->_relationshipName)) ){
+			if (($currTable == $domainTable->tablename) and 
+			        $secure and 
+			        !$related_record->_record->checkPermission('delete related record', array('relationship'=>$related_record->_relationshipName)) and
+			        !$related_record->_relationship->isOneToMany() ){
 				$useSecurity = true;
 				
 			} else {
