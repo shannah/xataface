@@ -1732,6 +1732,17 @@ class Dataface_IO {
 					)
 				);
 		}
+		$parent_perms = $related_record->_record->getPermissions(array('relationship'=>$related_record->_relationshipName));
+		
+		if ( $secure && $related_record->_relationship->isOneToMany() && isset($parent_perms['delete related record']) and !$parent_perms['delete related record']){
+		    return Dataface_Error::permissionDenied(
+				df_translate(
+					'scripts.Dataface.IO.removeRelatedRecord.PERMISSION_DENIED',
+					'Could not remove record "'.$related_record->getTitle().'" from relationship "'.$related_record->_relationshipName.'" of record "'.$related_record->_record->getTitle().'" because you have insufficient permissions.',
+					array('title'=>$related_record->getTitle(), 'relationship'=>$related_record->_relationshipName, 'parent'=>$related_record->_record->getTitle())
+					)
+				);
+		}
 		
 		$res = $this->fireEvent('beforeRemoveRelatedRecord', $related_record);
 		if ( PEAR::isError($res) ) return $res;
@@ -1844,7 +1855,7 @@ class Dataface_IO {
 			// If security is on, and it is the domain table, and the user doesn't
 			// have the 'delete related record' permission  then we need to use
 			// security
-			if (($currTable == $domainTable->tablename) and $secure and !$related_record->_record->checkPermission('delete related record', array('relationship'=>$related_record->_relationshipName)) ){
+			if (($currTable == $domainTable->tablename) && $secure && !$related_record->_relationship->isOneToMany() && !$related_record->_record->checkPermission('delete related record', array('relationship'=>$related_record->_relationshipName)) ){
 				$useSecurity = true;
 				
 			} else {
