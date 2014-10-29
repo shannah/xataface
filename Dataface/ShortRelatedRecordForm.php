@@ -163,6 +163,9 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 	 * This method is called in the constructor if no valid record is supplied.
 	 */
 	function &getRecord(){
+	    $out = Dataface_Application::getInstance()->getRecord();
+	    return $out;
+	    /*
 		if ( Dataface_ShortRelatedRecordForm::formSubmitted() ){
 			$record = new Dataface_Record($_POST['-table'], array());
 			$io = new Dataface_IO($_POST['-table']);
@@ -182,6 +185,7 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 			$qt =& Dataface_QueryTool::loadResult($app->_currentTable);
 			return $qt->loadCurrent();
 		}
+		*/
 	}
 	
 	/**
