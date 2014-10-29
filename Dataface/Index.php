@@ -220,7 +220,9 @@ class Dataface_Index {
 	function find($query, $returnMetadata=false, $lang=null){
 		if ( !$lang ) $lang = @Dataface_Application::getInstance()->_conf['lang'];
 		if ( !$lang ) $lang = 'en';
-		
+		if ( !isset($query['-search']) ){
+		    $query['-search'] = '';
+		}
 		$select = "select record_id,`table`,record_url,record_title,record_description, `searchable_text`, `lang`,match(searchable_text) against ('".addslashes($query['-search'])."') as `relevance`";
 		$sql = "
 			
