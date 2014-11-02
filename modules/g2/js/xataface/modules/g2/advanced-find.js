@@ -99,6 +99,7 @@
 					});
 					
 					$('button.xf-advanced-find-search', formEl).click(function(){
+					    $(this).parents('form').find('[name="-action"]').val('list');
 						$(this)
 							
 							.parents('form').submit();
@@ -145,6 +146,8 @@
 			if ( !this.loaded ) throw "Cannot show advanced find until it is ready.";
 			//alert('here');
 			if ( !this.installed ) this.install();
+			
+			$(this.el).parents('form').find('[name="-action"]').val('list');
 			//alert('here');
 			if ( !$(this.el).is(':visible') ){
 				//alert(this.el);
