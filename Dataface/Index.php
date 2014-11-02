@@ -115,6 +115,20 @@ class Dataface_Index {
 			$fields = $record->_table->getCharFields(true);
 			$searchable_text = implode(', ', $record->strvals($fields));
 		}
+	    
+	    // Add soundex information
+	    //$words = explode(' ', $searchable_text);
+	    //echo $searchable_text;
+	    $searchable_text = preg_replace('/<[^>]*?>/', ' ', $searchable_text);
+	    $words = preg_split('/((^\p{P}+)|(\p{P}*\s+\p{P}*)|(\p{P}+$))/', $searchable_text, -1, PREG_SPLIT_NO_EMPTY);
+	    $soundexAddons = array();
+	    foreach ( $words as $word ){
+	        //echo htmlspecialchars("[Word $word] -> [".soundex(trim($word))."]");
+	        $soundexAddons[] = soundex(trim($word));
+	    }
+	    
+	    $searchable_text .= '[/////]: '.implode(' ', $soundexAddons);
+	    $searchable_text = strip_tags($searchable_text);
 	
 		$sql = "
 			replace into dataface__index 
@@ -223,6 +237,14 @@ class Dataface_Index {
 		if ( !isset($query['-search']) ){
 		    $query['-search'] = '';
 		}
+		$words = explode(' ', $query['-search']);
+		$soundexAddons = array();
+		foreach ( $words as $word){
+		    $soundexAddons[] = soundex($word);
+		}
+		$orig_search = $query['-search'];
+		$query['-search'] .= ' '.implode(' ', $soundexAddons);
+		
 		$select = "select record_id,`table`,record_url,record_title,record_description, `searchable_text`, `lang`,match(searchable_text) against ('".addslashes($query['-search'])."') as `relevance`";
 		$sql = "
 			
@@ -262,7 +284,7 @@ class Dataface_Index {
 				trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			}
 		}
-		
+		$query['-search'] = $orig_search;
 		$out = array();
 		$phrases = array();
 		$words = explode(' ', str_replace('"', '', $query['-search']));
@@ -352,7 +374,7 @@ class Dataface_Index {
 			$meta['start'] = $query['-skip'];
 			$meta['end'] = min($meta['start']+$meta['limit'], $meta['found']);
 			$meta['tables'] = $tables_matches;
-			$meta['table'] = $query['-table'];
+			$meta['table'] = @$query['-table'];
 			$meta['table_objects'] =& $table_objects;
 			$meta['total_found'] = $total_found;
 			return array('results'=>$out, 'metadata'=>@$meta);
