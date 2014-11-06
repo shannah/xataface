@@ -23,7 +23,7 @@
 	{fill_slot name="main_section"}
 		<div class="xf-button-bar">
 			<div class="result-list-actions list-actions xf-button-bar-actions">
-				{actions_menu id="record-actions" id_prefix="record-actions-" category="record_actions" mincount=1 maxcount=7}
+				{actions_menu id="record-actions" id_prefix="record-actions-" category="record_actions" mincount=1 maxcount=$G2->get_property('record_actions.size', 7)}
 			</div>
 			{if $ENV.prefs.show_result_controller}
 				{block name="before_details_controller"}

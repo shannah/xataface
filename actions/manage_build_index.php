@@ -27,7 +27,7 @@ class dataface_actions_manage_build_index {
 			
 			$index->buildIndex($tables, '*', $clear);
 			$app =& Dataface_Application::getInstance();
-			$this->redirect($app->url('').'&--msg='.urlencode('Successfully indexed database'));
+			$app->redirect($app->url('').'&--msg='.urlencode('Successfully indexed database'));
 
 		}
 		

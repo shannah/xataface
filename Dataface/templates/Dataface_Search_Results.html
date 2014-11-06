@@ -1,5 +1,5 @@
 {use_macro file="Dataface_Main_Template.html"}
-	{fill_slot name="main_column"}
+	{fill_slot name="main_section"}
 		{if $results|@count>0}
 			<p>Results {$metadata.start+1} to {$metadata.end} of {$metadata.found} for "{$search_term|escape}"</p>
 			{capture assign="prev_next"}

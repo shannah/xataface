@@ -23,6 +23,7 @@
 import( 'Dataface/Table.php');
 import( 'Dataface/RelatedRecord.php');
 import('Dataface/LinkTool.php');
+import('Dataface/IO.php');
 
 
 /**

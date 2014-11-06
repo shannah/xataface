@@ -173,7 +173,23 @@ class Database {
             }
             $vals[] = "`$key`=$val";
         }
-
+        
+        if ( !is_string($where) ){
+            if ( is_object($where) ){
+                $where = (array)$where;
+            }
+            if ( is_array($where) ){
+                $w = array();
+                foreach ( $where as $key=>$val ){
+                    $w[] = "`".str_replace('`','', $key)."`='".addslashes($val)."'";
+                }
+                $where = implode(' AND ', $w);   
+            } else {
+                throw new \Exception("3rd param of updateObject 'where' expects a string, object, or array.");
+            }
+            
+        }
+        
         $sql = "update `$table` set " . implode(',', $vals) . " where $where";
         return $this->query($sql);
     }

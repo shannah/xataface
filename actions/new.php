@@ -47,6 +47,17 @@ class dataface_actions_new {
                 
 		$currentRecord = new Dataface_Record($query['-table'], array());
 		$currentTable =& Dataface_Table::loadTable($query['-table']);
+		
+		$app->setPageTitle(
+		    df_translate(
+		        'actions.new.label', 
+		        'New '.$currentTable->getSingularLabel(),
+		        array(
+		            'tableObj'=>$currentTable
+		        )
+		    )
+		);
+		
 		if ( !isset($query['--tab']) and count($currentTable->tabs($currentRecord)) > 1 ){
 		   $tabs = $currentTable->tabs($currentRecord);
 		   uasort($tabs, array($formTool, '_sortTabs'));

@@ -30,6 +30,7 @@
  */
 import( 'Dataface/Application.php'); 
 import('Dataface/Table.php');
+import('Dataface/AuthenticationTool.php');
 
 class Dataface_DB {
 	var $_db;
