@@ -46,6 +46,7 @@ class Dataface_RelatedList {
     var $_where;
     var $hideActions = false;
     var $noLinks = false;
+    var $filters = array();
 
     function Dataface_RelatedList(&$record, $relname, $db = '') {
         if (!is_a($record, 'Dataface_Record')) {
@@ -84,6 +85,23 @@ class Dataface_RelatedList {
             if ( $this->_relationship->hasField($field_name, true) ){
                 $field = $this->_relationship->getField($field_name);
                 $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'`=\''.addslashes($query[$search_key]).'\'';
+                $filter_info = array(
+                    'field_name' => $field_name,
+                    'field_label' => $field['widget']['label'],
+                    'field_value' => $query[$search_key],
+                    'field_display_value' => $query[$search_key],
+                    'url' => $app->url('-related:s:'.$field_name.'=')
+                );
+                if ( @$field['vocabulary'] ){
+                    $field_table = Dataface_Table::loadTable($field['tablename']);
+                    $valuelist =& $field_table->getValuelist($field['vocabulary']);
+                    if ( isset($valuelist[$filter_info['field_value']]) ){
+                        $filter_info['field_display_value'] = $valuelist[$filter_info['field_value']];
+                    }
+                    unset($valuelist);
+                    unset($field_table);
+                }
+                $this->filters[] = $filter_info;
             }
         }
         if ( $terms ){
@@ -555,10 +573,13 @@ class Dataface_RelatedList {
                 }
             }
         }
-
+        
+        
+        
 		Dataface_JavascriptTool::getInstance()
 			->import('xataface/actions/related_list.js');
         ob_start();
+        $context['filters'] = $this->filters;
         df_display($context, 'xataface/RelatedList/list.html');
         $out = ob_get_contents();
         ob_end_clean();
