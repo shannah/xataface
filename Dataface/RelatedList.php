@@ -75,6 +75,24 @@ class Dataface_RelatedList {
         } else {
             $rwhere = 0;
         }
+        //echo $rwhere;
+        $column_search_keys = preg_grep('/^-related:s:[a-zA-Z_0-9]+$/', array_keys($query));
+        $terms = array();
+            
+        foreach ( $column_search_keys as $search_key ){
+            $field_name = substr($search_key, strrpos($search_key, ':')+1);
+            if ( $this->_relationship->hasField($field_name, true) ){
+                $field = $this->_relationship->getField($field_name);
+                $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'`=\''.addslashes($query[$search_key]).'\'';
+            }
+        }
+        if ( $terms ){
+            if ( $rwhere === 0 ){
+                $rwhere = implode(' AND ', $terms);
+            } else {
+                $rwhere = '('.$rwhere.') AND '.implode(' AND ', $terms);
+            }
+        }
         $this->_where = $rwhere;
     }
 

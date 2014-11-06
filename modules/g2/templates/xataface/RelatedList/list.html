@@ -64,8 +64,9 @@
 	{$treetable}
 {else}
 	{$moveUpForm}
-	{if !$relatedList->hideActions and $relatedList->_where}
-		{assign var=relatedSearchKey value="-related:search"}
+	{assign var=relatedSearchKey value="-related:search"}
+	{if !$relatedList->hideActions and $relatedList->_where and $filterQuery.$relatedSearchKey}
+		
 		<div>{translate id="scripts.GLOBAL.RECORDS_MATCHED_REQUEST"}Showing matches for query{/translate} <em>&quot;{$filterQuery.$relatedSearchKey|escape}&quot;</em>
 		<a href="{$app->url('-related:search=')|escape}" title="{translate id="scripts.GLOBAL.RECORDS_MATCHED_REMOVE"}Remove this filter to show all records in this relationship{/translate}">
 			<img src="{$smarty.const.DATAFACE_URL|escape}/images/delete.gif" alt="{translate id="scripts.GLOBAL.RECORDS_MATCHED_REMOVE_SUBMIT"}Remove filter{/translate}" />
