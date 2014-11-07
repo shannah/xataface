@@ -50,7 +50,7 @@
 			{block name="before_record_subtabs"}
 			{define_slot name="record_subtabs"}
 				<div class="record-subtabs">
-					{record_tabs mincount=2 maxcount=7}
+					{record_tabs mincount=2 maxcount=$G2->get_property('record_subtabs.size', 7)}
 					<div style="clear:both; height:1px;"></div>
 				</div>
 			{/define_slot}
