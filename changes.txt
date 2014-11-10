@@ -1,3 +1,10 @@
+Xataface 2.1.2 4802
+November 10, 2014
+    - Fixed issue with installer getting stuck after selecting database.
+    - added support for records_subtabs.size parameter 
+    - Added support for filtering related lists on columns (but only via URL conventions)
+    
+
 Xataface 2.1.1 4801
 October 26, 2014
     - Fixed fatal error with installer.
