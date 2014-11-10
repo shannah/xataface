@@ -3,6 +3,6 @@ ErrorDocument 403 "403 Access Restricted.  <a href='installer.php'>Go to install
 <FilesMatch "\.(png|jpg|gif|GIF|PNG|JPG|jpeg|JPEG|ICO|js|css|html)$">
 	Allow from all
 </FilesMatch>
-<FilesMatch "(installer\.php|index\.php)$">
+<FilesMatch "(installer\.php|index\.php|install_form.js.php)$">
 	Allow from all
 </FilesMatch>
