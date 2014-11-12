@@ -77,6 +77,16 @@ class dataface_actions_copy_replace {
 		$form->addElement('hidden', '-copy_replace:fields');
 		$el =& $form->addElement('hidden', '-copy_replace:copy');
 		if ( @$query['--copy']) {
+		
+		    // Check permissions
+		    foreach ( $records as $record ){
+		        if ( !$record->checkPermission('copy') ){
+		            return Dataface_Error::permissionDenied(
+		                'You don\'t have permission to copy one or more of the selected records.'
+		            );
+		        }
+		    }
+		
 			$form->setDefaults(array('-copy_replace:copy'=>1));
 			$message = df_translate('actions.copy_replace.copy_message',
 <<<END
@@ -93,6 +103,13 @@ END
 END
 );
 		} else  {
+		    foreach ( $records as $record ){
+		        if ( !$record->checkPermission('edit') ){
+		            return Dataface_Error::permissionDenied(
+		                'You don\'t have permission to update one or more of the selected records.'
+		            );
+		        }
+		    }
 			$message = df_translate('actions.copy_replace.update_message',
 <<<END
 				This form allows you to perform batch updates on all of the selected
@@ -108,7 +125,7 @@ END
 );
 			$title = df_translate('actions.copy_replace.update_form_title',"Find/Replace Form");
 		
-		}
+		} 
 		foreach ($query as $key=>$val){
 			$res = $form->addElement('hidden',$key);
 			$form->setDefaults(array($key=>$val));
@@ -207,10 +224,23 @@ END
 		} else if ( is_a($record, 'Dataface_RelatedRecord') ){
 			$fields = array();
 			$fieldnames = $record->_relationship->_schema['short_columns'];
+			$fkvals = $record->_relationship->getForeignKeyValues();
+			
 			foreach ($fieldnames as $fieldname){
 				$t =& $record->_relationship->getTable($fieldname);
 				$fields[$fieldname] =& $t->getField($fieldname);
-				if ( @$fields[$fieldname]['visibility']['update'] == 'hidden' ){
+				
+				// Don't allow users to change foreign keys
+				if ( isset($fkvals[$t->tablename]) and isset($fkvals[$t->tablename][$fieldname]) ){
+				    unset($fields[$fieldname]);
+				}
+				
+				$autoIncrementField =& $t->getAutoIncrementField();
+				if ( $autoIncrementField === $fieldname ){
+				    unset($fields[$fieldname]);
+				}
+				
+				if ( @$fields[$fieldname] and @$fields[$fieldname]['visibility']['update'] == 'hidden' ){
 					unset($fields[$fieldname]);
 				}
 				unset($t);

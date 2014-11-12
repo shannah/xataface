@@ -548,7 +548,7 @@ class Dataface_RelatedList {
                         echo '<input type="hidden" name="' . $key . '" value="' . df_escape($val) . '">';
                     }
                     echo '<input type="hidden" name="--selected-ids" id="--selected-ids">';
-                    echo '<input type="hidden" name="-from" id="-from" value="' . $query['-action'] . '">';
+                    echo '<input type="hidden" name="-from" id="-from" value="' . $q['-action'] . '">';
                     echo '</form>';
                     $selected_actions_form = ob_get_contents();
                     $context['selected_actions_form'] = $selected_actions_form;
