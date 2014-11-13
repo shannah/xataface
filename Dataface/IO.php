@@ -819,7 +819,7 @@ class Dataface_IO {
 		$table_keys = array_keys($this->_table->keys());
 		
 		foreach ( $table_keys as $key){
-			if ( !isset( $query[$key] ) or !$query[$key] ) {
+			if ( !isset( $query[$key] ) or strlen(''.$query[$key])===0 ) {
 				
 				return false;
 			}
