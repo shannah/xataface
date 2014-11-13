@@ -263,6 +263,19 @@
 		return this.each(function(){
 		
 			$(this).click(function(){
+			    
+			    var RecordDialog = xataface.RecordDialog;
+                try {
+                    // If we are inside a parent iframe already due to another record dialog
+                    // we will use the Record dialog from the parent window (risky??)
+                    if (xataface.RecordDialog.version === window.top.xataface.RecordDialog.version) {
+                        RecordDialog = window.top.xataface.RecordDialog;
+                    }
+        
+                } catch (e) {
+        
+                }
+			
 				var d = new RecordDialog(options);
 				d.display();
 			});
