@@ -1,0 +1,48 @@
+{if $portlet->rows|@count == 0}
+    <div class="{$portlet->cssClass|escape}"
+         data-new-params="{$portlet->newParamsJson()|escape}"
+         data-params="{$portlet->paramsJson()|escape}"
+         data-add-button-label="{$portlet->addButtonLabel|escape}"
+         >
+        <div data-table-name="{$portlet->table|escape}">
+            <p>This portlet is empty</p>
+        </div>
+    </div>
+    
+{else}
+    <table class="{$portlet->cssClass|escape}{if $portlet->canAdd} can-add{/if}" 
+        data-table-name="{$portlet->table|escape}" 
+        data-new-params="{$portlet->newParamsJson()|escape}"
+        data-params="{$portlet->paramsJson()|escape}"
+        data-add-button-label="{$portlet->addButtonLabel|escape}">
+        <thead>
+            <tr>
+                {foreach from=$portlet->cols item=col}
+                    <th>{$col.label|escape}</th>   
+                {/foreach}
+                {if $portlet->rowActions}
+                    <td class="portlet-buttons">
+
+                    </td>
+                {/if}
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$portlet->rows item=row}
+                <tr data-record-id="{$row.__meta__.recordId|escape}" 
+                    class="{$row.__meta__.cssClass|escape}{if $portlet->canEdit} can-edit{/if}{if $portlet->canDelete} can-delete{/if}">
+                
+                    {foreach from=$portlet->cols item=col}
+                        {assign var=colname value=$col.name}
+                        <td>{$row.$colname|escape}</td>
+                    {/foreach}
+                    {if $portlet->rowActions}
+                        <td class="portlet-buttons">
+                            {actions_menu record=$row.__meta__.record portlet=$portlet category=$portlet->rowActions}
+                        </td>
+                    {/if}
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+{/if}
