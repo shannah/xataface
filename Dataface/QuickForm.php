@@ -248,6 +248,15 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		$this->_fields =& $this->_table->formFields(false,true);
 		
 		
+		if ( @$appQuery['-xf-hide-fields'] ){
+		    $hiddenFields = explode(' ', $appQuery['-xf-hide-fields']);
+		    foreach ( $hiddenFields as $f ){
+		        if ( isset($this->_fields[$f]) ){
+		            $this->_fields[$f]['widget']['type'] = 'hidden';
+		        }
+		    }
+		}
+		
 		//$this->_record = new Dataface_Record($this->_table->tablename, array());
 		$this->_renderer = new HTML_QuickForm_Renderer_Dataface($this); //$this->defaultRenderer();
 		$this->_renderer->setFormTemplate($this->getFormTemplate());
