@@ -76,6 +76,7 @@ The resulting portlet will look like:
    use xf\components\Portlet;
    ~~~
 2. Create Portlet:
+
  ~~~
  $portlet = Portlet::createPortletWithQuery(
     $query, // A Xataface query associative array
@@ -83,6 +84,7 @@ The resulting portlet will look like:
     $options, // An associative array of configuration options passed to Portlet
  ~~~
 3. Display portlet:
+
  ~~~
  $content = $portlet->toHtml();
  ~~~
