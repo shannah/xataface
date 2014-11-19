@@ -8,9 +8,18 @@ Xataface 2.1.3 or higher (or latest in GitHub).
 
 ##Source
 
+**PHP Component:**
+
 If you are working in PHP, you will access it through the [xf\components\Portlet](../../xf/components/Portlet.php) class.  It wraps the [Porlet](../../js/xataface/components/Portlet.js) Javascript component.
 
+**Javascript Component:**
+
 You can also use the [Porlet Javascript component](../../js/xataface/components/Portlet.js) directly from Javascript
+
+**HTML Template:**
+
+The PHP component renders the portlet using the [Portlet.html](../../Dataface/templates/xataface/components/Portlet.html) template.  Check it out to see what it expects to get.  
+
 
 ##Code Example
 
