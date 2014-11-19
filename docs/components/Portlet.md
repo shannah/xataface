@@ -70,21 +70,21 @@ The resulting portlet will look like:
 ##Usage
 
 1. Imports
-    ~~~
-    require_once 'xf/components/Portlet.php';
-    use xf\components\Portlet;
-    ~~~
+~~~
+require_once 'xf/components/Portlet.php';
+use xf\components\Portlet;
+~~~
 2. Create Portlet:
-    ~~~
-    $portlet = Portlet::createPortletWithQuery(
-        $query, // A Xataface query associative array
-        $columns, // An array of column names to display - null for all
-        $options, // An associative array of configuration options passed to Portlet
-    ~~~
+~~~
+$portlet = Portlet::createPortletWithQuery(
+    $query, // A Xataface query associative array
+    $columns, // An array of column names to display - null for all
+    $options, // An associative array of configuration options passed to Portlet
+~~~
 3. Display portlet:
-    ~~~
-    $content = $portlet->toHtml();
-    ~~~
+~~~
+$content = $portlet->toHtml();
+~~~
     
 TODO:  MORE DOCUMENTATION ON THE OPTIONS
 
