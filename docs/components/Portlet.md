@@ -70,6 +70,7 @@ The resulting portlet will look like:
 ##Usage
 
 1. Imports
+   
    ~~~
    require_once 'xf/components/Portlet.php';
    use xf\components\Portlet;
