@@ -1031,9 +1031,13 @@ class Dataface_FormTool {
 	 *			or it could be a 'partition' tab.  A 'partition' tab.
 	 */
 	function createRecordForm($record, $new=false, $tab=null, $query=null, $fields=null){
-		
+		if ( !$record ){
+		    throw new Exception("Cannot create record form for null record");
+		}
 		$table =& $record->_table;
-		
+		if ( !$table ){
+		    throw new Exception("Could not find table ".$record->_table->tablename);
+		}
 		if ( $table->hasJoinTable($tab, $record) ){
 			$query['--tab'] = null;
 			$jrecord = $record->getJoinRecord($tab, true /*null if not found*/);
