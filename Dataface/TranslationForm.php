@@ -45,13 +45,13 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 	 *        By default all translatable fields will be translated.
 	 */
 	function Dataface_TranslationForm(&$record, $source=null, $dest=null, $query='', $fieldnames=null){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		
 		if ( is_string($record) ){
 			// $record is just the name of a table.
-			$table =& Dataface_Table::loadTable($record);
+			$table = Dataface_Table::loadTable($record);
 		} else {
-			$table =& $record->_table;
+			$table = $record->_table;
 		}
 		
 		$translations =& $table->getTranslations();
@@ -133,12 +133,12 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 			$io->lang = $lang;
 			$record = new Dataface_Record($this->_table->tablename, array());
 			$io->read($query, $record);
-			$this->records[$lang] =& $record;
+			$this->records[$lang] = $record;
 			unset($record);
 		}
 		
 		unset($this->_record);
-		$this->_record =& $this->records[$this->destinationLanguage];
+		$this->_record = $this->records[$this->destinationLanguage];
 	
 	}
 	
@@ -160,7 +160,7 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 	}
 	
 	function getFormTemplate(){
-		$atts =& $this->_table->attributes();
+		$atts = $this->_table->attributes();
 		
 		import('Dataface/TranslationTool.php');
 		$tt = new Dataface_TranslationTool();
@@ -203,7 +203,7 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 		//	$description = '';
 		//}
 		$context = array( 'group'=>&$group, 'content'=>'{content}');
-		$skinTool =& Dataface_SkinTool::getInstance();
+		$skinTool = Dataface_SkinTool::getInstance();
 		ob_start();
 		$skinTool->display($context, 'Dataface_TranslationForm_group.html');
 		$o = ob_get_contents();

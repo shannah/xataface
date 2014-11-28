@@ -99,7 +99,7 @@ END;
 	 * Creates the table to store the translation information.
 	 */
 	function createTranslationsTable(){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		$sql = "create table if not exists `dataface__translations` (";
 		$cols = array();
 		$primary_key_cols = array();
@@ -129,7 +129,7 @@ END;
 		
 	}
 	function updateTranslationsTable(){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		if ( !Dataface_Table::tableExists('dataface__translations',false) ){
 			$this->createTranslationsTable();
 		}
@@ -157,7 +157,7 @@ END;
 	 * Creates the table to store the translation information.
 	 */
 	function createTranslationSubmissionsTable(){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		$sql = "create table if not exists `dataface__translation_submissions` (";
 		$cols = array();
 		$primary_key_cols = array();
@@ -187,7 +187,7 @@ END;
 		
 	}
 	function updateTranslationSubmissionsTable(){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		if ( !Dataface_Table::tableExists('dataface__translation_submissions',false) ){
 			$this->createTranslationSubmissionsTable();
 		}
@@ -240,7 +240,7 @@ END;
 	function translateRecords(&$records, $sourceLanguage, $destLanguage){}
 	
 	function getTranslationId(&$record, $language){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		$sql = "select `id` from `dataface__translations` where `record_id`='".addslashes($this->getRecordId($record))."' and `table`='".addslashes($record->_table->tablename)."' and `language`='".addslashes($language)."' limit 1";
 		$res = xf_db_query($sql, $app->db());
 		if ( !$res ){
@@ -284,12 +284,12 @@ END;
 	 * @returns Dataface_Record
 	 */
 	function getTranslationRecord(&$record, $language){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		$id = $this->getTranslationId($record, $language);
-		$trecord =& df_get_record('dataface__translations', array('id'=>$id));
+		$trecord = df_get_record('dataface__translations', array('id'=>$id));
 		if ( !isset($trecord) ) {
 			$this->updateTranslationsTable();
-			$trecord =& df_get_record('dataface__translations', array('id'=>$id));
+			$trecord = df_get_record('dataface__translations', array('id'=>$id));
 			if ( !isset($trecord) ) throw new Exception("Error loading translation record for translation id '$id'", E_USER_ERROR);
 		}
 		return $trecord;
@@ -303,8 +303,8 @@ END;
 	 * @returns string Canonical version in the form major_version.minor_version
 	 */
 	function getCanonicalVersion(&$record, $language){
-		$app =& Dataface_Application::getInstance();
-		$trecord =& $this->getTranslationRecord($record, $language);
+		$app = Dataface_Application::getInstance();
+		$trecord = $this->getTranslationRecord($record, $language);
 		if ( PEAR::isError($trecord) ) return $trecord;
 		return $trecord->val('version');
 	}
@@ -316,8 +316,8 @@ END;
 	 * which version a translation corresponds to.
 	 */
 	function markNewCanonicalVersion(&$record, $language=null){
-		$app =& Dataface_Application::getInstance();
-		$trecord =& $this->getTranslationRecord($record, $language);
+		$app = Dataface_Application::getInstance();
+		$trecord = $this->getTranslationRecord($record, $language);
 		$trecord->setValue('version', $trecord->val('version')+1);
 		$trecord->setValue('translation_status', TRANSLATION_STATUS_SOURCE);
 		$res = $trecord->save();
@@ -347,7 +347,7 @@ END;
 			throw new Exception($records->toString(), E_USER_ERROR);
 		}
 		while ($records->hasNext()){
-			$trecord =& $records->next();
+			$trecord = $records->next();
 			$update=true;
 			switch($trecord->val('translation_status')){
 				case TRANSLATION_STATUS_MACHINE:
@@ -376,11 +376,11 @@ END;
 	}
 	
 	function setTranslationStatus(&$record, $language, $status){
-		$trecord =& $this->getTranslationRecord($record, $language);
+		$trecord = $this->getTranslationRecord($record, $language);
 		$trecord->setValue('translation_status', $status);
 		if ( $status == TRANSLATION_STATUS_APPROVED || $status == TRANSLATION_STATUS_MACHINE){
-			$app =& Dataface_Application::getInstance();
-			$def_record =& $this->getTranslationRecord($record, $app->_conf['default_language']);
+			$app = Dataface_Application::getInstance();
+			$def_record = $this->getTranslationRecord($record, $app->_conf['default_language']);
 			if ( $def_record ){
 				$trecord->setValue('version', $def_record->val('version'));
 			}
@@ -399,8 +399,8 @@ END;
 	 * @returns boolean True if it succeeds.
 	 */
 	function untranslate(&$record, $language, $fieldname=null){
-		$trecord =& $this->getTranslationRecord($record, $language);
-		$app =& Dataface_Application::getInstance();
+		$trecord = $this->getTranslationRecord($record, $language);
+		$app = Dataface_Application::getInstance();
 		switch ($trecord->val('translation_status')){
 			case TRANSLATION_STATUS_MACHINE:
 			case TRANSLATION_STATUS_NEEDS_UPDATE_MACHINE:
@@ -437,7 +437,7 @@ END;
 	 *
 	 */
 	function getChanges(&$record,$version, $lang=null,$fieldname=null){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		if ( !isset($lang) ) $lang = $app->_conf['lang'];
 		list($major_version,$minor_version) = explode('.', $version);
 		$trecord = $this->getTranslationRecord($record, $lang);
@@ -465,7 +465,7 @@ END;
 		
 		import('Dataface/Utilities.php');
 		import('Dataface/IO.php');
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		$no_fallback = @$app->_conf['default_language_no_fallback'];
 			// Whether or not the application is currently set to disable fallback
 			// to default language.
@@ -477,7 +477,7 @@ END;
 		foreach ($tables as $tablename){
 			
 			
-			$table =& Dataface_Table::loadTable($tablename);
+			$table = Dataface_Table::loadTable($tablename);
 			$t_tablename = $tablename.'_'.$app->_conf['default_language'];
 			
 			if ( !$table || PEAR::isError($table) ) continue;
@@ -549,7 +549,7 @@ END;
 	 * Returns the tables that are eligible to be migrated.
 	 */
 	function getMigratableTables(){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		if ( @$app->_conf['default_language_no_fallback'] ) return false;
 			// We are still using the old style of translations, so there is no migration required.
 			
@@ -578,17 +578,17 @@ END;
 	}
 	
 	function migrate(){
-		$app =& Dataface_Application::getInstance();
+		$app = Dataface_Application::getInstance();
 		return $this->migrateDefaultLanguage($app->_conf['default_language']);
 		
 	}
 	
 	function printTranslationStatusAlert($record, $language=null){
 		if ( !isset($language) ){
-			$app =& Dataface_Application::getInstance();
+			$app = Dataface_Application::getInstance();
 			$language = $app->_conf['lang'];
 		}
-		$trec =& $this->getTranslationRecord($record, $language);
+		$trec = $this->getTranslationRecord($record, $language);
 		if ( !$trec) return;
 		$status = $trec->val('translation_status');
 		switch ($status){
@@ -615,7 +615,7 @@ END;
 		}
 		if ( !@$msg ) return;
 		import('Dataface/ActionTool.php');
-		$at =& Dataface_ActionTool::getInstance();
+		$at = Dataface_ActionTool::getInstance();
 		$actions = $at->getActions(array('category'=>'translation_warning_actions','record_id'=>$record->getId()));
 		$actions_html = "<ul class=\"translation_options\">";
 		foreach ($actions as $action){
