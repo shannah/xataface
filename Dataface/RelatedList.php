@@ -84,7 +84,12 @@ class Dataface_RelatedList {
             $field_name = substr($search_key, strrpos($search_key, ':')+1);
             if ( $this->_relationship->hasField($field_name, true) ){
                 $field = $this->_relationship->getField($field_name);
-                $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'`=\''.addslashes($query[$search_key]).'\'';
+                $field_table = Dataface_Table::loadTable($field['tablename']);
+                if ( $field_table->isChar($field['name']) or $field_table->isText($field['name']) ){
+                    $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'` LIKE \'%'.addslashes($query[$search_key]).'%\'';
+                } else {
+                    $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'`=\''.addslashes($query[$search_key]).'\'';
+                }
                 $filter_info = array(
                     'field_name' => $field_name,
                     'field_label' => $field['widget']['label'],
@@ -93,10 +98,14 @@ class Dataface_RelatedList {
                     'url' => $app->url('-related:s:'.$field_name.'=')
                 );
                 if ( @$field['vocabulary'] ){
-                    $field_table = Dataface_Table::loadTable($field['tablename']);
+                    $vlkey = $filter_info['field_value'];
+                    if ( preg_match('/^\,(\d+)\,$/', $vlkey, $matches) ){
+                        $vlkey = $matches[1];
+                    }
                     $valuelist =& $field_table->getValuelist($field['vocabulary']);
-                    if ( isset($valuelist[$filter_info['field_value']]) ){
-                        $filter_info['field_display_value'] = $valuelist[$filter_info['field_value']];
+                    if ( isset($valuelist[$vlkey]) ){
+                        $filter_info['field_display_value'] = $valuelist[$vlkey];
+                        
                     }
                     unset($valuelist);
                     unset($field_table);
