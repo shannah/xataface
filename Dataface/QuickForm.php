@@ -248,15 +248,18 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		$this->_fields =& $this->_table->formFields(false,true);
 		if ( @$appQuery['-xf-hide-fields'] ){
 		    $hiddenFields = explode(' ', $appQuery['-xf-hide-fields']);
+		    $css = array();
 		    foreach ( $hiddenFields as $f ){
-		        if ( isset($this->_fields[$f]) ){
-		            $this->_fields[$f]['widget']['type'] = 'hidden';
-		            $fieldDef =& Dataface_Table::loadTable($this->_fields[$f]['tablename'])->getField($f);
-		            $fieldDef['widget']['type'] = 'hidden';
-		            unset($fieldDef);
-		            //$field =& 
-		        }
+		        $css[] = "#{$f}_form_row { display:none;}";
+		        //if ( isset($this->_fields[$f]) ){
+		        //    $this->_fields[$f]['widget']['type'] = 'hidden';
+		        //    $fieldDef =& Dataface_Table::loadTable($this->_fields[$f]['tablename'])->getField($f);
+		        //    $fieldDef['widget']['type'] = 'hidden';
+		        //    unset($fieldDef);
+		        //    //$field =& 
+		        //}
 		    }
+		    $app->addHeadContent('<style type="text/css">'.implode('', $css).'</style>');
 		}
 		//$this->_record = new Dataface_Record($this->_table->tablename, array());
 		$this->_renderer = new HTML_QuickForm_Renderer_Dataface($this); //$this->defaultRenderer();

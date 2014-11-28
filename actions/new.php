@@ -188,7 +188,7 @@ class dataface_actions_new {
                                 // of the new form.  E.g. if the form was headless or 
                                 // has only particular fields, then the edit form should
                                 // include the same fields and also be headless.
-                                $passedParams = array('-fields', '-headless');
+                                $passedParams = array('-fields', '-headless','-xf-hide-fields');
                                 foreach ( $passedParams as $passedParam ){
                                     if (@$query[$passedParam]){
                                         $urlParams[$passedParam] = $query[$passedParam];
