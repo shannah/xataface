@@ -113,6 +113,9 @@
 		}
 		
 		$(this.rangePanel).show();
+		$(window.xataface).trigger('afterShowDateRangeWidget', {
+			'widget' : this
+		});
 	}
 	
 	function hideRange(){

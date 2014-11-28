@@ -308,7 +308,8 @@ class Dataface_IO {
                     }
                     $query = array();
                     foreach ( array_keys($keys) as $key ){
-                            if ( !$record->strval($key) ){
+                            if ( strlen($record->strval($key)) === 0 ){
+                                    //error_log("$key is '".$record->strval($key)."'");
                                     return PEAR::raiseError(
                                             Dataface_LanguageTool::translate(
                                                     /* i18n id */
@@ -316,7 +317,7 @@ class Dataface_IO {
                                                     /* default error message */
                                                     'Could not delete record '.
                                                     $record->getTitle().
-                                                    ' because not all of the keys were included.',
+                                                    ' because not all of the keys were included. Missing key '.$key,
                                                     /* i18n parameters */
                                                     array('title'=>$record->getTitle(), 'key'=>$key)
                                             ),
@@ -818,7 +819,7 @@ class Dataface_IO {
 		$table_keys = array_keys($this->_table->keys());
 		
 		foreach ( $table_keys as $key){
-			if ( !isset( $query[$key] ) or !$query[$key] ) {
+			if ( !isset( $query[$key] ) or (is_scalar($query[$key]) and strlen(''.$query[$key])===0) ) {
 				
 				return false;
 			}

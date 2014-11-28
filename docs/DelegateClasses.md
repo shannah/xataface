@@ -226,6 +226,26 @@ The following is a list of some of the common methods that are supported by dele
 |---|---|---|---|
 | `__sql__` | Defines the SQL query that can be used to fetch records of this table. This is identical to the fields.ini file `__sql__` directive, except that by defining it in the delegate class you have more flexibility. | Y | |
 
+###Calculated Fields
+
+| Name | Description | Table | App |
+|---|---|---|---|
+| field__fieldname | Implements a calculated field that can be accessed programmatically like any other field. | Y | |
+
+Example implementation of a calculated field.  Suppose our table has `first_name` and `last_name` fields, but we find ourselves frequently needing to display the full name.  Then we could create a calculated field `full_name` as follows inside the table delegate class:
+
+~~~
+function field__full_name(Dataface_Record $record){
+    return $record->val('first_name').' '.$record->val('last_name');
+}
+~~~
+
+Then you can access this value directly from a `Dataface_Record` object using the normal `val()`, `strval()`, `display()`, and `htmlValue()` methods.  E.g.
+
+~~~
+$fullname = $record->display('full_name');
+~~~
+
 ###Feature-Specific Methods
 
 This page only lists some of the core methods supported by delegate classes.  However there are many more methods that pertain to specific features.  These methods will be documented on pages that cover those specific features.

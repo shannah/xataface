@@ -56,16 +56,16 @@ class Dataface_RelatedList {
         $this->_tablename = $this->_record->_table->tablename;
         $this->_db = $db;
         $this->_relationship_name = $relname;
-
-
-        $this->_table = & $this->_record->_table;
-        $this->_relationship = & $this->_table->getRelationship($relname);
-
-        $this->_start = isset($_REQUEST['-related:start']) ? $_REQUEST['-related:start'] : 0;
-        $this->_limit = isset($_REQUEST['-related:limit']) ? $_REQUEST['-related:limit'] : 30;
-
         $app = & Dataface_Application::getInstance();
         $query = & $app->getQuery();
+        
+        $this->_table = & $this->_record->_table;
+        $this->_relationship = & $this->_table->getRelationship($relname);
+        
+        $this->_start = isset($query['-related:start']) ? $query['-related:start'] : 0;
+        $this->_limit = isset($query['-related:limit']) ? $query['-related:limit'] : 30;
+
+        
         if (isset($query['-related:search'])) {
             $rwhere = array();
             foreach ($this->_relationship->fields() as $rfield) {

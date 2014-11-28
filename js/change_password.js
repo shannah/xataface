@@ -42,7 +42,7 @@
 			$.post(DATAFACE_SITE_HREF, query, function(response){
 				
 				handleChangePasswordResponse(response);
-				submitBtn.attr('disabled',0);
+				submitBtn.removeAttr('disabled');
 				$('.progress-image').remove();
 			
 			});

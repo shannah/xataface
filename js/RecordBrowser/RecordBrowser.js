@@ -555,7 +555,19 @@
 						keyColName = options.value;
 					}
 					var recordid = encodeURIComponent(options.table)+'?'+encodeURIComponent(keyColName)+'='+encodeURIComponent(id);
-					var dlg = new xataface.RecordDialog({
+					var RecordDialog = xataface.RecordDialog;
+                    try {
+                        // If we are inside a parent iframe already due to another record dialog
+                        // we will use the Record dialog from the parent window (risky??)
+                        if (xataface.RecordDialog.version === window.top.xataface.RecordDialog.version) {
+                            RecordDialog = window.top.xataface.RecordDialog;
+                        }
+            
+                    } catch (e) {
+            
+                    }
+					
+					var dlg = new RecordDialog({
 						recordid: recordid,
 						table: options.table,
 						params : options.editParams || {},
