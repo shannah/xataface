@@ -143,12 +143,12 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 	}
 	
 	
-	function _buildWidget($field){
+	function _buildWidget(&$field){
 		// notice that we pass $field by value here- so we can make changes without changing it
 		// throughout the rest of the application.
 		
 		
-		$res =& parent::_buildWidget($field);
+		$res = parent::_buildWidget($field);
 		if ( is_a($res, 'HTML_QuickForm_element') and is_array($this->_dest_translatedFields) and !in_array( $field['name'], $this->_dest_translatedFields ) ){
 			$res->freeze();
 		}
@@ -166,8 +166,8 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 		$tt = new Dataface_TranslationTool();
 		
 		$status_selector_html = $tt->getHTMLStatusSelector($this->_record, $this->destinationLanguage,'__translation__[status]');
-		$trec =& $tt->getTranslationRecord($this->_record, $this->destinationLanguage);
-		$strec =& $tt->getTranslationRecord($this->_record, $this->sourceLanguage);
+		$trec = $tt->getTranslationRecord($this->_record, $this->destinationLanguage);
+		$strec = $tt->getTranslationRecord($this->_record, $this->sourceLanguage);
 		return "
 				<form{attributes}>
 					<fieldset>

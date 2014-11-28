@@ -67,7 +67,7 @@ class Dataface_TranslationTool {
 	 * @returns string
 	 */
 	function getHTMLStatusSelector(&$record, $language, $name, $onchange=''){
-		$trec =& $this->getTranslationRecord($record, $language);
+		$trec = $this->getTranslationRecord($record, $language);
 		if ( !$trec ){
 			//  no translation currently exists, so we will set the default 
 			// value to -1, the flag for no translation yet.
