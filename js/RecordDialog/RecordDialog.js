@@ -119,7 +119,7 @@
 							
 							$(dialog.el).dialog('close');
 							if ( parsed['response_message'] ){
-								alert(parsed['response_message']);
+								dialog.showResponseMessage(parsed['response_message']);
 							}
 							return;
 						
@@ -252,6 +252,10 @@
 			}
 			return url;
 		
+		},
+		
+		showResponseMessage : function(msg){
+		    alert(msg);
 		}
 	};
 	
