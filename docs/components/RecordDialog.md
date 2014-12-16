@@ -85,4 +85,16 @@ The RecordDialog uses an iframe to embed the standard new and edit record forms 
 
 In order to allow you to create styles that target the record forms specifically inside the RecordDialog dialog, it also adds the *RecordDialogBody* CSS class to the `<body>` tag of the iframe content.  This should allow you to target items inside the RecordDialog without affecting the standard new and edit record forms.
 
+##Overriding Response Messages
 
+By default response messages (e.g. "Record Successfully Saved") are displayed in a regular javascript alert dialog.  You can override this by overriding the `showResponseMessage` method on the `RecordDialog` object.  E.g.
+
+~~~
+var dialog = new xataface.RecordDialog({
+   ...
+});
+dialog.showResponseMessage = function(msg){
+   // Show the message msg using your own custom dialog -- or don't show the message at all.
+};
+dialog.display();
+~~~
