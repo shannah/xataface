@@ -472,6 +472,7 @@ class Dataface_Table {
 	 *
 	 */
 	public static function &loadTable($name, $db=null, $getAll=false, $quiet=false){
+		if ( is_int($name) ) $name = "$name";
 		if ( !is_string($name) ){
 			throw new Exception("In Dataface_Table::loadTable() expected first argument to be a string but received '".get_class($name)."'", E_USER_ERROR);
 		}
