@@ -32,7 +32,7 @@ class Dataface_FormTool_checkbox {
 				
 				//	$suffix =  '<script type="text/javascript" src="'.DATAFACE_URL.'/js/jquery-ui-1.7.2.custom.min.js"></script>';
         			//$suffix .= '<script type="text/javascript" src="'.DATAFACE_URL.'/js/RecordDialog/RecordDialog.js"></script>';
-        			$suffix .= 
+        			$suffix = 
                                     '<a 
                                         class="xf-checkbox-widget-other-link"
                                         href="#" 
