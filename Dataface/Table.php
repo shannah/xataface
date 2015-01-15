@@ -3395,7 +3395,7 @@ class Dataface_Table {
 				$vlname = $name;
 				$valuelists =& $this->_valuelists;
 				foreach ( $vllist as $key=>$value ){
-					if ( $key == '__import__' ){
+					if ( $key === '__import__' ){
 						// we import the values from another value list.  The value of this
 						// entry should be in the form tablename.valuelistname
 						list( $ext_table, $ext_valuelist ) = explode('.', $value);
@@ -3417,7 +3417,7 @@ class Dataface_Table {
 						unset($ext_table);
 						unset($ext_table);
 						unset($ext_valuelist);
-					} else if ( $key == '__sql__' ) {
+					} else if ( $key === '__sql__' ) {
 						// we perform the sql query specified to produce our valuelist.
 						// the sql query should return two columns only.  If more are 
 						// returned, only the first two will be used.   If one is returned
