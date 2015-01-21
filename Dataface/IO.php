@@ -1597,7 +1597,7 @@ class Dataface_IO {
 			foreach ( array_keys($drecords) as $recordIndex){
 				$currentRecord =& $drecords[$recordIndex];
 				if ( isset($this->insertids[ $currentRecord->_table->tablename ] ) ){
-					$idfield =& $currentRecord->_table->getAutoIncrementField();
+					$idfield = $currentRecord->_table->getAutoIncrementField();
 					if ( $idfield ){
 						$currentRecord->setValue($idfield, $this->insertids[ $currentRecord->_table->tablename ]);
 					}
