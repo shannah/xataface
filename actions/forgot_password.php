@@ -211,13 +211,17 @@ class dataface_actions_forgot_password {
 		    $ip = 0; //If IP is empty MySQL throws Incorrect Integer value on insert
 		}
 		
+		$expire_seconds = 600;
+		if ( @$app->_conf['reset_password_expiry']){
+			$expire_seconds = intval($app->_conf['reset_password_expiry']);
+		}
 		// Insert the entry
 		$this->create_reset_password_table();
 		$table = self::$TABLE_RESET_PASSWORD;
 		$sql = "insert into `{$table}`
 			(`request_uuid`, `username`, `request_ip`, `date_created`, `expires`)
 			values
-			(UUID(),'".addslashes($username)."','".addslashes($ip)."', NOW(), ".(time()+600).")";
+			(UUID(),'".addslashes($username)."','".addslashes($ip)."', NOW(), ".(time()+$expire_seconds).")";
 		$res = xf_db_query($sql, df_db());
 		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		$id = xf_db_insert_id(df_db());
