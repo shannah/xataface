@@ -338,7 +338,7 @@ class dataface_actions_register {
 			$res = xf_db_query($sql, df_db());
 			if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 			
-			$activation_url = $_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?-action=activate&code='.urlencode($code);
+			$activation_url = $_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?--enable-sessions=1&-action=activate&code='.urlencode($code);
 			
 			// Now that the registration information has been inserted, we need
 			// to send the confirmation email

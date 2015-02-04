@@ -8,7 +8,6 @@
 class dataface_actions_activate {
 	function handle(&$params){
 		$app = Dataface_Application::getInstance();
-		
 		if ( !isset($_GET['code']) ){
 			// We need this parameter or we can do nothing.
 			return PEAR::raiseError(

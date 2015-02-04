@@ -1645,14 +1645,16 @@ END
 				//   was synchronized meanwhile; 600 secs (10 minutes) should be
 				//   enough - just to ensure there is session data until the
 				//   cookie expires
-				$garbage_timeout = $cookie_timeout + 600; // in seconds
+				if ( $cookie_timeout ){
+				    $garbage_timeout = $cookie_timeout + 600; // in seconds
 				
-				// set the PHP session id (PHPSESSID) cookie to a custom value
-				session_set_cookie_params($cookie_timeout, $cookie_path);
+				    // set the PHP session id (PHPSESSID) cookie to a custom value
+				    session_set_cookie_params($cookie_timeout, $cookie_path);
 				
-				// set the garbage collector - who will clean the session files -
-				//   to our custom timeout
-				ini_set('session.gc_maxlifetime', $garbage_timeout);
+				    // set the garbage collector - who will clean the session files -
+				    //   to our custom timeout
+				    ini_set('session.gc_maxlifetime', $garbage_timeout);
+				}
 				if ( isset($conf['session_timeout']) and ini_get('session.save_handler') == 'files' ){
 					// we need a distinct directory for the session files,
 					//   otherwise another garbage collector with a lower gc_maxlifetime
@@ -1700,7 +1702,7 @@ END
 				header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
 				
 				// This updates the session timeout on page load
-				if ( isset($_COOKIE[session_name()]) ){
+				if ( $cookie_timeout and isset($_COOKIE[session_name()]) ){
 					setcookie(session_name(), $_COOKIE[session_name()], time() + $cookie_timeout, $cookie_path);
 				}
 			}
@@ -2465,7 +2467,7 @@ END
 		}
 		
 		$this->main_content_only = $main_content_only;
-		if ( $this->autoSession or $this->sessionEnabled() ){
+		if ( $this->autoSession or $this->sessionEnabled() or @$_REQUEST['--enable-sessions']){
 			$this->startSession();
 		}
 		if ( isset($this->_conf['disable_session_ip_check']) and !@$this->_conf['disable_session_ip_check'] ){
