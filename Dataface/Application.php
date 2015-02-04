@@ -1609,7 +1609,7 @@ END
 		if ( defined('XATAFACE_NO_SESSION') and XATAFACE_NO_SESSION ) return;
 		//echo "In startSession()";
 		if ( !$this->sessionEnabled() ){
-			$this->enableSessions();
+		    $this->enableSessions();
 		}
 		if ( session_id() == "" ){
 			if ( !isset($conf) ){
@@ -1637,7 +1637,7 @@ END
 				if ( $cookie_path{strlen($cookie_path)-1} != '/' ) $cookie_path .= '/';
 				
 				// timeout value for the cookie
-				$cookie_timeout = (isset($conf['session_timeout']) ? intval($conf['session_timeout']) : 24*60*60);
+				$cookie_timeout = (isset($conf['session_timeout']) ? intval($conf['session_timeout']) : 0);
 				
 				
 				// timeout value for the garbage collector
