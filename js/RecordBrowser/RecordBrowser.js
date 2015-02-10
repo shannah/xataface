@@ -446,6 +446,52 @@
 			obj.css('display','none')
 				.addClass('xf-RecordBrowserWidget');
 			
+			function updateEditable(){
+					if ( editable ) $(editButton).show();
+					else $(editButton).hide();
+				}
+			
+			/**
+			 * Internal function to load the permissions for the currently selected record and then update
+			 * whether the record can be edited or not.
+			 */
+			function updatePermissions(){
+				try {
+					// Now we check the edit permission to find out if we need to show or hide the edit link
+					// for the field.
+					var theq = {
+					
+						'-table': options.table
+						
+					};
+					
+					if ( options.value && options.value != '__id__' ){
+						theq[options.value] = obj.val();
+					} else {
+						theq['--id'] = obj.val();
+					}
+					
+					var perms = new xataface.Permissions({
+						query: theq
+					});
+					//alert('here');
+					perms.ready(function(){
+						//alert('there');
+						if ( perms.checkPermission('edit') ){
+							editable = true;
+						} else {
+							editable = false;
+						}
+						updateEditable();
+					
+					});
+				} catch (e){
+					console.log('Looks like xataface.Permissions is not loaded while handling RecordBrowser change event.');
+					console.log(e);
+				}
+			
+			}
+				
 			if ( !options.frozen ){
 				obj.change(function(){
 					var id;
@@ -465,48 +511,6 @@
 					
 						
 				});
-				
-				/**
-				 * Internal function to load the permissions for the currently selected record and then update
-				 * whether the record can be edited or not.
-				 */
-				function updatePermissions(){
-					try {
-						// Now we check the edit permission to find out if we need to show or hide the edit link
-						// for the field.
-						var theq = {
-						
-							'-table': options.table
-							
-						};
-						
-						if ( options.value && options.value != '__id__' ){
-							theq[options.value] = obj.val();
-						} else {
-							theq['--id'] = obj.val();
-						}
-						
-						var perms = new xataface.Permissions({
-							query: theq
-						});
-						//alert('here');
-						perms.ready(function(){
-							//alert('there');
-							if ( perms.checkPermission('edit') ){
-								editable = true;
-							} else {
-								editable = false;
-							}
-							updateEditable();
-						
-						});
-					} catch (e){
-						console.log('Looks like xataface.Permissions is not loaded while handling RecordBrowser change event.');
-						console.log(e);
-					}
-				
-				}
-				
 				
 				
 				var a = document.createElement('a');
@@ -582,11 +586,6 @@
 				$(editButton).insertAfter(a);
 				$(editButton).hide();
 				
-				function updateEditable(){
-					if ( editable ) $(editButton).show();
-					else $(editButton).hide();
-				}
-			
 				var origCallback = function(){};
 				
 				if ( typeof(options.callback == 'function' ) ){
