@@ -230,7 +230,8 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 		}	
 		
 		$groupsStarted = array();
-
+        
+        $usedFieldNames = array();
 		
 		$fieldDefs = array();
 		foreach ($cols as $col){
@@ -258,6 +259,7 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 					}
 					
 				} else {
+				    
 					continue;
 				}
 			}
@@ -265,6 +267,7 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 			$field =& $this->_parentTable->getTableField($col);
 			if ( @$field['grafted'] && !@$field['transient'] ) continue;
 			$fieldDefs[$absFieldname] =& $field;
+			$usedFieldNames[$fieldname] = $fieldname;
 			
 			unset($field);
 			unset($thisTable);
@@ -420,7 +423,13 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 		foreach ( array_keys($this->_parentTable->keys()) as $key ){
 			$keyEls[] = $factory->addElement('hidden', $key);
 			
-			
+			// Widgets like depselect depend on all of the fields in the target table
+			// being present (in case it depends on them).  If the field was excluded
+			// because it was a foreign key, this may break it.  So
+			// we add it as a hidden element.
+			if (!isset($usedFieldNames[$key]) and $this->_relatedRecord->_relationship->hasField($key, true)){
+			    $this->addElement('hidden', $key, $this->_relatedRecord->val($key));
+			}
 		}
 		
 		
