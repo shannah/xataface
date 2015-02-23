@@ -1088,6 +1088,42 @@ class Dataface_RelatedRecord {
 			return $record->getTitle();
 		}
 	}
+	
+	/**
+	 * @brief Gets the record title.  This wraps the domain record's getTitle()
+	 * method.
+	 * 
+	 * @return string The record's title.
+	 * 
+	 * @see Dataface_Record::getTitle()
+	 */
+	function getURL($params=array(), $tablename=null){
+	    if ( is_string($params) ){
+			$pairs = explode('&',$params);
+			$params = array();
+			foreach ( $pairs as $pair ){
+				list($key,$value) = array_map('urldecode',explode('=', $pair));
+				$params[$key] = $value;
+			}
+		}
+		$method = 'rel_'.$this->_relationshipName.'__getURL';
+		$del = $this->_record->table()->getDelegate();
+		
+		if ( isset($del) and method_exists($del, $method) ){
+			$out = $del->$method($this, $params, $tablename);
+			if (isset($out)){
+			    return $out;
+			}
+		}
+		
+		
+		$record =& $this->toRecord($tablename);
+		if (!$record){
+		    return null;
+		}
+		$out = $record->getURL($params).'&-portal-context='.urlencode($this->getId());
+		return $out;
+	}
 	 
 	 
 	 

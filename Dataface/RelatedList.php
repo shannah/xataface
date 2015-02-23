@@ -499,7 +499,8 @@ class Dataface_RelatedList {
                         if ( !@$app->_conf['legacy_compatibility_mode'] ){
                         	$link = $this->_record->getURL('-action=view_related_record&-related-record-id=' . urlencode($rrecid));
                         } else {
-                        	$link = $srcRecord->getURL('-action=browse&-portal-context=' . urlencode($rrecid));
+                        	//$link = $srcRecord->getURL('-action=browse&-portal-context=' . urlencode($rrecid));
+                        	$link = $rrec->getURL('-action=browse', $field['tablename']);
                         }
                         $srcRecordId = $srcRecord->getId();
 
