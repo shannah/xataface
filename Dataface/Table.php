@@ -166,6 +166,16 @@ class Dataface_Table {
 	
 	
 	/**
+	 * A map that can get used to register "display" fields for a column.  These
+	 * work similar to vocabularies except that they don't require a vocabulary
+	 * to be loaded.  Essentially you just register one field to be the display
+	 * field for another field.  Then display() will return the value for the 
+	 * display field instead of the value field.
+	 */
+	var $_displayFields=array();
+	
+	
+	/**
 	 * @brief A List of the tables that are join tables of this table.  A join table
 	 * is a table that is keyed on the same primary key as this table and 
 	 * store additional information about records of this table.  There must
@@ -2500,6 +2510,9 @@ class Dataface_Table {
 				
 			}
 		
+		    if (isset($this->_fields[$key]['display_field'])){
+		        $this->setDisplayField($key, $this->_fields[$key]['display_field']);
+		    }
 			
 			if ( $this->_fields[$key]['widget']['type'] == 'checkbox' and ($this->isText($key) || $this->isChar($key)) and @$this->_fields[$key]['vocabulary'] ){
 				// This is a checkbox field with a vocabulary.  It should be a repeating field
@@ -3634,6 +3647,35 @@ class Dataface_Table {
 		
 		$valuelists = array_merge($valuelists, array_keys(Dataface_ValuelistTool::getInstance()->valuelists()));
 		return $valuelists;
+	}
+	
+	/**
+	 * @brief Sets one field to be the display field for another field.  Display fields
+	 * are rendered by the Dataface_Record::display() method in place of their corresponding
+	 * value fields.  Similar to a vocabulary, but allows you to use Grafted fields
+	 * to have a sort of read-only dynamic vocabulary.
+	 * @param string $valueFieldName The name of the value field.
+	 * @param string $displayFieldName The name of the display field.
+	 * @return string
+	 */
+	function setDisplayField($valueFieldName, $displayFieldName){
+	    $this->_displayFields[$valueFieldName] = $displayFieldName;
+	}
+	
+	/**
+	 * @brief Gets the display field for the specified value field.  Display fields
+	 * are rendered by the Dataface_Record::display() method in place of their corresponding
+	 * value fields.  Similar to a vocabulary, but allows you to use Grafted fields
+	 * to have a sort of read-only dynamic vocabulary.
+	 * @param string $valueFieldName The name of the value field.
+	 * @return string The name of the display field.  If none is registered, it will
+	 *  return the $valueFieldName;
+	 */
+	function getDisplayField($valueFieldName){
+        if (isset($this->_displayFields[$valueFieldName])){
+            return $this->_displayFields[$valueFieldName];
+        }
+        return $valueFieldName;
 	}
 	
 	

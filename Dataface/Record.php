@@ -2610,9 +2610,9 @@ class Dataface_Record {
 				
 				if ( isset($parent) and $parent->_table->hasField($fieldname) ){
 					
-					return $parent->display($fieldname, $index, $where, $sort);
+					return $parent->display($this->_table->getDisplayField($fieldname), $index, $where, $sort);
 				}
-				$out = $this->getValueAsString($fieldname, $index, $where, $sort);
+				$out = $this->getValueAsString($this->_table->getDisplayField($fieldname), $index, $where, $sort);
 				
 				
 				$out = $table->format($fieldname, $out);

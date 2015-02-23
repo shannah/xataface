@@ -90,6 +90,7 @@ class Dataface_RelatedList {
                 } else {
                     $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'`=\''.addslashes($query[$search_key]).'\'';
                 }
+                
                 $filter_info = array(
                     'field_name' => $field_name,
                     'field_label' => $field['widget']['label'],
@@ -109,6 +110,12 @@ class Dataface_RelatedList {
                     }
                     unset($valuelist);
                     unset($field_table);
+                } else if ($field_table->getDisplayField($field_name) !== $field_name){
+                    $dummyRecord = df_get_record($field['tablename'], array($field_name=>'='.$query[$search_key]));
+                    if ($dummyRecord){
+                        $filter_info['field_display_value'] = $dummyRecord->display($field_name);
+                    }
+                    unset($dummyRecord);
                 }
                 $this->filters[] = $filter_info;
             }
