@@ -30,6 +30,9 @@ function init($site_path, $dataface_url){
 			DATAFACE_URL previously defined when trying to initialize the site."/*.Dataface_Error::printStackTrace()*/, E_USER_ERROR);
 	}
 	define('DATAFACE_SITE_PATH', str_replace('\\','/', dirname($site_path)));
+	if (!@$_SERVER['PHP_SELF'] and @$_SERVER['SCRIPT_NAME']){
+	    $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
+	}
 	$temp_site_url = dirname($_SERVER['PHP_SELF']);
 	if ( $temp_site_url{strlen($temp_site_url)-1} == '/'){
 		$temp_site_url = substr($temp_site_url,0, strlen($temp_site_url)-1);
