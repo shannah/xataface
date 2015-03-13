@@ -45,7 +45,8 @@
 					<ul class="action-sub-menu">
 						{foreach from=$action.subactions item=subaction key=subname}
 							<li id="{$id_prefix}{$subaction.id}"
-							  {if $subaction.name==$selected_action or $subaction.selected}class="selected {$subaction.class|escape}"{else}class="plain {$subaction.class|escape}{/if}
+							  class="
+							  {if $subaction.name==$selected_action or $subaction.selected}selected {$subaction.class|escape}{else}plain {$subaction.class|escape}{/if}
 							  {if $subaction.subactions}xf-dropdown{/if}"
 							  {foreach from=$subaction.atts item=subactionAttValue key=subactionAttName}{$subactionAttName|escape}="{$subactionAttValue|escape}" {/foreach}
 							  >
@@ -62,7 +63,7 @@
 									<ul class="action-sub-sub-menu">
 										{foreach from=$subaction.subactions item=subsubaction key=subsubname}
 											<li id="{$id_prefix}{$subsubaction.id|escape}-link" 
-												 {if $subsubaction.name==$selected_action or $subsubaction.selected}class="selected {$subsubaction.class|escape}"{else}class="plain {$subsubaction.class|escape}"{/if}
+												 class="{if $subsubaction.name==$selected_action or $subsubaction.selected}selected {$subsubaction.class|escape}{else}plain {$subsubaction.class|escape}{/if}"
 												 {foreach from=$subsubaction.atts item=subsubactionAttValue key=subsubactionAttName}{$subsubactionAttName|escape}="{$subsubactionAttValue|escape}" {/foreach}
 												 >
 												<a id="{$id_prefix}{$subsubaction.id|escape}-link" href="{$subsubaction.url|escape}"{if $subsubaction.onclick} onclick="{$subsubaction.onclick|escape}"{/if}
