@@ -366,7 +366,9 @@ class Dataface_QueryBuilder {
 			
 			$sval = $this->_serializer->serialize($fieldname, $record->getValue($fieldname));
 				// Serialize the field's value to prepare it for the database
-			if ( !isset($sval) and @$fieldArr['timestamp'] != 'update' ){
+			if ( @$fieldArr['timestamp'] != 'update' and (!isset($sval) or 
+			        (strlen(strval($sval)) == 0 and strtolower(@$fieldArr['Null']) == 'yes')
+			        )){
 				$sql[] = "`$fieldname` = NULL, ";
 			} else if ( $tableObj->isBlob($fieldname) and @$app->_conf['multilingual_content']){
 				// This is a blob column... we don't place the data directly in the String because it would take
