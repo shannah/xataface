@@ -536,7 +536,7 @@ class Dataface_RelatedList {
                             $renderVal = $this->renderCell($srcRecord, $field['Field']);
                             if (isset($renderVal))
                                 $val = $renderVal;
-                            else if ($link and !@$field['noLinkFromListView'] and !$this->noLinks and $rrec->checkPermission('link', array('field' => $key)))
+                            if ($link and !@$field['noLinkFromListView'] and !$this->noLinks and $rrec->checkPermission('link', array('field' => $key)))
                                 $val = "<a href=\"" . df_escape($link) . "\" title=\"" . df_escape($title) . "\" data-xf-related-record-id=\"" . df_escape($srcRecordId) . "\" class=\"xf-related-record-link\">" . $val . "</a>";
                             echo "<td class=\"$cellClass $rowClass $accessClass\">$val</td>\n";
                             unset($srcRecord);
