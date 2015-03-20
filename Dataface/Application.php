@@ -134,6 +134,18 @@ define('DATAFACE_STRICT_PERMISSIONS', 100);
  */
 class Dataface_Application {
 
+    public static $DENY_HTACCESS_CONTENTS = <<<END
+# Apache 2.2
+<IfModule !mod_authz_core.c>
+    Deny from all
+</IfModule>
+
+# Apache 2.4
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+END;
+
 	const EX_FAILED_TO_CREATE_SESSION_DIR = 5500;
 	
 	

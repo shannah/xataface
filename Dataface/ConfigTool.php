@@ -87,7 +87,7 @@ class Dataface_ConfigTool {
 				    Dataface_Application::getInstance()->_conf['user_config_enabled'] = 1;
 					$htaccess_file = $config_dir.DIRECTORY_SEPARATOR.'.htaccess';
 					if ( !file_exists($htaccess_file) ){
-						file_put_contents($htaccess_file, 'Deny from all');
+						file_put_contents($htaccess_file, Dataface_Application::$DENY_HTACCESS_CONTENTS);
 					}
 				
 					$file_name = preg_replace('/[^0-9a-zA-Z]/', '_', $user_name).'.'.md5($user_name).'.json';

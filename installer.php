@@ -332,7 +332,15 @@ class Dataface_Installer {
 		$archive = new Archive_Tar($tarpath,$compression);
 		$path = strval($values['database_name']);
 		$archive->addString($path.'/.htaccess', '<FilesMatch "\.ini$">
-Deny from all
+    # Apache 2.2
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+    
+    # Apache 2.4
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
 </FilesMatch>');
 		$archive->addString($path.'/Web.config', file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'site_skeleton'.DIRECTORY_SEPARATOR.'Web.config'));
 		

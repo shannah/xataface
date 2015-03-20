@@ -68,7 +68,7 @@ class Dataface_DB {
 			if ( !file_exists($this->_fcache_base_path) ){
 							
 				mkdir($this->_fcache_base_path, 0700);
-				file_put_contents($this->_fcache_base_path.'/.htaccess', 'deny from all');
+				file_put_contents($this->_fcache_base_path.'/.htaccess', Dataface_Application::$DENY_HTACCESS_CONTENTS);
 			}
 		}
 		

@@ -90,6 +90,7 @@ class Dataface_SkinTool extends Smarty{
 	var $languageTool;
 	var $app;
 	var $resultController = null;
+
 	
 	function Dataface_SkinTool() {
 		
@@ -119,7 +120,7 @@ class Dataface_SkinTool extends Smarty{
 			writable by the web server.</p>", E_USER_ERROR);
 		}
 		if ( !file_exists($this->compile_dir.DIRECTORY_SEPARATOR.'.htaccess') ){
-			file_put_contents($this->compile_dir.DIRECTORY_SEPARATOR.'.htaccess', 'Deny from all');
+			file_put_contents($this->compile_dir.DIRECTORY_SEPARATOR.'.htaccess', Dataface_Application::$DENY_HTACCESS_CONTENTS);
 		}
 		$this->languageTool =& Dataface_LanguageTool::getInstance();
 		
