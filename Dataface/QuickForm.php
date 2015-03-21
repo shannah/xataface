@@ -792,10 +792,17 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 		 *
 	 		 */
 	 		//foreach ( array_keys($this->_fields) as $field ){
-	 		$rec = new Dataface_Record($this->_record->_table->tablename, $this->getSubmitValues());
+	 		
+	 		$rec = new Dataface_Record($this->_record->_table->tablename, array());
 	 		$rec->pouch = $this->_record->pouch;
+	 		$formTool =& Dataface_FormTool::getInstance();
 	 		foreach ($this->_fieldnames as $field){
-	 			/*
+	 		    $fieldDef =& $this->_table->getField($field);
+	 		    $formTool->pushField($rec, $fieldDef, $this, $field, $this->_new);
+	 		    unset($fieldDef);
+	 		}
+		    foreach ($this->_fieldnames as $field){
+	 		    /*
 	 			 *
 	 			 * Go through each field (corresponding to a record field) in the form
 	 			 * and validate against the record's validation script.
@@ -828,6 +835,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 			
 	 			unset($params);
 	 		}
+	 		
 	 	}
 	 	
 	 	
