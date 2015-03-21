@@ -877,6 +877,9 @@ function df_tz_or_offset(){
 	}
 	
 	function df_escape($content){
+	    if ( !is_string($content) ){
+	        $content = "$content";
+	    }
 	    return htmlspecialchars($content, ENT_COMPAT, XF_OUTPUT_ENCODING);
 	}
         
