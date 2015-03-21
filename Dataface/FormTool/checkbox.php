@@ -63,7 +63,7 @@ class Dataface_FormTool_checkbox {
 			}
 			$dummyForm = new HTML_QuickForm();
 			foreach ($options as $opt_val=>$opt_text){
-				if ( !$opt_val ) continue;
+				if ( $opt_val === '') continue;
 				$boxes[] =& $dummyForm->createElement('checkbox',$opt_val , null, $opt_text, array('class'=>'checkbox-of-'.$field['name'].' '.@$options__classes[$opt_val]));
 				//$boxes[count($boxes)-1]->setValue($opt_val);
 				
