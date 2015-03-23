@@ -60,6 +60,10 @@ function buildYUIAutocomplete(field){
 	if ( field.getAttribute('data-xf-max-results-displayed') ){
 	    ac.maxResultsDisplayed = parseInt(field.getAttribute('data-xf-max-results-displayed'));
 	}
+	
+	ac.itemSelectEvent.subscribe(function(){
+	    jQuery(field).trigger('change');
+	});
 }
 
 
