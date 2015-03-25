@@ -71,16 +71,16 @@
 		searchRow.hide();
 		$('th', searchRow).html('');
 		$('th.searchable-column', searchRow).each(function(){
-			$(this).html('<div><input class="column-search-field" name="'+$(this).attr('data-column')+'" type="text"/></div>');
+			$(this).html('<div><input class="column-search-field" name="'+$(this).attr('data-search-column')+'" type="text"/></div>');
 			var fld = $('input', this);
 			
 			var q = xataface.query;
-			if ( typeof(q[$(this).attr('data-column')]) != 'undefined' ){
-				fld.val(q[$(this).attr('data-column')]);
+			if ( typeof(q[$(this).attr('data-search-column')]) != 'undefined' ){
+				fld.val(q[$(this).attr('data-search-column')]);
 			}
 		});
 		$('th', headingRow).each(function(){
-			$('th[data-column="'+$(this).attr('data-column')+'"]', searchRow).each(function(){
+			$('th[data-search-column="'+$(this).attr('data-search-column')+'"]', searchRow).each(function(){
 				$(this)
 						.css('padding', 0)
 						.css('margin', 0)
@@ -140,7 +140,7 @@
 						//alert($(this).attr('name'));
 						//$(this).width($('a', th).width()*0.75);
 						//alert('hello');
-						if ( $(this).attr('name') == $(th).attr('data-column') ){
+						if ( $(this).attr('name') == $(th).attr('data-search-column') ){
 							//alert('world');
 							//alert('here');
 							$(this).focus();

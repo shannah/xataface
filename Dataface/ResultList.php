@@ -350,7 +350,8 @@ import('Dataface/QueryTool.php');
 						$class .= ' '.$this->getHeaderCellClass($key);
 						
 						if ( !$label ) $label = $this->_table->getFieldProperty('widget:label',$key);
-						echo "<th data-column=\"$key\" class=\"$class\"><a href=\"$link\">".df_escape($label)."</a> $legend</th>";
+						$searchColumn = $this->_table->getDisplayField($key);
+						echo "<th data-column=\"$key\" data-search-column=\"$searchColumn\" class=\"$class\"><a href=\"$link\">".df_escape($label)."</a> $legend</th>";
 					}
 				}
 			}
