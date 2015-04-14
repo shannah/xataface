@@ -8254,7 +8254,7 @@ array(
               0 => '',
             ),
           ),
-          'alias' => NULL,
+          'alias' => '',
         ),
         2 => 
         array (
@@ -8341,7 +8341,7 @@ array(
                 0 => '',
               ),
             ),
-            'alias' => NULL,
+            'alias' => '',
           ),
           2 => 
           array (
@@ -8388,10 +8388,179 @@ array(
     1 => 'foo',
   ),
 )
-
-
-
-
 ),
+
+
+array(
+'sql' => "select TIMESTAMPDIFF(DAY,CURDATE(),f.DataZakupu + INTERVAL p.OkresGwarancji MONTH) AS PozostaloGwarancji from foo f, par p",
+'expected_compiled' => "select timestampdiff(day, curdate(), (`f`.`DataZakupu`+INTERVAL `p`.`OkresGwarancji` month)) as `PozostaloGwarancji` from `foo` as `f`, `par` as `p`",
+'expect' => array (
+  'command' => 'select',
+  'set_function' => 
+  array (
+    0 => 
+    array (
+      'name' => 'timestampdiff',
+      'args' => 
+      array (
+        0 => 
+        array (
+          'type' => 'unit',
+          'value' => 'day',
+        ),
+        1 => 
+        array (
+          'type' => 'function',
+          'value' => 
+          array (
+            'name' => 'curdate',
+            'args' => 
+            array (
+            ),
+          ),
+        ),
+        2 => 
+        array (
+          'type' => 'expression',
+          'value' => 
+          array (
+            0 => 
+            array (
+              'type' => 'ident',
+              'value' => 'f.DataZakupu',
+            ),
+            1 => 
+            array (
+              'type' => 'operator',
+              'value' => '+',
+            ),
+            2 => 
+            array (
+              'type' => 'interval',
+              'value' => 
+              array (
+                'value' => 
+                array (
+                  'type' => 'ident',
+                  'table' => 'p',
+                  'value' => 'OkresGwarancji',
+                ),
+                'expression_type' => 'ident',
+                'unit' => 'month',
+              ),
+            ),
+          ),
+        ),
+      ),
+      'alias' => 'PozostaloGwarancji',
+    ),
+  ),
+  'columns' => 
+  array (
+    0 => 
+    array (
+      'type' => 'func',
+      'table' => '',
+      'value' => 
+      array (
+        'name' => 'timestampdiff',
+        'args' => 
+        array (
+          0 => 
+          array (
+            'type' => 'unit',
+            'value' => 'day',
+          ),
+          1 => 
+          array (
+            'type' => 'function',
+            'value' => 
+            array (
+              'name' => 'curdate',
+              'args' => 
+              array (
+              ),
+            ),
+          ),
+          2 => 
+          array (
+            'type' => 'expression',
+            'value' => 
+            array (
+              0 => 
+              array (
+                'type' => 'ident',
+                'value' => 'f.DataZakupu',
+              ),
+              1 => 
+              array (
+                'type' => 'operator',
+                'value' => '+',
+              ),
+              2 => 
+              array (
+                'type' => 'interval',
+                'value' => 
+                array (
+                  'value' => 
+                  array (
+                    'type' => 'ident',
+                    'table' => 'p',
+                    'value' => 'OkresGwarancji',
+                  ),
+                  'expression_type' => 'ident',
+                  'unit' => 'month',
+                ),
+              ),
+            ),
+          ),
+        ),
+        'alias' => 'PozostaloGwarancji',
+      ),
+      'alias' => 'PozostaloGwarancji',
+    ),
+  ),
+  'table_names' => 
+  array (
+    0 => 'foo',
+    1 => 'par',
+  ),
+  'table_aliases' => 
+  array (
+    0 => 'f',
+    1 => 'p',
+  ),
+  'tables' => 
+  array (
+    0 => 
+    array (
+      'type' => 'ident',
+      'value' => 'foo',
+      'alias' => 'f',
+    ),
+    1 => 
+    array (
+      'type' => 'ident',
+      'value' => 'par',
+      'alias' => 'p',
+    ),
+  ),
+  'table_join_clause' => 
+  array (
+    0 => '',
+    1 => '',
+  ),
+  'table_join' => 
+  array (
+    0 => ',',
+  ),
+  'all_tables' => 
+  array (
+    0 => 'foo',
+    1 => 'par',
+  ),
+)
+),
+
 
 );
