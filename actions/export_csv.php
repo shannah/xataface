@@ -89,7 +89,7 @@ class dataface_actions_export_csv {
 				}
 				
 				// WIDGET LABEL INSTEAD OF DB COLUMN NAME - CGD
-				if ($app->_conf ['export_csv'] ['heading'] == 'label')
+				if (@$app->_conf ['export_csv'] and @$app->_conf ['export_csv'] ['heading'] == 'label')
 					$headings [] = @$f ['widget'] ['label'];
 				else
 					$headings [] = $colhead;
@@ -124,7 +124,7 @@ class dataface_actions_export_csv {
 				}
 				
 				// WIDGET LABEL INSTEAD OF DB COLUMN NAME - CGD
-				if ($app->_conf ['export_csv'] ['heading'] == 'label')
+				if (@$app->_conf ['export_csv'] and @$app->_conf ['export_csv'] ['heading'] == 'label')
 					$headings [] = @$f ['widget'] ['label'];
 				else
 					$headings [] = $colhead;
