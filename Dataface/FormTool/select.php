@@ -36,7 +36,6 @@ class Dataface_FormTool_select {
 		foreach($options as $kopt=>$opt){
 			$opts[$kopt] = $opt;
 		}
-		
 		$el =  $factory->addElement('select', $formFieldName, $widget['label'], $opts, $attributes  );
 		
 		// Now to make it editable
