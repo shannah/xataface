@@ -782,8 +782,57 @@ class SQL_Parser
 			if ( $this->isExpressionOperator() ){
 				$opts[] = array('type'=>'operator', 'value'=>$this->tokText);
 				$this->getTok();
-			}
-			else if ( $this->isVal() ){
+			} else if ( $this->token == 'interval' ){
+				$arg = array();
+				$arg['type'] = 'interval';
+				$argVal = array();
+				$this->getTok();
+				if ( $this->isVal() ){
+					$argVal['value'] = $this->tokText;
+					$argVal['expression_type'] = $this->token;
+					$this->getTok();
+					if ( $this->isUnit() ){
+						$argVal['unit'] = $this->token;
+					}
+				} else if ($this->token == 'ident') {
+				    $prevTok = $this->token;
+                    $prevTokText = $this->tokText;
+
+                    
+                    $colType = 'ident';
+                    
+                    $columnName = $prevTokText;
+                    
+                    if ( strpos($columnName, '.') !== false ){
+                        // In introduce $columnTable2 and $columnName2 to be used in
+                        // the alternate 'columns' data structure.
+                        list($columnTable2, $columnName2) = explode('.',$columnName);
+                    } else {
+                        $columnTable2 = '';
+                        $columnName2 = $columnName;
+                    }
+                    
+                    $argVal['value'] = array('type'=>$colType, 'table'=>$columnTable2, 'value'=>$columnName2);
+                    $argVal['expression_type'] = 'ident';
+                    $this->getTok();
+                    
+                    if ($this->isUnit()) {
+                        $argVal['unit'] = $this->token;
+                    }
+
+				}
+				
+				if ( !isset( $argVal['value'] ) || !isset( $argVal['unit'] ) ){
+					return $this->raiseError("Expected an expression and unit for the interval");
+				}
+				$arg['value'] =& $argVal;
+				unset($argVal);
+				$opts[] =& $arg;
+				unset($arg);
+				$this->getTok();
+				
+				
+			} else if ( $this->isVal() ){
 				$val = $this->tokText;
 				$type = $this->token;
 				$this->getTok();
@@ -871,7 +920,7 @@ class SQL_Parser
 					$this->getTok();
 				}
 			} else {
-					return $this->raiseError('Unexpected token "'.$this->token.'"');
+					return $this->raiseError('Unexpected token "'.$this->token.'":'.__LINE__);
 			}
 		}
 		
@@ -1000,6 +1049,12 @@ class SQL_Parser
 				
 				$opts['args'][] =& $arg;
 				unset($arg);
+			} else if ($this->isUnit()) {
+			    $arg = array();
+			    $arg['type'] = 'unit';
+			    $arg['value'] = $this->token;
+			    $opts['args'][] =& $arg;
+			    unset($arg);
 			} else if ( $this->token == '(' ){
 				//$this->getTok();
 				$arg = $this->parseExpression();
@@ -1531,7 +1586,7 @@ class SQL_Parser
                 } elseif ($this->token == ',') {
                     $this->getTok();
                 } else {
-                        return $this->raiseError('Unexpected token "'.$this->token.'"');
+                        return $this->raiseError('Unexpected token "'.$this->token.'" :'.__LINE__);
                 }
             }
         } else {

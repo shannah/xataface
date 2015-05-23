@@ -38,6 +38,9 @@ class SQL_Compiler_mysql extends SQL_Compiler {
 	 * Wraps identifier in back-ticks.
 	 */
 	function compileIdent($value){
+	    if (is_array($value)) {
+	        return (@$value['table']?'`'.$value['table'].'`.':'').'`'.$value['value'].'`';
+	    }
 		if ( strpos($value, '.') !== false ){
 			return implode('.',array_map(array(&$this, 'compileIdent'), explode('.', $value)));
 		} 

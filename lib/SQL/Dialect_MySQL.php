@@ -186,6 +186,7 @@ $dialect = array(
         'timediff',
         'time_format',
         'time_to_sec',
+        'timestampdiff',
         'to_days',
         'trim',
         'ucase',

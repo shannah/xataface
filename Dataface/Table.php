@@ -5055,7 +5055,8 @@ class Dataface_Table {
 				case 'date':
 					$fmt = '%x';break;
 				case 'time':
-					$fmt = '%r';break;
+					// %r not supported on windows.  So using %X
+					$fmt = '%X';break;
 				default:
 					$fmt = '%c';
 			

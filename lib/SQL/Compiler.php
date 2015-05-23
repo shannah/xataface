@@ -651,11 +651,35 @@ class SQL_Compiler {
     			return '('.$out.')';
     		case 'operator':
     			return $val;
+    		case 'interval':
+    		    return $this->compileInterval($val);
     		
     		
     	}
     }
 //    }}}
+
+
+    function compileInterval($val){
+        $out = 'INTERVAL ';
+        switch ($val['expression_type']) {
+            case 'ident':
+                $out .= $this->compileIdent($val['value']);
+                break;
+            case 'int_val':
+            case 'real_val':
+            case 'null':
+                $out .= $val;
+                break;
+            case 'text_val':
+                $out .= "'".$val."'";
+                break;
+            default:
+                throw new Exception("Failed to compile interval.  Wrong expression type ".$val['expression_type']);    
+        }
+        $out .= ' '.$val['unit'];
+        return $out;
+    }
 
 //    {{{ function compile($array = null)
     function compile($array = null)
