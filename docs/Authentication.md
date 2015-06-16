@@ -14,10 +14,11 @@ Xataface comes with authentication ready to roll out of the box. With a couple o
 
 In addition Xataface's authentication is pluggable, meaning you can write your own plug-ins to integrate your application with any authentication scheme you choose. Some authentication modules that already exist include:
 
-* Yale CAS
-* LDAP
+* [Yale CAS](http://weblite.ca/svn/dataface/modules/Auth/cas/trunk/)
+* [LDAP](http://weblite.ca/svn/dataface/modules/Auth/ldap/trunk/)
+  * And a more advanced LDAP module with more options developed by Viharm: [Advanced LDAP](https://bitbucket.org/viharm/xatafaceldapauth/)
 * Facebook
-* HTTP
+* [HTTP](http://weblite.ca/svn/dataface/modules/Auth/http/trunk/)
 
 ##Setting up Basic Authentication
 
