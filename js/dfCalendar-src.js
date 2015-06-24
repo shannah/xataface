@@ -215,7 +215,7 @@ Dataface.Calendar.prototype.drawMonth = function(){
 	out += '<tbody>';
 	
 	var day = -1;
-	for ( var i=0; i<5; i++ ){
+	for ( var i=0; i<6; i++ ){
 		out += '<tr>';
 
 		for ( var j=0; j<7; j++ ){
@@ -255,6 +255,11 @@ Dataface.Calendar.prototype.drawMonth = function(){
 			
 		}
 		out += '</tr>';
+		if (day < 0) {
+			// If the last day in week 5 was nil, then 
+			// we don't need week 6
+			break;
+		}
 		
 	}
 	out += '</tbody></table>';
