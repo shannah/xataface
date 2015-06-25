@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  */
- 
+ di
 
 import( 'Dataface/Table.php');
 import( 'Dataface/RelatedRecord.php');
@@ -2597,6 +2597,14 @@ class Dataface_Record {
 					if ( is_array($value) ) $value = $this->strval($fieldname, $index, $where, $sort);
 					if ( isset($valuelist[$value]) ){
 						$out = $valuelist[$value];
+						$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
+						return $out;
+					} else if ( isset($valuelist["$value"]) ){
+						$out = $valuelist["$value"];
+						$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
+						return $out;
+					} else if ( is_numeric($value) and isset($valuelist[intval($value)]) ){
+						$out = $valuelist[intval($value)];
 						$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 						return $out;
 					} else {
