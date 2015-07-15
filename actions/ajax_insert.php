@@ -4,7 +4,6 @@
  * 
  * @section ajax_save_postparams POST Parameters
  *
- * @param String --record_id The record ID of the record to save.
  * 
  * @par Other Parameters
  *
