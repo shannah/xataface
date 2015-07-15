@@ -211,6 +211,7 @@ jQuery(document).ready(function($){
 {include file=Dataface_Form_Section_Template.html elements=$form_data.elements}
 {foreach from=$form_data.sections item=section}
 	{if $section.elements}
+	    <div class="xf-form-group-wrapper" data-form-group="{$section.field.name}">
 
 		{*
 			#02 - Scriptaculous collapsible sidebar
@@ -234,6 +235,7 @@ jQuery(document).ready(function($){
 				{include file="Dataface_Form_Section_Template.html" elements=$section.elements}
 			{/if}
 		{/collapsible_sidebar}
+		</div>
 	{/if}
 {/foreach}
 
