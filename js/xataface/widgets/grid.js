@@ -421,7 +421,7 @@
 
                 var tablename = $(this).attr('data-table-name');
                 var config = {
-
+                    allowAddNew : (parseInt($(this).attr('data-add-new'))===1)
                 };
 
                 if ( $(this).attr('data-filters') ){
@@ -449,6 +449,7 @@
                             }
                             //var selector = '.xf-grid-table-<?php echo $this->getName();?> tr:last';
                             var lastRow = $('tr:last', thisTable);
+                            
                             for ( var j in row ){
                                 lastRow.find("input[name$='["+j+"]']").each(function(){
                                     //alert($(this).attr('name'));
@@ -456,7 +457,7 @@
                                     $(this).trigger("change");
                                 });
                             }
-
+                            jQuery(lastRow).show();
                             lastRow.find("input[name$='[__id__]']").each(function(){
                                 $(this).val('new:'+$(this).val());
                             });
