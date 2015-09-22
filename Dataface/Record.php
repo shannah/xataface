@@ -2799,7 +2799,8 @@ class Dataface_Record {
 		$out = substr($strval, 0, $maxlength);
 		if ( strlen($strval)>$maxlength) {
 			$out .= '...';
-		}	 
+		}
+		$out = html_entity_decode($out, ENT_COMPAT, Dataface_Application::getInstance()->_conf['oe']);
 		return $out;
 		
 	}
