@@ -349,7 +349,7 @@
 		
 		// If there is only one collapsible sidebar in a form, then we remove it
 		$('form h3.Dataface_collapsible_sidebar').each(function(){
-			var siblings = $(this).parent().find('>h3.Dataface_collapsible_sidebar:visible');
+			var siblings = $(this).parent().parent().find('>div.xf-form-group-wrapper >h3.Dataface_collapsible_sidebar:visible');
 			if ( siblings.size() <= 1 ) $(this).hide();
 		});
 		
