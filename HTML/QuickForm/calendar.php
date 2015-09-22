@@ -111,9 +111,9 @@ class HTML_QuickForm_calendar extends HTML_QuickForm_text {
     } //end func toHtml
     
     
-    function getFrozenHtml(){
-    	return $this->getValue();
-    }
+    //function getFrozenHtml(){
+    //	return $this->getValue();
+    //}
     
     
 	

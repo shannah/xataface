@@ -85,7 +85,7 @@ class Dataface_RelatedList {
             if ( $this->_relationship->hasField($field_name, true) ){
                 $field = $this->_relationship->getField($field_name);
                 $field_table = Dataface_Table::loadTable($field['tablename']);
-                if ( $field_table->isChar($field['name']) or $field_table->isText($field['name']) ){
+                if ( !is_numeric($query[$search_key]) and ($field_table->isChar($field['name']) or $field_table->isText($field['name'])) ){
                     $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'` LIKE \'%'.addslashes($query[$search_key]).'%\'';
                 } else {
                     $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'`=\''.addslashes($query[$search_key]).'\'';

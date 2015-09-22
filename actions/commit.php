@@ -90,7 +90,7 @@ class dataface_actions_commit {
 				$record->setValues($updateInfo['data']);
 				$res = $record->save(null, true);
 				if ( PEAR::isError($res) ){
-					$response['message'] = $res->getMessage(),
+					$response['message'] = $res->getMessage();
 					$response['code'] = $res->getCode();
 					$numFailures++;
 				} else {

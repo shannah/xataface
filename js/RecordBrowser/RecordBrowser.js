@@ -262,6 +262,12 @@
 		 * @var string
 		 */
 		this.baseURL = DATAFACE_URL+'/js/RecordBrowser';
+    
+    
+    /**
+     * A flag that indicates whether the user can add new records on this browser.
+     */
+    this.allowAddNew = true;
 		
 		for ( var i in o ){
 			this[i] = o[i];
@@ -277,6 +283,7 @@
 		//$('head').append('<link rel="stylesheet" type="text/css" href="'+DATAFACE_URL+'/css/smoothness/jquery-ui-1.7.2.custom.css"/>');
 		
 		
+    
 		
 		
 	}
@@ -319,19 +326,22 @@
 				$(this).find('.xf-RecordBrowser-select-field')
 					.css('width', '100%')
 					.attr('size', 8);
-					
-				$(this).find('.xf-RecordBrowser-addnew-button').RecordDialog({
-					table: rb.table,
-					callback: function(){
-						rb.dirty=true;
-						rb.updateRecords();
-					},
-					params : rb.newParams,
-					width : rb.width,
-					height : rb.height,
-					marginW : rb.marginW,
-					marginH : rb.marginH
-				});
+				if (this.allowAddNew) {
+    				$(this).find('.xf-RecordBrowser-addnew-button').RecordDialog({
+    					table: rb.table,
+    					callback: function(){
+    						rb.dirty=true;
+    						rb.updateRecords();
+    					},
+    					params : rb.newParams,
+    					width : rb.width,
+    					height : rb.height,
+    					marginW : rb.marginW,
+    					marginH : rb.marginH
+    				});
+        } else {
+            $(this).find('.xf-RecordBrowser-addnew-button').hide();
+        }
 				
 				$(this).dialog({
 					'title': 'Select Record',

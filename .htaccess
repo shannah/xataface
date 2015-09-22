@@ -8,7 +8,7 @@
     Require all denied
 </IfModule>
 ErrorDocument 403 "403 Access Restricted.  <a href='installer.php'>Go to installer</a>"
-<FilesMatch "\.(png|jpg|gif|GIF|PNG|JPG|jpeg|JPEG|ICO|js|css|html)$">
+<FilesMatch "\.(png|jpg|gif|GIF|PNG|JPG|jpeg|JPEG|ICO|js|css|html|xml)$">
     # Apache 2.2
     <IfModule !mod_authz_core.c>
         Allow from all

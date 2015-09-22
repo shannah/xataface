@@ -529,12 +529,13 @@ class HTML_QuickForm_select extends HTML_QuickForm_element {
             } else {
                 $idAttr = array();
             }
+            $dfField = $this->getAttribute('data-xf-field');
             foreach ($value as $key => $item) {
                 $html .= '<input' . $this->_getAttrString(array(
                              'type'  => 'hidden',
                              'name'  => $name,
                              'value' => $this->_values[$key]
-                         ) + $idAttr) . ' />';
+                         ) + $idAttr  + (isset($dfField)? array('data-xf-field' => $dfField):array())) . ' />';
             }
         }
         return $html;

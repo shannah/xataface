@@ -15,7 +15,7 @@
             if ( inputs[i].getAttribute('name') && inputs[i].getAttribute('name').match(/\[__id__\]/) ){
                     //var del_input = inputs[i].cloneNode(true);
                     var del_input = this.cloneNode(inputs[i]);
-                    var new_name = del_input.getAttribute('name').replace(/^([^\[]+)\[/, '$1[__deleted__][]');
+                    var new_name = del_input.getAttribute('name').replace(/^([^\[]+)\[.*$/, '$1[__deleted__][]');
                     del_input.setAttribute('name', new_name);
                     form.appendChild(del_input);
                     break;
@@ -83,6 +83,18 @@
 
 
 
+    function findMaxRowId(root) {
+      var max = 0;
+      jQuery('tr', root).each(function() {
+        var rowIdStr = $(this).attr('df:row_id');
+        if (!rowIdStr) {
+          return;
+        }
+        max = Math.max(max, parseInt(rowIdStr));
+      });
+      return max;
+    }
+    
     dataGridFieldFunctions.addRowOnChange = function(e,insert) {
             /* Add a new row when changing the last row */
             if ( typeof(insert) == 'undefined' ) insert = null;
@@ -104,16 +116,17 @@
             var templateTr = this.templates[tfoot.getAttribute('id')];
             //alert('Template: '+templateTr);
         var rows = tbody.getElementsByTagName("TR");
+        var row_id = findMaxRowId(tbody)+1;
 
         if(insert || (rows.length ==(tr.rowIndex))) {
             // Create a new row
             //var newtr = tr.cloneNode(true);
             var newtr = this.cloneNode(templateTr);
             jQuery(newtr).removeClass('xf-disable-decorate');
-            var row_id = tr.getAttribute('row_id');
-            if ( !row_id ) row_id = tr.getAttribute('df:row_id');
+            //var row_id = tr.getAttribute('row_id');
+            //if ( !row_id ) row_id = tr.getAttribute('df:row_id');
 
-            row_id = rows.length; //parseInt(row_id)+1;
+            //row_id = rows.length; //parseInt(row_id)+1;
             newtr.setAttribute('df:row_id', row_id);
 
             /*
@@ -408,7 +421,7 @@
 
                 var tablename = $(this).attr('data-table-name');
                 var config = {
-
+                    allowAddNew : (parseInt($(this).attr('data-add-new'))===1)
                 };
 
                 if ( $(this).attr('data-filters') ){
@@ -436,6 +449,7 @@
                             }
                             //var selector = '.xf-grid-table-<?php echo $this->getName();?> tr:last';
                             var lastRow = $('tr:last', thisTable);
+                            
                             for ( var j in row ){
                                 lastRow.find("input[name$='["+j+"]']").each(function(){
                                     //alert($(this).attr('name'));
@@ -443,7 +457,7 @@
                                     $(this).trigger("change");
                                 });
                             }
-
+                            jQuery(lastRow).show();
                             lastRow.find("input[name$='[__id__]']").each(function(){
                                 $(this).val('new:'+$(this).val());
                             });

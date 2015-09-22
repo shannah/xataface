@@ -328,6 +328,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                 class="xf-lookup-grid-row-button xf-lookup-grid-row-button-<?php echo df_escape($fieldName);?>" 
                 value="Add Existing Record"
                 data-table-name="<?php echo df_escape($this->table);?>"
+                data-add-new="<?php echo ($this->addNew ? 1:0);?>"
                 <?php if($this->addExistingFilters):?>data-filters="<?php echo df_escape(json_encode($this->addExistingFilters));?>"<?php endif;?>
             				
             />

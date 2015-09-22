@@ -483,13 +483,11 @@ class Dataface_FormTool {
 			$atts['data-xf-field'] = $field['name'];
 		}
 		$el->setAttributes($atts);
-		
 		if ( $new and !$pt->checkPermission('new', $permissions) ){
 			$el->freeze();
 		} else if ( !$new and !$pt->checkPermission('edit', $permissions) ){
 			$el->freeze();
 		}
-		
 		/*
 		// Deal with permissions on this field.
 		if ( $pt->view($permissions) and !$pt->edit($permissions) ){

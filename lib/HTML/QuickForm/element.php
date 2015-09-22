@@ -258,11 +258,14 @@ class HTML_QuickForm_element extends HTML_Common
             return '';
         } else {
             $id = $this->getAttribute('id');
+            $dfField = $this->getAttribute('data-xf-field');
             return '<input' . $this->_getAttrString(array(
                        'type'  => 'hidden',
                        'name'  => $this->getName(),
                        'value' => $this->getValue()
-                   ) + (isset($id)? array('id' => $id): array())) . ' />';
+                   ) + (isset($id)? array('id' => $id): array())
+                     + (isset($dfField)? array('data-xf-field' => $dfField):array())
+                   ). ' />';
         }
     }
 
