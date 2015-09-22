@@ -2917,6 +2917,8 @@ a.xf-show-advanced-find.expanded > span.collapsed {display:none;}
   overflow: hidden;
 }
 
+.xf-form-group-inline {clear:both}
+
 .xf-form-group-inline div.field {float:left;}
 
 #result_listFloatHeaderClone thead {
