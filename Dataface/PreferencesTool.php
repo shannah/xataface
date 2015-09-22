@@ -1,7 +1,7 @@
 <?php
 class Dataface_PreferencesTool {
 
-	var $refreshLifetime = 3600;
+	var $refreshLifeTime = 3600;
 	var $prefs = array();
 	var $refreshTimes = array();
 
