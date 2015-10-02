@@ -362,7 +362,7 @@
 						}
 						
 					},
-					'position': 'center',
+					//'position': 'center',
 					'modal' : true,
 					'resize': function(event, ui){
 						$(dialog).find('.xf-RecordBrowser-select-field').css('height', ($(dialog).height()-60)+'px');

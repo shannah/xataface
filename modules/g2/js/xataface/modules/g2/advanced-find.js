@@ -181,7 +181,7 @@
 					var winWidth = $(window).width() * 0.8;
 					var width = Math.min(800, winWidth);
 					$(this).width(width);
-					dialog.dialog("option" , "position", "center");
+					//dialog.dialog("option" , "position", "center");
 					
 					var showHideController = iframe.contentWindow.xataface.controllers.ShowHideColumnsController;
 					showHideController.saveCallbacks.push(function(data){
