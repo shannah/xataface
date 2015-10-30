@@ -523,7 +523,11 @@
 		
 		(function(){
 			var searchField = $('.xf-search-field').parents('form').submit(function(){
-				$(this).find(':input[value=""]').attr('disabled', true);
+			    $(this).find(':input[value=""]').each(function(){
+				    if ($(this).val() === '') {
+				        $(this).attr('disabled', true);
+				    }
+				});
 			});
 		})();
 		
