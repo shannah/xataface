@@ -9,7 +9,7 @@ class Dataface_FormTool_advmultiselect {
 		$table =& $record->_table;
 		
 		$widget =& $field['widget'];
-		if ( !@$widget['repeat'] ) $widget['repeat'] = 1;
+		if ( !@$field['repeat'] ) $field['repeat'] = 1;
 		$factory =& Dataface_FormTool::factory();
 		$attributes = array('class'=>$widget['class'], 'id'=>$field['name']);
 		if ( $field['repeat'] ){
@@ -20,6 +20,7 @@ class Dataface_FormTool_advmultiselect {
 		
 		if ( !isset( $options) ) $options = array();
 		
+		/*
 		if ( $record and $record->val($field['name']) ){
 			$vals = $record->val($field['name']);
 			if ( is_array($vals) ){
@@ -31,7 +32,12 @@ class Dataface_FormTool_advmultiselect {
 			}
 		
 		}
-		$el =&  $factory->addElement('advmultiselect', $formFieldName, $widget['label'], $options, $attributes  );
+		*/
+		foreach ($options as $val) {
+		    $opts[$val] = $val;
+		}
+		
+		$el =&  $factory->addElement('advmultiselect', $formFieldName, $widget['label'], $opts  , $attributes  );
 		//$el->setFieldDef($field);
 		//return $el;
 		
@@ -41,27 +47,44 @@ class Dataface_FormTool_advmultiselect {
 	}
 	
 	function pushValue(&$record, &$field, &$form, &$element, &$metaValues){
-		// quickform stores select fields as arrays, and the table schema will only accept 
-		// array values if the 'repeat' flag is set.
-		$table =& $record->_table;
-		$formTool =& Dataface_FormTool::getInstance();
-		$formFieldName =& $element->getName();
+	    $field['repeat'] = 1;
+	    $options =& Dataface_FormTool::getVocabulary($record, $field);
+	    if ( !isset( $options) ) $options = array();
 		
-		if ( !$field['repeat'] ){
-			$val = $element->getValue();
-			if ( count($val)>0 ){
-				return $val[0];
-				
-			} else {
-				return null;
-				
-			}
-		} else {
-			return $element->getValue();
+		$vals = $element->getValue();
+		$out = array();
+		if (is_array($vals)) {
+		    foreach ($vals as $v) {
+		        if (!$v) {
+		            continue;
+		        }
+		        $key = array_search($v, $options);
+		        if ($key) {
+		            $out[] = $key;
+		        }
+		    }
 		}
-			
+		return $out;
 		
-		
+	}
+	function pullValue(&$record, &$field, &$form, &$element, $new=false){
+	    $field['repeat'] = 1;
+		$options =& Dataface_FormTool::getVocabulary($record, $field);
+		if ( !isset( $options) ) $options = array();
+		$vals = $record->getValue($field['name']);
+		$out = array();
+		if (!is_array($vals) and $vals) {
+		    $vals = array($vals);
+		}
+		if (is_array($vals)) {
+		    foreach ($vals as $k) {
+		        $v = @$options[$k]; 
+		        if ($v) {
+		            $out[$v] = $v;
+		        }
+		    }
+		} 
+		return $out;
 	}
 	
 	
