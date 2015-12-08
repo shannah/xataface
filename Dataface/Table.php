@@ -4167,6 +4167,8 @@ class Dataface_Table {
 		return array_keys($this->tabs());
 	}
 	
+	private $_tabsTranslated=false;
+	
 	/**
 	 * @brief Returns an associative array of tab definitions of the form:
 	 * [tabname] -> [tab_properties]
@@ -4205,7 +4207,13 @@ class Dataface_Table {
 			}
 			return $tabs;
 		} else {
-			
+			if (!$this->_tabsTranslated) {
+			    $this->_tabsTranslated = true;
+			    foreach ($this->_tabs as $tkey => $tdata) {
+				    $this->_tabs[$tkey]['label'] = df_translate('tables.'.$this->tablename.'.tabs.'.$tkey.'.label',$tdata['label']);
+				    $this->_tabs[$tkey]['description'] = df_translate('tables.'.$this->tablename.'.tabs.'.$tkey.'.description',$tdata['description']);
+				}
+			}
 			$tabs = $this->_tabs;
 			if ( isset($record) ){
 				foreach ( $this->__join__($record) as $tablename=>$tablelabel ){
