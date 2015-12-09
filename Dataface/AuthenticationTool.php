@@ -168,7 +168,7 @@ class Dataface_AuthenticationTool {
 	function setPassword($password){
 		$app =& Dataface_Application::getInstance();
 		if ( isset($this->delegate) and method_exists($this->delegate, 'setPassword') ){
-			return $this->delegate->setPassword($username, $password);
+			return $this->delegate->setPassword($password);
 		} else {
 			
 			$user = $this->getLoggedInUser();
