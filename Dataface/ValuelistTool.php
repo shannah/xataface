@@ -279,9 +279,12 @@ class Dataface_ValuelistTool {
 		import( 'Dataface/ConfigTool.php');
 		$configTool =& Dataface_ConfigTool::getInstance();
 		$conf = $configTool->loadConfig('valuelists', $table->tablename);
-		if ( !@$conf[$valuelistName]['__sql__'] ){
-			$out = null;
-			return $out;
+		if (!@$conf[$valuelistName] or !@$conf[$valuelistName]['__sql__'] ){
+		    $conf = $this->_loadValuelistsIniFile();
+		    if (!@$conf[$valuelistName] or !@$conf[$valuelistName]['__sql__']) {
+			    $out = null;
+			    return $out;
+			}
 		}
 		
 		$relname = $valuelistName.'__valuelist';
