@@ -43,7 +43,9 @@ class dataface_actions_view_history_record_details {
 		if ( PEAR::isError($record) ) return $record;
 		
 		$record->secureDisplay = false;
-		$context = array('history_record'=>&$record);
+		$context = array('_history_record'=>&$record);
+		$historyRecord = new Dataface_Record($query['-table'], $record->vals());
+		$context['history_record'] = $historyRecord;
 		$context['source_record'] = $app->getRecord();
 		
 		
