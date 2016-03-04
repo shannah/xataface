@@ -452,7 +452,7 @@ class Dataface_QueryBuilder {
 			}
 			if ( !$record->hasValue($key) ) continue;
 			$val = $record->getValue($key);
-			if ( strtolower($this->_mutableFields[$key]['Extra']) == 'auto_increment' && !$val ){
+			if ( strtolower($this->_mutableFields[$key]['Extra']) == 'auto_increment' && !$val && $val !== 0 && $val !== '0' ){
 				// This is a MySQL 5 fix.  In MySQL 5 it doesn't like it when you put blank values into
 				// auto increment fields.
 				continue;
@@ -466,7 +466,6 @@ class Dataface_QueryBuilder {
 			} else {
 				$sval2 = $sval;
 			}
-			
 			if ( strlen(strval($sval2)) == 0 and strtolower($this->_mutableFields[$key]['Null']) == 'yes' ){
 				$insertedKeys[] = '`'.$key.'`';
 				$insertedValues[] = 'NULL';

@@ -789,7 +789,6 @@ class Dataface_RelatedRecord {
 		}
 		$fkeys = $this->_relationship->getForeignKeyValues();
 		$absVals = $this->getAbsoluteValues(true);
-	
 		$out = $this->_relationship->getForeignKeyValues($absVals, $sql, $this->getParent());
 		$this->cache[__FUNCTION__][$sql_index] = $out;
 		return $out;

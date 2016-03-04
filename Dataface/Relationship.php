@@ -1241,11 +1241,10 @@ class Dataface_Relationship {
 		$this->_makeEquivalenceLabels($labels, $vals, $select);
 		
 		// Fill in some default values
-		
 		if ( is_array($values) ){
 			foreach ($values as $field_name => $field_value ){
 				
-				if ( !$field_value ) continue;
+				if ( !$field_value and $field_value !== 0 and $field_value !== '0') continue;
 					// we don't want empty and null values to act as defaults because they 
 					//  tend to screw things up when we are adding related records.
 					
@@ -1260,9 +1259,6 @@ class Dataface_Relationship {
 			
 			}
 		}
-		
-	
-		
 		// next we need to find 'circular links'.  Ie: There may be columns that are only specified to be equal to each other.  Most of the
 		// time this means that one of the fields is an auto increment field that will be automatically filled in.  We need to insert
 		// a special value (in this case), so that we know this is the case.
