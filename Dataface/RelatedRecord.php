@@ -204,6 +204,7 @@ class Dataface_RelatedRecord {
 		}
 	}
 	
+	
 	//---------------------------------------------------------------------------------
 	//{@
 	
@@ -233,7 +234,11 @@ class Dataface_RelatedRecord {
 	 *  is generally the table that is the target of the relationship.  (I.e. not the join table and not the source table).
 	 * @since 0.6
 	 */
-	function &toRecord($tablename=null){
+	function &toRecord($tablename=null, $loadFromDb = false){
+	    if ($loadFromDb) {
+	        $outRec = $this->toRecord($tablename);
+	        return df_get_record_by_id($outRec->getId());   
+	    }
 		if ( isset($this->cache[__FUNCTION__][$tablename]) ){
 			return $this->cache[__FUNCTION__][$tablename];
 		}
@@ -242,7 +247,7 @@ class Dataface_RelatedRecord {
 			
 			
 		} 
-		
+		$domainTable = Dataface_Table::loadTable($this->_relationship->getDomainTable());
 		$table =& Dataface_Table::loadTable($tablename);
 		
 		
@@ -254,8 +259,7 @@ class Dataface_RelatedRecord {
 		//foreach ( array_keys($absVals) as $key ){
 		foreach ( $fieldnames as $key ){
 			list($currTablename, $columnName) = explode('.', $key);
-			if ( ($currTablename == $tablename or $table->hasField($columnName)) and array_key_exists($key, $absVals)){
-								
+			if ( ($currTablename === $tablename/* or $table->hasField($columnName)*/) and array_key_exists($key, $absVals)){	
 				$values[$columnName] = $absVals[$key];
 				
 			} else if ( isset($this->_relationship->_schema['aliases'][$columnName]) /*and 
@@ -264,8 +268,21 @@ class Dataface_RelatedRecord {
 			}
 		}
 		
+		$constrainedFields = array_flip($this->getConstrainedFields());
+		
+		// FIXME:  Why do we need to additionally iterate over $this->_values? Shouldn't it already be covered?
 		foreach ( $this->_values as $key=>$val ){
-			if ( !isset($values[$key]) and $table->hasField($key) ) $values[$key] = $this->_values[$key];
+			if ( !isset($values[$key]) and $table->hasField($key) )  {
+			    if (!isset($constrainedFields[$tablename.'.'.$key]) and $tablename !== $this->_relationship->getDomainTable() and $domainTable->hasField($key)) {
+			        // If this table is not the domain table, and the domain table
+			        // has the same field, then we'll assume that this value is actually
+			        // from the domain table.
+			        // If this table had its own value, it would have been included in $absVals above
+			        continue;
+			    }
+			    
+			    $values[$key] = $this->_values[$key];
+			}
 		}
 		
 		$record = new Dataface_Record($tablename, $values);
@@ -276,8 +293,7 @@ class Dataface_RelatedRecord {
 
 		}
 		$this->cache[__FUNCTION__][$tablename] =& $record;
-
-		return $record;
+        return $record;
 	}
 	
 	
@@ -290,11 +306,11 @@ class Dataface_RelatedRecord {
 	 *
 	 *
 	 */
-	function toRecords(){
+	function toRecords($loadFromDb = false){
 		$tables =& $this->_relationship->getDestinationTables();
 		$out = array();
 		foreach ( array_keys($tables) as $index ){
-			$out[] =& $this->toRecord($tables[$index]->tablename);
+			$out[] =& $this->toRecord($tables[$index]->tablename, $loadFromDb);
 		}
 		return $out;
 	}
@@ -473,6 +489,8 @@ class Dataface_RelatedRecord {
 		}	
 	}
 	
+	private $_absValues = array();
+	
 	/**
 	 * @brief Sets the value for a field of this related record.
 	 *
@@ -501,8 +519,14 @@ class Dataface_RelatedRecord {
 		} else {
 			
 			list ( $table, $field )  = explode('.', $fieldname);
-			if ( $table != $this->_relationship->getDomainTable() and Dataface_Table::loadTable($this->_relationship->getDomainTable())->hasField($field) ){
-				return PEAR::raiseError("Cannot set duplicate value in relationship.   The field $fieldname is part of the domain table and not part of $table in this relationship.");
+			if ( $table != $this->_relationship->getDomainTable() ){
+			    $this->_absValues[$fieldname] = $value;
+			    if (Dataface_Table::loadTable($this->_relationship->getDomainTable())->hasField($field)) {
+			        // If the domain table has the same field, we return here
+			        // Otherwise we'll allow it to proceed and set the value normally
+			        return;
+			    }
+				//return PEAR::raiseError("Cannot set duplicate value in relationship.   The field $fieldname is part of the domain table and not part of $table in this relationship.");
 			}
 			return $this->setValue($field, $value);
 		}
@@ -537,10 +561,11 @@ class Dataface_RelatedRecord {
 	 *
 	 * @param string $fieldname The name of the field whose value we are retrieving.  This may be either a relative
 	 *					 fieldname or an absolute column name.
+	 * @param boolean $strict If an absolute value is requested that is not the domain table, and this is true, then it will return null if a value hasn't been explicitly added for that table.
 	 * @return mixed The field value.
 	 * @see Dataface_Record::getValue()
 	 */
-	function getValue($fieldname){
+	function getValue($fieldname, $strict=false){
 		$this->_initValues();
 		if ( strpos($fieldname,'.') === false ){
 			
@@ -567,7 +592,12 @@ class Dataface_RelatedRecord {
 			return $this->_values[$fieldname];
 			
 		} else {
-			list ( $table, $field )  = explode('.', $fieldname);
+		    list ( $table, $field )  = explode('.', $fieldname);
+		    if (array_key_exists($fieldname, $this->_absValues) and $table !== $this->_relationship->getDomainTable()) {
+		        return $this->_absValues[$fieldname];
+		    } else if ($table !== $this->_relationship->getDomainTable() && $strict) {
+		        return null;
+		    }
 			return $this->getValue($field);
 		}
 	}
@@ -766,6 +796,9 @@ class Dataface_RelatedRecord {
 			}
 			$absVals[ $this->_absoluteColumnNames[$key] ] = $value;
 		}
+		foreach ($this->_absValues as $key=>$value) {
+		    $absVals[$key] = $value;
+		}
 		return $absVals;
 		
 	
@@ -821,7 +854,7 @@ class Dataface_RelatedRecord {
 			//print_r($field);
 			$tablename = $field['tablename'];
 			$fieldname = $field['name'];
-			//echo $absFieldname;
+			$absFieldname = $tablename . '.' . $fieldname;
 			if ( array_key_exists($tablename, $fkCols) and array_key_exists($fieldname, $fkCols[$tablename]) ){
 				// This column is already specified by the foreign key relationship so we don't need to pass
 				// this information using the form.

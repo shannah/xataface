@@ -10,7 +10,7 @@
                 	<li><a href="#tabs-{$k}">{$subrecord->getTitle()|escape}</a></li>
                 {/foreach}
                 </ul>
-                {foreach from=$related_record->toRecords() key=k item=subrecord}
+                {foreach from=$related_record->toRecords(true) key=k item=subrecord}
                     {record_view var=subrv record=$subrecord}
                     <div class="view-tab-content view-mode" id="tabs-{$k}" data-iframe-url="{$subrecord->getURL('-action=edit')|escape}" data-portal-id="{$related_record->getId()|escape}">
                     	<div class="xf-button-bar-actions edit-related-record-actions-wrapper">

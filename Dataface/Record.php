@@ -4462,7 +4462,6 @@ class Dataface_Record {
 		foreach (array_keys($this->_table->keys()) as $key){
 			$params[$key] = '='.$this->strval($key);
 		}
-		
 		$delegate =& $this->_table->getDelegate();
 		if ( isset($delegate) and method_exists($delegate, 'getURL') ){
 			$res = $delegate->getURL($this, $params);

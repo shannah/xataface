@@ -1558,7 +1558,6 @@ class Dataface_IO {
 					)
 				);
 		}
-		
 		$builder = new Dataface_QueryBuilder($this->_table->tablename);
 		
 		//We are often missing the values from the domain table so we will load them
@@ -1635,7 +1634,7 @@ class Dataface_IO {
 		} 
 		
 		if ( count($drecords) > 1 ){
-			$sql = $builder->addExistingRelatedRecord($record);
+		    $sql = $builder->addExistingRelatedRecord($record);
 			if ( PEAR::isError($sql) ){
 				return $sql;
 			}

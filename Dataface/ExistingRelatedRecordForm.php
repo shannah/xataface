@@ -364,6 +364,14 @@ class Dataface_ExistingRelatedRecordForm extends HTML_QuickForm {
 			$attval = urldecode($attval);
 			$colVals[$attname] = $attval;
 		}
+		
+		$joinTableNames = array();
+		foreach ($this->_relationship->_schema['selected_tables'] as $t) {
+		    if ($t !== $this->_relationship->getDomainTable()) {
+		        $joinTableNames[] = $t;
+		    }
+		}
+		
 		foreach ($values as $key=>$value){
 			if ( strpos($key,'-') === 0 ) continue;
 			if ( $key == "Save" ) continue;
@@ -375,7 +383,7 @@ class Dataface_ExistingRelatedRecordForm extends HTML_QuickForm {
 			
 			}
 			$metaValues = array();
-			$abs_fieldName = $this->_parentTable->absoluteFieldName($key, array_merge(array($this->_relationship->getDomainTable()), $this->_relationship->_schema['selected_tables']));
+			$abs_fieldName = $this->_parentTable->absoluteFieldName($key, $joinTableNames);
 			if ( PEAR::isError($abs_fieldName) ){
 				continue;
 			
@@ -386,9 +394,7 @@ class Dataface_ExistingRelatedRecordForm extends HTML_QuickForm {
 			
 			$colVals[ $abs_fieldName ] = $serializedValue;
 		}
-
 		$relatedRecord = new Dataface_RelatedRecord($record, $values['-relationship'], $colVals);
-		
 		$res = $io->addExistingRelatedRecord($relatedRecord, true /*Using security*/);
 		return $res;
 	}

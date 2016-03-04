@@ -1214,6 +1214,7 @@ class Dataface_QueryBuilder {
 		$record =& $relatedRecord->_record;
 		$relationshipName =& $relatedRecord->_relationshipName;
 		$values = $relatedRecord->getAbsoluteValues(true);
+		//echo "herenow";print_r($values);exit;
 		if ( !is_a($record, 'Dataface_Record') ){
 			throw new Exception("In Dataface_QueryBuilder::addExistingRelatedRecord() expected first argument to be of type 'Dataface_Record' but received '".get_class($record)."'.\n<br>", E_USER_ERROR);
 		}
