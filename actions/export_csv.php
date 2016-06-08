@@ -70,6 +70,9 @@ class dataface_actions_export_csv {
 		$app =& Dataface_Application::getInstance();
 		$query = $app->getQuery();
 		$query['-limit'] = 9999999;
+		if (isset($query['--limit'])) {
+		    $query['-limit'] = intval($query['--limit']);
+		}
 		$table =& Dataface_Table::loadTable($query['-table']);
 		if ( isset($query['-relationship']) and @$query['--related'] ){
 			$query['-related:start'] = 0;

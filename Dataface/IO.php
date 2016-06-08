@@ -488,6 +488,7 @@ class Dataface_IO {
 					$res_t = $this->addRelatedRecord($temp_rrecord, $secure);
 					if ( PEAR::isError($res_t) ){
 						error_log('Failed to save related record '.$temp_rrecord->getId().' while saving transient field '.$tfield['name'].' in record '.$record->getId().'. The error returned was : '.$res_t->getMessage());
+					    return $res_t;
 					}
 					unset($temp_rrecord);
 					unset($res_t);
