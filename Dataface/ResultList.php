@@ -390,7 +390,7 @@ import('Dataface/QueryTool.php');
 				
 				if (  @$recperms['link'] ){
 					if ( @$app->prefs['result_list_use_geturl'] ){
-						$link = $record->getURL('-action=view');
+						$link = $record->getURL($query);
 					} else {
 						
 						$link = Dataface_LinkTool::buildLink($query).'&-recordid='.urlencode($record->getId());
