@@ -2463,6 +2463,8 @@ class Dataface_Table {
 		// groups that don't have an explicit definition in the ini files.
 		// This step creates those implicit groups.
 		foreach (array_keys($this->_fields) as $key){
+		    if (isset($field)) unset($field);
+		    $field =&  $this->_fields[$key];
 			if ( isset($this->_fields[$key]['group'])  ){
 				$grpname = $this->_fields[$key]['group'];
 				if ( !isset( $this->_fieldgroups[$grpname] ) ){
@@ -2525,6 +2527,10 @@ class Dataface_Table {
 					if ( !isset($widget['atts']['size']) ){
 						if ( $this->isInt($key) or $this->isFloat($key) ){
 							$widget['atts']['size'] = 10;
+						} else if (stripos($field['Type'], 'VARCHAR(') === 0) {
+						    $fieldSize = preg_split('/[()]/', $field['Type'])[1];
+                            $widget['atts']['size'] = min(intval($fieldSize), 60);
+                            $widget['atts']['maxlength'] = $fieldSize;
 						} else {
 							$widget['atts']['size'] = 30;
 						}
