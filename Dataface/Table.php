@@ -4402,7 +4402,45 @@ class Dataface_Table {
 	 *
 	 * Methods for working with import filters and importing records.
 	 */
+	
+	static $knownImportFilters = null;
 	 
+	/**
+	 * Checks to see if this table has any import filters defined.  This uses caching
+	 * to try to minimize the amount of work to calculate this because this is called
+	 * every request by the import action to determine whether it should be shown
+	 * in the UI.
+	 */ 
+	function hasImportFilters() {
+	    if (!isset(self::$knownImportFilters)) {
+            self::$knownImportFilters = array();
+            if (DATAFACE_EXTENSION_LOADED_APC) {
+                self::$knownImportFilters = apc_fetch(DATAFACE_SITE_PATH.'/import_filters');
+                if (!isset(self::$knownImportFilters) or !@self::$knownImportFilters['.mtime'] or ($this->_hasDelegateFile() and self::$knownImportFilters['.mtime'] < filemtime($this->_delegateFilePath()))) {
+                    self::$knownImportFilters = array('.mtime' => time());
+                    apc_store(DATAFACE_SITE_PATH.'/import_filters', self::$knownImportFilters);
+                }
+            } else if (@$_SESSION and @$_SESSION['import_filters']) {
+                self::$knownImportFilters = $_SESSION['import_filters'];//, self::$knownImportFilters;
+                if (!isset(self::$knownImportFilters) or is_string(self::$knownImportFilters) or !@self::$knownImportFilters['.mtime'] or ($this->_hasDelegateFile() and self::$knownImportFilters['.mtime'] < filemtime($this->_delegateFilePath()))) {
+                    //  Only persist this for up to 10 minutes in case the dev
+                    // makes changes.
+                    self::$knownImportFilters = array('.mtime' => time());
+                    $_SESSION['import_filters'] = self::$knownImportFilters;
+                }
+            } 
+        }
+        if (!isset(self::$knownImportFilters[$this->_tablename])) {
+            $filters = $this->getImportFilters();
+            self::$knownImportFilters[$this->_tablename] = count($filters)>0;
+            if (DATAFACE_EXTENSION_LOADED_APC) {
+                apc_store(DATAFACE_SITE_PATH.'/import_filters', self::$knownImportFilters);
+            } else if (@$_SESSION) {
+                $_SESSION['import_filters'] = self::$knownImportFilters;
+            }
+        }
+        return self::$knownImportFilters[$this->_tablename];
+	}
 	 
 	/**
 	 * @brief Import filters facilitate the importing of data into the table.
