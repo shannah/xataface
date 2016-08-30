@@ -2232,11 +2232,29 @@ class Dataface_Table {
 			}
 			//$conf[$key] = array_merge_recursive_unique($this->_global_field_properties, $conf[$key]);
 		}
+		
+		$selectors = array();
+		
 		foreach ($conf as $key=>$value ){
 			if ( $key == '__sql__' and !is_array($value) ){
 				$this->_sql = $value;
 				continue;
 			}
+			
+			if (is_array($value) and strpos($key, '=') !== false) {
+			    // This is a selector
+			    $selectors[$key] = $value;
+			    foreach ($this->_fields as $fkey=>$fval) {
+			        if (isset($fval['Type']) and $key === 'Type='.$fval['Type']) {
+			            $selParsed = array();
+			            $this->_parseINISection($value, $selParsed);
+			            $this->_fields[$fkey] = array_merge_recursive_unique($this->_fields[$fkey], $selParsed);
+			        }
+			    }
+
+			    continue;
+			}
+			
 			
 			if ( is_array($value) and @$value['decorator'] ){
 				$event = new StdClass;
@@ -2465,6 +2483,7 @@ class Dataface_Table {
 		foreach (array_keys($this->_fields) as $key){
 		    if (isset($field)) unset($field);
 		    $field =&  $this->_fields[$key];
+		    
 			if ( isset($this->_fields[$key]['group'])  ){
 				$grpname = $this->_fields[$key]['group'];
 				if ( !isset( $this->_fieldgroups[$grpname] ) ){
