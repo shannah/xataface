@@ -500,8 +500,28 @@ function df_register_skin($name, $template_dir){
 function df_display($context, $template_name){
 	import( 'Dataface/SkinTool.php');
 	$st = Dataface_SkinTool::getInstance();
-	
-	return $st->display($context, $template_name);
+	$app = Dataface_Application::getInstance();
+	$query =& $app->getQuery();
+	if (@$query['-ui-root']) {
+	    ob_start();
+	    $st->display($context, $template_name);
+	    $contents = ob_get_contents();
+	    
+	    ob_end_clean();
+	    
+	    if (preg_match('/<\!--ui-root='.preg_quote($query['-ui-root'], '/').'-->([\s\S]*)<\!--\/ui-root='.preg_quote($query['-ui-root'], '/').'-->/', $contents, $matches)) {
+	        $placeholder = '__placeholder__'.time();
+	        $contents = preg_replace('/(<body[^>]*>)[\s\S]*(<\!-- end-html-body-->)/', '$1'.$placeholder.'$2', $contents);
+	        $contents = str_replace($placeholder, $matches[1], $contents);
+	        echo $contents;
+	        return true;
+	    } else {
+            echo $contents;
+            return true;
+	    }
+	} else {
+	    return $st->display($context, $template_name);
+	}
 }
 
 function df_config_get($varname){

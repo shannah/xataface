@@ -2929,3 +2929,64 @@ a.xf-show-advanced-find.expanded > span.collapsed {display:none;}
 table.xf-grid-table {
     border-collapse: collapse;
 }
+
+
+.split {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+  }
+
+  .split-content {
+    border: 1px solid #C0C0C0 !important;
+    box-shadow: inset 0 1px 2px #e4e4e4 !important;
+    background-color: #fff;
+    height: 100%;
+  }
+
+
+
+#xf-master-detail {
+    height: 600px;
+    padding:0;
+    margin:0;
+    width: 500px;
+    padding: 3px;
+	margin: -10px -30px -10px
+}
+
+#xf-master-detail-n {
+    padding-left: 20px;
+}
+    
+
+#xf-master-detail .xf-button-bar {
+    margin: 0;
+    
+}
+
+  .gutter {
+    background-color: transparent;
+
+    background-repeat: no-repeat;
+    background-position: 50%;
+  }
+
+  .gutter.gutter-horizontal {
+    cursor: col-resize;
+    background-image: url(images/vertical.png) !important;
+  }
+
+  .gutter.gutter-vertical {
+    cursor: row-resize;
+    background-image: url(images/horizontal.png) !important;
+  }
+
+  .split.split-horizontal, .gutter.gutter-horizontal {
+    height: 100%;
+    float: left;
+  }
+ 

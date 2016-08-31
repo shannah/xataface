@@ -33,6 +33,7 @@
 	{use_macro file="Dataface_Main_Template.html"}
 	
 		{fill_slot name="main_section"}
+		    {master_detail disabled=$ENV.prefs.disable_master_detail}{master}
 			{if $error}<div id="error">{translate id=$error_i18n}{$error}{/translate}</div>{/if}
 			
 			{block name="before_result_list"}
@@ -88,6 +89,11 @@
 				
 			{/define_slot}
 			{block name="after_result_list"}
+			{/master}
+			{detail}
+			
+			{/detail}
+			{/master_detail}
 		{/fill_slot}
 	{/use_macro}
 {/if}
