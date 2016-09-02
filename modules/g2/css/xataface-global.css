@@ -2947,7 +2947,14 @@ table.xf-grid-table {
     height: 100%;
   }
 
+td.master-detail-selected, tr.master-detail-selected {
+    background-color: rgb(193, 205, 249) !important;
+}
 
+td.master-detail-selected a {
+    font-weight: bold;
+    color: black;
+}
 
 #xf-master-detail {
     height: 600px;
