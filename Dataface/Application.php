@@ -2155,6 +2155,14 @@ END
 			}
 		}
 		
+		// Set up security filters
+		$query =& $this->getQuery();
+		$table = Dataface_Table::loadTable($query['-table']);
+		
+		if ($this->_conf['using_default_action'] and $table->isSingleton()) {
+		    $query['-action'] = $this->_conf['default_browse_action'];
+		}
+		
 		$this->fireEvent('beforeHandleRequest');
 		$applicationDelegate = $this->getDelegate();
 		if ( isset($applicationDelegate) and method_exists($applicationDelegate, 'beforeHandleRequest') ){
@@ -2162,9 +2170,7 @@ END
 			$applicationDelegate->beforeHandleRequest();
 		}
 		
-		// Set up security filters
-		$query =& $this->getQuery();
-		$table = Dataface_Table::loadTable($query['-table']);
+		
 
 		//$table->setSecurityFilter();
 		/*

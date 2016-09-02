@@ -1974,6 +1974,9 @@ class Dataface_Table {
 		return $schema;
 	}
 	
+	public function isSingleton() {
+	    return @$this->_atts['singleton'];
+	}
 	
 	
 	/**
