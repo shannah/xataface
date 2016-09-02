@@ -16,6 +16,9 @@
                 v = kv[1];
             }
             if (k === name) {
+                if (value === null) {
+                    continue;
+                }
                 v = encodeURIComponent(value);
             }
             
@@ -25,7 +28,7 @@
             }
             out += '&';
         }
-        if (!found) {
+        if (!found && value !== null) {
             out += name + '=' + encodeURIComponent(value) + '&';
         }
         if (out.length > 0) {
@@ -101,41 +104,102 @@
                     $(mds).empty();
                     var iframe = $('<iframe class="master-detail-iframe" style="width:100%; height:100%; border:none; padding:0; margin:0">').attr('src', url + '&-ui-root=main-content');
                     $(iframe).load(function() {
+                    
+                    
                         var self = this;
+                        
+                        
                         window.location.hash = replaceQueryParam(window.location.hash, 'detail-url', this.contentWindow.location.href);
                         
                         // Select the row of the table that corresponds with this page
-                        $('table.listing tr td', mdn).each(function() {
+                        var oldSelectedRow = null;
+                        $('table.listing tr.master-detail-selected td', mdn).each(function() {
                             $(this).removeClass('master-detail-selected');
                             $(this).parent().removeClass('master-detail-selected');
+                            oldSelectedRow = $(this).parent();
                         });
                         $('table.listing > tbody > tr > td > a', mdn).each(function() {
-                            //console.log('link: '+$(this).attr('href'));
-                            //console.log('win url: '+self.contentWindow.location.href);
                             var winCursor = getQueryParam(self.contentWindow.location.search, '-cursor');
                             var linkCursor = getQueryParam($(this).attr('href'), '-cursor');
-                            //console.log("Win cursor: "+winCursor+"; linkCursor: "+linkCursor);
                             if (winCursor === linkCursor) {
                                 $(this).closest('td').addClass('master-detail-selected');
                                 $(this).closest('tr').addClass('master-detail-selected');
                             }
                         });
                         
-                        unsavedChanges = false;
-                        $(iframe).contents().find('li.record-back').hide();
-                        $(iframe).contents().find('input[data-xf-field],select[data-xf-field],textarea[data-xf-field]').change(function() {
-                            unsavedChanges = true;
-                        });
-                        $(iframe).contents().find('form.xf-form-group').submit(function() {
-                            unsavedChanges = false;
-                        });
-                        
-                        $(this.contentWindow).on('beforeunload', function() {
-                            if (unsavedChanges) {
-                                return 'This form has unsaved changes.';
+                        if (this.contentWindow.location.search.indexOf('--master-detail-delete-row=1') !== -1) {
+                            // This was a delete operation.  We should delete the row in the master detail
+                            // view and load the next row.
+                            if (oldSelectedRow !== null) {
+                                $(oldSelectedRow).each(function() {
+                                    $(this).removeClass('master-detail-selected');
+                                    $('td', this).removeClass('master-detail-selected');
+                                    var nex = $(this).next();
+                                    while (nex.length > 0 && !nex.is(':visible')) {
+                                        nex = nex.next();
+                                    }
+                                    
+                                    if (nex.length === 0) {
+                                        nex = $(this).prev();
+                                        while (nex.length > 0 && !nex.is(':visible')) {
+                                            nex = nex.prev();
+                                        }
+                                    } 
+                                    
+
+                                    if (nex.length === 0) {
+                                        iframeLoaded = false;
+                                        $(iframe).remove();
+                                        window.location.hash = replaceQueryParam(window.location.hash, 'detail-url', null);
+                                    } else {
+                                       nex.addClass('master-detail-selected');
+                                        $('td', nex).addClass('master-detail-selected');
+                                        var newUrl = null;
+                                        $('a[href]', nex).each(function() {
+                                            if ($(this).attr('href').indexOf('-cursor=') !== -1) {
+                                                newUrl = $(this).attr('href');
+                                            }
+                                        });
+                                        
+                                        
+                                        if (newUrl !== null) {
+                                            loadDetails(newUrl);
+                                        } else {
+                                            iframeLoaded = false;
+                                            $(iframe).remove();
+                                            window.location.hash = replaceQueryParam(window.location.hash, 'detail-url', null);
+                                        }
+                                    }
+                                    $(this).hide();
+                                    
+                                    
+                                    
+                                });
+                            } else {
+                                iframeLoaded = false;
+                                $(iframe).remove();
+                                window.location.hash = replaceQueryParam(window.location.hash, 'detail-url', null);
                             }
-                        });
+                        }
                         
+                        
+                        unsavedChanges = false;
+                        try {
+                            $(iframe).contents().find('li.record-back').hide();
+                            $(iframe).contents().find('input[data-xf-field],select[data-xf-field],textarea[data-xf-field]').change(function() {
+                                unsavedChanges = true;
+                            });
+                            $(iframe).contents().find('form.xf-form-group').submit(function() {
+                                unsavedChanges = false;
+                            });
+                            
+                            $(this.contentWindow).on('beforeunload', function() {
+                                if (unsavedChanges) {
+                                    return 'This form has unsaved changes.';
+                                }
+                            });
+                        } catch (e){}
+                            
                     });
                     
                     

@@ -2062,7 +2062,13 @@ class Dataface_Table {
 				
 				if ( $delegate !== null and method_exists($delegate, "field__$fieldname")){
 					if ( isset($this->_atts[$fieldname]) ){
-						$schema = array_merge_recursive_unique($this->_newSchema('calculated',$fieldname), $this->_atts[$fieldname]);
+					    //echo print_r($this->_atts[$fieldname]);
+					    //echo print_r($this->_newSchema('calculated',$fieldname));
+					    $attsParsed = array();
+					    $this->_parseINISection($this->_atts[$fieldname], $attsParsed);
+						$schema = array_merge_recursive_unique($this->_newSchema('calculated',$fieldname), $attsParsed);
+						//print_r($schema['widget']);
+						//exit;
 					} else {
 						$schema = $this->_newSchema('calculated', $fieldname);
 					}

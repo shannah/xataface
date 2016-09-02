@@ -409,15 +409,15 @@ class Dataface_Record {
 	 * @see http://xataface.com/documentation/tutorial/getting_started/delegate_classes
 	 * @see http://www.xataface.com/wiki/Delegate_class_methods
 	 */
-	function callDelegateFunction($function, $fallback=null){
+	function callDelegateFunction($function, $fallback=null, $param=null){
 		$del =& $this->_table->getDelegate();
 		$parent =& $this->getParentRecord();
 		if ( isset($del) && method_exists($del, $function) ){
-			return $del->$function($this);
+			return $del->$function($this, $param);
 			//return call_user_func(array(&$del, $function), $this);
 		} else if ( isset($parent) ){
 		
-			return $parent->callDelegateFunction($function, $fallback);
+			return $parent->callDelegateFunction($function, $fallback, $param);
 		} else {
 			return $fallback;
 		}

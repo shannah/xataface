@@ -331,10 +331,17 @@ class Dataface_IO {
                     if ( PEAR::isError($sql) ) return $sql;
 
                     //$res = xf_db_query($sql);
+                    //echo "Running ".$sql;
                     $res = $this->dbObj->query($sql, null, $this->lang);
                     if ( !$res || PEAR::isError($res)){
+                            
                             if ( PEAR::isError($res) ) $msg = $res->getMessage();
                             else $msg = xf_db_error(df_db());
+                            //echo "Error";
+                            //echo $msg;
+                            //print_r($res);
+                            //exit;
+                            error_log($msg);
                             return PEAR::raiseError(
 
                                     Dataface_LanguageTool::translate(

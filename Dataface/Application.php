@@ -2173,6 +2173,10 @@ END
 		    $this->_conf['_prefs']['show_search'] = 0;
 		}
 		
+		if (!@$query['-sort'] and @$table->_atts['default_sort']) {
+		    $query['-sort'] = $table->_atts['default_sort'];
+		}
+		
 		$this->fireEvent('beforeHandleRequest');
 		$applicationDelegate = $this->getDelegate();
 		if ( isset($applicationDelegate) and method_exists($applicationDelegate, 'beforeHandleRequest') ){
