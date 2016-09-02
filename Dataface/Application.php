@@ -2161,6 +2161,16 @@ END
 		
 		if ($this->_conf['using_default_action'] and $table->isSingleton()) {
 		    $query['-action'] = $this->_conf['default_browse_action'];
+		    $perms = $table->getPermissions();
+		    if (!$this->getRecord() && @$perms['new']) {
+		        $query['-action'] = 'new';
+		    }
+		    if (!isset($this->_conf['_prefs'])) {
+		        $this->_conf['_prefs'] = array();
+		    }
+		    
+		    // For singleton tables search is pointless
+		    $this->_conf['_prefs']['show_search'] = 0;
 		}
 		
 		$this->fireEvent('beforeHandleRequest');
