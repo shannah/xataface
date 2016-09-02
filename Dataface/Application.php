@@ -2159,7 +2159,7 @@ END
 		$query =& $this->getQuery();
 		$table = Dataface_Table::loadTable($query['-table']);
 		
-		if ($this->_conf['using_default_action'] and $table->isSingleton()) {
+		if (@$this->_conf['using_default_action'] and $table->isSingleton()) {
 		    $query['-action'] = $this->_conf['default_browse_action'];
 		    $perms = $table->getPermissions();
 		    if (!$this->getRecord() && @$perms['new']) {

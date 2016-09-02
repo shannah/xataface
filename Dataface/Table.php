@@ -2550,7 +2550,8 @@ class Dataface_Table {
 						if ( $this->isInt($key) or $this->isFloat($key) ){
 							$widget['atts']['size'] = 10;
 						} else if (stripos($field['Type'], 'VARCHAR(') === 0) {
-						    $fieldSize = preg_split('/[()]/', $field['Type'])[1];
+						    $parts = preg_split('/[()]/', $field['Type']);
+						    $fieldSize = $parts[1];
                             $widget['atts']['size'] = min(intval($fieldSize), 60);
                             $widget['atts']['maxlength'] = $fieldSize;
 						} else {
