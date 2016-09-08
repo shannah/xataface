@@ -169,7 +169,7 @@
 																{assign var="field_value" value=$record->htmlValue($field.name)}
 															
 															{/if}
-															{if $field_value}
+															{if !empty($field_value)}
 																<tr><th class="record-view-label">
 																		{if $field.label_link}<a href="{$field.label_link|escape}" target="_blank" class="field-label-link no-link-icon">{/if}
 																			{$field.widget.label}
