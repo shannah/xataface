@@ -160,8 +160,7 @@ class dataface_actions_edit {
 				
 				
 				if ( $success ){
-					
-					if (@$query['-response'] == 'json' ){
+					if (@$query['-response'] and trim($query['-response']) === 'json' ){
 						//header('Content-type: text/html; charset="'.$app->_conf['oe'].'"');
 						$rvals = $currentRecord->strvals();
 						$rvals['__title__'] = $currentRecord->getTitle();
