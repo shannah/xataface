@@ -1,5 +1,12 @@
 <?php
-function xf_db_connect($host,$user,$pass){ return mysqli_connect($host, $user, $pass); }
+function xf_db_connect($host,$user,$pass){
+    if (strpos($host, ':') === false) {
+        return mysqli_connect($host, $user, $pass);
+    } else {
+        $parts = explode(':', $host);
+        return mysqli_connect($parts[0], $user, $pass, "", intval($parts[1]));
+    }
+}
 function xf_db_connect_errno(){ return mysqli_connect_errno();}
 function xf_db_connect_error(){ return mysqli_connect_error();}
 function xf_db_query($sql, $conn=null){ 
