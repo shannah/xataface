@@ -2719,7 +2719,12 @@ class Dataface_Record {
 		$val = $this->display($fieldname, $index, $where, $sort);
                 $strval = $this->strval($fieldname, $index, $where, $sort);
 		$field = $this->_table->getField($fieldname);
-		if ( !@$field['passthru'] and $this->escapeOutput) $val = nl2br(df_escape($val));
+		if ( !@$field['passthru'] and $this->escapeOutput) {
+		    if (@$field['allowable_tags']) {
+		        $val = strip_tags($val, explode(',', $field['allowable_tags']));
+		    }
+		    $val = nl2br(df_escape($val));
+		}
 		if ( $this->secureDisplay and !Dataface_PermissionsTool::view($this, array('field'=>$fieldname)) ){
 			$del =& $this->_table->getDelegate();
 			if ( $del and method_exists($del, 'no_access_link') ){
