@@ -13,7 +13,7 @@ class Database {
     private $translator;
 
     public function __construct($conf) {
-        if (is_resource($conf)) {
+        if (is_resource($conf) or $conf instanceof \MySQLi) {
             $this->db = $conf;
         } else {
             $this->conf = $conf;

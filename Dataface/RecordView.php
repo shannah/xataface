@@ -56,7 +56,6 @@ class Dataface_RecordView {
 			$delegate_fields = preg_grep('/^field__/', $delegate_methods);
 			$delegate_sections = preg_grep('/^section__/', $delegate_methods);
 			
-			
 			foreach ($delegate_fields as $dfield){
 				$dfieldname = substr($dfield,7);
 				$fields[$dfieldname] = $this->record->_table->_newSchema('varchar(32)', $dfieldname);
@@ -66,7 +65,6 @@ class Dataface_RecordView {
 					$this->record->_table->_parseINISection($this->record->_table->_atts[$dfieldname], $fields[$dfieldname]);
 					
 				}
-				
 				
 			}
 			

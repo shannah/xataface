@@ -229,6 +229,9 @@ class Dataface_SkinTool extends Smarty{
 		$this->register_block('if_allowed', array(&$this, 'if_allowed'));
 		$this->register_block('editable', array(&$this, 'editable'));
 		$this->register_block('abs', array(&$this, 'abs'));
+		$this->register_block('master_detail', array(&$this, 'master_detail'));
+		$this->register_block('master', array(&$this, 'master'));
+		$this->register_block('detail', array(&$this, 'detail'));
 		
 
 	}
@@ -782,6 +785,68 @@ class Dataface_SkinTool extends Smarty{
 			
 		}
 	
+	}
+	
+	function master_detail($params, $content, &$smarty) {
+	    if (isset($content)) {
+	        if (@$params['disabled']) {
+	            echo $content; return;
+	        }
+	        Dataface_JavascriptTool::getInstance()->import('master_detail.js');
+	        $vars =& $smarty->get_template_vars();
+	        unset($vars['master-detail']);
+	        echo $content;
+	        echo '</div> <!-- xf-master-detail -->';
+	    } else {
+	        if (@$params['disabled']) {
+	            return;
+	        }
+	        $vars =& $smarty->get_template_vars();
+	        $vars['master-detail'] = $params;
+	        
+	        echo '<div id="xf-master-detail" class="xf-master-detail split">';
+	    }
+	}
+	
+	function master($params, $content, &$smarty) {
+	    $params['content-type'] = 'xf-master';
+	    return $this->master_detail_content($params, $content, $smarty);
+	}
+	
+	function detail($params, $content, &$smarty) {
+	    $params['content-type'] = 'xf-details';
+	    return $this->master_detail_content($params, $content, $smarty);
+	}
+	
+	function master_detail_content($params, $content, &$smarty) {
+	    if (isset($content)) {
+	        echo $content;
+	        $vars =& $smarty->get_template_vars();
+	        $master_detail =& $vars['master-detail'];
+	        if (@$params['disabled'] or !isset($master_detail)) {
+	            return;
+	        }
+	        echo '</div><!-- xf-master-detail-ns-->';
+	    } else {
+	        
+	        $vars =& $smarty->get_template_vars();
+	        $master_detail =& $vars['master-detail'];
+	        //echo "Master detail $master_detail";
+	        if (@$params['disabled'] or !isset($master_detail)) {
+	            return;
+	        }
+	        $class = null;
+	        if (isset($master_detail['north'])) {
+	            $master_detail['south'] = $params;
+	            $class = 'xf-master-detail-s';
+	        } else {
+	            $master_detail['north'] = $params;
+	            $class = 'xf-master-detail-n';
+	        }
+	        
+	        echo '<div id="'.$class.'" class="'.$class.' split split-content '.$params['content-type'].'">';
+	        
+	    }
 	}
 	
 	function editable($params, $content, &$smarty){

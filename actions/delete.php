@@ -68,7 +68,9 @@ class dataface_actions_delete {
 			if ( !$failed ){
 				import('Dataface/Utilities.php');
 				Dataface_Utilities::fireEvent('after_action_delete', array('record'=>&$record));
-				header('Location: '.$_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?-table='.$query['-table'].'&--msg='.$msg);
+				$append = '';
+				$append .= '&--master-detail-delete-row=1';
+				header('Location: '.$_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?-table='.$query['-table'].$append.'&--msg='.$msg);
 				exit;
 			}
 		}
