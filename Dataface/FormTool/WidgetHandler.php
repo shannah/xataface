@@ -165,33 +165,4 @@ interface WidgetHandler {
 		$formFieldName, 
 		$new=false);
 		
-		
-	/**
-	 * @brief Retrieves the value from a form widget that is ready to be added to the underlying
-	 * Dataface_Record object.  This is an optional method that only needs to be implemented
-	 * if the default behavior of Dataface_FormTool::pushField() is not sufficient.
-	 *
-	 *
-	 * @param Dataface_Record The record that the value is being pushed into.
-	 * @param array &$field The field definition of the field to pull (per fields.ini file).
-	 * @param HTML_QuickForm The form where the field resides.
-	 * @param string $formFieldName The name of the field within the form.
-	 * @param boolean $new Whether this is a new record form.  False if it is a form for editing an existing record.
-	 *
-	 * @returns mixed PEAR_Error If there is an error.  True on success.
-	 * 
-	 * @see <a href="http://pear.php.net/package/HTML_QuickForm/docs/3.2.13/HTML_QuickForm/HTML_QuickForm.html">HTML_QuickForm</a>
-	 * @see pullField()
-	 * @see Dataface_FormTool::pushField()
-	 *
-	 * @par Examples
-	 * -# Dataface_FormTool_select::pushField()
-	 */
-	public function pushField(
-		Dataface_Record $record, 
-		array &$field, 
-		HTML_QuickForm $form, 
-		$formFieldName, 
-		$new=false);
-
 }

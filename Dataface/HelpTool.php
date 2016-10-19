@@ -101,16 +101,4 @@ class Dataface_HelpTool {
 		$docsDir = DATAFACE_PATH.'/docs';
 		return $this->getDocRootForLanguage($docsDir, $lang);
 	}
-	
-	
-	function getContents($path){
-		
-	}
-	
-	
-	
-	
-	
-	
-
 }
