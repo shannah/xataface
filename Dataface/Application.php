@@ -579,6 +579,9 @@ END;
 
 			}
 			$dbinfo =& $conf['_database'];
+			if (is_array($dbinfo) and defined('XATAFACE_DATABASE_NAME_OVERRIDE')) {
+			    $dbinfo['name'] = XATAFACE_DATABASE_NAME_OVERRIDE;
+			}
 			if ( !is_array( $dbinfo ) || !isset($dbinfo['host']) || !isset( $dbinfo['user'] ) || !isset( $dbinfo['password'] ) || !isset( $dbinfo['name'] ) ){
 				throw new Exception('Error loading config file.  The database information was not entered correctly.<br>
 					 Please enter the database information int its own section of the config file as follows:<br>
@@ -932,7 +935,7 @@ END;
 		if ( @$query['-table'] ){
 			$query['-table'] = trim($query['-table']);
 			if ( !preg_match('/^[a-zA-Z0-9_]+$/', $query['-table']) ){
-				throw new Exception("Illegal table name.");
+				throw new Exception("Illegal table name: ".$query['-table']);
 			}
 			$query['-table'] = basename($query['-table']);
 		}
