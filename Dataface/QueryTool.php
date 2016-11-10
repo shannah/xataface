@@ -109,16 +109,20 @@ class Dataface_QueryTool {
 		
 		$cache =& $this->staticCache();
 		$sql = "select count(`$firstKeyName`) from `$tablename`";
-		
-		if ( isset($cache[$sql]) ) $this->_data['cardinality'] = $cache[$sql];
-		else {
-			$res = $this->dbObj->query( $sql, $this->_db,null, true /*as array*/);
-			if ( !$res and !is_array($res) ) throw new Exception("We had a problem with the query $sql.", E_USER_ERROR);
-
-			$this->_data['cardinality'] = reset($res[0]);
-			$cache[$sql] = $this->_data['cardinality'];
+		if (!$this->_table->shouldCountRows()) {
+		    $this->_data['cardinality'] = -1;
 		}
 		
+		// Let's just do cardinality lazily... 
+		//else  if ( isset($cache[$sql]) ) {
+		//    $this->_data['cardinality'] = $cache[$sql];
+		//} else {
+		//	$res = $this->dbObj->query( $sql, $this->_db,null, true /*as array*/);
+		//	if ( !$res and !is_array($res) ) throw new Exception("We had a problem with the query $sql.", E_USER_ERROR);
+
+		//	$this->_data['cardinality'] = reset($res[0]);
+		//	$cache[$sql] = $this->_data['cardinality'];
+		//}
 		$builder = new Dataface_QueryBuilder( $tablename, $this->_query);
 		$builder->selectMetaData = true;
 		$sql = $builder->select_num_rows();
