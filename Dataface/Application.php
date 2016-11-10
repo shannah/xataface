@@ -2576,7 +2576,7 @@ END
 			if ( $loginPrompt ){
 				// The user is supposed to see a login prompt to log in.
 				// Show the login prompt.
-				
+				header("HTTP/1.1 401 Unauthorized");
 				$authTool->showLoginPrompt($loginError);
 			} else if ($permissionDenied) {
 				// The user is supposed to see the permissionm denied page.

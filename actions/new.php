@@ -142,7 +142,9 @@ class dataface_actions_new {
 					
 				} else {
 					//echo "not dup entry"; exit;
-					error_log($result->toString()."\n".implode("\n", $result->getBacktrace()));
+					//echo "Not dup entry";
+					//var_dump($result);
+					error_log($result->getMessage());//."\n".implode("\n", $result->getBacktrace()));
 					throw new Exception("An error occurred while attempting to save the record.  See server error log for details.", E_USER_ERROR);
 
 				}

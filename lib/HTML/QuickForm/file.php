@@ -42,6 +42,8 @@ class HTML_QuickForm_file extends HTML_QuickForm_input
 {
     // {{{ properties
 
+    var $last_pushed_value = null;
+
    /**
     * Uploaded file data, from $_FILES
     * @var array

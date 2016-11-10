@@ -406,6 +406,9 @@ class Dataface_FormTool {
 					
 			
 		}
+		
+		
+		
 		$evt = new stdClass;
 		$evt->record = $record;
 		$evt->field =& $field;
@@ -415,6 +418,14 @@ class Dataface_FormTool {
 		$evt->value = $out;
 		$app->fireEvent('FormTool::pushValue', $evt);
 		$out = $evt->value;
+		
+		if (@$field['sanitize_html']) {
+		    if (!defined('HTMLAWED_LOADED')) {
+		        import('lib/htmLawed.php');
+		    }
+            $hconfig = array('safe'=>1); 
+            $out = htmLawed($out, $hconfig);
+		}
 		
 		return $out;
 		
