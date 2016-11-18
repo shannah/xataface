@@ -129,8 +129,7 @@ class Dataface_QueryTool {
 		if ( isset($cache[$sql]) ){
 			$this->_data['found'] = $cache[$sql];
 		} else {
-		
-			$res = $this->dbObj->query( $sql, $this->_db,null, true /*as array*/);
+		    $res = $this->dbObj->query( $sql, $this->_db,null, true /*as array*/);
 			if ( !$res and !is_array($res) ){
 				throw new Exception(xf_db_error($this->_db).$sql, E_USER_ERROR);
 			}
@@ -608,6 +607,7 @@ class Dataface_QueryTool {
 	}
 	
 	function &iterator(){
+	    self::$lastIterated = $this;
 		$it = new Dataface_RecordIterator($this->_tablename, $this->data());
 		return $it;
 	}
