@@ -359,7 +359,6 @@ class Dataface_AuthenticationTool {
 		if ( isset($this->delegate) and method_exists($this->delegate, 'showLoginPrompt') ){
 			return $this->delegate->showLoginPrompt($msg);
 		}
-		header("HTTP/1.1 401 Please Log In");
 		
 		$url = $app->url('-action=login_prompt');
 		
