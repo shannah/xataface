@@ -165,7 +165,12 @@ class dataface_actions_edit {
 						$rvals = $currentRecord->strvals();
 						$rvals['__title__'] = $currentRecord->getTitle();
 						$rvals['__id__'] = $currentRecord->getId();
-						echo df_escape(json_encode(array('response_code'=>200, 'record_data'=> $rvals, 'response_message'=>df_translate('Record Successfully Saved', 'Record Successfully Saved'))));
+						$json = json_encode(array('response_code'=>200, 'record_data'=> $rvals, 'response_message'=>df_translate('Record Successfully Saved', 'Record Successfully Saved')));
+						if (@$query['--escape-json'] === "n") {
+						    echo $json;
+						} else {
+						    echo df_escape($json);
+						}
 						return;
 					}
 					
