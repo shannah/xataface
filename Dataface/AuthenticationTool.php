@@ -212,6 +212,14 @@ class Dataface_AuthenticationTool {
 			$username = @$_SESSION['UserName'];
 			session_destroy();
 			
+			if (@$_REQUEST['--no-prompt']) {
+			    df_write_json(array(
+			        'code' => 200,
+			        'message' => "Logged out successfully"
+			    ));
+			    exit;
+			}
+			
 			import('Dataface/Utilities.php');
 				
 			Dataface_Utilities::fireEvent('after_action_logout', array('UserName'=>$username));
