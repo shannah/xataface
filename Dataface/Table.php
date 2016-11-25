@@ -694,6 +694,9 @@ class Dataface_Table {
 					$this->_fields[$key]['widget']['type'] = 'time';
 				} else if ( substr($this->_fields[$key]['Type'], 0,4) == 'enum' ){
 					$this->_fields[$key]['widget']['type'] = 'select';
+				} else if (substr($this->_fields[$key]['Type'], 0, 3) == 'set') {
+				    $this->_fields[$key]['widget']['type'] = 'checkbox';
+				    $this->_fields[$key]['repeat'] = true;
 				}
 			}
 			if ( DATAFACE_EXTENSION_LOADED_APC ){
@@ -740,8 +743,7 @@ class Dataface_Table {
 			// handle case where this is an enumerated field
 			$matches = array();
 			if ( preg_match('/^(enum|set)\(([^\)]+)\)$/', $row['Type'], $matches )){
-
-				$valuelists =& $this->valuelists();
+                $valuelists =& $this->valuelists();
 				$options = explode(',', $matches[2]);
 				
 				$vocab = array();

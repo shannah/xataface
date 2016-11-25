@@ -136,7 +136,10 @@ class Dataface_FormTool_checkbox {
 		 *
 		 */
 		$formFieldName = $element->getName();
-		$raw =& $record->getValue($field['name']);
+		$raw = $record->getValue($field['name']);
+		if (is_string($raw) and strtolower(substr($field['Type'], 0, 3)) == 'set') {
+		    $raw = explode(',', $raw);
+		}
 		if ( $field['repeat'] and is_array($raw)){
 			// If the field is a repeat field $raw will be an array of
 			// values.
