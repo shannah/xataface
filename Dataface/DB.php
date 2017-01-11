@@ -651,7 +651,7 @@ class Dataface_DB {
 		// parse the SQL query.
 		import('SQL/Parser.php');
 		$parser = new SQL_Parser( null, 'MySQL');
-		$data =& $parser->parse($sql);
+		$data = $parser->parse($sql);
 		if ( PEAR::isError($data) ){
 			return $data;
 		}
