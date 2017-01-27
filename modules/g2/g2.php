@@ -159,7 +159,6 @@ class modules_g2 {
 	}
 	
 	public function getSearchParameters(){
-		
 		$query = Dataface_Application::getInstance()->getQuery();
 		$table = Dataface_Table::loadTable($query['-table']);
 		if ( PEAR::isError($table) ){
@@ -167,8 +166,11 @@ class modules_g2 {
 		}
 		$out = array();
 		foreach ($query as $k=>$v){
-			if ( $v and $table->hasField($k) ){
+			if ( $v and $table->hasField($k)){
 				$fld =& $table->getField($k);
+				if (isset($fld['silent_filter'])) {
+				    continue;
+				}
 				$out[$fld['widget']['label']] = $v;
 				unset($fld);
 			}
