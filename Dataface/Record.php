@@ -4033,14 +4033,14 @@ class Dataface_Record {
 									  
 				foreach (array_keys($fields) as $field_name){
 				    $field =& $fields[$field_name];
-				    
-					if ( isset($field['title']) ){
+                    if ( isset($field['title']) ){
 						$title = $this->display($field_name);
 						$found_title = true;
 					}
 					else if ( !isset($title) and $this->_table->isChar($field_name) ){
-					    if ($field['widget']['type'] == 'text') {
-						    $title = $this->display($field_name);
+					    $widgetType = $field['widget']['type'];
+					    if ($widgetType != 'radio' && $widgetType != 'checkbox') {
+						    $title = $this->display($field_name );
 						}
 					}
 					unset($field);

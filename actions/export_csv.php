@@ -116,11 +116,13 @@ class dataface_actions_export_csv {
 				$this->writeRow($temp, $row, $query);//, $recordfputcsv($temp, $row,",",'"');
 			}
 		} else {
-			$temp = tmpfile();
-                        
-                        $query['-skip'] = 0;
+			$temp = tmpfile();       
+            $query['-skip'] = 0;
 			$query['-limit'] = null;
-			$records = new Dataface_RecordReader($query, 30, false);
+			$records = df_get_selected_records($query);
+			if (!$records) {
+			    $records = new Dataface_RecordReader($query, 30, false);
+			}
 			//$records =& df_get_records_array($query['-table'], $query,null,null,false);
 			//$data = array();
 			$headings = array();
