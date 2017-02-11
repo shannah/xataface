@@ -82,6 +82,8 @@ class Dataface_AuthenticationTool {
 		$this->usernameColumn = ( isset($params['username_column']) ? $params['username_column'] : null);
 		$this->passwordColumn = (isset( $params['password_column']) ? $params['password_column'] : null);
 		$this->userLevelColumn = (isset( $params['user_level_column']) ? $params['user_level_column'] : null);
+		$this->groupsColumn = (isset( $params['groups_column']) ? $params['groups_column'] : null);
+		$this->primaryGroupColumn = (isset( $params['primary_group_column']) ? $params['primary_group_column'] : null);
 		
 		$this->setAuthType(@$params['auth_type']); 
 	}
@@ -118,6 +120,11 @@ class Dataface_AuthenticationTool {
 	 * The column that the groups are stored in.
 	 */
 	var $groupsColumn = null;
+	
+	/**
+	 * The column that stores the user's primary group.
+	 */
+	var $primaryGroupColumn = null;
 	
 	/**
 	 * Optionally if the groups are stored in another table, this is the name of 
@@ -188,8 +195,33 @@ class Dataface_AuthenticationTool {
 	            }
 	        }
 	        
+	        // The primary group is a special group that should be included
+	        // in the groups.
+	        $primaryGroup = $this->getPrimaryGroup();
+	        if (!isset($this->groups) and isset($primaryGroup)) {
+	            $this->groups = array();
+	        }
+	        
+	        if (isset($primaryGroup) and !in_array($primaryGroup, $this->groups)) {
+	            array_unshift($this->groups, $primaryGroup);
+	        }
+	        
 	    }
 	    return $this->groups;
+	}
+	
+	/**
+	 * Gets the primary group of the currently logged in user.  The primary group is a special
+	 * group because it will be used to set the group field on records that are inserted.
+	 */
+	function getPrimaryGroup() {
+	    if (isset($this->primaryGroup)) {
+	        $user = $this->getLoggedInUser();
+	        if ($user) {
+	            return $user->val($this->primaryGroup);
+	        }
+	    }
+	    return null;
 	}
 	
 	function getCredentials(){

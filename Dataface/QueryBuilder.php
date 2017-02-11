@@ -436,6 +436,21 @@ class Dataface_QueryBuilder {
 		$keys =& $this->_table->keys();
 		$insertedKeys = array();
 		$insertedValues = array();
+		$authTool = class_exists('Dataface_AuthenticationTool') ? Dataface_AuthenticationTool::getInstance() : null;
+		
+		$gid = $tableObj->setGroup;  // group
+		$uid = null;  // owner
+		$rgid = $tableObj->setReviewersGroup; // reviewer group
+		
+		$ownerField = $tableObj->ownerField;
+		$groupField = $tableObj->groupField;
+		$reviewersField = $table->reviewersField;
+		
+		if ($authTool !== null) {
+		    $gid = $gid ? $gid : $authTool->getPrimaryGroup();
+		    $uid = $authTool->getLoggedInUserName();
+		}
+		
 		
 		foreach ($this->_mutableFields as $key=>$field){
 			if ( @$field['ignore'] ) continue;
@@ -450,7 +465,24 @@ class Dataface_QueryBuilder {
 					continue;
 				}
 			}
-			if ( !$record->hasValue($key) ) continue;
+			
+			if ( !$record->hasValue($key) ){
+			    // We only auto-set owner and group fields if they don't 
+			    // already have a value set
+			    if ($uid !== null && $ownersField !== null && strcmp($ownerField, $key) === 0) {
+			        $insertedKeys[] = '`'.$key.'`';
+			        $insertedValues[] = $this->prepareValue($key, $uid);
+			    } else if ($gid !== null && $groupField !== null && strcmp($groupField, $key) === 0) {
+			        $insertedKeys[] = '`'.$key.'`';
+			        $insertedValues[] = $this->prepareValue($key, $gid);
+			    } else if ($rgid !== null && $reviewersField !== null && strcmp($reviewersField, $key) === 0) {
+			        $insertedKeys[] = '`'.$ke.'`';
+			        $insertedValues[] = $this->prepareValue($key, $rgid);
+			    }
+			
+			
+			    continue;
+			}   
 			$val = $record->getValue($key);
 			if ( strtolower($this->_mutableFields[$key]['Extra']) == 'auto_increment' && !$val && $val !== 0 && $val !== '0' ){
 				// This is a MySQL 5 fix.  In MySQL 5 it doesn't like it when you put blank values into

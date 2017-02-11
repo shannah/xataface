@@ -173,6 +173,54 @@ class Dataface_Table {
 	 */
 	var $_displayFields=array();
 	
+	/**
+	 * The name of owner field in this table if specified (see meta:owner directive)
+	 */
+	var $ownerField = null;
+	
+	/**
+	 * The name of the group field in this table if specified (see meta:group directive)
+	 */
+	var $groupField = null;
+	
+	/**
+	 * When records are inserted, if they should be automatically assigned to a particular
+	 * group, then set it here.  This will override the primary group of the user that
+	 * added the record.
+	 */
+	var $setGroup = null;
+	
+	/**
+	 * The name a group with reviewer permissions on this table.  See meta:reviewers directive.
+	 */
+	var $reviewersField = null;
+	
+	/**
+	 * When records are inserted, if they should automatically be assigned to a particular 
+	 * reviewer group, then set it here.
+	 */
+	var $setReviewersGroup = null;
+	
+	/**
+	 * The username of the table owner.  See access:tableOwner attribute
+	 */
+	var $tableOwner = null;
+	
+	/**
+	 * The group name that is given reviewer permissions on this table.  See access:tableReviewers attribute.
+	 */
+	var $tableReviewers = null;
+	
+	/**
+	 * The group name that is given submitter permissions on this table.  See access:tableSubmitters attribute.
+	 */
+	var $tableSubmitters = null;
+	
+	/**
+	 * The username of the group that is given group permissions on this table.  See access:tableGroup attribute.
+	 */
+	var $tableGroup = null;
+	
 	
 	/**
 	 * @brief A List of the tables that are join tables of this table.  A join table
@@ -2028,7 +2076,7 @@ class Dataface_Table {
 				$fieldnames = array_keys($this->_fields);
 				foreach ($fieldnames as $fieldname){
 					$field =& $this->_fields[$fieldname];
-					if ( $bestCandidate === null and $this->isChar($fieldname) ){
+					if ($bestCandidate === null and $this->isChar($fieldname)){
 						$bestCandidate = '`'.$fieldname.'`';
 					}
 					//if ( strpos(strtolower($fieldname),'title') !== false ){
@@ -2466,7 +2514,13 @@ class Dataface_Table {
 								$field['visibility'][ $attpath[1] ] = trim($attval);
 								
 								break;
-								
+							case "meta":
+							    if ($attpath[1] == 'group') {
+							        $this->groupField = $key;
+							    } else if ($attpath[1] == 'owner') {
+							        $this->ownerField = $key;
+							    }
+							    break;
 							default:
 								$field[$attpath[0]][$attpath[1]] = trim($attval);
 								break;
@@ -2692,9 +2746,167 @@ class Dataface_Table {
 	function getSecurityFilter($filter=array()){
 		return array_merge($this->_securityFilter, $filter);
 	}
+	
+	
+	
+	/**
+	 * Gets the permissions associated with a given record of this table using group
+	 * based permissions.
+	 */
 	 
-	 
-	 
+	private function _getGroupPermissions(Dataface_Record $record = null, $groupField, $roleSuffix) {
+	    if (isset($record)) {
+            if (isset($groupField)) {
+                // The group field is defined
+                $group = $record->val($groupField);
+                if ($group) {
+                    $auth = Dataface_AuthenticationTool::getInstance();
+                    if ($auth) {
+                        $userGroups = $auth->getGroups();
+                        if ($userGroups and in_array($group, $userGroups) ) {
+                            $pt = Dataface_PermissionsTool::getInstance();
+                            $groupRole = strtoupper($this->tablename).'/'.$roleSuffix;
+                            if ($pt->roleExists($groupRole)) {
+                                return $pt->getRolePermissions($groupRole);
+                            } else {
+                                return $pt->getRolePermissions($roleSuffix);
+                            }
+                        }
+                    }
+                }
+            }
+        } 
+        
+        return null;
+	}
+	
+	private function _getTableGroupPermissions($groupName, $roleSuffix) {
+	    if (isset($this->tableGroup)) {
+            $auth = Dataface_AuthenticationTool::getInstance();
+            if ($auth) {
+                $userGroups = $auth->getGroups();
+                if ($userGroups and in_array($groupName, $userGroups) ) {
+                    $pt = Dataface_PermissionsTool::getInstance();
+                    $groupRole = strtoupper($this->tablename).'/'.$roleSuffix;
+                    if ($pt->roleExists($groupRole)) {
+                        return $pt->getRolePermissions($groupRole);
+                    } else {
+                        return $pt->getRolePermissions($roleSuffix);
+                    }
+                }
+            }
+        }
+        return null;
+	}
+	
+	function getGroupPermissions(Dataface_Record $record = null) {
+	    return $this->_getGroupPermissions($record, $this->groupField, 'GROUP');   
+	}
+	function getReviewersPermissions(Dataface_Record $record = null) {
+	    return $this->_getGroupPermissions($record, $this->reviewersField, 'REVIEWER');
+	}
+	function getSubmittersPermissions(Dataface_Record $record = null) {
+	    return $this->_getGroupPermissions($record, $this->submittersField, 'SUBMITTER');
+	}
+	function getViewersPermissions(Dataface_Record $record = null) {
+	    return $this->_getGroupPermissions($record, $this->viewersField, 'VIEWER');
+	} 
+	
+	function getTableGroupPermissions() {
+	    return $this->_getTableGroupPermissions($this->tableGroup, 'GROUP');
+	}
+	
+	function getTableReviewersPermissions() {
+	    return $this->_getTableReviewersPermissions($this->tableReviewers, 'REVIEWER');
+	}
+	
+	function getTableSubmittersPermissions() {
+	    return $this->_getTableGroupPermissions($this->tableSubmitters, 'SUBMITTER');
+	}
+	
+	function getTableViewersPermissions() {
+	    return $this->_getTableGroupPermissions($this->tableViewers, 'VIEWER');
+	}
+	
+	function getGroupBasedRecordPermissions(Dataface_Record $record = null) {
+	    if (function_exists('isAdmin') and isAdmin()) {
+	        // Let's refine this later.  Even admins shouldn't be able to do some
+	        // things.  E.g. changing usernames
+	        return Dataface_PermissionsTool::ALL();
+	    }
+	}
+	
+	function getOwnerPermissions(Dataface_Record $record = null) {
+	    if (isset($record)) {
+	        if (isset($this->ownerField)) {
+	            $owner = $record->val($this->ownerField);
+	            if ($owner) {
+	                $auth = Dataface_AuthenticationTool::getInstance();
+	                if ($auth) {
+	                    $user = $auth->getLoggedInUserName();
+	                    if ($user and strcasecmp($user, $owner) === 0) {
+	                        $pt = Dataface_PermissionsTool::getInstance();
+	                        $ownerRole = strtoupper($this->tablename).'/OWNER';
+	                        if ($pt->roleExists($ownerRole)) {
+	                            return $pt->getRolePermissions($ownerRole);
+	                        } else {
+	                            return $pt->getRolePermissions('OWNER');
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    } 
+	    return null;
+	}
+	
+	function getTableOwnerPermissions() {
+	    if (isset($this->tableOwner)) {
+            $auth = Dataface_AuthenticationTool::getInstance();
+            if ($auth) {
+                $user = $auth->getLoggedInUserName();
+                if ($user and strcasecmp($user, $this->tableOwner)) {
+                    $pt = Dataface_PermissionsTool::getInstance();
+                    $ownerRole = strtoupper($this->tablename).'/OWNER';
+                    if ($pt->roleExists($ownerRole)) {
+                        return $pt->getRolePermissions($ownerRole);
+                    } else {
+                        return $pt->getRolePermissions('OWNER');
+                    } 
+                }
+            }
+        }
+        return null;
+	}
+	
+	function getGroupBasedFieldPermissions(DatafaceRecord $record = null, $fieldname) {
+	    if (isset($record)) {
+            $auth = Dataface_AuthenticationTool::getInstance();
+            $isAdmin = function_exists('isAdmin') ? isAdmin() : false;
+            $perms = array();
+            if ($auth) {
+                $userGroups = $auth->getGroups();
+                $user = $auth->getLoggedInUserName();
+                if ($auth->usersTable and strcasecmp($auth->usersTable, $this->tablename) === 0) {
+                    // Default values for fields in the users table
+                    // NOBODY should be able to change the username of an added user
+                    // EVEN admins
+                    if ($auth->usernameColumn and strcasecmp($auth->usernameColumn, $fieldname) === 0) {
+                        // This is the username column.  You shouldn't be able to change your username
+                        $perms['edit'] = 0;
+                        
+                    }
+                    
+                    // Admins, table owners, and groups
+                    else if (!$isAdmin and $auth->roleColumn and strcasecmp($auth->roleColumn, $fieldname) === 0) {
+                        $perms['edit'] = 0;
+                    }
+                }
+            }
+        }
+        return null;
+	}
+	
 	/**
 	 * @brief Gets the permissions for a particular relationship.
 	 *
@@ -2738,6 +2950,7 @@ class Dataface_Table {
 	    return $record->getGroupRoles();
 	    
 	}
+	
 	
 	/**
 	 * @brief Obtains the permissions for a particular record or for this table.  Parameters
