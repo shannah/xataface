@@ -1,9 +1,10 @@
 //require <jquery.packed.js>
 //require <jquery-ui.min.js>
 //require <xatajax.core.js>
+//require <xataface/lang.js>
 (function(){
 	var $ = jQuery;
-	
+	var _ = xataface.lang.get;
 	var findwidgets = XataJax.load('xataface.findwidgets');
 	findwidgets.date = date;
 	
@@ -15,7 +16,7 @@
 		this.from = $('<input type="text">');
 		this.to = $('<input type="text">');
 		this.rangePanel = $('<div>').css('text-align','right');
-		$(this.rangePanel).append('From ').append(this.from).append(' to ').append(this.to);
+		$(this.rangePanel).append(_('findwidgets.date.from', 'From') + ' ').append(this.from).append(' ' + _('findwidgets.date.to', 'to')+ ' ').append(this.to);
 		this.btn = $('<button>').addClass('advanced-button').text('...').click(function(){
 			self.toggleRange();
 			return false;
