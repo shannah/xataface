@@ -4032,13 +4032,18 @@ class Dataface_Record {
 									  // declared by the 'title' flag in the fields.ini file.
 									  
 				foreach (array_keys($fields) as $field_name){
-					if ( isset($fields[$field_name]['title']) ){
+				    $field =& $fields[$field_name];
+				    
+					if ( isset($field['title']) ){
 						$title = $this->display($field_name);
 						$found_title = true;
 					}
 					else if ( !isset($title) and $this->_table->isChar($field_name) ){
-						$title = $this->display($field_name );
+					    if ($field['widget']['type'] == 'text') {
+						    $title = $this->display($field_name);
+						}
 					}
+					unset($field);
 					if ( $found_title) break;
 				}
 				
@@ -4626,6 +4631,8 @@ class Dataface_Record {
          *      )
          * ) 
          * </code>
+         *
+         * @deprecated
          */
         function getGroupRoleMetadata(){
             $perms = $this->_metaDataValues['__roles__'];
@@ -4640,6 +4647,7 @@ class Dataface_Record {
          * @brief Gets the roles that are assigned to the currently logged-in
          * user using the group_permissions module.
          * @return String[] An array of role names assigned to this user.
+         * @deprecated
          */
 	function getGroupRoles(){
 	    if ( isset($this->pouch['__roles__']) ){
