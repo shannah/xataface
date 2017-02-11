@@ -2028,8 +2028,11 @@ class Dataface_Table {
 				$fieldnames = array_keys($this->_fields);
 				foreach ($fieldnames as $fieldname){
 					$field =& $this->_fields[$fieldname];
-					if ( $bestCandidate === null and $this->isChar($fieldname) ){
-						$bestCandidate = '`'.$fieldname.'`';
+					if ( $bestCandidate === null and $this->isChar($fieldname)){
+					    $widgetType = $field['widget']['type'];
+					    if ($widgetType != 'radio' && $widgetType != 'checkbox') {
+						    $bestCandidate = '`'.$fieldname.'`';
+						}
 					}
 					//if ( strpos(strtolower($fieldname),'title') !== false ){
 					//	$bestCandidate = $fieldname;

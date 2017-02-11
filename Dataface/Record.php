@@ -4032,13 +4032,18 @@ class Dataface_Record {
 									  // declared by the 'title' flag in the fields.ini file.
 									  
 				foreach (array_keys($fields) as $field_name){
+				    $field =& $fields[$field_name];
 					if ( isset($fields[$field_name]['title']) ){
 						$title = $this->display($field_name);
 						$found_title = true;
 					}
 					else if ( !isset($title) and $this->_table->isChar($field_name) ){
-						$title = $this->display($field_name );
+					    $widgetType = $field['widget']['type'];
+					    if ($widgetType != 'radio' && $widgetType != 'checkbox') {
+						    $title = $this->display($field_name );
+						}
 					}
+					unset($field);
 					if ( $found_title) break;
 				}
 				
