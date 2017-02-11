@@ -266,7 +266,45 @@
 				}
 			})
 			.click(function(){
-				XataJax.actions.handleSelectedAction(this, '.resultList');
+			    try {
+				    XataJax.actions.handleSelectedAction(this, '.resultList');
+				} catch (e) {
+				    console.log(e);
+				}
+				return false;
+			}
+		);
+		$('.selected-or-full-set-action a')
+			.click(function(){
+			    try {
+			        var emptyMessage = "No rows currently selected.  Would you like to perform this action on the full found set?";
+			        var emptyMessageAtt = $(this).parents('.selected-or-full-set-action').attr('data-xf-use-full-set-if-empty')
+			        if (emptyMessageAtt) {
+			            emptyMessage = emptyMessageAtt;
+			        }
+			        $(this).attr('data-xf-use-full-set-if-empty', emptyMessage);
+			        
+				    XataJax.actions.handleSelectedAction(this, '.resultList');
+				} catch (e) {
+				    console.log(e);
+				}
+				return false;
+			}
+		);
+		$('.full-set-action a')
+			.click(function(){
+			    try {
+			        var warningMessage = "This action will operate on the full found set.  Do you wish to continue?";
+			        var warningMessageAtt = $(this).parents('.full-set-action').attr('data-xf-full-set-warning')
+			        if (warningMessageAtt) {
+			            warningMessage = warningMessageAtt;
+			        }
+			        if (confirm(warningMessage)) {
+			            return true;
+			        }
+				} catch (e) {
+				    console.log(e);
+				}
 				return false;
 			}
 		);
