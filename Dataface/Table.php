@@ -173,53 +173,9 @@ class Dataface_Table {
 	 */
 	var $_displayFields=array();
 	
-	/**
-	 * The name of owner field in this table if specified (see meta:owner directive)
-	 */
-	var $ownerField = null;
+	var $_tableRoles=array();
 	
-	/**
-	 * The name of the group field in this table if specified (see meta:group directive)
-	 */
-	var $groupField = null;
-	
-	/**
-	 * When records are inserted, if they should be automatically assigned to a particular
-	 * group, then set it here.  This will override the primary group of the user that
-	 * added the record.
-	 */
-	var $setGroup = null;
-	
-	/**
-	 * The name a group with reviewer permissions on this table.  See meta:reviewers directive.
-	 */
-	var $reviewersField = null;
-	
-	/**
-	 * When records are inserted, if they should automatically be assigned to a particular 
-	 * reviewer group, then set it here.
-	 */
-	var $setReviewersGroup = null;
-	
-	/**
-	 * The username of the table owner.  See access:tableOwner attribute
-	 */
-	var $tableOwner = null;
-	
-	/**
-	 * The group name that is given reviewer permissions on this table.  See access:tableReviewers attribute.
-	 */
-	var $tableReviewers = null;
-	
-	/**
-	 * The group name that is given submitter permissions on this table.  See access:tableSubmitters attribute.
-	 */
-	var $tableSubmitters = null;
-	
-	/**
-	 * The username of the group that is given group permissions on this table.  See access:tableGroup attribute.
-	 */
-	var $tableGroup = null;
+	var $workflowStatusField = null;
 	
 	
 	/**
@@ -2305,6 +2261,24 @@ class Dataface_Table {
 				continue;
 			}
 			
+			if ($key == '__permissions__') {
+			    $this->_useGroupBasedRecordPermissions_loaded = true;
+			    $this->_useGroupBasedRecordPermissions = true;
+			    foreach ($value as $pkey=>$pval) {
+			        if (strpos($pkey, 'role.')) {
+			            if (strpos($pval, ',') !== false) {
+			                $pval = array_map('trim', explode(',', $pval));
+			            } else {
+			                $pval = array($pval);
+			            }
+			            $this->_tableRoles[$pkey] = $pval;
+			        } else if ($pkey === 'statusField') {
+			            $this->workflowStatusField = $pval;
+			        }
+			    }
+			    continue;
+			}
+			
 			if (is_array($value) and strpos($key, '=') !== false) {
 			    // This is a selector
 			    $selectors[$key] = $value;
@@ -2517,13 +2491,6 @@ class Dataface_Table {
 								$field['visibility'][ $attpath[1] ] = trim($attval);
 								
 								break;
-							case "meta":
-							    if ($attpath[1] == 'group') {
-							        $this->groupField = $key;
-							    } else if ($attpath[1] == 'owner') {
-							        $this->ownerField = $key;
-							    }
-							    break;
 							default:
 								$field[$attpath[0]][$attpath[1]] = trim($attval);
 								break;
@@ -2753,162 +2720,411 @@ class Dataface_Table {
 	
 	
 	/**
-	 * Gets the permissions associated with a given record of this table using group
-	 * based permissions.
+	 * Gets fields involved in assigning roles to users.
 	 */
-	 
-	private function _getGroupPermissions(Dataface_Record $record = null, $groupField, $roleSuffix) {
-	    if (isset($record)) {
-            if (isset($groupField)) {
-                // The group field is defined
-                $group = $record->val($groupField);
-                if ($group) {
+	private $_roleFields;
+	private function &getRoleFields() {
+	    if (!isset($this->_roleFields)) {
+	        $this->_roleFields = array();
+	        $roleFields =& $this->_roleFields;
+	        $fields =& $this->fields(false, true);
+	        foreach (array_keys($fields) as $k) {
+	            $field =& $fields[$k];
+	            if (@$field['role.group']) {
+	                if (is_numeric($field['role.group'])) {
+	                    $field['role.group'] = $field['name'];
+	                }
+	                $field['roleName'] = $field['role.group'];
+	                if (!isset($field['role.priority'])) {
+	                    $field['role.priority'] = 0;
+	                }
+	                $roleFields[] =& $field;
+	            } else if (@$field['role.user']) {
+	                if (is_numeric($field['role.user'])) {
+	                    $field['role.user'] = $field['name'];
+	                }
+	                $field['roleName'] = $field['role.user'];
+	                if (!isset($field['role.priority'])) {
+	                    $field['role.priority'] = 0;
+	                }
+	                $roleFields[] =& $field;
+	            } 
+	            unset($field);
+	        }
+	        uasort($roleFields, function($a, $b) {
+	            if (intval($a['role.priority']) === intval($b['role.priority'])) {
+	                return strcmp($a['roleName'], $b['roleName']);
+	            } else {
+	                return (intval($a['role.priority']) < intval($b['role.priority'])) ?
+	                    -1 : 1;
+	            }
+	        });
+	        
+	    }
+	    return $this->_roleFields;
+	}
+	
+	/**
+	 * Gets the roles granted to a `$user` who is in `$groups` on the record
+	 * `$record`
+	 * @returns array(string) An array of role names.
+	 */
+	private function _getRoles($user, $groups, Dataface_Record $record) {
+	    $roleFields =& $this->getRoleFields();
+	    $out = array();
+	    foreach ($roleFields as $field) {
+	        if (isset($groups) and @$field['role.group']) {
+	            $fieldVal = $record->val($field['name']);
+	            if (is_array($fieldVal)) {
+	                if (array_intersect($groups, $fieldVal)) {
+	                    $out[] = strtoupper($field['role.group']);
+	                }
+	            } else {
+	                if (in_array($fieldVal, $groups)) {
+	                    $out[] = strtoupper($field['role.group']);
+	                }
+	            }
+	        } else if (isset($user) and $field['role.user']) {
+	            $fieldVal = $record->val($field['name']);
+	            if (is_array($fieldVal)) {
+	                if (in_array($user, $fieldVal)) {
+	                    $out[] = strtoupper($field['role.user']);
+	                }
+	            } else {
+	                if (0===strcasecmp($user, strval($fieldVal))) {
+	                    $out[] = strtoupper($field['role.user']);
+	                }
+	            } 
+	        }
+	    }
+	    $auth = Dataface_AuthenticationTool::getInstance();
+	    if ($auth and $auth->isLoggedIn()) {
+	        $out[] = 'LOGGED IN';
+	    } else {
+	        $out[] = 'ANONYMOUS';
+	    }
+	    return $out;
+	}
+	
+	private function _getTableRoles($user, $groups) {
+	    $out = array();
+	    foreach ($this->_tableRoles as $key=>$val) {
+	        $found = false;
+
+	        if (isset($groups) and substr($key, 0, 11) === 'role.group.') {
+	            if (array_intersect($val, $groups)) {
+	                $out[] = substr($key, 11);
+	            }
+	        } else if (isset($user) and substr($key, 0, 10) === 'role.user.') {
+	            if (in_array($user, $val)) {
+	                $out[] = substr($key, 10);
+	            }
+	        }
+	        
+	    }
+	    return $out;
+	}
+
+	
+	// Cached value for useGroupBasedRecordPermissions
+	private $_useGroupBasedRecordPermissions;
+	private $_useGroupBasedRecordPermissions_loaded=false;
+	
+	
+	/**
+	 * Checks to see if this table is using group-based permissions.
+	 */
+	private function _useGroupBasedRecordPermissions() {
+	    if (!$this->_useGroupBasedRecordPermissions_loaded) {
+	        $this->_useGroupBasedRecordPermissions_loaded = true;
+	        $delegate = $this->getDelegate();
+	        if (isset($delegate)) {
+	            if (method_exists($delegate, 'getPermissions') or method_exists($delegate, 'getRoles')) {
+	                $this->_useGroupBasedRecordPermissions = false;
+	                return false;
+	            }
+	        }
+	        $appDel = Dataface_Application::getInstance()->getDelegate();
+	        if (isset($appDel)) {
+	            if (method_exists($appDel, 'getPermissions') or method_exists($delegate, 'getRoles')) {
+	                $this->_useGroupBasedRecordPermissions = isset($this->ownerField) or 
+                            isset($this->groupField) or 
+                            isset($this->tableOwner) or 
+                            isset($this->tableGroup);
+                    return $this->_useGroupBasedRecordPermissions;
+	            }
+	        }
+	        $this->_useGroupBasedRecordPermissions = true;
+	        
+	    }
+	    return $this->_useGroupBasedRecordPermissions;
+	}
+	
+	private $_groupBasedPermissions;
+	private $_groupBasedFieldPermissions = array();
+	
+	/**
+	 * Gets the permissions associated with this field using group-based permissions.
+	 */
+	function getGroupBasedFieldPermissions($fieldName, Dataface_Record $record = null) {
+	    $auth = Dataface_AuthenticationTool::getInstance();
+	    $readOnly = false;
+	    if ($auth->usersTable and strcasecmp($auth->usersTable, $this->tablename) === 0) {
+            // Default values for fields in the users table
+            // NOBODY should be able to change the username of an added user
+            // EVEN admins
+            if ($auth->usernameColumn and strcasecmp($auth->usernameColumn, $fieldName) === 0) {
+                // This is the username column.  You shouldn't be able to change your username
+                $readOnly = true;
+                
+            }
+            
+        }
+	    if (function_exists('isAdmin') and isAdmin()) {
+            // Let's refine this later.  Even admins shouldn't be able to do some
+            // things.  E.g. changing usernames
+            $perms = Dataface_PermissionsTool::ALL();
+            if ($readOnly) {
+                $perms['edit'] = 0;
+            }
+            return $perms;
+        } else {
+            if (isset($record)) {
+                $workflowState = $this->getWorkflowStatus($record);
+                if (!isset($record->_groupBasedFieldPermissions[$fieldName][$workflowState])) {
+                    $perms = array();
+                    if ($readOnly) {
+                        $perms['edit'] = 0;
+                    }
+                    
+                    $user = null;
+                    $groups = null;
                     $auth = Dataface_AuthenticationTool::getInstance();
                     if ($auth) {
-                        $userGroups = $auth->getGroups();
-                        if ($userGroups and in_array($group, $userGroups) ) {
-                            $pt = Dataface_PermissionsTool::getInstance();
-                            $groupRole = strtoupper($this->tablename).'/'.$roleSuffix;
-                            if ($pt->roleExists($groupRole)) {
-                                return $pt->getRolePermissions($groupRole);
-                            } else {
-                                return $pt->getRolePermissions($roleSuffix);
-                            }
-                        }
+                        $user = $auth->getLoggedInUserName();
+                        $groups = $auth->getGroups();
                     }
-                }
-            }
-        } 
-        
-        return null;
-	}
-	
-	private function _getTableGroupPermissions($groupName, $roleSuffix) {
-	    if (isset($this->tableGroup)) {
-            $auth = Dataface_AuthenticationTool::getInstance();
-            if ($auth) {
-                $userGroups = $auth->getGroups();
-                if ($userGroups and in_array($groupName, $userGroups) ) {
-                    $pt = Dataface_PermissionsTool::getInstance();
-                    $groupRole = strtoupper($this->tablename).'/'.$roleSuffix;
-                    if ($pt->roleExists($groupRole)) {
-                        return $pt->getRolePermissions($groupRole);
-                    } else {
-                        return $pt->getRolePermissions($roleSuffix);
+                    
+                    $roles = $this->_getRoles($user, $groups, $record);
+                    if ($fieldName == 'active') {
                     }
+                    $this->_getRoleFieldPermissions($perms, $fieldName, $workflowState, $roles);
+                    
+                    $record->_groupBasedFieldPermissions[$fieldName][$workflowState] = $perms;
                 }
-            }
+                return $record->_groupBasedFieldPermissions[$fieldName][$workflowState];
+            } else {
+                if (!isset($this->_groupBasedFieldPermissions[$fieldName])) {
+                    $perms = array();
+                    if ($readOnly) {
+                        $perms['edit'] = 0;
+                    }
+                    $user = null;
+                    $groups = null;
+                    $auth = Dataface_AuthenticationTool::getInstance();
+                    if ($auth) {
+                        $user = $auth->getLoggedInUserName();
+                        $groups = $auth->getGroups();
+                    }
+                    $roles = $this->_getTableRoles($user, $groups);
+                    $this->_getRoleFieldPermissions($perms, $fieldName, $workflowState, $roles);
+                    
+                    $this->_groupBasedFieldPermissions[$fieldName] = $perms;
+                }
+                return $this->_groupBasedFieldPermissions[$fieldName];
+            }  
         }
-        return null;
 	}
 	
-	function getGroupPermissions(Dataface_Record $record = null) {
-	    return $this->_getGroupPermissions($record, $this->groupField, 'GROUP');   
-	}
-	function getReviewersPermissions(Dataface_Record $record = null) {
-	    return $this->_getGroupPermissions($record, $this->reviewersField, 'REVIEWER');
-	}
-	function getSubmittersPermissions(Dataface_Record $record = null) {
-	    return $this->_getGroupPermissions($record, $this->submittersField, 'SUBMITTER');
-	}
-	function getViewersPermissions(Dataface_Record $record = null) {
-	    return $this->_getGroupPermissions($record, $this->viewersField, 'VIEWER');
-	} 
 	
-	function getTableGroupPermissions() {
-	    return $this->_getTableGroupPermissions($this->tableGroup, 'GROUP');
-	}
 	
-	function getTableReviewersPermissions() {
-	    return $this->_getTableReviewersPermissions($this->tableReviewers, 'REVIEWER');
-	}
-	
-	function getTableSubmittersPermissions() {
-	    return $this->_getTableGroupPermissions($this->tableSubmitters, 'SUBMITTER');
-	}
-	
-	function getTableViewersPermissions() {
-	    return $this->_getTableGroupPermissions($this->tableViewers, 'VIEWER');
-	}
-	
+	/**
+	 * Returns the permissions for a given record using group-based permissions.
+	 */
 	function getGroupBasedRecordPermissions(Dataface_Record $record = null) {
 	    if (function_exists('isAdmin') and isAdmin()) {
-	        // Let's refine this later.  Even admins shouldn't be able to do some
-	        // things.  E.g. changing usernames
-	        return Dataface_PermissionsTool::ALL();
+            // Let's refine this later.  Even admins shouldn't be able to do some
+            // things.  E.g. changing usernames
+            return Dataface_PermissionsTool::ALL();
+        } else {
+            if (isset($record)) {
+                $workflowState = $this->getWorkflowStatus($record);
+                if (!isset($record->_groupBasedPermissions[$workflowState])) {
+                    $perms = array();
+                    $user = null;
+                    $groups = null;
+                    $auth = Dataface_AuthenticationTool::getInstance();
+                    if ($auth) {
+                        $user = $auth->getLoggedInUserName();
+                        $groups = $auth->getGroups();
+                    }
+                    
+                    $roles = $this->_getRoles($user, $groups, $record);
+                    $this->_getRolePermissions($perms, $workflowState, $roles);
+                    $record->_groupBasedPermissions[$workflowState] = $perms;
+                }
+                return $record->_groupBasedPermissions[$workflowState];
+            } else {
+                if (!isset($this->_groupBasedPermissions)) {
+                    $perms = array();
+                    $user = null;
+                    $groups = null;
+                    $auth = Dataface_AuthenticationTool::getInstance();
+                    if ($auth) {
+                        $user = $auth->getLoggedInUserName();
+                        $groups = $auth->getGroups();
+                    }
+                    $roles = $this->_getTableRoles($user, $groups);
+                    $this->_getRolePermissions($perms, null, $roles);
+                    $this->_groupBasedPermissions = $perms;
+                }
+                return $this->_groupBasedPermissions;
+            }  
+        }
+	}
+	
+	private function _getRolePermissions(&$perms, $workflowState, $roleTypes) {
+	    $pt = Dataface_PermissionsTool::getInstance();
+        $upperTable = strtoupper($this->tablename);
+        $tableRoles = array();
+
+        foreach($roleTypes as $roleType) {
+            $tableRoles[] = $upperTable.'/'.$roleType;
+        }
+        
+        $roles = array();
+        
+        if ($workflowState) {
+            $workflowStr = $workflowState;
+            if ($workflowStr) {
+                foreach ($tableRoles as $tableRole) {
+                    $roles[] = $tableRole.'#'.$workflowStr;
+                }
+            }
+            foreach ($tableRoles as $tableRole) {
+                $roles[] = $tableRole.'#';
+            }
+        }
+        foreach ($tableRoles as $tableRole) {
+            $roles[] = $tableRole;
+        }
+        $roles[] = $upperTable;
+        foreach ($roleTypes as $roleType) {
+            $roles[] = $roleType;
+        }
+        
+        
+        foreach ($roles as $role) {
+            if ($pt->roleExists($role)) {
+                self::array_merge_ref($perms, $pt->getRolePermissions($role), false);
+            }
+        }   
+	}
+	
+	private function _getRoleFieldPermissions(&$perms, $fieldName, $workflowState, $roleTypes) {
+	    $pt = Dataface_PermissionsTool::getInstance();
+        $upperTable = strtoupper($this->tablename).'.'.strtoupper($fieldName);
+        $tableRoles = array();
+        foreach($roleTypes as $roleType) {
+            $tableRoles[] = $upperTable.'/'.$roleType;
+        }
+        
+        $roles = array();
+        
+        if ($workflowState) {
+            $workflowStr = $workflowState;
+            if ($workflowStr) {
+                foreach ($tableRoles as $tableRole) {
+                    $roles[] = $tableRole.'#'.$workflowStr;
+                }
+            }
+            foreach ($tableRoles as $tableRole) {
+                $roles[] = $tableRole.'#';
+            }
+        }
+        foreach ($tableRoles as $tableRole) {
+            $roles[] = $tableRole;
+        }
+        
+        $roles[] = $upperTable;
+        
+        foreach ($roles as $role) {
+            
+            if ($pt->roleExists($role)) {
+                self::array_merge_ref($perms, $pt->getRolePermissions($role), false);
+            }
+        }   
+	}
+	
+	/**
+	 * Gets the workflow status of a record.  This is used in group-based permissions
+	 * to enable different permissions for the same user on the same table under different
+	 * conditions.
+	 *
+	 * <p>Record status can be provided by the app in 3 different ways:</p>
+	 * <ol>
+	 *  <li>The `getWorkflowStatus()` delegate class method.</li>
+	 *  <li>Marking a field as `workflowStatus=1` in the fields.ini file.</li>
+	 *  <li>The `getWorkflowStatus()` application delegate class method</li>
+	 * </ol>
+	 *
+	 * @param Dataface_Record $record The record to check.
+	 * @returns String The record workflow status value.
+	 */
+	function getWorkflowStatus(Dataface_Record $record) {
+	    
+        $del = $this->getDelegate();
+        if (isset($del) and method_exists($del, 'getWorkflowStatus')) {
+            $res = $del->getWorkflowStatus($record);
+            if (isset($res)) {
+                return $res;
+            }
+            
+        }
+        
+        if (isset($this->workflowStatusField)) {
+            $status = $record->val($this->workflowStatusField);
+            
+            $field =& $this->getField($this->workflowStatusField);
+            if (@$field['workflowVocabulary']) {
+                $valuelist = $this->getValuelist($field['workflowVocabulary']);
+                if (isset($valuelist[$status])) {
+                    $res = $valuelist[$status];
+                    if (isset($res)) {
+                        return $res;
+                    }
+                } 
+            } else {
+                return $status;
+            }
+        }
+        
+        $appDel = Dataface_Application::getInstance()->getDelegate();
+        if (isset($appDel) and method_exists($appDel, 'getWorkflowStatus')) {
+            $res = $appDel->getWorkflowStatus($record);
+            if (isset($res)) {
+                return $res;
+            }
+        }
+	    
+	    return "";
+	    
+	}
+	
+	private static function array_merge_ref(&$target, $src, $overwrite=false) {
+	    if ($overwrite) {
+	        foreach ($src as $k=>$v) {
+	            $target[$k] = $v;
+	        }
+	    } else {
+	        foreach ($src as $k=>$v) {
+	            if (!isset($target[$k])) {
+	                $target[$k] = $src[$k];
+	            }
+	        }
 	    }
 	}
 	
-	function getOwnerPermissions(Dataface_Record $record = null) {
-	    if (isset($record)) {
-	        if (isset($this->ownerField)) {
-	            $owner = $record->val($this->ownerField);
-	            if ($owner) {
-	                $auth = Dataface_AuthenticationTool::getInstance();
-	                if ($auth) {
-	                    $user = $auth->getLoggedInUserName();
-	                    if ($user and strcasecmp($user, $owner) === 0) {
-	                        $pt = Dataface_PermissionsTool::getInstance();
-	                        $ownerRole = strtoupper($this->tablename).'/OWNER';
-	                        if ($pt->roleExists($ownerRole)) {
-	                            return $pt->getRolePermissions($ownerRole);
-	                        } else {
-	                            return $pt->getRolePermissions('OWNER');
-	                        }
-	                    }
-	                }
-	            }
-	        }
-	    } 
-	    return null;
-	}
-	
-	function getTableOwnerPermissions() {
-	    if (isset($this->tableOwner)) {
-            $auth = Dataface_AuthenticationTool::getInstance();
-            if ($auth) {
-                $user = $auth->getLoggedInUserName();
-                if ($user and strcasecmp($user, $this->tableOwner)) {
-                    $pt = Dataface_PermissionsTool::getInstance();
-                    $ownerRole = strtoupper($this->tablename).'/OWNER';
-                    if ($pt->roleExists($ownerRole)) {
-                        return $pt->getRolePermissions($ownerRole);
-                    } else {
-                        return $pt->getRolePermissions('OWNER');
-                    } 
-                }
-            }
-        }
-        return null;
-	}
-	
-	function getGroupBasedFieldPermissions(DatafaceRecord $record = null, $fieldname) {
-	    if (isset($record)) {
-            $auth = Dataface_AuthenticationTool::getInstance();
-            $isAdmin = function_exists('isAdmin') ? isAdmin() : false;
-            $perms = array();
-            if ($auth) {
-                $userGroups = $auth->getGroups();
-                $user = $auth->getLoggedInUserName();
-                if ($auth->usersTable and strcasecmp($auth->usersTable, $this->tablename) === 0) {
-                    // Default values for fields in the users table
-                    // NOBODY should be able to change the username of an added user
-                    // EVEN admins
-                    if ($auth->usernameColumn and strcasecmp($auth->usernameColumn, $fieldname) === 0) {
-                        // This is the username column.  You shouldn't be able to change your username
-                        $perms['edit'] = 0;
-                        
-                    }
-                    
-                    // Admins, table owners, and groups
-                    else if (!$isAdmin and $auth->roleColumn and strcasecmp($auth->roleColumn, $fieldname) === 0) {
-                        $perms['edit'] = 0;
-                    }
-                }
-            }
-        }
-        return null;
-	}
 	
 	/**
 	 * @brief Gets the permissions for a particular relationship.
@@ -2954,6 +3170,10 @@ class Dataface_Table {
 	    
 	}
 	
+	private $_permissionsStatusLoaded=false;
+	private $_hasDelPermissionsMethod=array();
+	private $_hasAppDelPermissionsMethod=array();
+
 	
 	/**
 	 * @brief Obtains the permissions for a particular record or for this table.  Parameters
@@ -2979,7 +3199,6 @@ class Dataface_Table {
 	 *
 	 */
 	function getPermissions($params=array()){
-	
 		// First let's try to load permissions from the cache
 		$pt =& Dataface_PermissionsTool::getInstance();
 		$params['table'] = $this->tablename;
@@ -2994,39 +3213,111 @@ class Dataface_Table {
 		$appDelegate =& $app->getDelegate();
 		$parent =& $this->getParent();
 		$recordmask = @$params['recordmask'];
+		$delTable =& $this->_hasDelPermissionsMethod;
+		$appDelTable =& $this->hasAppDelPermissionsMethod;
 		$methods = array();
+		if (!$this->_permissionsStatusLoaded) {
+	        $this->_permissionsStatusLoaded = true;
+	        
+	        $delTable['getPermissions'] = $delegate && method_exists($delegate, 'getPermissions');
+	        $delTable['getRoles'] = isset($delegate) && method_exists($delegate, 'getRoles');
+	        $delTable['__field__permissions'] = isset($delegate) && method_exists($delegate, '__field__permissions');
+	        $delTable['__field__roles'] = isset($delegate) && method_exists($delegate, '__field__roles');
+	        
+	        
+	        $appDelTable['getPermissions'] = isset($appDelegate) && method_exists($appDelegate, 'getPermissions');
+	        $appDelTable['getRoles'] = isset($appDelegate) && method_exists($appDelegate, 'getRoles');
+	        
+	    }
 		if ( isset($params['relationship']) ){
 			if ( isset($params['relationshipmask']) ) $rmask =& $params['relationshipmask'];
 			else $rmask = array();
 			
 			if ( isset($params['field']) ){
 				$relprefix = 'rel_'.$params['relationship'].'__';
-				$methods[] = array('object'=>&$delegate, 'name'=>$relprefix.$params['field'].'__permissions', 'type'=>'permissions', 'partial'=>1);
-				$methods[] = array('object'=>&$delegate, 'name'=>$relprefix.$params['field'].'__roles', 'type'=>'roles', 'partial'=>1);
-				$methods[] = array('object'=>&$delegate, 'name'=>$relprefix.'__field__permissions', 'type'=>'permissions', 'partial'=>1);
-				$methods[] = array('object'=>&$delegate, 'name'=>$relprefix.'__field__roles', 'type'=>'roles', 'partial'=>1);
+				$mName = $relprefix.$params['field'].'__permissions';
+				if (!isset($delTable[$mName])) {
+				    $delTable[$mName] = $delegate && method_exists($delegate, $mName);
+			    }
+			    if ($delTable[$mName]) {
+			        $methods[] = array('object'=>&$delegate, 'name'=>$mName, 'type'=>'permissions', 'partial'=>1);
+				}
+				$mName = $relprefix.$params['field'].'__roles';
+				if (!isset($delTable[$mName])) {
+				    $delTable[$mName] = $delegate && method_exists($delegate, $mName);
+			    }
+			    if ($delTable[$mName]) {
+				    $methods[] = array('object'=>&$delegate, 'name'=>$mName, 'type'=>'roles', 'partial'=>1);
+				}
+				$mName = $relprefix.'__field__permissions';
+				if (!isset($delTable[$mName])) {
+				    $delTable[$mName] = $delegate && method_exists($delegate, $mName);
+			    }
+			    if ($delTable[$mName]) {
+				    $methods[] = array('object'=>&$delegate, 'name'=>$mName, 'type'=>'permissions', 'partial'=>1);
+				}
+				$mName = $relprefix.'__field__roles';
+				if (!isset($delTable[$mName])) {
+				    $delTable[$mName] = $delegate && method_exists($delegate, $mName);
+			    }
+			    if ($delTable[$mName]) {
+				    $methods[] = array('object'=>&$delegate, 'name'=>$mName, 'type'=>'roles', 'partial'=>1);
+				}
+				
 				
 				//if ( @$params['recordmask'] ) $methods[] = 'recordmask';
 				if ( @$params['nobubble'] ) $methods[] = 'break';
 					
 			}
 			
-			
-			$methods[] = array('object'=>&$delegate, 'name'=>'rel_'.$params['relationship'].'__permissions', 'type'=>'permissions', 'mask'=>&$rmask, 'partial'=>1);
-			$methods[] = array('object'=>&$delegate, 'name'=>'rel_'.$params['relationship'].'__roles', 'type'=>'roles', 'mask'=>&$rmask, 'partial'=>1);
+			$mName = 'rel_'.$params['relationship'].'__permissions';
+			if (!isset($delTable[$mName])) {
+			    $delTable[$mName] = $delegate && method_exists($delegate, $mName);
+			}
+			if ($delTable[$mName]) {
+			    $methods[] = array('object'=>&$delegate, 'name'=>$mName, 'type'=>'permissions', 'mask'=>&$rmask, 'partial'=>1);
+			}
+			$mName = 'rel_'.$params['relationship'].'__roles';
+			if (!isset($delTable[$mName])) {
+			    $delTable[$mName] = $delegate && method_exists($delegate, $mName);
+			}
+			if ($delTable[$mName]) {
+			    $methods[] = array('object'=>&$delegate, 'name'=>$mName, 'type'=>'roles', 'mask'=>&$rmask, 'partial'=>1);
+			}
 			if ( isset($parent) ) $methods[] = array('object'=>&$parent, 'name'=>'getPermissions', 'type'=>'Dataface_Table', 'partial'=>1);
 			if ( @$params['nobubble'] ) $methods[] = 'break';
 		}
 		else if ( isset($params['field']) ){
+		    
+		    
 			if ( isset($record) and is_a($record, 'Dataface_Record') ){
 				$methods[] = array('object'=>$pt, 'name'=>'getPortalFieldPermissions', 'type'=>'permissions', 'partial'=>1);
 			}
-			$methods[] = array('object'=>&$delegate, 'name'=>$params['field'].'__permissions', 'type'=>'permissions', 'partial'=>1);
-			$methods[] = array('object'=>&$delegate, 'name'=>$params['field'].'__roles', 'type'=>'roles', 'partial'=>1);
-			$methods[] = array('object'=>&$delegate, 'name'=>'__field__permissions', 'type'=>'permissions', 'partial'=>1);
-			$methods[] = array('object'=>&$delegate, 'name'=>'__field__roles', 'type'=>'roles', 'partial'=>1);
+			$mName = $params['field'].'__permissions';
+			if (!isset($delTable[$mName])) {
+			    $delTable[$mName] = $delegate && method_exists($delegate, $mName);
+			}
+			if ($delTable[$mName]) {
+			    $delTable[$mName] = array('object'=>&$delegate, 'name'=>$mName, 'type'=>'permissions', 'partial'=>1);
+			}
+			$mName = $params['field'].'__roles';
+			if (!isset($delTable[$mName])) {
+			    $delTable[$mName] = $delegate && method_exists($delegate, $mName);
+			}
+			if ($delTable[$mName]) {
+			    $methods[] = array('object'=>&$delegate, 'name'=>$params['field'].'__roles', 'type'=>'roles', 'partial'=>1);
+			}
+			if ($delTable['__field__permissions']) {
+			    $methods[] = array('object'=>&$delegate, 'name'=>'__field__permissions', 'type'=>'permissions', 'partial'=>1);
+			}
+			if ($delTable['__field__roles']) {
+			    $methods[] = array('object'=>&$delegate, 'name'=>'__field__roles', 'type'=>'roles', 'partial'=>1);
+			}
 			if ( isset($parent) ) $methods[] = array('object'=>&$parent, 'name'=>'getPermissions', 'type'=>'Dataface_Table', 'partial'=>1);
 			if ( @$params['recordmask'] ) $methods[] = 'recordmask';
+			if ($this->_useGroupBasedRecordPermissions()) {
+			    $methods[] = array('object' => $this, 'name' => 'getGroupBasedFieldPermissions', 'type' => 'GroupBased_Field', 'partial' => 1);
+			}
 			if ( @$params['nobubble'] ) $methods[] = 'break';
 			
 
@@ -3040,10 +3331,24 @@ class Dataface_Table {
 			}
 		}
 		
-		$methods[] = array('object'=>&$delegate, 'name'=>'getPermissions', 'type'=>'permissions');
-		$methods[] = array('object'=>&$delegate, 'name'=>'getRoles', 'type'=>'roles');
-		$methods[] = array('object'=>&$appDelegate, 'name'=>'getPermissions', 'type'=>'permissions');
-		$methods[] = array('object'=>&$appDelegate, 'name'=>'getRoles', 'type'=>'roles');
+		if ($delTable['getPermissions']) {
+		    $methods[] = array('object'=>&$delegate, 'name'=>'getPermissions', 'type'=>'permissions');
+		}
+		if ($delTable['getRoles']) {
+		    $methods[] = array('object'=>&$delegate, 'name'=>'getRoles', 'type'=>'roles');
+		}
+		
+		if ($this->_useGroupBasedRecordPermissions()) {
+		    $methods[] = array('object'=>$this, 'name' => 'getGroupBasedRecordPermissions', 'type' => 'GroupBased_Record');
+		}
+		
+		if ($appDelTable['getPermissions']) {
+		    $methods[] = array('object'=>&$appDelegate, 'name'=>'getPermissions', 'type'=>'permissions');
+		}
+		if ($appDelTable['getRoles']) {
+		    $methods[] = array('object'=>&$appDelegate, 'name'=>'getRoles', 'type'=>'roles');
+		}
+		
 		if ( isset($parent) ) $methods[] = array('object'=>&$parent, 'name'=>'getPermissions', 'type'=>'Dataface_Table');
 	
 		$perms = array();
@@ -3059,12 +3364,21 @@ class Dataface_Table {
 				$perms = array_merge($recordmask, $perms);
 				continue;
 			}
-			if ( isset($method['object']) and method_exists($method['object'], $method['name']) ){
+			if ( isset($method['object']) /*and method_exists($method['object'], $method['name'])*/ ){
 				$name = $method['name'];
-				if ( $method['type'] == 'Dataface_Table'){
-					$res = $method['object']->$name(array_merge($params, array('nobubble'=>1)));
-				} else {
-					$res = $method['object']->$name($record, $params);
+                switch ($method['type']) {
+				    case 'Dataface_Table':
+					    $res = $method['object']->$name(array_merge($params, array('nobubble'=>1)));
+					    break;
+					case 'GroupBased_Record':
+					    $res = $this->getGroupBasedRecordPermissions($record);
+					    break;
+					case 'GroupBased_Field':
+					    $res = $this->getGroupBasedFieldPermissions($params['field'], $record);
+					    break;
+					default:
+					    $res = $method['object']->$name($record, $params);
+					    break;
 				}
 				if ( $method['type'] == 'roles' ){
 					$res = $this->convertRolesToPermissions($res);

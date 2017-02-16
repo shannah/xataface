@@ -205,6 +205,11 @@ class Dataface_AuthenticationTool {
 	        if (isset($primaryGroup) and !in_array($primaryGroup, $this->groups)) {
 	            array_unshift($this->groups, $primaryGroup);
 	        }
+	        if ($this->isLoggedIn()) {
+	            $this->groups[] = 'LOGGED IN';
+	        } else {
+	            $this->groups[] = 'ANONYMOUS';
+	        }
 	        
 	    }
 	    return $this->groups;
