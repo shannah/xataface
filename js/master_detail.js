@@ -3,6 +3,14 @@
     var $ = jQuery;
     
     function replaceQueryParam(str, name, value) {
+        /*
+        if (name == 'detail-url' && value !== null) {
+            var valueParts = value.split('?');
+            console.log(valueParts);
+            if (valueParts.length > 1) {
+                value = valueParts[0] + '?' + replaceQueryParam(valueParts[1], 'detail-url', null);
+            }
+        }*/
         var parts = str.split(/&/);
         var out = '';
         var found = false;
@@ -16,9 +24,10 @@
                 v = kv[1];
             }
             if (k === name) {
-                if (value === null) {
+                if (value === null || found) {
                     continue;
                 }
+                found = true;
                 v = encodeURIComponent(value);
             }
             
@@ -31,9 +40,11 @@
         if (!found && value !== null) {
             out += name + '=' + encodeURIComponent(value) + '&';
         }
+        //console.log('str=',str, ' name=', name, ' value=', value, ' out=', out);
         if (out.length > 0) {
             return out.substring(0, out.length-1);
         }
+        
         return out;
     }
     
