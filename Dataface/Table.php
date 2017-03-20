@@ -1654,6 +1654,15 @@ class Dataface_Table {
 						$schema = $this->_newSchema('text',$fieldname);
 	
 						$curr = array_merge_recursive_unique($schema, $curr);
+						$widget =& $curr['widget'];
+						// Now we do the translation stuff
+                        $widget['label'] = df_translate('tables.'.$curr['tablename'].'.fields.'.$fieldname.'.widget.label',$widget['label']);
+                        $widget['description'] = df_translate('tables.'.$curr['tablename'].'.fields.'.$fieldname.'.widget.description',$widget['description']);
+                        if ( isset($widget['question']) ){
+                            $widget['question'] = df_translate('tables.'.$curr['tablename'].'.fields.'.$fieldname.'.widget.question',$widget['question']);
+                        
+                        }
+                        unset($widget);
 						$this->_transient_fields[$fieldname] = $curr;
 					}
 				}
@@ -1950,6 +1959,11 @@ class Dataface_Table {
 		$widget['description'] = '';
 		$widget['label_i18n'] = $tablename.'.'.$fieldname.'.label';
 		$widget['description_i18n'] = $tablename.'.'.$fieldname.'.description';
+		
+		// Now we do the translation stuff
+        $widget['label'] = df_translate('tables.'.$tablename.'.fields.'.$fieldname.'.widget.label',$widget['label']);
+        $widget['description'] = df_translate('tables.'.$tablename.'.fields.'.$fieldname.'.widget.description',$widget['description']);
+		
 		$widget['macro'] = '';
 		$widget['helper_css'] = '';
 		$widget['helper_js'] = '';
