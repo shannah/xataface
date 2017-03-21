@@ -22,7 +22,7 @@ class Dataface_FormTool_grid {
 		$el =& $factory->addElement('grid',$formFieldName, $widget['label']);
 		$el->setProperties($widget);
 		$rperms = $record->getPermissions(array('relationship'=>$field['relationship']));
-		if ($widget['fixedrows']) {
+		if (@$widget['fixedrows']) {
 		    $el->fixedRows = intval($widget['fixedrows']);
 		}
 		if ( !$record->checkPermission('add new related record', array('relationship'=>$field['relationship']))){
