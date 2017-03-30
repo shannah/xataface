@@ -958,6 +958,11 @@ class Dataface_Record {
 		}
 		$rawSort = $sort;
 		$sort = ($sort === 0) ? $sortAppend : $sort . ',' . $sortAppend;
+		$sort = trim($sort);
+		if (!$sort) {
+		    // If there were no keys in the relationship we might still have an empty sort
+		    $sort = 0;
+		}
 		
 		// [0]->startblock as int , [1]->endblock as int
 		for ( $i=$range[0]; $i<=$range[1]; $i++){
