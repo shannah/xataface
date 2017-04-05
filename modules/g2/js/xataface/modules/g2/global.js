@@ -226,7 +226,16 @@
 						})
 						.slideDown('fast', function(){
 							$('body').bind('click.xf-dropdown', function(){
+							    $(this).unbind('click.xf-dropdown');
 								$(atag).trigger('click');
+							});
+							$('.xf-dropdown a.trigger').bind('click.xf-dropdown', function() {
+							    $(this).unbind('click.xf-dropdown');
+							    if (atag === this) {
+							        return;
+							    }
+							    
+							    $(atag).trigger('click');
 							});
 						
 						}).show(); //Drop down the subnav on click
