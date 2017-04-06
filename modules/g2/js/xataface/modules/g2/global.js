@@ -225,17 +225,14 @@
 						
 						})
 						.slideDown('fast', function(){
-							$('body').bind('click.xf-dropdown', function(){
-							    $(this).unbind('click.xf-dropdown');
-								$(atag).trigger('click');
-							});
-							$('.xf-dropdown a.trigger').bind('click.xf-dropdown', function() {
-							    $(this).unbind('click.xf-dropdown');
-							    if (atag === this) {
+							$('body, .xf-dropdown a.trigger').bind('click.xf-dropdown', function(){
+							    $('body, .xf-dropdown a.trigger').unbind('click.xf-dropdown');
+							    if (this === atag) {
 							        return;
 							    }
-							    
-							    $(atag).trigger('click');
+							    if ($(atag).hasClass('menu-visible')) {
+								    $(atag).trigger('click');
+								}
 							});
 						
 						}).show(); //Drop down the subnav on click
@@ -560,8 +557,7 @@
 			})
 			.css('cursor', 'pointer')
 			;
-			
-		
+
 		});
 		
 		// END Result Controller
@@ -578,10 +574,7 @@
 			});
 		})();
 		
-		
-		
-		
-		
+
 		// Handle navigation storage.
 		(function(){
 			if ( typeof(sessionStorage) == 'undefined' ){
@@ -626,9 +619,7 @@
 					
 					$('.tableQuicklinks').append(item);
 				}
-				
-				
-				
+
 				var currRecord = $('meta#xf-meta-record-title').attr('content');
 				var currRecordUrl = window.location.href;
 				var recordSelected = false;
@@ -642,8 +633,7 @@
 					sessionStorage['xf-currRecord-'+currTable+'-url'] = currRecordUrl;
 					
 				}
-				
-				
+
 				// Record the parent record when clicking on related links.  This is used
 				// by the navigator
 				var currRecordId = $('meta#xf-meta-record-id').attr('content');
@@ -664,15 +654,9 @@
 						});
 					
 					})();
-					
-					
-					
-					
+
 				}
-				
-				
-				
-				
+
 				if ( currRecord ){
 					var isChildRecord = false;
 					if ( currRecordId ){
@@ -739,32 +723,11 @@
 					$(this).unbind('click', handleHideAdvancedFind);
 					$(this).bind('click', handleShowAdvancedFind);
 				}
-				
+
 				$('a.xf-show-advanced-find').bind('click', handleShowAdvancedFind);
-				
-				
-				
-				
-				
+	
 			}
 		})();
-		
-		
-		
-		
-		
 	
-				
-			
-			
-		
-		
-		
 	});
-	
-	
-	
-	
-	
-	
 })();
