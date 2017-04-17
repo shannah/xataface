@@ -467,8 +467,12 @@ import('Dataface/QueryTool.php');
 						}
 						
 						if ( !@$thisField['noLinkFromListView'] and $link and $val ){
-							$val = "<a href=\"$link\" class=\"unmarked_link\">".$val."</a>";
-							$editable_class = '';
+						    if (substr($val, 0, 3) != '<a ') {
+						        // If the render cell value is already a link, then don't 
+						        // re-wrap
+							    $val = "<a href=\"$link\" class=\"unmarked_link\">".$val."</a>";
+							    $editable_class = '';
+							}
 						} else {
 							
 						}
