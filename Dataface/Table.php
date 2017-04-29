@@ -697,6 +697,7 @@ class Dataface_Table {
 				} else if (substr($this->_fields[$key]['Type'], 0, 3) == 'set') {
 				    $this->_fields[$key]['widget']['type'] = 'checkbox';
 				    $this->_fields[$key]['repeat'] = true;
+				    $this->_fields[$key]['separator'] = ',';
 				}
 			}
 			if ( DATAFACE_EXTENSION_LOADED_APC ){
