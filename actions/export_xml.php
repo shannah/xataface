@@ -33,7 +33,10 @@ class dataface_actions_export_xml {
 			}
 		
 		} else {
-			$records = df_get_records_array($query['-table'], $query,null,null,false);
+		    $records = df_get_selected_records($query);
+		    if (!$records) {
+			    $records = df_get_records_array($query['-table'], $query,null,null,false);
+			}
 			foreach ($records as $record){
 				if ( $record->checkPermission('view xml') ){
 					$input[] = $record;

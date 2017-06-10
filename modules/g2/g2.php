@@ -50,7 +50,9 @@ class modules_g2 {
 		$jt->import('xataface/modules/g2/global.js');
 		$app->addJSStrings(array(
 		    'themes.g2.VIEW_SEARCH_RESULTS' => df_translate('themes.g2.VIEW_SEARCH_RESULTS', 'View Search Results'),
-		    'themes.g2.SEARCH_RESULTS' => df_translate('themes.g2.SEARCH_RESULTS', 'Search Results')
+		    'themes.g2.SEARCH_RESULTS' => df_translate('themes.g2.SEARCH_RESULTS', 'Search Results'),
+		    'findwidgets.date.from' => df_translate('findwidgets.date.from', 'From'),
+		    'findwidgets.date.to' => df_translate('findwidgets.date.to', 'to')
 		));
 		
 		// Let's create the actions for our tables.
@@ -159,7 +161,6 @@ class modules_g2 {
 	}
 	
 	public function getSearchParameters(){
-		
 		$query = Dataface_Application::getInstance()->getQuery();
 		$table = Dataface_Table::loadTable($query['-table']);
 		if ( PEAR::isError($table) ){
@@ -167,8 +168,11 @@ class modules_g2 {
 		}
 		$out = array();
 		foreach ($query as $k=>$v){
-			if ( $v and $table->hasField($k) ){
+			if ( $v and $table->hasField($k)){
 				$fld =& $table->getField($k);
+				if (isset($fld['silent_filter'])) {
+				    continue;
+				}
 				$out[$fld['widget']['label']] = $v;
 				unset($fld);
 			}

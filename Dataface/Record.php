@@ -669,7 +669,7 @@ class Dataface_Record {
 	 * @since 0.5
 	 * @private
 	 */
-	function _loadRelatedRecordBlock($relname, $block, $where=0, $sort=0){
+	function _loadRelatedRecordBlock($relname, $block, $where=0, $sort=0, $rawSort=-1){
 		if ( $this->_relatedRecordBlockLoaded($relname, $block, $where, $sort) ) return true;
 
 		$relationship =& $this->_table->getRelationship($relname);
@@ -727,6 +727,10 @@ class Dataface_Record {
 			}
 			$this->_relatedValues[$relname][$where][$sort][$index++] =& $record_row;
 			$this->_relatedMetaValues[$relname][$where][$sort][$index-1] =& $meta_row;
+			if ($rawSort >=0 and $rawSort !== $sort) {
+			    $this->_relatedValues[$relname][$where][$rawSort][$index-1] =& $record_row;
+			    $this->_relatedMetaValues[$relname][$where][$rawSort][$index-1] =& $meta_row;
+			}
 			unset($record_row);
 			unset($meta_row);
 			
@@ -924,17 +928,45 @@ class Dataface_Record {
 		$range = $this->_translateRangeToBlocks($start,$start+$limit-1);
 		if ( $where === null ) $where = 0;
 		if ( $sort === null ) $sort = 0;
+		$relationship =& $this->_table->getRelationship($relname);
 		if ( !$sort ){
-			$relationship =& $this->_table->getRelationship($relname);
 			$order_column = $relationship->getOrderColumn();
 			if ( !PEAR::isError($order_column) and $order_column){
 				$sort = $order_column;
 			}
 		}
+		
+		// If there is no sort, or the sort is on a low-cardinality
+		// column, then we might get non-deterministic behaviour
+		// So add the key columns to the sort
+		$sortArr = $sort === 0 ? array() : array_map('trim', explode(',', $sort));
+		foreach ($sortArr as $k=>$v) {
+		    $spacePos = strpos(' ', $v);
+		    if ($spacePos >= 0) {
+		        $sortArr[$k] = substr($v, 0, $spacePos);
+		    }
+		}
+		$relKeys =& $relationship->keys();
+		$sortAppend = '';
+		$first = true;
+		foreach (array_keys($relKeys) as $k=>$v) {
+		    if (!in_array($v, $sortArr)) {
+		        if ($first) $first = false;
+		        else $sortAppend .= ',';
+		        $sortAppend .= $v;
+		    }
+		}
+		$rawSort = $sort;
+		$sort = ($sort === 0) ? $sortAppend : $sort . ',' . $sortAppend;
+		$sort = trim($sort);
+		if (!$sort) {
+		    // If there were no keys in the relationship we might still have an empty sort
+		    $sort = 0;
+		}
+		
 		// [0]->startblock as int , [1]->endblock as int
 		for ( $i=$range[0]; $i<=$range[1]; $i++){
-			$res = $this->_loadRelatedRecordBlock($relname, $i, $where, $sort);
-			
+		    $res = $this->_loadRelatedRecordBlock($relname, $i, $where, $sort, $rawSort);
 			// If the above returned false, that means that we have reached the end of the result set.
 			if (!$res ) break;
 		}
@@ -4032,13 +4064,18 @@ class Dataface_Record {
 									  // declared by the 'title' flag in the fields.ini file.
 									  
 				foreach (array_keys($fields) as $field_name){
+				    $field =& $fields[$field_name];
 					if ( isset($fields[$field_name]['title']) ){
 						$title = $this->display($field_name);
 						$found_title = true;
 					}
 					else if ( !isset($title) and $this->_table->isChar($field_name) ){
-						$title = $this->display($field_name );
+					    $widgetType = $field['widget']['type'];
+					    if ($widgetType != 'radio' && $widgetType != 'checkbox') {
+						    $title = $this->display($field_name );
+						}
 					}
+					unset($field);
 					if ( $found_title) break;
 				}
 				

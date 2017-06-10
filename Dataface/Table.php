@@ -164,7 +164,6 @@ class Dataface_Table {
 	 */
 	var $_cookedValuelists=array();
 	
-	
 	/**
 	 * A map that can get used to register "display" fields for a column.  These
 	 * work similar to vocabularies except that they don't require a vocabulary
@@ -513,6 +512,9 @@ class Dataface_Table {
 	
 	}
 	
+	public function shouldCountRows() {
+	    return !@$this->_atts['disable_row_counts'];
+	}
 	
 	/**
 	 * @brief Constructor. Please use Dataface_Table::loadTable() instead.
@@ -692,6 +694,10 @@ class Dataface_Table {
 					$this->_fields[$key]['widget']['type'] = 'time';
 				} else if ( substr($this->_fields[$key]['Type'], 0,4) == 'enum' ){
 					$this->_fields[$key]['widget']['type'] = 'select';
+				} else if (substr($this->_fields[$key]['Type'], 0, 3) == 'set') {
+				    $this->_fields[$key]['widget']['type'] = 'checkbox';
+				    $this->_fields[$key]['repeat'] = true;
+				    $this->_fields[$key]['separator'] = ',';
 				}
 			}
 			if ( DATAFACE_EXTENSION_LOADED_APC ){
@@ -738,8 +744,7 @@ class Dataface_Table {
 			// handle case where this is an enumerated field
 			$matches = array();
 			if ( preg_match('/^(enum|set)\(([^\)]+)\)$/', $row['Type'], $matches )){
-
-				$valuelists =& $this->valuelists();
+                $valuelists =& $this->valuelists();
 				$options = explode(',', $matches[2]);
 				
 				$vocab = array();
@@ -1650,6 +1655,15 @@ class Dataface_Table {
 						$schema = $this->_newSchema('text',$fieldname);
 	
 						$curr = array_merge_recursive_unique($schema, $curr);
+						$widget =& $curr['widget'];
+						// Now we do the translation stuff
+                        $widget['label'] = df_translate('tables.'.$curr['tablename'].'.fields.'.$fieldname.'.widget.label',$widget['label']);
+                        $widget['description'] = df_translate('tables.'.$curr['tablename'].'.fields.'.$fieldname.'.widget.description',$widget['description']);
+                        if ( isset($widget['question']) ){
+                            $widget['question'] = df_translate('tables.'.$curr['tablename'].'.fields.'.$fieldname.'.widget.question',$widget['question']);
+                        
+                        }
+                        unset($widget);
 						$this->_transient_fields[$fieldname] = $curr;
 					}
 				}
@@ -1946,6 +1960,11 @@ class Dataface_Table {
 		$widget['description'] = '';
 		$widget['label_i18n'] = $tablename.'.'.$fieldname.'.label';
 		$widget['description_i18n'] = $tablename.'.'.$fieldname.'.description';
+		
+		// Now we do the translation stuff
+        $widget['label'] = df_translate('tables.'.$tablename.'.fields.'.$fieldname.'.widget.label',$widget['label']);
+        $widget['description'] = df_translate('tables.'.$tablename.'.fields.'.$fieldname.'.widget.description',$widget['description']);
+		
 		$widget['macro'] = '';
 		$widget['helper_css'] = '';
 		$widget['helper_js'] = '';
@@ -2024,8 +2043,11 @@ class Dataface_Table {
 				$fieldnames = array_keys($this->_fields);
 				foreach ($fieldnames as $fieldname){
 					$field =& $this->_fields[$fieldname];
-					if ( $bestCandidate === null and $this->isChar($fieldname) ){
-						$bestCandidate = '`'.$fieldname.'`';
+					if ( $bestCandidate === null and $this->isChar($fieldname)){
+					    $widgetType = $field['widget']['type'];
+					    if ($widgetType != 'radio' && $widgetType != 'checkbox') {
+						    $bestCandidate = '`'.$fieldname.'`';
+						}
 					}
 					//if ( strpos(strtolower($fieldname),'title') !== false ){
 					//	$bestCandidate = $fieldname;

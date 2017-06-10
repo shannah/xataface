@@ -540,7 +540,7 @@ class Dataface_FormTool {
 				continue;
 			}
 			
-			$form->addRule($formFieldName, $validator['message'], $vname, @$validator['arg'], (($widget['type'] == 'htmlarea' )?null:'client'));
+			$form->addRule($formFieldName, $validator['message'], $vname, @$validator['arg'], (($widget['type'] == 'htmlarea' or @$widget['validation'] == 'server' or $el->getAttribute('data-validation') == 'server'  )?null:'client'));
 			
 		}
 

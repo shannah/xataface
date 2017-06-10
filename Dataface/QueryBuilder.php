@@ -663,7 +663,7 @@ class Dataface_QueryBuilder {
 					$where .= $this->wc($tableAlias, $key)." RLIKE CONCAT('[[:<:]]',$value,'[[:>:]]') AND ";
 				}
 				
-				else if ( $this->_exactMatches || preg_match( '/int/i', $field['Type']) || $exact ){
+				else if ( $this->_exactMatches || preg_match( '/int|decimal/i', $field['Type']) || $exact ){
 					$oldval = $value;
 					$oper = '=';
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true);

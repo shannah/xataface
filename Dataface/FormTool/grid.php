@@ -22,6 +22,9 @@ class Dataface_FormTool_grid {
 		$el =& $factory->addElement('grid',$formFieldName, $widget['label']);
 		$el->setProperties($widget);
 		$rperms = $record->getPermissions(array('relationship'=>$field['relationship']));
+		if (@$widget['fixedrows']) {
+		    $el->fixedRows = intval($widget['fixedrows']);
+		}
 		if ( !$record->checkPermission('add new related record', array('relationship'=>$field['relationship']))){
 			//echo "No add new ".$record->_table->tablename;
 			$el->addNew=false;
@@ -176,20 +179,31 @@ class Dataface_FormTool_grid {
 			
 		}
 		
-		if ( !is_array($val) ){
-			return $val;
+		$delegate = $record->_table->getDelegate();
+		$method = $field['name'].'__prepareGridData';
+		if ($delegate and method_exists($delegate, $field['name'].'__prepareGridData')) {
+		    if (!is_array($val)) {
+		        $val = array();
+		    }
+		    $delegate->$method($record, $element->getColumnIds(), $val);
 		}
 		
-		foreach ($val as $key=>$row){
-		
-			if ( is_array($row) ){
-				foreach ($row as $colname=>$colval){
-					if ( isset($filters[$colname]) ){
-						$val[$key][$colname] = $filters[$colname]->pullValue($colval);
-					}
-				}
-			}
-		}
+		if ( is_array($val) ){
+            foreach ($val as $key=>$row){
+            
+                if ( is_array($row) ){
+                    
+                    foreach ($row as $colname=>$colval){
+                        if ( isset($filters[$colname]) ){
+                            $val[$key][$colname] = $filters[$colname]->pullValue($colval);
+                        }
+                    }
+                    $lastKey = $key;
+                    
+                }
+            }
+        }
+        
 		
 		return $val;
 	}

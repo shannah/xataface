@@ -84,6 +84,7 @@ class DynamicTable {
 			import('Dataface/IO.php');
 			\Dataface_IO::touchTable($this->tableName);
 		}
+		return $outOfDate;
 		
 		
 	}

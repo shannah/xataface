@@ -24,6 +24,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
 	var $table=null;
 	var $defaults = array();
 	var $columnPermissions = array();
+	var $fixedRows = -1;
 
 	
 	
@@ -86,7 +87,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
     	$element->updateAttributes(
     		array(
     			'id'=>$column.'_'.$fieldId,
-    			'onchange'=>( @$properties['onFieldChange'] ? $properties['onFieldChange'].'(this);':'').(($this->addNew or $this->addExisting)?'dataGridFieldFunctions.addRowOnChange(this);':'').$element->getAttribute('onchange'),
+    			'onchange'=>( @$properties['onFieldChange'] ? $properties['onFieldChange'].'(this);':'').(($this->fixedRows < 0 and ($this->addNew or $this->addExisting))?'dataGridFieldFunctions.addRowOnChange(this);':'').$element->getAttribute('onchange'),
     			'style'=>'width:100%;'.$element->getAttribute('style')
     			)
     		);
@@ -215,7 +216,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                         </td>
 						<td style="width: 20px">
                 
-                            <?php if ( $this->reorder and $this->addNew ): ?>
+                            <?php if ( $this->fixedRows < 0 and $this->reorder and $this->addNew ): ?>
                             <img src="<?php echo DATAFACE_URL.'/images/add_icon.gif';?>" 
                                style="cursor: pointer;"
                                   
@@ -248,10 +249,10 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
                     
                     </tr>
                     <?php $lastRowHtml = ob_get_contents(); ob_end_flush(); ?>
-                    <?php $this->next_row_id++; endforeach;?>
+                    <?php $this->next_row_id++; $count++; endforeach;?>
                     <?php if (!$emptyRow and ($this->addNew or $this->addExisting)): ?>
                     <?php ob_start();?>
-                    <tr class="xf-form-group" df:row_id="<?php echo $this->next_row_id;?>" <?php if ( !$this->addNew ):?>style="display:none"<?php endif;?>>
+                    <tr class="xf-form-group" df:row_id="<?php echo $this->next_row_id;?>" <?php if ( !$this->addNew or $this->fixedRows > 0):?>style="display:none"<?php endif;?>>
                     <?php
                     	$fieldId = $fieldName.'_'.$this->next_row_id;
                     	
