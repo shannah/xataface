@@ -420,6 +420,8 @@ class Dataface_Relationship {
 	
 	}
 	
+	
+	
 	/**
 	 * Scans the columns of a relationship and resolves wildcards and unqualified 
 	 * column names into fully qualified column names.
@@ -546,6 +548,8 @@ class Dataface_Relationship {
 	function getName(){
 		return $this->_name;
 	}
+	
+	
 	
 	private function findDuplicateColumns($tableNames) {
 	    $out = array();
@@ -962,6 +966,25 @@ class Dataface_Relationship {
 		}
 		
 		return $this->_destinationTables;
+	}
+	
+	
+	function hasUniqueFields($tablename) {
+	    $destinationTables = $this->getDestinationTables();
+	    $tnames = array();
+	    foreach ($destinationTables as $t) {
+	        $tnames[] = $t->tablename;
+	    }
+	    $tnames[] = $this->_sourceTable->tablename;
+	    $dups = $this->findDuplicateColumns($tnames);
+	    $table = Dataface_Table::loadTable($tablename);
+        foreach (array_keys($table->fields(false, true)) as $fld) {
+            if (!isset($dups[$fld])) {
+                return true;
+            }
+        }
+        return false;
+	
 	}
 	
 	/**
