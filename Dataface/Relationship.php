@@ -740,7 +740,8 @@ class Dataface_Relationship {
 					$dupCols = $this->findDuplicateColumns(array_keys($tableAliases));
 					// Avoid ambiguous column error.  Any duplicate columns need to be specified.
 					foreach ( $dupCols as $dcolname=>$dtablename ){
-						$whereClause = preg_replace('/([^.]|^) *`'.preg_quote($dcolname).'`/','$1 `'.$tableAliases[$dtablename].'`.`'.$dcolname.'`', $whereClause);
+					    $talias = @$tableAliases[$dtablename] ? $tableAliases[$dtablename] : $dtablename;
+						$whereClause = preg_replace('/([^.]|^) *`'.preg_quote($dcolname).'`/','$1 `'.$talias.'`.`'.$dcolname.'`', $whereClause);
 					}
 					foreach ( $dups as $dcolname=>$dtablename ){
 						$whereClause = preg_replace('/([^.]|^) *`'.preg_quote($dcolname).'`/','$1 `'.$dtablename.'`.`'.$dcolname.'`', $whereClause);
