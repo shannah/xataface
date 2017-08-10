@@ -1891,7 +1891,7 @@ class Dataface_Record {
 						$relKeys =& $currRelationship->keys();
 						//print_r(array_keys($currRelationship->keys()));
 						foreach ($rrecords as $rrecord){
-							$row = $rrecord->vals();
+							$row = $rrecord->strvals();
 
 							foreach ( array_keys($row) as $row_field ){
 								$ptable =& $rrecord->_relationship->getTable($row_field);
