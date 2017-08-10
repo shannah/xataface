@@ -3,7 +3,7 @@ class Dataface_GlanceList {
 
 	var $records;
 	var $origRecords;
-	function Dataface_GlanceList(array $records){
+	function __construct(array $records){
 		$this->records = $records;
 		$this->origRecords = array();
 		foreach ( array_keys($this->records) as $key){
@@ -13,23 +13,27 @@ class Dataface_GlanceList {
 			}
 			$this->origRecords[$this->records[$key]->getId()] = $r;
 		}
-	
+
 	}
-	
+
+    public function Dataface_GlanceList(array $records) {
+        self::__construct($records);
+    }
+
 	function toHtml(){
-	
+
 		ob_start();
 		df_display(array('records'=>&$this->records, 'list'=>&$this), 'Dataface_GlanceList.html');
 		$out  = ob_get_contents();
 		ob_end_clean();
 		return $out;
 	}
-	
+
 	function oneLineDescription(&$record){
 		$del =& $record->_table->getDelegate();
 		$origRecord = $this->origRecords[$record->getId()];
 		if ( !$origRecord ) $origRecord = $record;
-		
+
 		if ( is_a($origRecord, 'Dataface_RelatedRecord') ){
 			$origDel = $origRecord->_record->table()->getDelegate();
 			$method = 'rel_'.$origRecord->_relationshipName.'__'.oneLineDescription;
@@ -40,7 +44,7 @@ class Dataface_GlanceList {
 		if ( isset($del) and method_exists($del, 'oneLineDescription') ){
 			return $del->oneLineDescription($record);
 		}
-		
+
 		$app =& Dataface_Application::getInstance();
 		$adel =& $app->getDelegate();
 		if ( isset($adel) and method_exists($adel, 'oneLineDescription') ){
@@ -57,7 +61,7 @@ class Dataface_GlanceList {
 				'<span class="Dataface_GlanceList-oneLineDescription-posted-by">Posted by '.df_escape($creator).'.</span> ';
 			}
 		}
-		
+
 		if ( $modified = $record->getLastModified() ){
 			$show = true;
 			if ( isset($app->prefs['hide_updated']) and $app->prefs['hide_updated'] ) $show = false;
@@ -69,8 +73,7 @@ class Dataface_GlanceList {
 		$out .= '
 			</span>';
 		return $out;
-		
-		
+
+
 	}
 }
-
