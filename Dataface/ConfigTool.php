@@ -41,11 +41,16 @@ class Dataface_ConfigTool {
 	var $userConfig = null;
 	var $userConfigLoaded = false;
 
-	function Dataface_ConfigTool(){
+	function __construct(){
 		$this->apc_load();
 		register_shutdown_function(array(&$this, 'apc_save'));
 		$this->userConfig = new StdClass;
 	}
+
+    public function Dataface_ConfigTool()
+    {
+        self::__construct();
+    }
 	
 	/**
 	 * Array to lookup the name of an entity based on its ID.
@@ -160,8 +165,6 @@ class Dataface_ConfigTool {
 		if ( $type === 'lang' ){
 			
 			if ( $tablename !== '__global__' ){
-			    $paths[] = DATAFACE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
-				$lpaths[] = DATAFACE_SITE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
 				if ( !class_exists('Dataface_Table') ) import('Dataface/Table.php');
 				$lpaths[] = Dataface_Table::getBasePath($tablename).'/tables/'.basename($tablename).'/lang/'.basename($app->_conf['lang']).'.ini';
 				

@@ -48,7 +48,7 @@ class Dataface_RelatedList {
     var $noLinks = false;
     var $filters = array();
 
-    function Dataface_RelatedList(&$record, $relname, $db = '') {
+    function __construct(&$record, $relname, $db = '') {
         if (!is_a($record, 'Dataface_Record')) {
             throw new Exception("In Dataface_RelatedList constructor, the first argument is expected to be an object of type 'Dataface_Record' but received '" . get_class($record));
         }
@@ -128,6 +128,11 @@ class Dataface_RelatedList {
             }
         }
         $this->_where = $rwhere;
+    }
+
+    public function Dataface_RelatedList(&$record, $relname, $db = '')
+    {
+        self::__construct($record, $relname, $db);
     }
 
     function _forwardButtonHtml() {

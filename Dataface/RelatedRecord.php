@@ -143,7 +143,7 @@ class Dataface_RelatedRecord {
 	 * @param string $relationshipName The name of the relationship of which this related record is a member.
 	 * @param array $values Associative array of values for this related record.
 	 */
-	function Dataface_RelatedRecord($record, $relationshipName, $values=null){
+	function __construct($record, $relationshipName, $values=null){
 		
 		if ( !is_a($record, 'Dataface_Record') ){
 			throw new Exception("Error in Dataface_RelatedRecord constructor.  Expected first argument to be of type 'Dataface_Record' but received '".get_class($record)."'.", E_USER_ERROR);
@@ -157,6 +157,10 @@ class Dataface_RelatedRecord {
 		}
 	}
 	
+    public function Dataface_RelatedRecord($record, $relationshipName, $values=null)
+    {
+        self::__construct($record, $relationshipName, $values);
+    }
 	
 	function getParentURL($params=null){
 		if ( is_null($params) ){

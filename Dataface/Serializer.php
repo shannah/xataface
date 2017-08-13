@@ -25,9 +25,14 @@ class Dataface_Serializer {
 
 	var $_table;
 	
-	function Dataface_Serializer($tablename){
+	function __construct($tablename){
 		$this->_table =& Dataface_Table::loadTable($tablename);
 	}
+
+    public function Dataface_Serializer($tablename)
+    {
+        self::__construct($tablename);
+    }
 	
 	static function number2db($value)
 	{

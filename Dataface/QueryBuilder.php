@@ -127,7 +127,7 @@ class Dataface_QueryBuilder {
 	 * @param query Associative array with keys = column names and values equal
 	 *  query values for that column.
 	 */
-	function Dataface_QueryBuilder($tablename, $query=''){
+	function __construct($tablename, $query=''){
 		$this->_tablename = $tablename;
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		$this->_query = is_array($query) ? $query : array();
@@ -155,6 +155,11 @@ class Dataface_QueryBuilder {
 		
 		
 	}
+
+    public function Dataface_QueryBuilder($tablename, $query='')
+    {
+        self::__construct($tablename, $query);
+    }
 	
 	function _opt($code, $isText=true){
 		switch ( $code ){

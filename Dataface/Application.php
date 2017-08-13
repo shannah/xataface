@@ -544,7 +544,7 @@ END;
 	/**
 	 * @brief Constructor.  Do not use this.  getInstance() instead.
 	 */
-	function Dataface_Application($conf = null){
+	function __construct($conf = null){
 		if ( !isset($this->sessionCookieKey) ){
 		    $this->sessionCookieKey = md5(DATAFACE_SITE_URL.'#'.__FILE__);
 		}
@@ -1055,6 +1055,10 @@ END;
 
 	}
 	
+    public function Dataface_Application($conf = null)
+    {
+        self::__construct($conf);
+    }
 	
 	/**
 	 * @brief Returns reference to the singleton instance of this class.

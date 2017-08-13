@@ -2,17 +2,17 @@
 /*-------------------------------------------------------------------------------
  * Xataface Web Application Framework
  * Copyright (C) 2005-2008 Web Lite Solutions Corp (shannah@sfu.ca)
- *
+ * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -37,7 +37,7 @@
  * $io->write($record);
  *		// update the changes to the database.
  */
-
+ 
 import( 'Dataface/QueryBuilder.php');
 import('Dataface/DB.php');
 define('Dataface_IO_READ_ERROR', 1001);
@@ -61,20 +61,20 @@ class Dataface_IO {
 	var $dbObj;
 	var $parentIO=-1;
 	var $fireTriggers=true;
-
+	
 	// Placeholder for the version number when recordExists is called
 	// it will place the version number of the existing record in this
 	// placeholder.
 	var $lastVersionNumber = null;
-
+	
 	/**
 	 * An optional alther table that this object can work on.
 	 * This is handy in case records have to read from and written to
 	 * delete or import tables.
 	 */
 	var $_altTablename = null;
-
-	function Dataface_IO($tablename, $db=null, $altTablename=null){
+	
+	function __construct($tablename, $db=null, $altTablename=null){
 		$app =& Dataface_Application::getInstance();
 		$this->lang = $app->_conf['lang'];
 		$this->_table =& Dataface_Table::loadTable($tablename, $db);
@@ -83,17 +83,22 @@ class Dataface_IO {
 		$this->dbObj =& Dataface_DB::getInstance();
 	}
 
+    public function Dataface_IO($tablename, $db=null, $altTablename=null)
+    {
+        self::__construct($tablename, $db, $altTablename);
+    }
+	
 	function __destruct(){
 		unset($this->_table);
 		unset($this->dbObj);
 		unset($this->_serializer);
-
+		
 		if ( isset($this->parentIO) and $this->parentIO != -1 ){
 			$this->parentIO->__destruct();
 			unset($this->parentIO);
 		}
 	}
-
+	
 	function &getParentIO(){
 		if ( $this->parentIO == -1 ){
 			if ( isset($this->_altTablename) and $this->_altTablename != $this->_table->tablename) {
@@ -101,7 +106,7 @@ class Dataface_IO {
 				return $null;
 			}
 				// There is no clear parent table if an alternate table name is set.
-
+				
 			$parentTable =& $this->_table->getParent();
 			if ( isset($parentTable) ){
 				$this->parentIO = new Dataface_IO($parentTable->tablename, null, null);
@@ -110,13 +115,13 @@ class Dataface_IO {
 			} else {
 				$this->parentIO = null;
 			}
-
+			
 		}
 		return $this->parentIO;
 	}
-
+	
 	/**
-	 * Loads a record given an ID.  The ID resembles a URL that describes a
+	 * Loads a record given an ID.  The ID resembles a URL that describes a 
 	 * record based on the table, relationship, and keys of the record.
 	 * E.g.:  table/relationship?key1=val1&key2=val2&relationship::key1=val3
 	 *
@@ -132,8 +137,8 @@ class Dataface_IO {
 		return $rec;
 
 	}
-
-
+	
+	
 	/**
 	 * Converts a record id to a query array.  A record id is a string of the form
 	 * tablename/relationshipname?key1=val1&key2=val2&relationshipname::key1=val3&relationshipname::key2=val4
@@ -155,9 +160,9 @@ class Dataface_IO {
 			$query[urldecode($key)] = '='.urldecode($value);
 		}
 		return $query;
-
+		
 	}
-
+	
 
 
 	/**
@@ -183,18 +188,18 @@ class Dataface_IO {
 					array('class'=>get_class($record))
 					), E_USER_ERROR);
 		}
-
+		
 		if ( is_string($query) and !empty($query) ){
 			// If the query is actually a record id string, then we convert it
 			// to a normal query.
 			$query = $this->recordid2query($query);
 		}
-
+		
 		if ( $tablename === null and $this->_altTablename !== null ){
 			$tablename = $this->_altTablename;
 		}
-
-
+		
+	
 		$qb = new Dataface_QueryBuilder($this->_table->tablename);
 		$qb->selectMetaData = true;
 		$query['-limit'] = 1;
@@ -216,20 +221,20 @@ class Dataface_IO {
 						"' from the database: ".
 						xf_db_error($this->_table->db),
 						/* i18n parameters */
-
-						array('table'=>$this->_table->tablename,
-							'xf_db_error'=>xf_db_error(),
-							'line'=>0,
+					
+						array('table'=>$this->_table->tablename, 
+							'xf_db_error'=>xf_db_error(), 
+							'line'=>0, 
 							'file'=>'_',
 							'sql'=>$sql
 						)
 					),
-
+						
 					DATAFACE_E_READ_FAILED
 				);
 			}
 		}
-
+		
 		//if ( xf_db_num_rows($res) == 0 ){
 		if ( count($res) == 0 ){
 			return PEAR::raiseError(
@@ -246,21 +251,21 @@ class Dataface_IO {
 				DATAFACE_E_READ_FAILED
 			);
 		}
-
+		
 		//$row = xf_db_fetch_assoc($res);
 		$row = $res[0];
 		//xf_db_free_result($res);
 		$record->setValues($row);
 		$record->setSnapshot();
 			// clear all flags that may have been previously set to indicate that the data is old or needs to be updated.
-
-
-
+		
+		
+	
 	}
-
-
-
-
+	
+	
+	
+	
 	/**
 	 * Deletes a record from the database.
 	 * @param Dataface_Record $record Dataface_Record object to be deleted.
@@ -269,7 +274,7 @@ class Dataface_IO {
 	 */
 	function delete(&$record, $secure=false){
 		if ( $secure && !$record->checkPermission('delete') ){
-			// Use security to check to see if we are allowed to delete this
+			// Use security to check to see if we are allowed to delete this 
 			// record.
 			return Dataface_Error::permissionDenied(
 				df_translate(
@@ -279,15 +284,15 @@ class Dataface_IO {
 					)
 				);
 		}
-
-
+		
+		
 		$builder = new Dataface_QueryBuilder($this->_table->tablename);
-
+		
 		if ( $this->fireTriggers ){
 			$res = $this->fireBeforeDelete($record);
 			if ( PEAR::isError($res) ) return $res;
 		}
-
+		
                 $del = $record->table()->getDelegate();
                 if ( isset($del) and method_exists($del, 'deleteRecord') ){
                     $res = $del->deleteRecord($record);
@@ -334,7 +339,7 @@ class Dataface_IO {
                     //echo "Running ".$sql;
                     $res = $this->dbObj->query($sql, null, $this->lang);
                     if ( !$res || PEAR::isError($res)){
-
+                            
                             if ( PEAR::isError($res) ) $msg = $res->getMessage();
                             else $msg = xf_db_error(df_db());
                             //echo "Error";
@@ -373,9 +378,9 @@ class Dataface_IO {
 		}
 		self::touchTable($this->_table->tablename);
 		return $res;
-
+	
 	}
-
+	
 	function saveTransients(Dataface_Record $record, $keys=null, $tablename=null, $secure=false){
 		$app = Dataface_Application::getInstance();
 		// Now we take care of the transient relationship fields.
@@ -384,18 +389,18 @@ class Dataface_IO {
 		foreach ( $record->_table->transientFields() as $tfield ){
 			if ( !isset($tfield['relationship']) ) continue;
 			if ( !$record->valueChanged($tfield['name']) ) continue;
-
+			
 			$trelationship =& $record->_table->getRelationship($tfield['relationship']);
-
+			
 			if ( !$trelationship or PEAR::isError($trelationship) ){
 				// We couldn't find the specified relationship.
 				//$record->vetoSecurity = $oldVeto;
 				return $trelationship;
 			}
-
+				
 			$orderCol = $trelationship->getOrderColumn();
 			if ( PEAR::isError($orderCol) ) $orderCol = null;
-
+				
 			$tval = $record->getValue($tfield['name']);
 			if ( $tfield['widget']['type'] == 'grid' ){
 
@@ -413,9 +418,9 @@ class Dataface_IO {
 						$tval_existing[$trow['__id__']] = $trow;
 					} else if ( isset($trow['__id__']) and $trow['__id__'] == 'new'){
 						$tval_new[] = $trow;
-					}
+					} 
 				}
-
+	
 				// The transient field was loaded so we can go about saving the
 				// changes/
 				$trecords =& $record->getRelatedRecordObjects($tfield['relationship'], 'all');
@@ -429,17 +434,17 @@ class Dataface_IO {
 					unset($tval_existing);
 					continue;
 				}
-
-
+				
+				
 				// Update the existing records in the relationship.
 				// We use the __id__ parameter in each row for this.
 				//echo "About to save related records";
 				foreach ($trecords as $trec){
 					$tid = $trec->getId();
-
+					
 					if ( isset($tval_existing[$tid]) ){
 						$tmp = new Dataface_RelatedRecord($trec->_record, $tfield['relationship'], $trec->getValues());
-
+						
 						$tmp->setValues($tval_existing[$tid]);
 						$changed = false;
 						foreach ( $tval_existing[$tid] as $k1=>$v1 ){
@@ -448,17 +453,17 @@ class Dataface_IO {
 								break;
 							}
 						}
-
+						
 						if ( $changed ){
 							$trec->setValues($tval_existing[$tid]);
 							if ( $orderCol ) $trec->setValue( $orderCol, $tval_existing[$tid]['__order__']);
 							//echo "Saving ";print_r($trec->vals());
 							$res_t = $trec->save($this->lang, $secure);
-
+							
 							if ( PEAR::isError($res_t) ){
 								return $res_t;
 								error_log('Failed to save related record '.$trec->getId().' while saving transient field '.$tfield['name'].' in record '.$record->getId().'. The error returned was : '.$res_t->getMessage());
-
+								
 							}
 						} else {
 							if ( $orderCol and $record->checkPermission('reorder_related_records', array('relationship'=>$tfield['relationship'])) ){
@@ -467,29 +472,29 @@ class Dataface_IO {
 								if ( PEAR::isError($res_t) ){
 									return $res_t;
 									error_log('Failed to save related record '.$trec->getId().' while saving transient field '.$tfield['name'].' in record '.$record->getId().'. The error returned was : '.$res_t->getMessage());
-
+								
 								}
 							}
 						}
-
+						
 						unset($tmp);
 					} else {
-
-
+						
+						
 					}
 					unset($trec);
 					unset($tid);
 					unset($res_t);
-
+					
 				}
 
-
+				
 				// Now add new records  (specified by __id__ field being 'new'
-
+				
 				foreach ($tval_new as $tval_to_add){
 					$temp_rrecord = new Dataface_RelatedRecord( $record, $tfield['relationship'], array());
-
-
+					
+					
 					$temp_rrecord->setValues($tval_to_add);
 					if ( $orderCol ) $temp_rrecord->setValue( $orderCol, $tval_to_add['__order__']);
 					$res_t = $this->addRelatedRecord($temp_rrecord, $secure);
@@ -499,12 +504,12 @@ class Dataface_IO {
 					}
 					unset($temp_rrecord);
 					unset($res_t);
-
-
+					
+					
 				}
-
+				
 				// Now add new existing records  (specified by __id__ field being 'new:<recordid>'
-
+				
 				foreach ($tval_new_existing as $tval_to_add){
 					$tid = preg_replace('/^new:/', '', $tval_to_add['__id__']);
 					$temp_record = df_get_record_by_id($tid);
@@ -515,8 +520,8 @@ class Dataface_IO {
 						return PEAR::raiseError("Failed to load existing record with ID $tid.");
 					}
 					$temp_rrecord = new Dataface_RelatedRecord( $record, $tfield['relationship'], $temp_record->vals());
-
-
+					
+					
 					$temp_rrecord->setValues($tval_to_add);
 					if ( $orderCol ) $temp_rrecord->setValue( $orderCol, $tval_to_add['__order__']);
 					$res_t = $this->addExistingRelatedRecord($temp_rrecord, $secure);
@@ -525,30 +530,26 @@ class Dataface_IO {
 					}
 					unset($temp_rrecord);
 					unset($res_t);
-
-
+					
+					
 				}
-
+	
 				// Now we delete the records that were deleted
 				// we use the __deleted__ field.
-
+				
 				if ( isset($tval['__deleted__']) and is_array($tval['__deleted__']) and $trelationship->supportsRemove() ){
 					$tdelete_record = ($trelationship->isOneToMany() and !$trelationship->supportsAddExisting());
 						// If it supports add existing, then we shouldn't delete the entire record.  Just remove it
 						// from the relationship.
-
-					foreach ( $tval['__deleted__'] as $k=> $del_id ){
-            if (!is_int($k)) {
-              unset($tval['__deleted'][$k]);
-              continue;
-            }
+					
+					foreach ( $tval['__deleted__'] as $del_id ){
 						if ($del_id == 'new' ) continue;
 						$drec = Dataface_IO::getByID($del_id);
 						if ( PEAR::isError($drec) or !$drec ){
 							unset($drec);
 							continue;
 						}
-
+						
 						$mres = $this->removeRelatedRecord($drec, $tdelete_record, $secure);
 						if ( PEAR::isError($mres) ){
 							throw new Exception($mres->getMessage());
@@ -556,11 +557,11 @@ class Dataface_IO {
 						unset($drec);
 					}
 				}
-
+				
 				unset($trecords);
-
+				
 			} else if ( $tfield['widget']['type'] == 'checkbox' ){
-
+				
 				// Load existing records in the relationship
 				$texisting =& $record->getRelatedRecordObjects($tfield['relationship'], 'all');
 				if ( !is_array($texisting) or PEAR::isError($texisting) ){
@@ -577,7 +578,7 @@ class Dataface_IO {
 				foreach ($texisting as $terec){
 					$texistingIds[] = $terec->getId();
 				}
-
+				
 				// Load currently checked records
 				$tchecked = array();
 				$tcheckedRecords = array();
@@ -592,16 +593,16 @@ class Dataface_IO {
 					$checkedId2ValsMap[$tid] = $trquery;
 					unset($trRecord);
 					unset($trquery);
-
+					
 				}
-
+				
 				// Now we have existing ids in $texistingIds
 				// and checked ids in $tcheckedIds
-
+				
 				// See which records we need to have removed
 				$tremoves = array_diff($texistingIds, $tcheckedIds);
 				$tadds = array_diff($tcheckedIds, $texistingIds);
-
+				
 				foreach ($tremoves as $tid){
 					$trec = df_get_record_by_id($tid);
 					$res = $this->removeRelatedRecord($trec, false, $secure);
@@ -611,12 +612,12 @@ class Dataface_IO {
 				foreach ($tadds as $tid){
 					$trecvals = $checkedId2ValsMap[$tid];
 					$trec = new Dataface_RelatedRecord($record, $tfield['relationship'], $trecvals);
-
+					
 					$res = $this->addExistingRelatedRecord($trec, $secure);
 					if ( PEAR::isError($res) ) return $res;
 					unset($trec, $trecvals);
 				}
-
+				
 				unset($tadds);
 				unset($tremoves);
 				unset($tcheckedIds, $tcheckedId2ValsMap);
@@ -624,18 +625,18 @@ class Dataface_IO {
 				unset($tchecked);
 				unset($texistingIds);
 				unset($texisting);
-
-
-
+				
+				
+				
 			}
 			unset($tval);
 			unset($trelationship);
-
+		
 		}
-
+	
 	}
-
-
+	
+	
 	/**
 	 * Writes the values in the table to the database.
 	 *
@@ -644,7 +645,7 @@ class Dataface_IO {
 	 * 		table.
 	 * @param array $keys Optional array of keys to look up record to write to.
 	 * @param string $tablename The name of the table to write to, if not this table.
-	 *							This is useful for writing to import tables or other
+	 *							This is useful for writing to import tables or other 
 	 *							tables with identical schema.
 	 * @param boolean $secure Whether to check permissions or not.
 	 * @param boolean $forceNew If true, it forces an insert rather than an update.
@@ -652,18 +653,18 @@ class Dataface_IO {
 	function write(&$record, $keys=null, $tablename=null, $secure=false, $forceNew=false){
 		// The vetoSecurity flag allows us to make changes to a record without
 		// the fields being filtered for security checks when they are saved.
-		// Since we may want to change or add values to a record in the
+		// Since we may want to change or add values to a record in the 
 		// beforeSave type triggers, and we probably don't want these changes
 		// checked by security, we should use this flag to make all changes
 		// in these triggers immune to security checks.
-		// We return the veto setting to its former state after this method
+		// We return the veto setting to its former state after this method 
 		// finishes.
 		//$oldVeto = $record->vetoSecurity;
 		//$record->vetoSecurity = true;
 		//$parentRecord =& $record->getParentRecord();
 		$app =& Dataface_Application::getInstance();
 		//$parentIO =& $this->getParentIO();
-
+		
 		if ( !is_a($record, "Dataface_Record") ){
 			throw new Exception(
 				df_translate(
@@ -675,7 +676,7 @@ class Dataface_IO {
 		if ( $tablename === null and $this->_altTablename !== null ){
 			$tablename = $this->_altTablename;
 		}
-
+		
 		if ( $this->fireTriggers ){
 			$res = $this->fireBeforeSave($record);
 			if (PEAR::isError($res) ) {
@@ -683,16 +684,16 @@ class Dataface_IO {
 				return $res;
 			}
 		}
-
-
+			
+		
 		if ( !$forceNew and $this->recordExists($record, $keys, $this->tablename($tablename)) ){
 			$res = $this->_update($record, $keys, $this->tablename($tablename), $secure);
 		} else {
-
+			
 			$res = $this->_insert($record, $this->tablename($tablename), $secure);
-
+			
 		}
-
+		
 		if ( PEAR::isError($res) ){
 			if ( Dataface_Error::isDuplicateEntry($res) ){
 				/*
@@ -711,14 +712,14 @@ class Dataface_IO {
 			//$record->vetoSecurity = $oldVeto;
 			return $res;
 		}
-
+		
 		$res = $this->saveTransients($record, $keys, $tablename, $secure);
 		if ( PEAR::isError($res) ){
 			return $res;
 		}
-
-
-
+		
+		
+		
 		if ( $this->fireTriggers ){
 			$res2 = $this->fireAfterSave($record);
 			if ( PEAR::isError($res2) ){
@@ -727,23 +728,23 @@ class Dataface_IO {
 			}
 		}
 		if ( isset($app->_conf['history']) and ( @$app->_conf['history']['enabled'] || !isset($app->_conf['history']['enabled']))){
-
+			
 			// History is enabled ... let's save this record in our history.
 			import('Dataface/HistoryTool.php');
 			$historyTool = new Dataface_HistoryTool();
 			$historyTool->logRecord($record, $this->getHistoryComments($record), $this->lang);
 		}
-
-
+		
+		
 		if ( isset($app->_conf['_index'])  and @$app->_conf['_index'][$record->table()->tablename]){
-			// If indexing is enabled, we index the record so that it is
+			// If indexing is enabled, we index the record so that it is 
 			// searchable by natural language searching.
-			// The Dataface_Index class takes care of whether or not this
+			// The Dataface_Index class takes care of whether or not this 
 			// record should be indexed.
 			import('Dataface/Index.php');
 			$index = new Dataface_Index();
 			$index->indexRecord($record);
-		}
+		} 
 		// It seems to me that we should be setting a new snapshot at this point.
 		//$record->clearSnapshot();
 		$record->setSnapshot();
@@ -752,14 +753,14 @@ class Dataface_IO {
 		//$record->vetoSecurity = $oldVeto;
 		return $res;
 	}
-
-
+	
+	
 	static function touchRecord(Dataface_Record $record=null){
 		if ( !isset($record) ) return;
 		$id = $record->getId();
 		$hash = md5($id);
-		$sql = "replace into dataface__record_mtimes
-				(recordhash, recordid, mtime) values
+		$sql = "replace into dataface__record_mtimes 
+				(recordhash, recordid, mtime) values 
 				('".addslashes($hash)."','".addslashes($id)."','".time()."')";
 		try {
 			$res = df_q($sql);
@@ -767,7 +768,7 @@ class Dataface_IO {
 			self::createRecordMtimes();
 		}
 	}
-
+	
 	static function createRecordMtimes(){
 	    $res = df_q("create table if not exists dataface__record_mtimes (
 				recordhash varchar(32) not null primary key,
@@ -775,7 +776,7 @@ class Dataface_IO {
 				mtime int(11) not null) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         //$res = df_q($sql);
 	}
-
+	
 	function getHistoryComments(&$record){
 		$del =& $this->_table->getDelegate();
 		if ( isset($del) and method_exists($del, 'getHistoryComments') ){
@@ -788,11 +789,11 @@ class Dataface_IO {
 		}
 		return '';
 	}
-
-
-
+	
+	
+	
 	/**
-	 * Returns true if the record currently represented in the Table already exists
+	 * Returns true if the record currently represented in the Table already exists 
 	 * in the database.
 	 *
 	 * @param tablename Alternative table where records may be stored.  This is useful if we are reading form import or delete tables.
@@ -810,7 +811,7 @@ class Dataface_IO {
 		if ( $tablename === null and $this->_altTablename !== null ){
 			$tablename = $this->_altTablename;
 		}
-
+		
 		$tempRecordCreated = false;
 		if ( $record->snapshotExists() ){
 			$tempRecord = new Dataface_Record($record->_table->tablename, $record->getSnapshot());
@@ -818,7 +819,7 @@ class Dataface_IO {
 		} else {
 			$tempRecord =& $record;
 		}
-
+		
 		if ( $keys == null ){
 			// Had to put in userialize(serialize(...)) because getValues() returns by reference
 			// and we don't want to change actual values.
@@ -826,24 +827,24 @@ class Dataface_IO {
 		} else {
 			$query = $keys;
 		}
-
-
+		
+		
 		$table_keys = array_keys($this->_table->keys());
-
+		
 		foreach ( $table_keys as $key){
 			if ( !isset( $query[$key] ) or (is_scalar($query[$key]) and strlen(''.$query[$key])===0) ) {
-
+				
 				return false;
 			}
 		}
-
+		
 		foreach ( array_keys($query) as $key){
 			//$query[$key] = '='.$this->_serializer->serialize($key, $tempRecord->getValue($key) );
 			$query[$key] = $this->_serializer->serialize($key, $tempRecord->getValue($key) );
-
+			
 		}
 		if ( $tempRecordCreated ) $tempRecord->__destruct();
-
+		
 		//$qb = new Dataface_QueryBuilder($this->_table->tablename, $query);
 		//$sql = $qb->select_num_rows(array(), $this->tablename($tablename));
 		if ( $record->table()->isVersioned() ){
@@ -857,7 +858,7 @@ class Dataface_IO {
 			$where[] = '`'.$key."`='".addslashes($val)."'";
 		}
 		$sql .= implode(' AND ', $where).' limit 1';
-
+		
 		$res = df_q($sql, $this->_table->db);
 		$num = xf_db_num_rows($res);
 		$row = xf_db_fetch_row($res);
@@ -869,15 +870,15 @@ class Dataface_IO {
 			return true;
 		}
 		if ( $num > 1 ){
-
+			
 			$err = PEAR::raiseError(
 				Dataface_LanguageTool::translate(
 					/* i18n id */
 					'recordExists failure. Too many rows returned.',
 					/* default error message */
-					"Test for existence of record in recordExists() returned $rows records.
-					It should have max 1 record.
-					The query must be incorrect.
+					"Test for existence of record in recordExists() returned $rows records.  
+					It should have max 1 record.  
+					The query must be incorrect.  
 					The query used was '$sql'. ",
 					/* i18n parameters */
 					array('table'=>$this->_table->tablename, 'line'=>0, 'file'=>'_','sql'=>$sql)
@@ -887,19 +888,19 @@ class Dataface_IO {
 			throw new Exception($err->toString(), E_USER_ERROR);
 		}
 		return false;
-
-
+		
+	
 	}
-
-
+	
+	
 	/**
 	 * @param tablename An optional tablename to update.  This is useful if we are working from an update or delete table.
 	 */
 	function _update(&$record, $keys=null, $tablename=null, $secure=false  ){
-
-
+	
+		
 		if ( $secure && !$record->checkPermission('edit') ){
-			// Use security to check to see if we are allowed to delete this
+			// Use security to check to see if we are allowed to delete this 
 			// record.
 			return Dataface_Error::permissionDenied(
 				df_translate(
@@ -929,9 +930,9 @@ class Dataface_IO {
 						);
 				}
 			}
-
+		
 		}
-
+		
 		// Step 1: Validate that the record already exists
 		if ( !is_a($record, 'Dataface_Record') ){
 			throw new Exception(
@@ -944,7 +945,7 @@ class Dataface_IO {
 		if ( $tablename === null and $this->_altTablename !== null ){
 			$tablename = $this->_altTablename;
 		}
-
+	
 		$exists = $this->recordExists($record, $keys, $this->tablename($tablename));
 		if ( PEAR::isError($exists) ){
 			$exists->addUserInfo(
@@ -964,7 +965,7 @@ class Dataface_IO {
 					array('line'=>0,'file'=>"_")
 				), DATAFACE_E_NO_RESULTS);
 		}
-
+		
 		if ( $record->table()->isVersioned()){
 			$currVersion = intval($record->getVersion());
 			$dbVersion = intval($this->lastVersionNumber);
@@ -982,31 +983,31 @@ class Dataface_IO {
 		$s =& $this->_table;
 		$delegate =& $s->getDelegate();
 		$qb = new Dataface_QueryBuilder($this->_table->tablename, $keys);
-
+		
 		if ( $record->recordChanged(true) ){
 			if ( $this->fireTriggers ){
 				$res = $this->fireBeforeUpdate($record);
 				if ( PEAR::isError($res) ) return $res;
 			}
 		}
-
-
+		
+		
 		$parentIO =& $this->getParentIO();
-
+		
 		if ( isset($parentIO) ){
-
+		
 			$parentRecord =& $record->getParentRecord();
-
+			
 			$res = $parentIO->write($parentRecord, $parentRecord->snapshotKeys());
 			if ( PEAR::isError($res) ) return $res;
-
+			
 		}
-
-
-
+		
+		
+		
 		// we only want to update changed values
 		$sql = $qb->update($record,$keys, $this->tablename($tablename));
-
+		
 		if ( PEAR::isError($sql) ){
 			$sql->addUserInfo(
 				df_translate(
@@ -1018,19 +1019,19 @@ class Dataface_IO {
 			return $sql;
 		}
 		if ( strlen($sql) > 0 ){
-
-
-
+		
+			
+			
 			//$res = xf_db_query($sql, $s->db);
 			$res =$this->dbObj->query($sql, $s->db, $this->lang);
 			if ( !$res || PEAR::isError($res) ){
-
+				
 			    if ( in_array(xf_db_errno($this->_table->db), array(MYSQL_ER_DUP_KEY,MYSQL_ER_DUP_ENTRY)) ){
 					/*
 					 * This is a duplicate entry.  We will handle this as an exception rather than an error because
 					 * cases may arise in a database application when a duplicate entry will happen and the application
 					 * will want to handle it in a graceful way.  Eg: If the user is entering a username that is the same
-					 * as an existing name.  We don't want an ugle FATAL error to be thrown here.  Rather we want to
+					 * as an existing name.  We don't want an ugle FATAL error to be thrown here.  Rather we want to 
 					 * notify the application that it is a duplicate entry.
 					 */
 					return Dataface_Error::duplicateEntry(
@@ -1047,34 +1048,34 @@ class Dataface_IO {
 						"Failed to update due to sql error: ")
 					.xf_db_error($s->db), E_USER_ERROR);
 			}
-
+			
 			//$record->clearFlags();
 			if ( $record->table()->isVersioned() ){
 				$versionField = $record->table()->getVersionField();
 				$record->setValue($versionField, $record->getVersion()+1);
 			}
-
+				
 			if ( $this->fireTriggers ){
 				$res2 = $this->fireAfterUpdate($record);
 				if ( PEAR::isError($res2) ) return $res2;
 			}
-
-
+			
+			
 		}
-
-
+		
+		
 		return true;
-
-
-
+		
+		
+	
 	}
-
+	
 	/**
 	 * @param tablename Optional tablename where record can be inserted.  Should have same schema as the main table.
 	 */
 	function _insert(&$record, $tablename=null, $secure=false){
 		if ( $secure && !$record->checkPermission('new') ){
-			// Use security to check to see if we are allowed to delete this
+			// Use security to check to see if we are allowed to delete this 
 			// record.
 			return Dataface_Error::permissionDenied(
 				df_translate(
@@ -1090,13 +1091,13 @@ class Dataface_IO {
 					// If this field was changed and the field doesn't have veto power, then
 					// we must subject the change to a security check - the user must havce
 					// edit permission to perform the change.
-
+					
 					if ( @$field['timestamp'] ){
 						// Since timestamps are just updated automatically,
 						// we don't need to perform any permissions on it
 						continue;
 					}
-
+					
 					return Dataface_Error::permissionDenied(
 						df_translate(
 							'scripts.Dataface.IO._insert.PERMISSION_DENIED_FIELD',
@@ -1106,22 +1107,22 @@ class Dataface_IO {
 						);
 				}
 			}
-
+		
 		}
-
+	
 		if ( $tablename === null and $this->_altTablename !== null ){
 			$tablename = $this->_altTablename;
 		}
 		$s =& $this->_table;
 		$delegate =& $s->getDelegate();
-
+		
 		if ( $this->fireTriggers ){
 			$res = $this->fireBeforeInsert($record);
 			if ( PEAR::isError($res) ) return $res;
 		}
-
-
-
+		
+		
+		
 		$parentIO =& $this->getParentIO();
 		if ( isset($parentIO) ){
 			$parentRecord =& $record->getParentRecord();
@@ -1129,11 +1130,11 @@ class Dataface_IO {
 			if ( PEAR::isError($res) ) return $res;
 			unset($parentRecord);
 		}
-
+		
 		$qb = new Dataface_QueryBuilder($s->tablename);
 		$sql = $qb->insert($record, $this->tablename($tablename));
 		if ( PEAR::isError($sql) ){
-
+			
 			throw new Exception(
 				df_translate(
 					'scripts.Dataface.IO._insert.ERROR_GENERATING_SQL',
@@ -1141,7 +1142,7 @@ class Dataface_IO {
 				, E_USER_ERROR);
 			//return $sql;
 		}
-
+		
 
 		//$res = xf_db_query($sql, $s->db);
 		$res = $this->dbObj->query($sql, $s->db, $this->lang);
@@ -1151,7 +1152,7 @@ class Dataface_IO {
 				 * This is a duplicate entry.  We will handle this as an exception rather than an error because
 				 * cases may arise in a database application when a duplicate entry will happen and the application
 				 * will want to handle it in a graceful way.  Eg: If the user is entering a username that is the same
-				 * as an existing name.  We don't want an ugle FATAL error to be thrown here.  Rather we want to
+				 * as an existing name.  We don't want an ugle FATAL error to be thrown here.  Rather we want to 
 				 * notify the application that it is a duplicate entry.
 				 */
 				return Dataface_Error::duplicateEntry(
@@ -1173,7 +1174,7 @@ class Dataface_IO {
 		}
 		$id = df_insert_id($s->db);
 		$this->insertIds[$this->_table->tablename] = $id;
-
+		
 		/*
 		 * Now update the record to contain the proper id.
 		 */
@@ -1181,22 +1182,22 @@ class Dataface_IO {
 		if ( $autoIncrementField !== null ){
 			$record->setValue($autoIncrementField, $id);
 		}
-
-
+		
+		
 		if ( $this->fireTriggers ){
 			$res2 = $this->fireAfterInsert($record);
 			if ( PEAR::isError($res2) ) return $res2;
 		}
-
+		
 		return true;
-
+	
 	}
-
-
+	
+	
 	function _writeRelationship($relname, $record){
 		$s =& $this->_table;
 		$rel =& $s->getRelationship($relname);
-
+		
 		if ( PEAR::isError($rel) ){
 			$rel->addUserInfo(
 				df_translate(
@@ -1207,15 +1208,15 @@ class Dataface_IO {
 				);
 			return $rel;
 		}
-
+		
 		$tables =& $rel['selected_tables'];
 		$columns =& $rel['columns'];
-
+		
 		if ( count($tables) == 0 ){
 			return PEAR::raiseError(
 				Dataface_LanguageTool::translate(
 					/* i18n id */
-					"Failed to write relationship because not table was selected",
+					"Failed to write relationship because not table was selected", 
 					/* default error message */
 					"Error writing relationship '$relname'.  No tables were selected",
 					/* i18n parameters */
@@ -1224,7 +1225,7 @@ class Dataface_IO {
 				DATAFACE_E_NO_TABLE_SPECIFIED
 			);
 		}
-
+		
 		$records =& $record->getRelatedRecords($relname);
 		$record_keys = array_keys($records);
 		if ( PEAR::isError( $records) ){
@@ -1237,11 +1238,11 @@ class Dataface_IO {
 				);
 			return $records;
 		}
-
-
-
+		
+		
+		
 		foreach ($tables as $table){
-
+			
 			$rs =& Dataface_Table::loadTable($table, $s->db);
 			$keys = array_keys($rs->keys());
 			$cols = array();
@@ -1250,50 +1251,50 @@ class Dataface_IO {
 					$cols[] = $matches[1];
 				}
 			}
-
-
+			
+			
 			foreach ($record_keys as $record_key){
 				$changed = false;
 					// flag whether this record has been changed
 				$update_cols = array();
 					// store the columns that have been changed and require update
-
+					
 				foreach ( $cols as $column ){
 					// check each column to see if it has been changed
 					if ( $s->valueChanged($relname.'.'.$column, $record_key) ){
-
+						
 						$changed = true;
 						$update_cols[] = $column;
 					} else {
-
+						
 					}
 				}
 				if ( !$changed ) continue;
-					// if this record has not been changed with respect to the
+					// if this record has not been changed with respect to the 
 					// columns of the current table, then we ignore it.
-
+					
 				$sql = "UPDATE `$table` ";
 				$set = '';
 				foreach ( $update_cols as $column ){
 					$set .= "SET $column = '".addslashes($rs->getSerializedValue($column, $records[$record_key][$column]) )."',";
 				}
 				$set = trim(substr( $set, 0, strlen($set)-1));
-
+				
 				$where = 'WHERE ';
 				foreach ($keys as $key){
 					$where .= "`$key` = '".addslashes($rs->getSerializedValue($key, $records[$record_key][$key]) )."' AND ";
 				}
 				$where = trim(substr($where, 0, strlen($where)-5));
-
+				
 				if ( strlen($where)>0 ) $where = ' '.$where;
 				if ( strlen($set)>0 ) $set = ' '.$set;
-
+				
 				$sql = $sql.$set.$where.' LIMIT 1';
-
+				
 				//$res = xf_db_query($sql, $s->db);
 				$res = $this->dbObj->query($sql, $s->db, $this->lang);
 				if ( !$res || PEAR::isError($res) ){
-					throw new Exception(
+					throw new Exception( 
 						df_translate(
 							'scripts.Dataface.IO._writeRelationship.ERROR_UPDATING_DATABASE',
 							"Error updating database with query '$sql': ".xf_db_error($s->db),
@@ -1302,12 +1303,12 @@ class Dataface_IO {
 						, E_USER_ERROR);
 				}
 			}
-
+			
 			unset($rs);
 		}
 	}
-
-
+	
+	
 	/**
 	 * Takes an array of SQL query strings and performs them sequentially.
 	 * Will replace special value "__Tablename__auto_increment__" with the insert_id
@@ -1318,14 +1319,14 @@ class Dataface_IO {
 	 * 				to be executed.
 	 */
 	function performSQL($sql){
-
+	
 		$ids = array();
 		$queue = $sql;
 		$names = array_keys($sql);
 		$tables = implode('|', $names );
 		$skips = 0; // keep track of number of consecutive times we skip an iteration so we know when we have reached
 					// a deadlock.
-
+		
 		if ( func_num_args() >= 2 ){
 			$duplicates =& func_get_arg(1);
 			if ( !is_array($duplicates) ){
@@ -1347,7 +1348,7 @@ class Dataface_IO {
 			$current_table = array_shift($names);
 			if ( !isset($queryAttempts[$current_query]) ) $queryAttempts[$current_query] = 1;
 			else $queryAttempts[$current_query]++;
-
+			
 			$matches = array();
 			if ( preg_match('/__('.$tables.')__auto_increment__/', $current_query, $matches) ){
 				$table = $matches[1];
@@ -1360,7 +1361,7 @@ class Dataface_IO {
 					continue;
 				}
 			}
-
+			
 
 			//$res = xf_db_query($current_query, $this->_table->db);
 			$res = $this->dbObj->query($current_query, $this->_table->db, $this->lang);
@@ -1378,12 +1379,12 @@ class Dataface_IO {
 					 */
 					 array_push($queue, $current_query);
 					 array_push($names, $current_table);
-
-
+					 
+				
 				} else {
 					if ( in_array(xf_db_errno($this->_table->db), array(MYSQL_ER_NO_REFERENCED_ROW, MYSQL_ER_NO_REFERENCED_ROW_2)) ){
 						/*
-							THis failed due to a foreign key constraint.
+							THis failed due to a foreign key constraint. 
 						*/
 						$err = PEAR::raiseError(
 							sprintf(
@@ -1393,14 +1394,14 @@ class Dataface_IO {
 								),
 								xf_db_error(df_db())
 							),
-
+								
 							DATAFACE_E_NOTICE
 						);
 						error_log($err->toString());
 						return $err;
 					}
-
-					$err = PEAR::raiseError(DATAFACE_TABLE_SQL_ERROR, null,null,null,
+				
+					$err = PEAR::raiseError(DATAFACE_TABLE_SQL_ERROR, null,null,null, 
 						df_translate(
 							'scripts.Dataface.IO.performSQL.ERROR_PERFORMING_QUERY',
 							"Error performing query '$current_query'",
@@ -1415,20 +1416,20 @@ class Dataface_IO {
 			$skips = 0;
 		}
 		$this->insertids = $ids;
-
+		
 		return true;
-
-
+					
+	
 	}
-
-
+	
+	
 	/**
 	 * Adds a new record to a relationships.
 	 * @param $record A Dataface_RelatedRecord object to be added.
 	 */
 	function addRelatedRecord(&$record, $secure=false){
 		if ( $secure && !$record->_record->checkPermission('add new related record', array('relationship'=>$record->_relationshipName) ) ){
-			// Use security to check to see if we are allowed to delete this
+			// Use security to check to see if we are allowed to delete this 
 			// record.
 			return Dataface_Error::permissionDenied(
 				df_translate(
@@ -1438,43 +1439,43 @@ class Dataface_IO {
 					)
 				);
 		}
-
-
+		
+	
 		$queryBuilder = new Dataface_QueryBuilder($this->_table->tablename);
-
+		
 		// Fire the "before events"
 		if ( $this->fireTriggers ){
 			$res = $this->fireBeforeAddRelatedRecord($record);
 			if ( PEAR::isError($res) ) return $res;
 		}
-
+		
 		if ( $this->fireTriggers ){
 			$res = $this->fireBeforeAddNewRelatedRecord($record);
 			if ( PEAR::isError($res) ) return $res;
 		}
-
-
-
-
-
-
-
+		
+		
+			
+		
+		
+		
+		
 		// It makes sense for us to fire beforeSave, afterSave, beforeInsert, and afterInsert
 		// events here for the records that are being inserted.  To do this we will need to extract
 		// Dataface_Record objects for all of the tables that will have records inserted.
 		$drecords =  $record->toRecords();
 			// $drecords is an array of Dataface_Record objects
-
+		
 		foreach ( array_keys($drecords) as $recordIndex){
 			$rio = new Dataface_IO($drecords[$recordIndex]->_table->tablename);
-
+			
 			$drec_snapshot = $drecords[$recordIndex]->strvals();
-
+			
 			$res = $rio->fireBeforeSave($drecords[$recordIndex]);
 			if (PEAR::isError($res) ) return $res;
 			$res = $rio->fireBeforeInsert($drecords[$recordIndex]);
 			if ( PEAR::isError($res) ) return $res;
-
+			
 			$drec_post_snapshot = $drecords[$recordIndex]->strvals();
 
 			foreach ( $drec_snapshot as $ss_key=>$ss_val ){
@@ -1489,7 +1490,7 @@ class Dataface_IO {
 			unset($drec_post_snapshot);
 			unset($rio);
 		}
-
+		
 		//$sql = Dataface_QueryBuilder::addRelatedRecord($record);
 		$sql = $queryBuilder->addRelatedRecord($record);
 		if ( PEAR::isError($sql) ){
@@ -1502,13 +1503,13 @@ class Dataface_IO {
 				);
 			return $sql;
 		}
-
+		
 		// Actually add the record
 		$res = $this->performSQL($sql);
 		if ( PEAR::isError($res) ){
 			return $res;
 		}
-
+		
 		$rfields = array_keys($record->vals());
 		// Just for completeness we will fire afterSave and afterInsert events for
 		// all records being inserted.
@@ -1522,45 +1523,45 @@ class Dataface_IO {
 						$record->setValue($idfield, $this->insertids[ $currentRecord->_table->tablename ]);
 					}
 				}
-
+				
 				unset($idfield);
 			}
 			unset($currentRecord);
 			$rio = new Dataface_IO($drecords[$recordIndex]->_table->tablename);
-
+			
 			$res = $rio->saveTransients($drecords[$recordIndex], null, null, true);
 			if ( PEAR::isError($res) ){
 				return $res;
 			}
-
+			
 			$res = $rio->fireAfterInsert($drecords[$recordIndex]);
 			if (PEAR::isError($res) ) return $res;
 			$res = $rio->fireAfterSave($drecords[$recordIndex]);
 			if ( PEAR::isError($res) ) return $res;
-
+			
 			unset($rio);
 		}
-
-
+		
+		
 		// Fire the "after" events
 		if ( $this->fireTriggers ){
 			$res2 = $this->fireAfterAddNewRelatedRecord($record);
 			if ( PEAR::isError($res2) ) return $res2;
-
+			
 			$res2 = $this->fireAfterAddRelatedRecord($record);
 			if ( PEAR::isError($res2) ) return $res2;
 		}
-
+		
 		return $res;
 	}
-
+	
 	/**
 	 * Adds an existing record to a relationship.
 	 * @param $record a Dataface_RelatedRecord object to be added.
 	 */
 	function addExistingRelatedRecord(&$record, $secure=false){
 		if ( $secure && !$record->_record->checkPermission('add existing related record', array('relationship'=>$record->_relationshipName) ) ){
-			// Use security to check to see if we are allowed to delete this
+			// Use security to check to see if we are allowed to delete this 
 			// record.
 			return Dataface_Error::permissionDenied(
 				df_translate(
@@ -1571,7 +1572,7 @@ class Dataface_IO {
 				);
 		}
 		$builder = new Dataface_QueryBuilder($this->_table->tablename);
-
+		
 		//We are often missing the values from the domain table so we will load them
 		//here
 		$domainRec = $record->toRecord($record->_relationship->getDomainTable());
@@ -1584,15 +1585,15 @@ class Dataface_IO {
 		if ( $this->fireTriggers ){
 			$res =$this->fireBeforeAddRelatedRecord($record);
 			if ( PEAR::isError($res) ) return $res;
-
+			
 			$res = $this->fireBeforeAddExistingRelatedRecord($record);
 			if ( PEAR::isError($res) ) return $res;
 		}
-
-
-
-
-
+			
+		
+		
+		
+		
 		// It makes sense for us to fire beforeSave, afterSave, beforeInsert, and afterInsert
 		// events here for the records that are being inserted.  To do this we will need to extract
 		// Dataface_Record objects for all of the tables that will have records inserted.  In this
@@ -1601,9 +1602,9 @@ class Dataface_IO {
 		// i.e., we should only fire these events for the join table.
 		$drecords =  $record->toRecords();
 			// $drecords is an array of Dataface_Record objects
-
+		
 		if ( count($drecords) > 1 ){
-			// If there is only one record then it is for the domain table - which we don't actually
+			// If there is only one record then it is for the domain table - which we don't actually 
 			// change.
 			foreach ( array_keys($drecords) as $recordIndex){
 				$currentRecord =& $drecords[$recordIndex];
@@ -1617,19 +1618,19 @@ class Dataface_IO {
 				unset($currentRecord);
 				if ( $drecords[$recordIndex]->_table->tablename === $record->_relationship->getDomainTable() ) continue;
 					// We don't do anything for the domain table because it is not being updated.
-
+					
 				$rio = new Dataface_IO($drecords[$recordIndex]->_table->tablename);
-
+				
 				$drec_snapshot = $drecords[$recordIndex]->strvals();
-
+				
 				$res = $rio->fireBeforeSave($drecords[$recordIndex]);
 				if (PEAR::isError($res) ) return $res;
 				$res = $rio->fireBeforeInsert($drecords[$recordIndex]);
 				if ( PEAR::isError($res) ) return $res;
-
+				
 				$drec_post_snapshot = $drecords[$recordIndex]->strvals();
-
-
+				
+				
 				foreach ( $drec_post_snapshot as $ss_key=>$ss_val ){
 					if ( $drec_snapshot[$ss_key] != $ss_val ){
 					    if ( $record->_relationship->hasField($ss_key, true, true) ){
@@ -1638,13 +1639,13 @@ class Dataface_IO {
 						$drecords[$recordIndex]->setValue($ss_key,$ss_val);
 					}
 				}
-
+				
 				unset($drec_post_snapshot);
 				unset($drec_snapshot);
 				unset($rio);
 			}
-		}
-
+		} 
+		
 		if ( count($drecords) > 1 ){
 		    $sql = $builder->addExistingRelatedRecord($record);
 			if ( PEAR::isError($sql) ){
@@ -1653,26 +1654,26 @@ class Dataface_IO {
 			// Actually add the related record
 			$res = $this->performSQL($sql);
 			if ( PEAR::isError( $res) ) return $res;
-
-			// If there is only one record then it is for the domain table - which we don't actually
+			
+			// If there is only one record then it is for the domain table - which we don't actually 
 			// change.
 			foreach ( array_keys($drecords) as $recordIndex){
-
+			
 				if ( $drecords[$recordIndex]->_table->tablename === $record->_relationship->getDomainTable() ) continue;
 					// We don't do anything for the domain table because it is not being updated.
-
+					
 				$rio = new Dataface_IO($drecords[$recordIndex]->_table->tablename);
-
+				
 				$res = $rio->fireAfterInsert($drecords[$recordIndex]);
 				if (PEAR::isError($res) ) return $res;
 				$res = $rio->fireAfterSave($drecords[$recordIndex]);
 				if ( PEAR::isError($res) ) return $res;
-
+				
 				unset($rio);
 			}
 		} else {
-
-
+			
+		
 			// This is a one to many relationship.  We will handle this case
 			// only when the foreign key is currently null.  Otherwise we return
 			// and error.
@@ -1684,7 +1685,7 @@ class Dataface_IO {
 				$domainRec2 = df_get_record_by_id($drecid);
 				if ( !$domainRec2 ){
 					return PEAR::raiseError("Tried to get record with id $drecid but it doesn't exist");
-
+					
 				} else if ( PEAR::isError($domainRec2) ){
 					return $domainRec2;
 				}
@@ -1693,9 +1694,9 @@ class Dataface_IO {
 
 					if ( $domainRec2->val($fkey) ){
 						return PEAR::raiseError("Could not add existing related record '".$domainRec2->getTitle()."' because it can only belong to a single relationship and it already belongs to one.");
-
+						
 					} else {
-
+						
 						$domainRec2->setValue($fkey, $fkeyvals[$domainRec2->_table->tablename][$fkey]);
 					}
 				}
@@ -1705,34 +1706,34 @@ class Dataface_IO {
 			} else {
 				return PEAR::raiseError("Failed to add existing record because the domain table doesn't have any foreign keys in it.");
 			}
-
-
+			
+			
 		}
-
+		
 		// Fire the "after" events
 		if ( $this->fireTriggers ){
 			$res2 = $this->fireAfterAddExistingRelatedRecord($record);
 			if ( PEAR::isError( $res2 ) ) return $res2;
-
+			
 			$res2 = $this->fireAfterAddRelatedRecord($record);
 			if ( PEAR::isError( $res2 ) ) return $res2;
 		}
-
+			
 		return $res;
-
+	
 	}
-
+	
 	/**
 	 * Removes the given related record from its relationship.
 	 *
 	 * @param Dataface_RelatedRecord &$related_record The related record to be removed.
-	 * @param boolean $delete If true then the record will also be deleted from
+	 * @param boolean $delete If true then the record will also be deleted from 
 	 * 	the database.
 	 * @since 0.6.1
 	 */
 	function removeRelatedRecord(&$related_record, $delete=false, $secure=false){
 		if ( $secure && !$related_record->_record->checkPermission('remove related record', array('relationship'=>$related_record->_relationshipName) ) ){
-			// Use security to check to see if we are allowed to delete this
+			// Use security to check to see if we are allowed to delete this 
 			// record.
 
 			return Dataface_Error::permissionDenied(
@@ -1744,7 +1745,7 @@ class Dataface_IO {
 				);
 		}
 		$parent_perms = $related_record->_record->getPermissions(array('relationship'=>$related_record->_relationshipName));
-
+		
 		if ( $secure && $related_record->_relationship->isOneToMany() && isset($parent_perms['delete related record']) and !$parent_perms['delete related record']){
 		    return Dataface_Error::permissionDenied(
 				df_translate(
@@ -1754,7 +1755,7 @@ class Dataface_IO {
 					)
 				);
 		}
-
+		
 		$res = $this->fireEvent('beforeRemoveRelatedRecord', $related_record);
 		if ( PEAR::isError($res) ) return $res;
 		/*
@@ -1765,7 +1766,7 @@ class Dataface_IO {
 		$domainTable = $related_record->_relationship->getDomainTable();
 		if ( PEAR::isError($domainTable) ){
 			/*
-			 * Dataface_Relationship::getDomainTable() throws an error if there are
+			 * Dataface_Relationship::getDomainTable() throws an error if there are 
 			 * no join tables.  We account for that by explicitly setting the domain
 			 * table to the first table in the list.
 			 */
@@ -1775,10 +1776,10 @@ class Dataface_IO {
 		 * Next we construct an IO object to write to the domain table.
 		 */
 		$domainIO = new Dataface_IO($domainTable);
-
+		
 		$domainTable =& Dataface_Table::loadTable($domainTable);
 			// reference to the Domain table Dataface_Table object.
-
+		
 		/*
 		 * Begin building queries.
 		 */
@@ -1792,15 +1793,15 @@ class Dataface_IO {
 			$query[$keyName] = $related_record->strval($keyName);
 			$absVals[$domainTable->tablename.'.'.$keyName] = $query[$keyName];
 		}
-
-
+		
+		
 		$fkeys = $related_record->_relationship->getForeignKeyValues($absVals, null, $related_record->_record);
 		$warnings = array();
 		$confirmations = array();
 		foreach ( array_keys($fkeys) as $currTable){
 			// For each table in the relationship we go through and delete its record.
 			$io = new Dataface_IO($currTable);
-
+				
 			$record = new Dataface_Record($currTable, array());
 			$res = $io->read($fkeys[$currTable], $record);
 			//patch for Innodb foreign keys with ON DELELE CASCADE
@@ -1819,48 +1820,48 @@ class Dataface_IO {
 			if ( $currTable == $domainTable->tablename and !$delete ){
 				// Unless we have specified that we want the domain table record
 				// deleted, we leave it alone!
-
+				
 				// If this is a one to many we'll try to just set the foreign key to null
 				if ( count($fkeys) == 1 ){
 					if (($currTable == $domainTable->tablename) and $secure and !$related_record->_record->checkPermission('remove related record', array('relationship'=>$related_record->_relationshipName)) ){
 						$useSecurity = true;
-
+						
 					} else {
 						$useSecurity = false;
 					}
-
+				
 					$myfkeys = $related_record->_relationship->getForeignKeyValues();
 					foreach ( $myfkeys[$currTable] as $colName=>$colVal ){
                                                 $record->setValue($colName, null);
-
+						
 					}
 					//exit;
-
+					
 					$res = $record->save(null, $useSecurity);
 					if ( PEAR::isError($res) && Dataface_Error::isError($res) ){
 						//$this->logError($res);
 						return $res;
 					} else if ( PEAR::isError($res) ){
 						$warnings[] = $res;
-
+						
 					} else {
-
+					
 						$confirmations[] = df_translate(
 						'Successfully removed record',
 						"Successfully removed entry for record '".$record->getTitle()."' in table '$currTable'",
 						array('title'=>$record->getTitle(), 'table'=>$currTable)
 						);
-
+						
 					}
-
-
+							
+					
 				}
-
+				
 				unset($record);
 				unset($io);
 				continue;
 			}
-
+			
 			// Let's figure out whether we need to use security for deleting this
 			// record.
 			// If security is on, and it is the domain table, and the user doesn't
@@ -1868,12 +1869,12 @@ class Dataface_IO {
 			// security
 			if (($currTable == $domainTable->tablename) && $secure && !$related_record->_relationship->isOneToMany() && !$related_record->_record->checkPermission('delete related record', array('relationship'=>$related_record->_relationshipName)) ){
 				$useSecurity = true;
-
+				
 			} else {
 				$useSecurity = false;
 			}
                         $res = $io->delete($record, $useSecurity);
-
+			
 			if ( PEAR::isError($res) && Dataface_Error::isError($res) ){
 				//$this->logError($res);
 				return $res;
@@ -1891,24 +1892,24 @@ class Dataface_IO {
 			unset($record);
 			unset($b);
 			unset($io);
-
+		
 		}
 		$res = $this->fireEvent('afterRemoveRelatedRecord', $related_record);
 		if ( PEAR::isError($res) ) return $res;
 		if (count($warnings)>0 ) return PEAR::raiseError(@implode("\n",$warnings), DATAFACE_E_WARNING);
 		if (count($confirmations)==0) return false;
 		return true;
-
+		
 	}
-
+	
 	/**
 	 * Copies a record from a relationship in one parent record to another.
 	 * Copies are a little bit difficult to define in a relational database,
 	 * but, this copy uses a few rules to make it more clear.
-	 * <p><b><em>Note that this method is not implemented yet.. it will throw
+	 * <p><b><em>Note that this method is not implemented yet.. it will throw 
 	 *		and error if called.</em></b></p>
 	 * <ul>
-	 * <li>A deep copy will recursively perform deep copies of records in
+	 * <li>A deep copy will recursively perform deep copies of records in 
 	 *		one-to-many relationships, and maintain links to records in
 	 *		many-to-many relationships.</li>
 	 * <li>A shallow copy (default behavior) maintains links to records
@@ -1930,11 +1931,11 @@ class Dataface_IO {
 	function copy(&$sourceRecord, &$destParent, $destRelationship=null, $deepCopy=false){
 		throw new Exception("The method ".__METHOD__." is not implemented yet.", E_USER_ERROR);
 	}
+	
 
-
-
+	
 	// Event handlers.
-
+	
 	/**
 	 * Calls the beforeSave() method in the delegate class.
 	 * @param $record Dataface_Record object that is being saved.
@@ -1942,7 +1943,7 @@ class Dataface_IO {
 	function fireBeforeSave(&$record){
 		return $this->fireEvent('beforeSave', $record);
 	}
-
+	
 	/**
 	 * Calls the afterSave() method in the delegate class.
 	 * @param $record Dataface_Record object that is being saved.
@@ -1950,7 +1951,7 @@ class Dataface_IO {
 	function fireAfterSave(&$record){
 		return $this->fireEvent('afterSave', $record);
 	}
-
+	
 	/**
 	 * Calls the beforeUpdate() method in the delegate class.
 	 * @param $record Dataface_Record object that is being updated.
@@ -1958,8 +1959,8 @@ class Dataface_IO {
 	function fireBeforeUpdate(&$record){
 		return $this->fireEvent('beforeUpdate', $record);
 	}
-
-
+	
+	
 	/**
 	 * Calls the afterUpdate() method in the delegate class.
 	 * @param $record Dataface_Record object that is being updated.
@@ -1967,7 +1968,7 @@ class Dataface_IO {
 	function fireAfterUpdate(&$record){
 		return $this->fireEvent('afterUpdate', $record);
 	}
-
+	
 	/**
 	 * Calls the beforeInsert() method in the delegate class.
 	 * @param $record Dataface_Record object that is being inserted.
@@ -1975,7 +1976,7 @@ class Dataface_IO {
 	function fireBeforeInsert(&$record){
 		return $this->fireEvent('beforeInsert', $record);
 	}
-
+	
 	/**
 	 * Calls the afterInsert() method in the delegate class.
 	 * @param $record Dataface_Record object that is being inserted.
@@ -1983,7 +1984,7 @@ class Dataface_IO {
 	function fireAfterInsert(&$record){
 		return $this->fireEvent('afterInsert', $record);
 	}
-
+	
 	/**
 	 * Calls the beforeAddRelatedRecord() method in the delegate class.
 	 * @param $record Dataface_RelatedRecord object that is being added.
@@ -1991,16 +1992,16 @@ class Dataface_IO {
 	function fireBeforeAddRelatedRecord(&$record){
 		return $this->fireEvent('beforeAddRelatedRecord', $record);
 	}
-
+	
 	/**
 	 * Calls the afterAddRelatedRecord() method in the delegate class.
 	 * @param $record Dataface_RelatedRecord object that is being added.
 	 */
 	function fireAfterAddRelatedRecord(&$record){
 		return $this->fireEvent('afterAddRelatedRecord', $record);
-
+	
 	}
-
+	
 	/**
 	 * Calls the beforeAddNewRelatedRecord() method in the delegate class.
 	 * @param $record Dataface_RelatedRecord object that is being added.
@@ -2008,7 +2009,7 @@ class Dataface_IO {
 	function fireBeforeAddNewRelatedRecord(&$record){
 		return $this->fireEvent('beforeAddNewRelatedRecord', $record);
 	}
-
+	
 	/**
 	 * Calls the afterAddNewRelatedRecord() method in the delegate class.
 	 * @param $record Dataface_RelatedRecord object that is being added.
@@ -2016,7 +2017,7 @@ class Dataface_IO {
 	function fireAfterAddNewRelatedRecord(&$record){
 		return $this->fireEvent('afterAddNewRelatedRecord', $record);
 	}
-
+	
 	/**
 	 * Calls the beforeAddExistingRelatedRecord() method in the delegate class.
 	 * @param $record Dataface_RelatedRecord object that is being added.
@@ -2024,7 +2025,7 @@ class Dataface_IO {
 	function fireBeforeAddExistingRelatedRecord(&$record){
 		return $this->fireEvent('beforeAddExistingRelatedRecord', $record);
 	}
-
+	
 	/**
 	 * Calls the afterAddExistingRelatedRecord() method in the delegate class.
 	 * @param $record Dataface_RelatedRecord object that is being added.
@@ -2032,7 +2033,7 @@ class Dataface_IO {
 	function fireAfterAddExistingRelatedRecord(&$record){
 		return $this->fireEvent('afterAddExistingRelatedRecord', $record);
 	}
-
+	
 	/**
 	 * Calls the beforeDelete() method in the delegate class.
 	 * @param $record Dataface_Record object to be deleted.
@@ -2040,7 +2041,7 @@ class Dataface_IO {
 	function fireBeforeDelete(&$record){
 		return $this->fireEvent('beforeDelete', $record);
 	}
-
+	
 	/**
 	 * Calls the afterDelete method in the delegate class.
 	 * @param $record Dataface_Record object to be deleted.
@@ -2048,7 +2049,7 @@ class Dataface_IO {
 	function fireAfterDelete(&$record){
 		return $this->fireEvent('afterDelete', $record);
 	}
-
+	
 	/**
 	 * Fires an event (a method of the delegate class).
 	 * @param $name The name of the event (also the name of the method in the delegate class.
@@ -2072,12 +2073,12 @@ class Dataface_IO {
 				return $res;
 			}
 		}
-
+		
 		$parentIO =& $this->getParentIO();
 		if ( isset($parentIO) ){
 			$parentIO->fireEvent($name, $record, false);
 		}
-
+		
 		if ( $bubble ){
 			$app =& Dataface_Application::getInstance();
 			$res = $app->fireEvent($name, array(&$record, &$this));
@@ -2086,15 +2087,15 @@ class Dataface_IO {
 				return $res;
 			}
 		}
-
+		
 		return true;
-
+	
 	}
-
-
-
-
-
+	
+	
+	
+	
+	
 	/**
 	 * A convenience method that returns the given parameter (if it is not null) or
 	 * $this->_tablename if the parameter $tablename is null.  This is handy when
@@ -2104,12 +2105,12 @@ class Dataface_IO {
 	function tablename($tablename=null){
 		if ( $tablename !== null ) return $tablename;
 		return $this->_table->tablename;
-
+		
 	}
-
-
+	
+	
 	/**
-	 *
+	 * 
 	 * Imports data into the supplied record's relationship.  This makes use of this table's delegate
 	 * file to handle the importing.
 	 *
@@ -2119,14 +2120,14 @@ class Dataface_IO {
 	 * @param 	$data 				Either raw data that is to be imported, or the name of an Import table from which
 	 * 							data is to be imported.
 	 * @type Raw | string
-	 *
+	 * 
 	 * @param	$importFilter		The name of the import filter that should be used.
 	 * @type string
-	 *
+	 * 
 	 * @param	$relationshipName	The name of the relationship where these records should be added.
 	 * @type string
-	 *
-	 * @param $commit				A boolean value indicating whether this import should be committed to the
+	 * 
+	 * @param $commit				A boolean value indicating whether this import should be committed to the 
 	 *								database.  If this is false, then the records will not actually be imported.  They
 	 *								will merely be stored in an import table.  This must be explicitly set to true
 	 *								for the import to succeed.
@@ -2154,11 +2155,11 @@ class Dataface_IO {
 	 *					<name>Susan Moore</name><number>444-444-4444</number>
 	 *				</listentry>
 	 *			</phonelist>';
-	 *
+	 * 
 	 * 		// assume that we have an import filter called 'XML_Filter' that can import the above data.
-	 *
+	 * 
 	 * $directory = new Dataface_Record('Directory', array('Name'=>'SFU Directory'));
-	 * 		// assume that the Directory table has a relationship called 'phonelist' and we want to
+	 * 		// assume that the Directory table has a relationship called 'phonelist' and we want to 
 	 *		// import the above data into this relationship.
 	 *
 	 * $io = new Dataface_IO('Directory');
@@ -2179,24 +2180,24 @@ class Dataface_IO {
 	 * echo $records[0]->val('number'); // should output '555-555-5555'
 	 * echo $records[1]->val('name'); 	// should output 'Susan Moore'
 	 * echo $records[1]->val('number'); // should output '444-444-4444'
-	 *
+	 * 
 	 *  // note that at this point the records in $records are already persisted to the database
 	 *
 	 */
 	function importData( &$record, $data, $importFilter=null, $relationshipName=null, $commit=false, $defaultValues=array()){
 		if ( $relationshipName === null ){
-
+			
 			/*
 			 * No relationship is specified so our import table is just the current table.
 			 */
 			$table =& $this->_table;
-
+			
 		} else {
 			/*
 			 * A relationship is specified so we are actually importing the records into the
 			 * domain table of the relationship.
 			 */
-
+			
 			$relationship =& $this->_table->getRelationship($relationshipName);
 			$tablename = $relationship->getDomainTable();
 			if ( PEAR::isError($tablename) ){
@@ -2214,9 +2215,9 @@ class Dataface_IO {
 						, E_USER_ERROR);
 				}
 				$tablename = $destinationTables[0]->tablename;
-
+				
 			}
-
+			
 			if ( PEAR::isError($tablename) ){
 				throw new Exception($tablename->toString(), E_USER_ERROR);
 			}
@@ -2224,9 +2225,9 @@ class Dataface_IO {
 			$rel_io = new Dataface_IO($tablename);
 			$io =& $rel_io;
 		}
-
+		
 		if ( !$commit ){
-			// If data is provided, we must parse it and prepare it for
+			// If data is provided, we must parse it and prepare it for 
 			// import
 			$records = $table->parseImportData($data, $importFilter, $defaultValues);
 			if ( PEAR::isError($records) ){
@@ -2236,15 +2237,15 @@ class Dataface_IO {
 				 */
 				$records = $table->parseImportData($data, null, $defaultValues);
 			}
-
+			
 			if ( PEAR::isError($records) ){
 				/*
-				 * Apparently we have failed to import the data, so let's just
+				 * Apparently we have failed to import the data, so let's just 
 				 * return the errors.
 				 */
 				return $records;
 			}
-
+			
 			// Now we will load the values of the records into an array
 			// so that we can store it in the session
 			$importData = array(
@@ -2256,7 +2257,7 @@ class Dataface_IO {
 				'rows' => array()
 				);
 			if ( isset($record) ) $importData['record'] = $record->getId();
-
+			
 			foreach ($records as $r){
 				if ( is_a($r, 'Dataface_ImportRecord') ){
 					// The current record is actually an ImportRecord
@@ -2266,7 +2267,7 @@ class Dataface_IO {
 					unset($r);
 				}
 			}
-
+			
 			$dumpFile = tempnam(sys_get_temp_dir(), 'dataface_import');
 			$handle = fopen($dumpFile, "w");
 			if ( !$handle ){
@@ -2274,26 +2275,26 @@ class Dataface_IO {
 			}
 			fwrite($handle, serialize($importData));
 			fclose($handle);
-
+			
 			$_SESSION['__dataface__import_data__'] =  $dumpFile;
 
 			return $dumpFile;
-
+			
 		}
-
+		
 		if ( !@$_SESSION['__dataface__import_data__'] ){
 			throw new Exception("No import data to import", E_USER_ERROR);
 		}
-
+		
 		$dumpFile = $_SESSION['__dataface__import_data__'];
 		$importData = unserialize(file_get_contents($dumpFile));
-
-
+		
+		
 		if ( $importData['table'] != $table->tablename ){
 			return PEAR::raiseError("Unexpected table name in import data.  Expected ".$table->tablename." but received ".$importData['table']);
-
+			
 		}
-
+		
 		$inserted = array();
 		$i=0;
 		foreach ( $importData['rows'] as $row ){
@@ -2319,7 +2320,7 @@ class Dataface_IO {
 					 * These records are not being added to a relationship.  They are just being added directly
 					 * into the table.
 					 */
-
+					 
 					$defaults = array();
 					// for absolute field name keys for default values, we will strip out the table name.
 					foreach (array_keys($defaultValues) as $key){
@@ -2334,7 +2335,7 @@ class Dataface_IO {
 							$defaults[$key] = $defaultValues[$key];
 						}
 					}
-
+					
 					$values = array_merge($defaults, $values);
 					$insrecord = new Dataface_Record($this->_table->tablename, $values);
 					$inserted[] =& $insrecord;
@@ -2350,9 +2351,9 @@ class Dataface_IO {
 						$values[$table->tablename.'.'.$key] = $values[$key];
 						unset($values[$key]);
 					}
-
+					
 					$values = array_merge( $defaultValues, $values);
-
+					
 					/*
 					 * Let's check if all of the keys are set.  If they are then the record already exists.. we
 					 * just need to update the record.
@@ -2368,12 +2369,12 @@ class Dataface_IO {
 						}
 					}
 					$rrecord = new Dataface_Record( $table->tablename, array());
-
+				
 					$rrecord->setValues($rvalues);
 						// we set the values in a separate call because we want to be able to do an update
 						// and setting values in the constructer sets the snapshot (ie: it will think that
 						// no values have changed.
-
+					
 					if ( $io->recordExists($rrecord)){
 						/*
 						 * The record already exists, so we update it and then add it to the relationship.
@@ -2383,7 +2384,7 @@ class Dataface_IO {
 							/*
 							 * We only edit the record if we have permission to do so.
 							 */
-
+						
 							$result = $io->write($rrecord);
 							if ( PEAR::isError($result) ){
 								throw new Exception($result->toString(), E_USER_ERROR);
@@ -2393,45 +2394,45 @@ class Dataface_IO {
 						$inserted[] =& $relatedRecord;
 						$qb = new Dataface_QueryBuilder($this->_table->tablename);
 						$sql = $qb->addExistingRelatedRecord($relatedRecord);
-
+						
 						$res2 = $this->performSQL($sql);
-
+					
 						unset($relatedRecord);
-
-
+			
+						
 					} else {
-
+					
 						$relatedRecord = new Dataface_RelatedRecord( $record, $relationshipName, $values);
 						$inserted[] =& $relatedRecord;
 						$qb = new Dataface_QueryBuilder($this->_table->tablename);
 						$sql = $qb->addRelatedRecord($relatedRecord);
-
+						
 						$res2 = $this->performSQL($sql);
-
+						
 						unset($relatedRecord);
 					}
-
+					
 					unset($rrecord);
-
-
+					
+					
 				}
 			}
-
+		
 			unset($row);
 		}
-
-
+		
+		
 		@unlink($dumpFile);
 		unset($_SESSION['__dataface__import_data__']);
-
+		
 		return $inserted;
-
-
-
-
+		
+		
+	
+	
 	}
-
-
+	
+	
 	/**
 	 * Returns a record or record value given it's unique URI.
 	 * @param string $uri The URI of the data we wish to retrieve.
@@ -2440,12 +2441,12 @@ class Dataface_IO {
 	 * tablename?key1=val1&keyn=valn
 	 * tablename/relationshipname?key1=val1&keyn=valn&relationshipname::relatedkey=relatedval#fieldname
 	 * tablename/relationshipname?key1=val1&keyn=valn&relationshipname::relatedkey=relatedval
-	 *
+	 * 
 	 * Where url encoding is used as in normal HTTP urls.  If a field is specified (after the '#')
 	 *
 	 * @param string $filter The name of a filter to pass the data through.  This
-	 * 		is only applicable when a field name is specified.  Possible filters
-	 *		include:
+	 * 		is only applicable when a field name is specified.  Possible filters 
+	 *		include: 
 	 *			strval - Returns the string value of the field. (aka stringValue, getValueAsString)
 	 *			display - Returns the display value of the field. (This substitutes valuelist values)
 	 *			htmlValue - Returns the html value of the field.
@@ -2453,7 +2454,7 @@ class Dataface_IO {
 	 *					  the length of the output and strips any HTML.
 	 *
 	 * @returns mixed Either a Dataface_Record object, a Dataface_RelatedRecord object
-	 *				of a value as stored in the object.  The output depends on
+	 *				of a value as stored in the object.  The output depends on 
 	 *				the input.  If it receives invalid input, it will return a PEAR_Error
 	 *				object.
 	 *
@@ -2463,7 +2464,7 @@ class Dataface_IO {
 	 * // Get record from Users table with UserID=10
 	 * $user =& Dataface_IO::getByID('Users?UserID=10');
 	 * 		// Dataface_Record object
-	 *
+	 * 
 	 * // get birthdate of user with UserID=10
 	 * $birthdate =& Dataface_IO::getByID('Users?UserID=10#birthdate');
 	 *		// array('year'=>'1978','month'=>'12','day'=>'27', ...)
@@ -2472,42 +2473,38 @@ class Dataface_IO {
 	 * // where the jobtitle is "cook"
 	 * $job =& Dataface_IO::getByID('Users?UserID=10&jobs::jobtitle=cook");
 	 * 		// Dataface_RelatedRecord object
-	 *
+	 * 
 	 * // Get the employers name of the cook job
 	 * $employername = Dataface_IO::getByID('Users?UserID=10&jobs::jobtitle=cook#employername');
 	 *		// String
 	 *
-	 * // Add filter, so we get the HTML value of the bio field rather than just
+	 * // Add filter, so we get the HTML value of the bio field rather than just 
 	 * // the raw value.
 	 * $bio = Dataface_IO::getByID('Users?UserID=10#bio', 'htmlValue');
 	 *
 	 * </code>
 	 */
 	static function &getByID($uri, $filter=null){
-    if (!is_string($uri)) {
-      print_r($uri);
-      throw new Exception("getByID expects uri to be a string");
-    }
 		if ( strpos($uri, '?') === false ) return PEAR::raiseError("Invalid record id: ".$uri);
 		$uri_parts = df_parse_uri($uri);
 		if ( PEAR::isError($uri_parts) ) return $uri_parts;
 		if ( !isset($uri_parts['relationship']) ){
 			// This is just requesting a normal record.
-
+			
 			// Check to see if this is to be a new record or an existing record
 			if ( @$uri_parts['action'] and ( $uri_parts['action'] == 'new' ) ){
 				$record = new Dataface_Record($uri_parts['table'], array());
 				$record->setValues($uri_parts['query']);
 				return $record;
 			}
-
+			
 			foreach ($uri_parts['query'] as $ukey=>$uval){
 				if ( $uval and $uval{0}!='=' ) $uval = '='.$uval;
 				$uri_parts['query'][$ukey]=$uval;
 			}
 			// At this point we are sure that this is requesting an existing record
 			$record =& df_get_record($uri_parts['table'], $uri_parts['query']);
-
+			
 			if ( isset($uri_parts['field']) ){
 				if ( isset($filter) and method_exists($record, $filter) ){
 					$val =& $record->$filter($uri_parts['field']);
@@ -2518,25 +2515,25 @@ class Dataface_IO {
 				}
 			}
 			else return $record;
-
+		
 		} else {
 			// This is requesting a related record.
-
+			
 			$record =& df_get_record($uri_parts['table'], $uri_parts['query']);
 			if ( !$record ) return PEAR::raiseError("Could not find any records matching the query");
-
+			
 			// Check to see if we are creating a new record
 			if ( @$uri_parts['action'] and ( $uri_parts['action'] == 'new' ) ){
 				$related_record = new Dataface_RelatedRecord($record, $uri_parts['relationship']);
 				$related_record->setValues( $uri_parts['query']);
 				return $related_record;
 			}
-
-
+			
+			
 			// At this point we can be sure that we are requesting an existing record.
 			$related_records =& $record->getRelatedRecordObjects($uri_parts['relationship'], 0,1, $uri_parts['related_where']);
 			if ( count($related_records) == 0 ){
-
+			
 				return PEAR::raiseError("Could not find any related records matching the query: ".$uri_parts['related_where']);
 			}
 			if ( isset($uri_parts['field']) ) {
@@ -2549,34 +2546,34 @@ class Dataface_IO {
 				}
 			}
 			else return $related_records[0];
-
+		
 		}
 	}
-
-
+	
+	
 	/**
 	 * Sets a value by ID.
 	 */
 	static function setByID($uri, $value){
-
+		
 		@list($uri, $fieldname) = explode('#', $uri);
 		$record =& Dataface_IO::getByID($uri);
-
+		
 		if ( PEAR::isError($record) ) return $record;
 		if ( !is_object($record) ) return PEAR::raiseError("Could not find record matching '$uri'.");
-
+		
 		if ( isset($fieldname) ){
 			$res = $record->setValue($fieldname, $value);
 		} else {
 			$res = $record->setValues($value);
 		}
 		if ( PEAR::isError($res) ) return $res;
-
+		
 		$res = $record->save();
 		return $res;
 	}
-
-
+	
+	
 	static function createModificationTimesTable(){
 		$sql = "create table if not exists dataface__mtimes (
 			`name` varchar(255) not null primary key,
@@ -2585,7 +2582,7 @@ class Dataface_IO {
 		$res = xf_db_query($sql, df_db());
 		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 	}
-
+	
 	static function touchTable($table){
 		$sql = "replace into dataface__mtimes (`name`,`mtime`) values ('".addslashes($table)."','".addslashes(time())."')";
 		$res = xf_db_query($sql, df_db());
@@ -2595,10 +2592,10 @@ class Dataface_IO {
 			if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		}
 	}
-
-
-
-
+	
+	
+				
+				
 
 
 }

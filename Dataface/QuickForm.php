@@ -172,7 +172,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 * @type array(string)
 	 *
 	 */
-	function Dataface_QuickForm($tablename, $db='',  $query='', $formname='', $new=false, $fieldnames=null, $lang=null){
+	function __construct($tablename, $db='',  $query='', $formname='', $new=false, $fieldnames=null, $lang=null){
 		$app =& Dataface_Application::getInstance();
 		$this->app =& $app;
 		$appQuery =& $app->getQuery();
@@ -287,6 +287,11 @@ class Dataface_QuickForm extends HTML_QuickForm {
 
 			
 	}
+
+    public function Dataface_QuickForm($tablename, $db='',  $query='', $formname='', $new=false, $fieldnames=null, $lang=null)
+    {
+        self::__construct($tablename, $db,  $query, $formname, $new, $fieldnames, $lang);
+    }
 	
 	
 	function formSubmitted(){
