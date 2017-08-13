@@ -33,9 +33,14 @@ class HTML_QuickForm_Renderer
     *
     * @access public
     */
-    function HTML_QuickForm_Renderer()
+    function __construct()
     {
     } // end constructor
+
+    public function HTML_QuickForm_Renderer()
+    {
+        self::__construct();
+    }
 
    /**
     * Called when visiting a form, before processing any form elements

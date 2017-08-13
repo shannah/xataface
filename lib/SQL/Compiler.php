@@ -42,11 +42,16 @@ class SQL_Compiler {
     	// arrays instead of the 'column_names', 'column_tables', etc.. arrays.
 
 // {{{ function SQL_Compiler($array = null)
-    function SQL_Compiler($array = null)
+    function __construct($array = null)
     {
         $this->tree = $array;
     }
 // }}}
+
+    public function SQL_Compiler($array = null)
+    {
+        self::__construct($array);
+    }
 
 	// {{{ function compileFunction
 	function compileFunction($arg, $writeAlias = true){

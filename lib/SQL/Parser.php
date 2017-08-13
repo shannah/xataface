@@ -66,7 +66,7 @@ class SQL_Parser
     var $dialects = array("ANSI", "MySQL");
 
 // {{{ function SQL_Parser($string = null)
-    function SQL_Parser($string = null, $dialect = "MySQL", $useCache = true) {
+    function __construct($string = null, $dialect = "MySQL", $useCache = true) {
         $this->dialect = $dialect;
         if ( $useCache ) {
         	$parser =& SQL_Parser::loadParser($dialect);
@@ -81,6 +81,11 @@ class SQL_Parser
             $this->lexer->symbols =& $this->symbols;
 
         }
+    }
+
+    public function SQL_Parser($string = null, $dialect = "MySQL", $useCache = true)
+    {
+        self::__construct($string, $dialect, $useCache);
     }
 // }}}
 

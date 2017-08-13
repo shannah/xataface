@@ -68,11 +68,16 @@ class Lexer
 // }}}
 
 // {{{ incidental functions
-    function Lexer($string = '', $lookahead=0)
+    function __construct($string = '', $lookahead=0)
     {
         $this->string = $string;
         $this->stringLen = strlen($string);
         $this->lookahead = $lookahead;
+    }
+
+    public function Lexer($string = '', $lookahead=0)
+    {
+        self::__construct($string, $lookahead);
     }
     
     function get() {
