@@ -24,12 +24,15 @@ class Dataface_ValuelistTool {
 	var $_valuelists = array();
 	private $_valuelistsConfig = null;
 	
-	function Dataface_ValuelistTool(){
+	function __construct(){
 	
 		$this->_loadValuelistsIniFile();
-			
-	
 	}
+
+    public function Dataface_ValuelistTool()
+    {
+        self::__construct();
+    }
 	
 	function _valuelistsIniFilePath(){
 		return DATAFACE_SITE_PATH.'/valuelists.ini';

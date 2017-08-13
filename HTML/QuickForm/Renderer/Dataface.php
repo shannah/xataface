@@ -29,11 +29,16 @@ class HTML_QuickForm_Renderer_Dataface extends HTML_QuickForm_Renderer_Default {
 	var $_fieldMap = array();
 	
 	
-	function HTML_QuickForm_Renderer_Dataface(&$form){
+	function __construct(&$form){
 		$this->_skinTool =& Dataface_SkinTool::getInstance();
 		parent::HTML_QuickForm_Renderer_Default();
 		$this->setRequiredNoteTemplate('');
 	}
+
+    public function HTML_QuickForm_Renderer_Dataface(&$form)
+    {
+        self::__construct($form);
+    }
 	
 	function addField($elementname, $fieldname){
 		$this->_fieldMap[$elementname] = $fieldname;

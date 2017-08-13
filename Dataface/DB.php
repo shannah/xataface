@@ -52,7 +52,7 @@ class Dataface_DB {
 	
 	var $blobs = array();  // Blobs.
 	
-	function Dataface_DB($db=null){
+	function __construct($db=null){
 		$this->app =& Dataface_Application::getInstance();
 		if ( $db === null ){
 			$db = $this->app->db();
@@ -71,12 +71,12 @@ class Dataface_DB {
 				file_put_contents($this->_fcache_base_path.'/.htaccess', Dataface_Application::$DENY_HTACCESS_CONTENTS);
 			}
 		}
-		
-		
-		
-		
-		
 	}
+
+    public function Dataface_DB($db=null)
+    {
+        self::__construct($db);
+    }
 	
 	/**
 	 * Loads cached queries from the file Dataface_DB.cache in the DATAFACE_CACHE

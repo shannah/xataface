@@ -27,11 +27,16 @@ class SQL_Parser_wrapper {
 	var $_tableLookup;
 	var $_parser;
 	
-	function SQL_Parser_wrapper(&$data, $dialect='MySQL'){
+	function __construct(&$data, $dialect='MySQL'){
 		$this->_data =& $data;
 		$this->_tableLookup = array();
 		$this->_parser = new SQL_Parser(null, $dialect);
 	}
+
+    public function SQL_Parser_wrapper(&$data, $dialect='MySQL')
+    {
+        self::__construct($data, $dialect);
+    }
 	
 	/**
 	 * Extracts the tablename from a requested column name.  This will resolve aliases.

@@ -64,7 +64,7 @@ class I18Nv2_CommonList
      * @param   string  $language
      * @param   string  $encoding
      */
-    function I18Nv2_CommonList($language = null, $encoding = null)
+    function __construct($language = null, $encoding = null)
     {
         if (!$this->setLanguage($language)) {
             if (class_exists('I18Nv2')) {
@@ -79,6 +79,11 @@ class I18Nv2_CommonList
         if (!$this->setEncoding($encoding)) {
             $this->setEncoding('UTF-8');
         }
+    }
+
+    public function I18Nv2_CommonList($language = null, $encoding = null)
+    {
+        self::__construct($language, $encoding);
     }
 
     /**

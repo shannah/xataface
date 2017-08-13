@@ -31,10 +31,15 @@ class Dataface_Vocabulary {
 
 	var $_options = array();
 	var $_name;
-	function Dataface_Vocabulary($name,$options){
+	function __construct($name,$options){
 		$this->_name = $name;
 		$this->_options = $options;
 	}
+
+    public function Dataface_Vocabulary($name,$options)
+    {
+        self::__construct($name,$options);
+    }
 	
 	
 	/**

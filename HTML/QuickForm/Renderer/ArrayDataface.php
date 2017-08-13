@@ -105,11 +105,16 @@ class HTML_QuickForm_Renderer_ArrayDataface extends HTML_QuickForm_Renderer_Arra
     * @param  bool    true: render an array of labels to many labels, $key 0 to 'label' and the oterh to "label_$key"
     * @access public
     */
-    function HTML_QuickForm_Renderer_ArrayDataface($collectHidden = false, $staticLabels = false, $assoc = true)
+    function __construct($collectHidden = false, $staticLabels = false, $assoc = true)
     {
     	$this->HTML_QuickForm_Renderer_Array($collectHidden, $staticLabels, $assoc);
         
     } // end constructor
+
+    public function HTML_QuickForm_Renderer_ArrayDataface($collectHidden = false, $staticLabels = false, $assoc = true)
+    {
+        self::__construct($collectHidden, $staticLabels, $assoc);
+    }
 
 
 	function startForm(&$form){

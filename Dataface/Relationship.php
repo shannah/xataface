@@ -103,7 +103,7 @@ class Dataface_Relationship {
 	 * 			file.
 	 *
 	 */
-	function Dataface_Relationship($tablename, $relationshipName, &$values){
+	function __construct($tablename, $relationshipName, &$values){
 		$this->app =& Dataface_Application::getInstance();
 		$this->_name = $relationshipName;
 		$this->_sourceTable =& Dataface_Table::loadTable($tablename);
@@ -120,6 +120,11 @@ class Dataface_Relationship {
 		$this->_permissions =& $this->_schema['permissions'];
 		
 	}
+
+    public function Dataface_Relationship($tablename, $relationshipName, &$values)
+    {
+        self::__construct($tablename, $relationshipName, $values);
+    }
 	
 	function &getFieldDefOverride($field_name, $default=array()){
 		if ( strpos($field_name,'.') !== false	){
@@ -420,8 +425,6 @@ class Dataface_Relationship {
 	
 	}
 	
-	
-	
 	/**
 	 * Scans the columns of a relationship and resolves wildcards and unqualified 
 	 * column names into fully qualified column names.
@@ -549,33 +552,6 @@ class Dataface_Relationship {
 		return $this->_name;
 	}
 	
-	
-	
-	private function findDuplicateColumns($tableNames) {
-	    $out = array();
-	    $colTable = array();
-	    foreach ($tableNames as $t) {
-	        $tt = Dataface_Table::loadTable($t);
-	        foreach (array_keys($tt->fields()) as $f) {
-	            if (isset($out[$f])) $out[$f]++;
-	            else $out[$f] = 1;
-	            if (!isset($colTable[$f])) {
-	                $colTable[$f] = $t;
-	            }
-	        }
-	    }
-	    
-	    $out2 = array();
-	    foreach ($out as $key=>$num) {
-	        if ($num > 1) {
-	            $out2[$key] = $colTable[$key];
-	        }
-	    }
-	    
-	    return $out2;
-	}
-	
-	
 	/**
 	 *
 	 * Returns the SQL query that can be used to obtain the related records of this 
@@ -665,7 +641,6 @@ class Dataface_Relationship {
 				}
 				$done = array();
 				$dups = array();
-				//print_r($this->fields(true));
 				foreach ( $this->fields(true)  as $colname){
 					// We go through each column in the query and add meta columns for length.
 					
@@ -741,17 +716,10 @@ class Dataface_Relationship {
 				
 				if ( $where !== 0 ){
 					$whereClause = $where;
-					$dupCols = $this->findDuplicateColumns(array_keys($tableAliases));
 					// Avoid ambiguous column error.  Any duplicate columns need to be specified.
-					foreach ( $dupCols as $dcolname=>$dtablename ){
-					    $talias = @$tableAliases[$dtablename] ? $tableAliases[$dtablename] : $dtablename;
-						$whereClause = preg_replace('/([^.]|^) *`'.preg_quote($dcolname).'`/','$1 `'.$talias.'`.`'.$dcolname.'`', $whereClause);
-					}
 					foreach ( $dups as $dcolname=>$dtablename ){
 						$whereClause = preg_replace('/([^.]|^) *`'.preg_quote($dcolname).'`/','$1 `'.$dtablename.'`.`'.$dcolname.'`', $whereClause);
 					}
-					//print_r($dupCols);
-					//echo $whereClause;exit;
 					$wrapper->addWhereClause($whereClause);
 				} 
 				if ( $sort !==0){
@@ -966,25 +934,6 @@ class Dataface_Relationship {
 		}
 		
 		return $this->_destinationTables;
-	}
-	
-	
-	function hasUniqueFields($tablename) {
-	    $destinationTables = $this->getDestinationTables();
-	    $tnames = array();
-	    foreach ($destinationTables as $t) {
-	        $tnames[] = $t->tablename;
-	    }
-	    $tnames[] = $this->_sourceTable->tablename;
-	    $dups = $this->findDuplicateColumns($tnames);
-	    $table = Dataface_Table::loadTable($tablename);
-        foreach (array_keys($table->fields(false, true)) as $fld) {
-            if (!isset($dups[$fld])) {
-                return true;
-            }
-        }
-        return false;
-	
 	}
 	
 	/**
@@ -1909,12 +1858,17 @@ class Dataface_Relationship_ForeignKey {
 	 * @param array $labels The map of field names to labels in the relationship.
 	 * @param string $label The label that this foreign key refers to.
 	 */
-	function Dataface_Relationship_ForeignKey(&$relationship, $labels, $label){
+	function __construct(&$relationship, $labels, $label){
 		$this->relationship =& $relationship;
 		foreach ( $labels as $field=>$l ){
 			if ( $l==$label ) $this->fields[] = $field;
 		}
 	}
+
+    public function Dataface_Relationship_ForeignKey(&$relationship, $labels, $label)
+    {
+        self::__construct($relationship, $labels, $label);
+    }
 	
 	/**
 	 * Returns array of field names associated with this foreign key.

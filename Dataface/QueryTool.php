@@ -67,7 +67,7 @@ class Dataface_QueryTool {
 	 * @param $db The database handle.
 	 * @param $query Associative array of query parameters.
 	 */
-	function Dataface_QueryTool($tablename, $db=null, $query=null){
+	function __construct($tablename, $db=null, $query=null){
 		$this->dbObj =& Dataface_DB::getInstance();
 		$this->_tablename = $tablename;
 		if ( !is_array($query) ) $query= array();
@@ -144,8 +144,12 @@ class Dataface_QueryTool {
 			$this->_data['start'] = $this->_data['found'];
 		}
 		
-		
 	}
+
+    public function Dataface_QueryTool($tablename, $db=null, $query=null)
+    {
+        self::__construct($tablename, $db, $query);
+    }
 	
 	function getTitles($ordered=true, $genericKeys = false, $ignoreLimit=false){
 		$app =& Dataface_Application::getInstance();

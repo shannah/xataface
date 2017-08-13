@@ -11,7 +11,7 @@ class Dataface_RecordView {
 	var $status;
 	var $showLogo = false; // Whether or not to show the logo spot
 	
-	function Dataface_RecordView(&$record){
+	function __construct(&$record){
 
 		$this->record =& $record;
 		$tablename = $this->record->_table->tablename;
@@ -315,6 +315,11 @@ class Dataface_RecordView {
 		
 		
 	}
+
+    public function Dataface_RecordView(&$record)
+    {
+        self::__construct($record);
+    }
 	
 	
 	
