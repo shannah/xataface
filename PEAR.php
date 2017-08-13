@@ -167,7 +167,7 @@ class PEAR
      * @access public
      * @return void
      */
-    function PEAR($error_class = null)
+    function __construct($error_class = null)
     {
         $classname = strtolower(get_class($this));
         if ($this->_debug) {
@@ -190,6 +190,11 @@ class PEAR
                 $classname = get_parent_class($classname);
             }
         }
+    }
+
+    public function PEAR($error_class = null)
+    {
+        self::__construct($error_class);
     }
 
     // }}}
