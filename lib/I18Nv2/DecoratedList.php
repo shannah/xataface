@@ -46,13 +46,14 @@ class I18Nv2_DecoratedList
      * @access  public
      * @param   object  $list   I18Nv2_DecoratedList or I18Nv2_CommonList
      */
-    function I18Nv2_DecoratedList(&$list)
+    function __construct(&$list)
     {
         if (is_a($list, 'I18Nv2_CommonList') ||
             is_a($list, 'I18Nv2_DecoratedList')) {
             $this->list = &$list;
         }
     }
+        function I18Nv2_DecoratedList(&$list) { self::__construct($list); }
 
     /** 
      * Get all codes

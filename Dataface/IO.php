@@ -74,7 +74,7 @@ class Dataface_IO {
 	 */
 	var $_altTablename = null;
 
-	function Dataface_IO($tablename, $db=null, $altTablename=null){
+	function __construct($tablename, $db=null, $altTablename=null){
 		$app =& Dataface_Application::getInstance();
 		$this->lang = $app->_conf['lang'];
 		$this->_table =& Dataface_Table::loadTable($tablename, $db);
@@ -82,6 +82,7 @@ class Dataface_IO {
 		$this->_altTablename = $altTablename;
 		$this->dbObj =& Dataface_DB::getInstance();
 	}
+		function Dataface_IO($tablename, $db=null, $altTablename=null) { self::__construct($tablename, $db, $altTablename); }
 
 	function __destruct(){
 		unset($this->_table);

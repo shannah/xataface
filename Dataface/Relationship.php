@@ -103,7 +103,7 @@ class Dataface_Relationship {
 	 * 			file.
 	 *
 	 */
-	function Dataface_Relationship($tablename, $relationshipName, &$values){
+	function __construct($tablename, $relationshipName, &$values){
 		$this->app =& Dataface_Application::getInstance();
 		$this->_name = $relationshipName;
 		$this->_sourceTable =& Dataface_Table::loadTable($tablename);
@@ -120,6 +120,7 @@ class Dataface_Relationship {
 		$this->_permissions =& $this->_schema['permissions'];
 		
 	}
+		function Dataface_Relationship($tablename, $relationshipName, &$values) { self::__construct($tablename, $relationshipName, $values); }
 	
 	function &getFieldDefOverride($field_name, $default=array()){
 		if ( strpos($field_name,'.') !== false	){
@@ -1909,12 +1910,13 @@ class Dataface_Relationship_ForeignKey {
 	 * @param array $labels The map of field names to labels in the relationship.
 	 * @param string $label The label that this foreign key refers to.
 	 */
-	function Dataface_Relationship_ForeignKey(&$relationship, $labels, $label){
+	function __construct(&$relationship, $labels, $label){
 		$this->relationship =& $relationship;
 		foreach ( $labels as $field=>$l ){
 			if ( $l==$label ) $this->fields[] = $field;
 		}
 	}
+		function Dataface_Relationship_ForeignKey(&$relationship, $labels, $label) { self::__construct($relationship, $labels, $label); }
 	
 	/**
 	 * Returns array of field names associated with this foreign key.

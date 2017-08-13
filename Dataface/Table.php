@@ -523,7 +523,7 @@ class Dataface_Table {
 	 * 
 	 * @private
 	 */
-	function Dataface_Table($tablename, $db=null, $quiet=false){
+	function __construct($tablename, $db=null, $quiet=false){
 		if ( !$tablename || !is_string($tablename) ){
 			throw new Exception("Invalid tablename specified: $tablename", E_USER_ERROR);
 		}
@@ -834,6 +834,7 @@ class Dataface_Table {
 		
 		
 	}
+		function Dataface_Table($tablename, $db=null, $quiet=false) { self::__construct($tablename, $db, $quiet); }
 	
 	/**
 	 * @brief To be called after initialization.

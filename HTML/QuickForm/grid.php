@@ -31,7 +31,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
 
 	function getName(){ return $this->name;}
 
-	function HTML_QuickForm_grid($elementName=null, $elementLabel=null, $attributes=null)
+	function __construct($elementName=null, $elementLabel=null, $attributes=null)
     {
         $this->HTML_QuickForm_input($elementName, $elementLabel, $attributes);
         $this->_persistantFreeze = true;
@@ -41,6 +41,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
         $this->_type = 'grid';
 
     } //end constructor
+    	function HTML_QuickForm_grid($elementName=null, $elementLabel=null, $attributes=null) { self::__construct($elementName, $elementLabel, $attributes); }
 
     /**
      * @brief Adds a column to the grid.

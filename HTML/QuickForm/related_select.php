@@ -7,14 +7,14 @@
  * -----------
  * A Select widget to select an element of a relationship.
  */
- 
+
 require_once 'HTML/QuickForm/select.php';
 require_once 'Dataface/Relationship.php';
 require_once 'Dataface/QueryTool.php';
 require_once 'Dataface/DB.php';
 class HTML_QuickForm_related_select extends HTML_QuickForm_select {
-	
-	function HTML_QuickForm_related_select( &$relationship ){
+
+	function __construct( &$relationship ){
 		$sql = $relationship->getDomainSQL();
 			// The sql query to return all candidate rows of relationship
 		$fkeys = $relationship->getForeignKeyValues();
@@ -33,15 +33,16 @@ class HTML_QuickForm_related_select extends HTML_QuickForm_select {
 		$qt = new Dataface_QueryTool($table, $relationship->_sourceTable->db, $query);
 		$options = $qt->getTitles();
 		//print_r($options);
-		
+
 		$this->HTML_QuickForm_select('test','test',$options);
-		
+
 		echo $this->toHtml();
-		
-	
+
+
 	}
 
+  function HTML_QuickForm_related_select(&$relationship) {
+      self::__construct($relationship);
+  }
 
 }
-
-

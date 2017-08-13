@@ -28,13 +28,14 @@ require_once 'Dataface/dhtmlxGrid/activegrid.php';
 class HTML_QuickForm_portal extends HTML_QuickForm_input {
 	
 	var $grid;
-	function HTML_QuickForm_portal($elementName=null, $elementLabel=null, $attributes=null)
+	function __construct($elementName=null, $elementLabel=null, $attributes=null)
     {
 
         parent::HTML_QuickForm_input($elementName, $elementLabel, $attributes);
         $this->_type = 'portal';
         
     }
+    	function HTML_QuickForm_portal($elementName=null, $elementLabel=null, $attributes=null) { self::__construct($elementName, $elementLabel, $attributes); }
     
     function init_portal($properties=null){
     	$elementName = $this->getName();

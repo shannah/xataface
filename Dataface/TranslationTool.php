@@ -52,9 +52,10 @@ class Dataface_TranslationTool {
 		TRANSLATION_STATUS_EXTERNAL => 'Managed Externally'
 		);
 		
-	function Dataface_TranslationTool() {
+	function __construct() {
 	
 	}
+		function Dataface_TranslationTool() { self::__construct(); }
 	
 	/**
 	 * Returns a string containing an HTML select list for selecting the 

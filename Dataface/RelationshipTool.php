@@ -35,7 +35,7 @@ class Dataface_RelationshipTool {
 	var $_table;
 	var $_parser;
 	
-	function Dataface_RelationshipTool($tablename){
+	function __construct($tablename){
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		$this->_parser = new Sql_parser();
 	}
@@ -48,6 +48,7 @@ class Dataface_RelationshipTool {
 		}
 		return $instances[$tablename];
 	}
+		function Dataface_RelationshipTool($tablename) { self::__construct($tablename); }
 	
 	
 

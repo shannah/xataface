@@ -47,7 +47,7 @@ class Dataface_ImportForm extends HTML_QuickForm {
 	var $_filterNames=array();
 	
 	
-	function Dataface_ImportForm( $tablename, $relationshipname=null ){
+	function __construct( $tablename, $relationshipname=null ){
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		if ( $relationshipname !== null ) $this->_relationship =& $this->_table->getRelationship($relationshipname);
 		else $this->_relationship =& $this->getRelationship($this->_table);
@@ -59,6 +59,7 @@ class Dataface_ImportForm extends HTML_QuickForm {
 	
 
 	}
+		function Dataface_ImportForm($tablename, $relationshipname=null) { self::__construct($tablename, $relationshipname); }
 	
 	
 	

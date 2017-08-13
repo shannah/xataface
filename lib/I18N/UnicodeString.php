@@ -92,9 +92,10 @@ class I18N_UnicodeString
     * @param  string $encoding The encoding that the string is in.
     * @see    setString()
     */
-    function I18N_UnicodeString($value = '', $encoding = 'UTF-8') {
+    function __construct($value = '', $encoding = 'UTF-8') {
         $this->setString($value, $encoding);
     }
+        function I18N_UnicodeString($value='', $encoding='UTF-8') { self::__construct($value, $encoding); }
     
     /**
     * Set the string to a value passed in one of many encodings.

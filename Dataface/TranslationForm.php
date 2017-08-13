@@ -44,7 +44,7 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 	 * @param $fieldnames Optional array of fields that are to be translated.
 	 *        By default all translatable fields will be translated.
 	 */
-	function Dataface_TranslationForm(&$record, $source=null, $dest=null, $query='', $fieldnames=null){
+	function __construct(&$record, $source=null, $dest=null, $query='', $fieldnames=null){
 		$app = Dataface_Application::getInstance();
 		
 		if ( is_string($record) ){
@@ -97,6 +97,7 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 		
 		
 	}
+		function Dataface_TranslationForm(&$record, $source=null, $dest=null, $query='', $fieldnames=null) { self::__construct($record, $source, $dest, $query, $fieldnames); }
 	
 	function loadRecords(){
 		$keyMissing = true;

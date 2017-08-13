@@ -36,7 +36,7 @@ class Dataface_DeleteForm extends HTML_QuickForm {
 	var $_isBuilt;
 	
 	
-	function Dataface_DeleteForm( $tablename, $db, $query){
+	function __construct( $tablename, $db, $query){
 		$this->_tablename = $tablename;
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		$this->_db = $db;
@@ -51,6 +51,7 @@ class Dataface_DeleteForm extends HTML_QuickForm {
 		
 	
 	}
+		function Dataface_DeleteForm($tablename, $db, $query) { self::__construct($tablename, $db, $query); }
 	
 	function _build(){
 		

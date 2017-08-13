@@ -29,7 +29,7 @@ class Dataface_NavMenu {
 	//var $_smarty;
 	var $_skinTool;
 	var $_current;
-	function Dataface_NavMenu( $tables, $current='' ){
+	function __construct( $tables, $current='' ){
 		$this->_tables = $tables;
 		if ( $current ){
 			$this->_current = $current ;
@@ -45,6 +45,7 @@ class Dataface_NavMenu {
 		//$this->_smarty->compile_dir = $GLOBALS['Dataface_Globals_Templates_c'];
 		$this->_skinTool =& Dataface_SkinTool::getInstance();
 	}
+		function Dataface_NavMenu($tables, $current='') { self::__construct($tables, $current); }
 	
 	
 	function toHtml(){

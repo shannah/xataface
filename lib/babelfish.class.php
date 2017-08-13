@@ -31,7 +31,7 @@ class babelfish{
     /* stores the supported translation combination(s) */
     var $valid_translate   =   NULL;
     /* class constructor */
-    function babelfish($url=NULL,$postdata=NULL,$regex=NULL){
+    function __construct($url=NULL,$postdata=NULL,$regex=NULL){
         /* list of languages */
         $this->languages    =       array(
                                         'en'	=>	'english',
@@ -82,6 +82,7 @@ class babelfish{
             #$this->search_regex='/<td bgcolor=white class=s><div style=padding:10px;>(.*)<\/div><\/td>/';
              $this->search_regex='/<td bgcolor=white class=s><div style=padding:10px;>(.*)<\/div><\/td>/sm';
     }
+        function babelfish($url=NULL, $postdata=NULL, $regex=NULL) { self::__construct($url, $postdata, $regex); }
     /* perform babelfish translation */
     function translate($text,$from_language,$to_language){
     	//$text = str_replace("\n","\nxlinebreakx\n", $text);

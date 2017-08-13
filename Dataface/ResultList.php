@@ -48,7 +48,7 @@ import('Dataface/QueryTool.php');
  	
  	var $_filterCols = array();
  
- 	function Dataface_ResultList( $tablename, $db='', $columns=array(), $query=array()){
+ 	function __construct( $tablename, $db='', $columns=array(), $query=array()){
  		$app =& Dataface_Application::getInstance();
  		$this->_tablename = $tablename;
  		if (empty($db) ) $db = $app->db();
@@ -86,6 +86,7 @@ import('Dataface/QueryTool.php');
  		$this->_resultSet =& Dataface_QueryTool::loadResult($tablename, $db, $query);
  		
  	}
+ 	 	function Dataface_ResultList($tablename, $db='', $columns=array(), $query=array()) { self::__construct($tablename, $db, $columns, $query); }
  	
  	function renderCell(&$record, $fieldname){
  		$del =& $record->_table->getDelegate();

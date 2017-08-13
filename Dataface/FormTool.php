@@ -1547,9 +1547,10 @@ import('HTML/QuickForm.php');
  * handles the creation of multiple fields of the same name gracefully.
  */
 class HTML_QuickFormFactory extends HTML_QuickForm {
-	function HTML_QuickFormFactory($name){
+	function __construct($name){
 		$this->HTML_QuickForm($name);
 	}
+		function HTML_QuickFormFactory($name) { self::__construct($name); }
 	
 	function &addElement($element){
 		$args = func_get_args();

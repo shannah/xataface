@@ -73,7 +73,7 @@ class Text_Wiki_Parse_Image extends Text_Wiki_Parse {
      * @return The parser object
      * @access public
      */
-    function Text_Wiki_Parse_Image(&$obj)
+    function __construct(&$obj)
     {
         $default = $this->conf;
         parent::Text_Wiki_Parse($obj);
@@ -85,6 +85,7 @@ class Text_Wiki_Parse_Image extends Text_Wiki_Parse {
            . $this->getConf('host_regexp', $default['host_regexp'])
            . $this->getConf('path_regexp', $default['path_regexp']) .'#');
     }
+        function Text_Wiki_Parse_Image(&$obj) { self::__construct($obj); }
 
     /**
     *

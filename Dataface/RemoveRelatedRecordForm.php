@@ -104,7 +104,7 @@ class Dataface_RemoveRelatedRecordForm extends HTML_QuickForm {
 	 * @param array of urlencoded strings of the form key1=value1&key2=value2& ... etc..
 	 *				where keyi is the ith key in the related record.
 	 */
-	function Dataface_RemoveRelatedRecordForm(&$record, $relationshipName, $query=null){
+	function __construct(&$record, $relationshipName, $query=null){
 		if ( !isset($query) ){
 			$app =& Dataface_Application::getInstance();
 			$this->query = $app->getQuery();
@@ -126,6 +126,7 @@ class Dataface_RemoveRelatedRecordForm extends HTML_QuickForm {
 		
 		
 	}
+		function Dataface_RemoveRelatedRecordForm(&$record, $relationshipName, $query=null) { self::__construct($record, $relationshipName, $query); }
 	
 	/**
 	 * 

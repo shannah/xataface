@@ -62,7 +62,7 @@ class Dataface_ResultController {
     var $_titleColumn;
     var $_contentsList;
 
-    function Dataface_ResultController($tablename, $db = '', $baseUrl = '', $query = '') {
+    function __construct($tablename, $db = '', $baseUrl = '', $query = '') {
         $this->_tablename = $tablename;
         $this->_db = $db;
         $this->_baseUrl = $baseUrl ? $baseUrl : $_SERVER['PHP_SELF'];
@@ -124,6 +124,7 @@ class Dataface_ResultController {
 
         $this->_displayedRecords = $query['-limit'];
     }
+        function Dataface_ResultController($tablename, $db='', $baseUrl='', $query='') { self::__construct($tablename, $db, $baseUrl, $query); }
 
     function &getRecords() {
         if (!isset($this->_records)) {

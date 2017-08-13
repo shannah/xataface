@@ -49,7 +49,7 @@ require_once 'HTML/QuickForm/text.php';
 class HTML_QuickForm_lookup extends HTML_QuickForm_text {
 	
 	var $index;
-	function HTML_QuickForm_lookup($elementName=null, $elementLabel=null, $attributes=null, $properties=null)
+	function __construct($elementName=null, $elementLabel=null, $attributes=null, $properties=null)
     {
 		static $index=1;
 		$this->index = $index++;
@@ -65,6 +65,7 @@ class HTML_QuickForm_lookup extends HTML_QuickForm_text {
         	
         
     } //end constructor
+    	function HTML_QuickForm_lookup($elementName=null, $elementLabel=null, $attributes=null, $properties=null) { self::__construct($elementName, $elementLabel, $attributes, $properties); }
     
     
     

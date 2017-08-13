@@ -25,7 +25,7 @@ class Dataface_Serializer {
 
 	var $_table;
 	
-	function Dataface_Serializer($tablename){
+	function __construct($tablename){
 		$this->_table =& Dataface_Table::loadTable($tablename);
 	}
 	
@@ -44,6 +44,7 @@ class Dataface_Serializer {
 	
 	    return str_replace($search, $replace, $value);
 	}
+		function Dataface_Serializer($tablename) { self::__construct($tablename); }
 	
 	
 	/**

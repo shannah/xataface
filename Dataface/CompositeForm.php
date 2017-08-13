@@ -28,10 +28,11 @@ class Dataface_CompositeForm extends HTML_QuickForm {
 	var $changed_fields = array();
 
 							
-	function Dataface_CompositeForm($uris){
+	function __construct($uris){
 		$this->uris = $uris;
 		$this->HTML_QuickForm();
 	}
+		function Dataface_CompositeForm($uris) { self::__construct($uris); }
 	
 	function &getQuickForm($uri){
 		// This returns a builder quickform to build the form 

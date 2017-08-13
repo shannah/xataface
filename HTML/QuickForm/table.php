@@ -26,7 +26,7 @@ class HTML_QuickForm_table extends HTML_QuickForm_element {
 	var $value;
 	
 	
-	function HTML_QuickForm_table($elementName=null, $elementLabel=null, $attributes=null)
+	function __construct($elementName=null, $elementLabel=null, $attributes=null)
     {
         $this->HTML_QuickForm_element($elementName, $elementLabel, $attributes);
         $this->_persistantFreeze = true;
@@ -35,6 +35,7 @@ class HTML_QuickForm_table extends HTML_QuickForm_element {
         $this->_type = 'table';
        
     } //end constructor
+    	function HTML_QuickForm_table($elementName=null, $elementLabel=null, $attributes=null) { self::__construct($elementName, $elementLabel, $attributes); }
     
     
     function addField(&$element){

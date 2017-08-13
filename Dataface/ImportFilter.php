@@ -58,11 +58,12 @@ class Dataface_ImportFilter {
 	 * @param $name The name of the filter.
 	 * @param $label The label of the filter.
 	 */
-	function Dataface_ImportFilter( $tablename, $name, $label ){
+	function __construct( $tablename, $name, $label ){
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		$this->label = $label;
 		$this->name = $name;
 	}
+		function Dataface_ImportFilter($tablename, $name, $label) { self::__construct($tablename, $name, $label); }
 	
 	
 	/**

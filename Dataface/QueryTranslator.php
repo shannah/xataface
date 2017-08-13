@@ -65,7 +65,7 @@ class Dataface_QueryTranslator {
 	function translateWhereClause($func, $lang=null){}
 	*/
 	
-	function Dataface_QueryTranslator($lang=null){
+	function __construct($lang=null){
 		$this->app =& Dataface_Application::getInstance();
 		if ( !isset($lang) ) $lang = $this->app->_conf['lang'];
 		$this->_lang = $lang;
@@ -84,6 +84,7 @@ class Dataface_QueryTranslator {
 		//}
 		
 	}
+		function Dataface_QueryTranslator($lang=null) { self::__construct($lang); }
 	
 	/**
 	 * IF this translator is meant to work within the context of another translator,

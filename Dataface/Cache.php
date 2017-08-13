@@ -35,7 +35,7 @@ class Dataface_Cache {
 	 */
 	var $monitored = array();
 	
-	function Dataface_Cache($cachedir=null, $prefix=null){
+	function __construct($cachedir=null, $prefix=null){
 		if ( $cachedir === null ) $cachedir = '/tmp';
 		$this->cachedir = $cachedir;
 		if ( $prefix === null ) $prefix = DATAFACE_SITE_PATH;
@@ -43,6 +43,7 @@ class Dataface_Cache {
 		
 	
 	}
+		function Dataface_Cache($cachedir=null, $prefix=null) { self::__construct($cachedir, $prefix); }
 	
 	function apc_get($key){
 		return apc_fetch($this->prefix.$key);
