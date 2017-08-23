@@ -55,6 +55,15 @@
             return;
         }
 
+        var updateCondition = $(field).attr('data-xf-update-condition');
+        if (updateCondition) {
+            if (updateCondition == 'empty' && $(field).val()) {
+                // It is only set to update with the field is currently empty
+                return;
+            }
+            
+        }
+
         var query = urlTemplate.substr(urlTemplate.indexOf('#')+1);
         urlTemplate = urlTemplate.substr(0, urlTemplate.indexOf('#'));
 
