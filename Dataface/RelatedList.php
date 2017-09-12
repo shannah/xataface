@@ -3,17 +3,17 @@
 /* -------------------------------------------------------------------------------
  * Xataface Web Application Framework
  * Copyright (C) 2005-2008 Web Lite Solutions Corp (shannah@sfu.ca)
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -26,7 +26,7 @@
  * Created:	September 3, 2005
  * Description:
  * 	Handles creation and display of a result list from an SQL database.
- * 	
+ *
  * *************************************************************************** */
 
 import('Dataface/Table.php');
@@ -58,14 +58,14 @@ class Dataface_RelatedList {
         $this->_relationship_name = $relname;
         $app = & Dataface_Application::getInstance();
         $query = & $app->getQuery();
-        
+
         $this->_table = & $this->_record->_table;
         $this->_relationship = & $this->_table->getRelationship($relname);
-        
+
         $this->_start = isset($query['-related:start']) ? $query['-related:start'] : 0;
         $this->_limit = isset($query['-related:limit']) ? $query['-related:limit'] : 30;
 
-        
+
         if (isset($query['-related:search'])) {
             $rwhere = array();
             foreach ($this->_relationship->fields() as $rfield) {
@@ -79,7 +79,7 @@ class Dataface_RelatedList {
         //echo $rwhere;
         $column_search_keys = preg_grep('/^-related:s:[a-zA-Z_0-9]+$/', array_keys($query));
         $terms = array();
-            
+
         foreach ( $column_search_keys as $search_key ){
             $field_name = substr($search_key, strrpos($search_key, ':')+1);
             if ( $this->_relationship->hasField($field_name, true) ){
@@ -90,7 +90,7 @@ class Dataface_RelatedList {
                 } else {
                     $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'`=\''.addslashes($query[$search_key]).'\'';
                 }
-                
+
                 $filter_info = array(
                     'field_name' => $field_name,
                     'field_label' => $field['widget']['label'],
@@ -106,7 +106,7 @@ class Dataface_RelatedList {
                     $valuelist =& $field_table->getValuelist($field['vocabulary']);
                     if ( isset($valuelist[$vlkey]) ){
                         $filter_info['field_display_value'] = $valuelist[$vlkey];
-                        
+
                     }
                     unset($valuelist);
                     unset($field_table);
@@ -166,7 +166,7 @@ class Dataface_RelatedList {
         if (isset($del) and method_exists($del, $fieldname . '__renderCell')) {
             $method = $fieldname . '__renderCell';
             return $del->$method($record);
-            //return call_user_func(array(&$del, $fieldname.'__renderCell'), $record); 
+            //return call_user_func(array(&$del, $fieldname.'__renderCell'), $record);
         }
         return null;
     }
@@ -532,14 +532,30 @@ class Dataface_RelatedList {
 
                                 $accessClass = '';
                             }
+
+                            $maxcols = 50;
+                        		if ( @$field['list'] and @$field['list']['maxcols'] ){
+                        		    $maxcols = intval($field['list']['maxcols']);
+                        		}
+                         		$fulltext = "";
+                         		if ( strlen($val) > $maxcols ){
+                         		    $fulltext = $val;
+                         		    $val = substr($val, 0, $maxcols).'...';
+                         		}
+                         		if ( $fulltext ){
+                                $fulltext = 'data-fulltext="'.df_escape($fulltext).'"';
+                            }
+
                             $cellClass = 'resultListCell resultListCell--' . $key;
                             $cellClass .= ' ' . $srcRecord->table()->getType($key);
                             $renderVal = $this->renderCell($srcRecord, $field['Field']);
                             if (isset($renderVal))
                                 $val = $renderVal;
                             if ($link and !@$field['noLinkFromListView'] and !$this->noLinks and $rrec->checkPermission('link', array('field' => $key)))
-                                $val = "<a href=\"" . df_escape($link) . "\" title=\"" . df_escape($title) . "\" data-xf-related-record-id=\"" . df_escape($srcRecordId) . "\" class=\"xf-related-record-link\">" . $val . "</a>";
-                            echo "<td class=\"$cellClass $rowClass $accessClass\">$val</td>\n";
+                                $val = "<a href=\"" . df_escape($link) . "\" title=\"" . df_escape($title) . "\" data-xf-related-record-id=\"" . df_escape($srcRecordId) . "\" class=\"xf-related-record-link\"><span " . $fulltext.">". $val . "</span></a>";
+                            else
+                                $val = "<span ".$fulltext.">".$val."</span>";
+                            echo "<td class=\"$cellClass $rowClass $accessClass\">".$val."</td>\n";
                             unset($srcRecord);
                         }
                     }
@@ -575,7 +591,7 @@ class Dataface_RelatedList {
 
 
 
-                    // This bit of javascript goes through all of the columns and removes all columns that 
+                    // This bit of javascript goes through all of the columns and removes all columns that
                     // don't have any accessible information for this query.  (i.e. any columns for which
                     // each row's value is 'NO ACCESS' is removed
                     $prototype_url = DATAFACE_URL . '/js/scriptaculous/lib/prototype.js';
@@ -591,9 +607,9 @@ class Dataface_RelatedList {
                 }
             }
         }
-        
-        
-        
+
+
+
 		Dataface_JavascriptTool::getInstance()
 			->import('xataface/actions/related_list.js');
         ob_start();
@@ -606,4 +622,3 @@ class Dataface_RelatedList {
     }
 
 }
-
