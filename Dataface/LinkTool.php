@@ -123,6 +123,11 @@ class Dataface_LinkTool {
 			$query = array_merge($request, $query);
 		}
 		
+		// -ui-root should be sticky even if not retaining context
+		if (@$appQuery['-ui-root'] and !isset($query['-ui-root'])) {
+		    $query['-ui-root'] = $appQuery['-ui-root'];
+		}
+		
 		if ( !isset($query['-search']) ) $query['-search'] = null;
 		if ( isset( $_REQUEST['-search'] ) and strlen($_REQUEST['-search'])>0 and $query['-search'] !== null  ){
 			$query['-search'] = $_REQUEST['-search'];

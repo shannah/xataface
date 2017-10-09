@@ -25,10 +25,11 @@ class Dataface_TreeTable {
 	 * @param Dataface_Record $record The root record.
 	 * @param string $relationship The name of the relationship.
 	 */
-	function Dataface_TreeTable(&$record, $relationship=null){
+	function __construct(&$record, $relationship=null){
 		$this->record =& $record;
 		$this->relationship = $relationship;
 	}
+		function Dataface_TreeTable(&$record, $relationship=null) { self::__construct($record, $relationship); }
 	
 	/**
 	 * Returns the Dataface_Record object that belongs at the given row id.

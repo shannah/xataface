@@ -168,10 +168,19 @@
 				return confirm(confirmMsg);
 			};
 		}
+		var useFullSetIfEmpty = $(aTag).attr('data-xf-use-full-set-if-empty');
+		var emptyCallback = null;
+		if (useFullSetIfEmpty) {
+		    emptyCallback = function() {
+		        if (confirm(useFullSetIfEmpty)) {
+		            window.location.href = href;
+		        }
+		    };
+		}
 		//alert(confirmMsg);
 		var params = XataJax.util.getRequestParams(href);
 
-		XataJax.actions.doSelectedAction(params, $(selector), confirmCallback);
+		XataJax.actions.doSelectedAction(params, $(selector), confirmCallback, emptyCallback);
 		return false;
 	
 	}

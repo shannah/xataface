@@ -69,7 +69,7 @@ class Dataface_SearchForm extends HTML_QuickForm {
 	
 	var $_isBuilt = false;
 	
-	function Dataface_SearchForm($tablename, $db='',  $query='', $fields=null){
+	function __construct($tablename, $db='',  $query='', $fields=null){
 		$widgetTypes = array();
 		$this->tablename = $tablename;
 		$this->db = $db;
@@ -134,6 +134,7 @@ class Dataface_SearchForm extends HTML_QuickForm {
 		
 
 	}
+		function Dataface_SearchForm($tablename, $db='', $query='', $fields=null) { self::__construct($tablename, $db, $query, $fields); }
 	
 	
 	

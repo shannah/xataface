@@ -4,7 +4,7 @@ class Dataface_SortControl {
 	var $fields;
 	var $prefix;
 	var $table;
-	function Dataface_SortControl($fields, $prefix=''){
+	function __construct($fields, $prefix=''){
 		
 		if ( is_string($fields) ){
 			$t =& Dataface_Table::loadTable($fields);
@@ -58,6 +58,7 @@ class Dataface_SortControl {
 		$this->fields = array_diff($this->fields, array_keys($this->current_sort));
 		
 	}
+		function Dataface_SortControl($fields, $prefix='') { self::__construct($fields, $prefix); }
 	
 	function toHtml(){
 		$id = rand(10,100000);

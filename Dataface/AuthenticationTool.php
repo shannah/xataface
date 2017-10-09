@@ -76,7 +76,7 @@ class Dataface_AuthenticationTool {
 		return $instance;
 	}
 	
-	function Dataface_AuthenticationTool($params=array()){
+	function __construct($params=array()){
 		$this->conf = $params;
 		$this->usersTable = ( isset($params['users_table']) ? $params['users_table'] : null);
 		$this->usernameColumn = ( isset($params['username_column']) ? $params['username_column'] : null);
@@ -85,6 +85,7 @@ class Dataface_AuthenticationTool {
 		
 		$this->setAuthType(@$params['auth_type']); 
 	}
+		function Dataface_AuthenticationTool($params=array()) { self::__construct($params); }
 	
 	function setAuthType($type){
 		if ( isset( $type ) and $type != $this->authType ){
@@ -107,6 +108,89 @@ class Dataface_AuthenticationTool {
 			}
 			
 		} 
+	}
+	
+	/**
+	 * Stores an array of string groups that the current user belongs to.
+	 */
+	var $groups = null;
+	
+	/**
+	 * The column that the groups are stored in.
+	 */
+	var $groupsColumn = null;
+	
+	/**
+	 * Optionally if the groups are stored in another table, this is the name of 
+	 * the relationship to obtain the groups.  This relationship would be on the 
+	 * users table.
+	 *
+	 * If $groupsColumn is set, then it refers to a field in the relationship
+	 * which will be used to identify the group name.  Otherwise it will use
+	 * the record title.
+	 */
+	var $groupsRelationship = null;
+	
+	/**
+	 * Returns array of group names that the currently logged in user belongs to.  This 
+	 * requires that one of the following is true:
+	 *
+	 * <ol>
+	 *   <li>The Application delegate implements a method called getGroups() that returns
+	 *      the groups as an array of strings.</li>
+	 *   <li>The [_auth] section of the conf.ini file includes a "groups_column"
+	 *      directive that points to the field of the users table that includes the 
+	 *      groups.  This column would either be a SET column, or a comma-delimited VARCHAR
+	 *      field.
+	 *   </li>
+	 *   <li>The [_auth] section of the conf.ini file includes a "groups_relationship" 
+	 *      directive that refers to the name of a relationship on the users table that 
+	 *      involves the groups.  If the groups_column directive is also specified, then
+	 *      it will refer to the column in the relationship that has the group name.
+	 *      otherwise it will just user the record title.
+	 *  </li>
+	 * </ol>
+	 */
+	function getGroups() {
+	    if (!isset($this->groups)) {
+	        $app =& Dataface_Application::getInstance();
+	        $appdel = $app->getDelegate();
+	        if (isset($appdel) and method_exists($appdel, 'getGroups')) {
+	            $this->groups = $appdel->getGroups();
+	        }
+	        if (!isset($this->groups) and isset($this->groupsRelationship)) {
+	            $user = $this->getLoggedInUser();
+	            if ($user) {
+	                $groups = array();
+	                $rrecords = $user->getRelatedRecordObjects($this->groupsRelationship);
+	                foreach ($rrecords as $rrec) {
+	                    if (isset($this->groupsColumn)) {
+	                        $groups[] = $rrec->val($this->groupsColumn);
+	                    } else {
+	                        $groups[] = $rrec->toRecord()->getTitle();
+	                    }
+	                }
+	                
+	            }
+	        }
+	        if (!isset($this->groups) and isset($this->groupsColumn)) {
+	            $user = $this->getLoggedInUser();
+	            if ($user) {
+	                $val = $user->val($this->groupsColumn);
+	                if ($val and is_array($val)) {
+	                    $this->groups = $val;
+	                } else if ($val and is_string($val)) {
+	                    $this->groups = explode(',', $val);
+	                } else {
+	                    $this->groups = array();
+	                }
+	            } else {
+	                $this->groups = array();
+	            }
+	        }
+	        
+	    }
+	    return $this->groups;
 	}
 	
 	function getCredentials(){
@@ -211,6 +295,14 @@ class Dataface_AuthenticationTool {
 			}
 			$username = @$_SESSION['UserName'];
 			session_destroy();
+			
+			if (@$_REQUEST['--no-prompt']) {
+			    df_write_json(array(
+			        'code' => 200,
+			        'message' => "Logged out successfully"
+			    ));
+			    exit;
+			}
 			
 			import('Dataface/Utilities.php');
 				
@@ -359,7 +451,6 @@ class Dataface_AuthenticationTool {
 		if ( isset($this->delegate) and method_exists($this->delegate, 'showLoginPrompt') ){
 			return $this->delegate->showLoginPrompt($msg);
 		}
-		header("HTTP/1.1 401 Please Log In");
 		
 		$url = $app->url('-action=login_prompt');
 		

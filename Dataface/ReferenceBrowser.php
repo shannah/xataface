@@ -27,12 +27,13 @@ class ReferenceBrowser {
 	var $_relationshipName;
 	var $_relationship;
 	
-	function ReferenceBrowser( $tablename, $relationshipName){
+	function __construct( $tablename, $relationshipName){
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		$this->_relationshipName = $relationshipName;
 		$this->_relationship =& $this->_table->getRelationship($relationshipName);
 		$this->HTML_QuickForm('Reference Browser');
 	}
+		function ReferenceBrowser($tablename, $relationshipName) { self::__construct($tablename, $relationshipName); }
 	
 	
 	function _build(){

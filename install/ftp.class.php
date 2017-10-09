@@ -32,8 +32,9 @@
 		var $error_no = NULL;
 		var $error_msg = NULL;
 		
-		function FTP() {
+		function __construct() {
 		}
+				function FTP() { self::__construct(); }
 
 		function connect($host, $port=21, $timeout=FTP_TIMEOUT) { //Opens an FTP connection
 			$this->_resetError();

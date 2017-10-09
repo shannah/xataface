@@ -11,9 +11,10 @@ class QuickForm_table_test extends PHPUnit_TestCase {
 
 	var $el;
 	
-	function QuickForm_table_test( $name = 'QuickForm_table_test'){
+	function __construct( $name = 'QuickForm_table_test'){
 		$this->PHPUnit_TestCase($name);
 	}
+		function QuickForm_table_test($name='QuickForm_table_test') { self::__construct($name); }
 	
 	function setUp(){
 		$this->el = new HTML_QuickForm_table('test_table','Testing');

@@ -406,6 +406,9 @@ class Dataface_FormTool {
 					
 			
 		}
+		
+		
+		
 		$evt = new stdClass;
 		$evt->record = $record;
 		$evt->field =& $field;
@@ -415,6 +418,14 @@ class Dataface_FormTool {
 		$evt->value = $out;
 		$app->fireEvent('FormTool::pushValue', $evt);
 		$out = $evt->value;
+		
+		if (@$field['sanitize_html']) {
+		    if (!defined('HTMLAWED_LOADED')) {
+		        import('lib/htmLawed.php');
+		    }
+            $hconfig = array('safe'=>1); 
+            $out = htmLawed($out, $hconfig);
+		}
 		
 		return $out;
 		
@@ -529,7 +540,7 @@ class Dataface_FormTool {
 				continue;
 			}
 			
-			$form->addRule($formFieldName, $validator['message'], $vname, @$validator['arg'], (($widget['type'] == 'htmlarea' )?null:'client'));
+			$form->addRule($formFieldName, $validator['message'], $vname, @$validator['arg'], (($widget['type'] == 'htmlarea' or @$widget['validation'] == 'server' or $el->getAttribute('data-validation') == 'server'  )?null:'client'));
 			
 		}
 
@@ -1536,9 +1547,10 @@ import('HTML/QuickForm.php');
  * handles the creation of multiple fields of the same name gracefully.
  */
 class HTML_QuickFormFactory extends HTML_QuickForm {
-	function HTML_QuickFormFactory($name){
+	function __construct($name){
 		$this->HTML_QuickForm($name);
 	}
+		function HTML_QuickFormFactory($name) { self::__construct($name); }
 	
 	function &addElement($element){
 		$args = func_get_args();

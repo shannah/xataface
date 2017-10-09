@@ -17,9 +17,10 @@ class Dataface_Clipboard {
 	var $warnings;
 	var $messages;
 	
-	function Dataface_Clipboard($id){
+	function __construct($id){
 		$this->id = $id;
 	}
+		function Dataface_Clipboard($id) { self::__construct($id); }
 
 	/**
 	 * Checks whether the clipboard is currently installed.

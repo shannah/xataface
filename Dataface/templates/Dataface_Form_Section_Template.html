@@ -43,7 +43,7 @@
 						<{$td_tag} {if $element.field.display == 'block'}colspan="2" class="Dataface_QuickForm-textarea-label-cell Dataface_QuickForm-block-label-cell"{/if} valign="top" {if $element.field.display != 'block'}align="right" class="Dataface_QuickForm-label-cell"{/if}>
 						<div class="field {if $element.error}error{/if}" id="{$element.field.tablename}-{$element.field.name}-label-wrapper">
 							
-							<label>
+							<label for="{$element.field.name}">
 								{if $element.field.label_link or $element.field.label_click}<a href="{if $element.field.label_link}{$element.field.label_link|escape}{else}#{/if}" target="_blank" {if $element.field.label_click}onclick="{$element.field.label_click|escape}" {/if}class="field-label-link no-link-icon">{/if}
 									{$element.field.widget.label}
 								{if $element.field.label_link or $element.field.label_click}</a>{/if}
@@ -213,4 +213,3 @@
 				{block name="after_`$element.field.name`_row" table=$element.field.tablename}
 			{/foreach}
 		</{$table_tag}>
-		{if $section.field.display_style=='inline'}<div style="clear:both"></div>{/if}

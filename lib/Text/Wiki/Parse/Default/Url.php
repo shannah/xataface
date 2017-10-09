@@ -97,7 +97,7 @@ class Text_Wiki_Parse_Url extends Text_Wiki_Parse {
     * 
     */
     
-    function Text_Wiki_Parse_Url(&$obj)
+    function __construct(&$obj)
     {
         parent::Text_Wiki_Parse($obj);
         
@@ -119,6 +119,7 @@ class Text_Wiki_Parse_Url extends Text_Wiki_Parse {
             "[^ \\t\\n\\/\"\'{$this->wiki->delim}]*" .
             "[A-Za-z0-9\\/?=&~_]";
     }
+        function Text_Wiki_Parse_Url(&$obj) { self::__construct($obj); }
     
     
     /**

@@ -235,7 +235,7 @@ class HTTP_Request {
     * </ul>
     * @access public
     */
-    function HTTP_Request($url = '', $params = array())
+    function __construct($url = '', $params = array())
     {
         $this->_sock           = new Net_Socket();
         $this->_method         =  HTTP_REQUEST_METHOD_GET;
@@ -286,6 +286,7 @@ class HTTP_Request {
             $this->addHeader('Accept-Encoding', 'gzip');
         }
     }
+        function HTTP_Request($url='', $params=array()) { self::__construct($url, $params); }
     
     /**
     * Generates a Host header for HTTP/1.1 requests
@@ -995,11 +996,12 @@ class HTTP_Response
     * @param  array                 listeners attached to request
     * @return mixed PEAR Error on error, true otherwise
     */
-    function HTTP_Response(&$sock, &$listeners)
+    function __construct(&$sock, &$listeners)
     {
         $this->_sock      =& $sock;
         $this->_listeners =& $listeners;
     }
+        function HTTP_Response(&$sock, &$listeners) { self::__construct($sock, $listeners); }
 
 
    /**

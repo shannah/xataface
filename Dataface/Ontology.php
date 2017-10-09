@@ -16,9 +16,10 @@ class Dataface_Ontology {
 	var $fieldnames;
 	var $relationships;
 	
-	function Dataface_Ontology($tablename){
+	function __construct($tablename){
 		$this->table =& Dataface_Table::loadTable($tablename);
 	}
+		function Dataface_Ontology($tablename) { self::__construct($tablename); }
 	
 	function &getAttributes(){
 		if ( !isset($this->attributes) ){
@@ -137,10 +138,11 @@ class Dataface_Ontology_individual {
 	var $record;
 	var $ontology;
 	
-	function Dataface_Ontology_individual(&$ontology, &$record){
+	function __construct(&$ontology, &$record){
 		$this->record =& $record;
 		$this->ontology =& $ontology;
 	}
+		function Dataface_Ontology_individual(&$ontology, &$record) { self::__construct($ontology, $record); }
 	
 	function _get($method, $attname){
 		return $this->record->$method(

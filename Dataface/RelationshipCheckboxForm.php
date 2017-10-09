@@ -7,7 +7,7 @@ class Dataface_RelationshipCheckboxForm extends HTML_QuickForm {
 	
 	var $_isBuilt = false;
 
-	function Dataface_RelationshipCheckboxForm(&$record, $relationshipName){
+	function __construct(&$record, $relationshipName){
 		$this->record =& $record;
 		$this->relationship =& $record->_table->getRelationship($relationshipName);
 		$this->HTML_QuickForm('Dataface_RelationshipCheckboxForm__'.$relationshipName, 'post');
@@ -19,6 +19,7 @@ class Dataface_RelationshipCheckboxForm extends HTML_QuickForm {
 		$this->display();
 		
 	}
+		function Dataface_RelationshipCheckboxForm(&$record, $relationshipName) { self::__construct($record, $relationshipName); }
 	
 	function getCheckedRecordsDefaults(){
 		// Now go through related records to see which boxes should be checked

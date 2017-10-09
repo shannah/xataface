@@ -9,9 +9,10 @@ class FTPExtractor {
 	var $destination;
 	var $source;
 	
-	function FTPExtractor(&$archive){
+	function __construct(&$archive){
 		$this->archive =& $archive;
 	}
+		function FTPExtractor(&$archive) { self::__construct($archive); }
 	
 	function connect($host, $user, $password ){
 		$this->ftp = ftp_connect($host);

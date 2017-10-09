@@ -69,14 +69,20 @@ class dataface_actions_export_csv {
 		import('Dataface/RecordReader.php');
 		$app =& Dataface_Application::getInstance();
 		$query = $app->getQuery();
-		$query['-limit'] = 9999999;
-		if (isset($query['--limit'])) {
-		    $query['-limit'] = intval($query['--limit']);
-		}
+		// Better to set the skip and limit in the actions.ini file
+		//$query['-limit'] = 9999999;
 		$table =& Dataface_Table::loadTable($query['-table']);
 		if ( isset($query['-relationship']) and @$query['--related'] ){
-			$query['-related:start'] = 0;
-			$query['-related:limit'] = 9999999;
+			if (!isset($query['-related:start'])) {
+			    $query['-related:start'] = 0;
+			} else {
+			    $query['-related:start'] = intval($query['-related:start']);
+			}
+			if (!isset($query['-related:limit'])) {
+			    $query['-related:limit'] = 9999999;
+			} else {
+			    $query['-related:limit']  = intval($query['-related:limit']);
+			}
 			$record =& $app->getRecord();
 			$relationship =& $table->getRelationship($query['-relationship']);
 			
@@ -110,11 +116,13 @@ class dataface_actions_export_csv {
 				$this->writeRow($temp, $row, $query);//, $recordfputcsv($temp, $row,",",'"');
 			}
 		} else {
-			$temp = tmpfile();
-                        
-                        $query['-skip'] = 0;
+			$temp = tmpfile();       
+            $query['-skip'] = 0;
 			$query['-limit'] = null;
-			$records = new Dataface_RecordReader($query, 30, false);
+			$records = df_get_selected_records($query);
+			if (!$records) {
+			    $records = new Dataface_RecordReader($query, 30, false);
+			}
 			//$records =& df_get_records_array($query['-table'], $query,null,null,false);
 			//$data = array();
 			$headings = array();
@@ -225,7 +233,7 @@ class dataface_actions_export_csv {
 				continue;
 			}
                         $del = $r->getTable($col)->getDelegate();
-			$csvMethod = $key.'__csvValue';
+			$csvMethod = $col.'__csvValue';
                         if ( isset($del) and method_exists($del, $csvMethod) ){
                             $out[] = $del->csvMethod($record->toRecord($col));
                         } else {

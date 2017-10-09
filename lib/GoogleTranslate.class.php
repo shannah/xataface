@@ -41,7 +41,7 @@ class GoogleTranslate{
   
   var $post_data = NULL;
   
-function GoogleTranslate($langFrom=null, $langTo=null, $text=null, $webPage=null) {
+function __construct($langFrom=null, $langTo=null, $text=null, $webPage=null) {
 
 
   $this->google_url = "http://translate.google.com/translate_t";
@@ -107,6 +107,7 @@ $this->validTranslations =  array ( //these are the conversions allowed (I've on
 
 
 } //constructor
+function GoogleTranslate($langFrom=null, $langTo=null, $text=null, $webPage=null) { self::__construct($langFrom, $langTo, $text, $webPage); }
     
 
 

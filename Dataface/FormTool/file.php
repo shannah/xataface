@@ -10,7 +10,7 @@ class Dataface_FormTool_file {
 		$table =& $record->_table;
 		$app =& Dataface_Application::getInstance();
 		if ( $element->isUploadedFile() ){
-			$cachePath = $app->_conf['cache_dir'].'/'.basename($app->_conf['_database']['name']).'-'.basename($table->tablename).'-'.basename($field['name']).'-';
+		    $cachePath = $app->_conf['cache_dir'].'/'.basename($app->_conf['_database']['name']).'-'.basename($table->tablename).'-'.basename($field['name']).'-';
 			
 			$cachedFiles = glob($cachePath.'*');
 			foreach ($cachedFiles as $cachedFile){
@@ -92,7 +92,7 @@ class Dataface_FormTool_file {
 				chmod($field['savepath'].'/'.$filename, 0744);
 					
 				$out = $filename;
-				
+				$element->last_pushed_value = $out;
 			
 			} else {
 				if ( file_exists($val['tmp_name']) ){
@@ -108,9 +108,11 @@ class Dataface_FormTool_file {
 						// the path to the blob.
 						$out = $val['tmp_name'];
 					}
+
 				} else {
 					$out = null;
 				}
+				$element->last_pushed_value = $out;
 			}
 			
 			if ( is_array( $metaValues ) ){
@@ -132,6 +134,9 @@ class Dataface_FormTool_file {
 		}
 		
 		if ( $table->isContainer($field['name']) ){
+		    if (isset($element->last_pushed_value) and !empty($element->last_pushed_value)) {
+                return $element->last_pushed_value;
+            }
 			return $record->val($field['name']);
 		}
 		return null;

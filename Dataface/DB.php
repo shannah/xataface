@@ -52,7 +52,7 @@ class Dataface_DB {
 	
 	var $blobs = array();  // Blobs.
 	
-	function Dataface_DB($db=null){
+	function __construct($db=null){
 		$this->app =& Dataface_Application::getInstance();
 		if ( $db === null ){
 			$db = $this->app->db();
@@ -77,6 +77,7 @@ class Dataface_DB {
 		
 		
 	}
+		function Dataface_DB($db=null) { self::__construct($db); }
 	
 	/**
 	 * Loads cached queries from the file Dataface_DB.cache in the DATAFACE_CACHE
@@ -651,7 +652,7 @@ class Dataface_DB {
 		// parse the SQL query.
 		import('SQL/Parser.php');
 		$parser = new SQL_Parser( null, 'MySQL');
-		$data =& $parser->parse($sql);
+		$data = $parser->parse($sql);
 		if ( PEAR::isError($data) ){
 			return $data;
 		}

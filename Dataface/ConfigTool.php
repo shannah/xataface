@@ -160,6 +160,8 @@ class Dataface_ConfigTool {
 		if ( $type === 'lang' ){
 			
 			if ( $tablename !== '__global__' ){
+			    $paths[] = DATAFACE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
+				$lpaths[] = DATAFACE_SITE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
 				if ( !class_exists('Dataface_Table') ) import('Dataface/Table.php');
 				$lpaths[] = Dataface_Table::getBasePath($tablename).'/tables/'.basename($tablename).'/lang/'.basename($app->_conf['lang']).'.ini';
 				

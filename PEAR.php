@@ -167,7 +167,7 @@ class PEAR
      * @access public
      * @return void
      */
-    function PEAR($error_class = null)
+    function __construct($error_class = null)
     {
         $classname = strtolower(get_class($this));
         if ($this->_debug) {
@@ -191,6 +191,7 @@ class PEAR
             }
         }
     }
+        function PEAR($error_class=null) { self::__construct($error_class); }
 
     // }}}
     // {{{ destructor
@@ -858,7 +859,7 @@ class PEAR_Error
      * @access public
      *
      */
-    function PEAR_Error($message = 'unknown error', $code = null,
+    function __construct($message = 'unknown error', $code = null,
                         $mode = null, $options = null, $userinfo = null)
     {
         if ($mode === null) {
@@ -917,6 +918,11 @@ class PEAR_Error
             eval('$e = new Exception($this->message, $this->code);throw($e);');
         }
     }
+
+    function PEAR_Error($message = 'unknown error', $code = null,
+                        $mode = null, $options = null, $userinfo = null) {
+                          self::__construct($message, $code, $mode, $options, $userinfo);
+                        }
 
     // }}}
     // {{{ getMode()

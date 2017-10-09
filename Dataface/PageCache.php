@@ -23,7 +23,7 @@ require_once 'Dataface/Application.php';
 class Dataface_PageCache extends Cache_Lite {
 
 	var $tables;
-	function Dataface_PageCache($tables=array()){
+	function __construct($tables=array()){
 		$this->tables =& $tables;
 		$app =& Dataface_Application::getInstance();
 		$params = array(
@@ -43,6 +43,7 @@ class Dataface_PageCache extends Cache_Lite {
 		
 		
 	}
+		function Dataface_PageCache($tables=array()) { self::__construct($tables); }
 	
 	function dbmtime(){
 		$tables =& $this->tables;

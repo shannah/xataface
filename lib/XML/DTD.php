@@ -292,10 +292,11 @@ class XML_DTD_Tree
      *  
      * @param array $tree
      **/
-    function XML_DTD_Tree($tree)
+    function __construct($tree)
     {
         $this->dtd = $tree;
     }
+        function XML_DTD_Tree($tree) { self::__construct($tree); }
 
     /**
      * XML_DTD_Tree::getChildren()

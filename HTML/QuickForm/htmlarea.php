@@ -36,11 +36,12 @@ class HTML_QuickForm_htmlarea extends HTML_QuickForm_textarea {
 		);
 	var $wysiwygOptions = array();
 	
-	function HTML_QuickForm_htmlarea($elementName=null, $elementLabel=null, $attributes=null)
+	function __construct($elementName=null, $elementLabel=null, $attributes=null)
     {
         HTML_QuickForm_textarea::HTML_QuickForm_textarea($elementName, $elementLabel, $attributes);
         $this->_type = 'htmlarea';
     } //end constructor
+    	function HTML_QuickForm_htmlarea($elementName=null, $elementLabel=null, $attributes=null) { self::__construct($elementName, $elementLabel, $attributes); }
     
     
     /**

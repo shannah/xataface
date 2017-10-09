@@ -579,6 +579,9 @@ END;
 
 			}
 			$dbinfo =& $conf['_database'];
+			if (is_array($dbinfo) and defined('XATAFACE_DATABASE_NAME_OVERRIDE')) {
+			    $dbinfo['name'] = XATAFACE_DATABASE_NAME_OVERRIDE;
+			}
 			if ( !is_array( $dbinfo ) || !isset($dbinfo['host']) || !isset( $dbinfo['user'] ) || !isset( $dbinfo['password'] ) || !isset( $dbinfo['name'] ) ){
 				throw new Exception('Error loading config file.  The database information was not entered correctly.<br>
 					 Please enter the database information int its own section of the config file as follows:<br>
@@ -932,7 +935,7 @@ END;
 		if ( @$query['-table'] ){
 			$query['-table'] = trim($query['-table']);
 			if ( !preg_match('/^[a-zA-Z0-9_]+$/', $query['-table']) ){
-				throw new Exception("Illegal table name.");
+				throw new Exception("Illegal table name: ".$query['-table']);
 			}
 			$query['-table'] = basename($query['-table']);
 		}
@@ -2155,6 +2158,28 @@ END
 			}
 		}
 		
+		// Set up security filters
+		$query =& $this->getQuery();
+		$table = Dataface_Table::loadTable($query['-table']);
+		
+		if (@$this->_conf['using_default_action'] and $table->isSingleton()) {
+		    $query['-action'] = $this->_conf['default_browse_action'];
+		    $perms = $table->getPermissions();
+		    if (!$this->getRecord() && @$perms['new']) {
+		        $query['-action'] = 'new';
+		    }
+		    if (!isset($this->_conf['_prefs'])) {
+		        $this->_conf['_prefs'] = array();
+		    }
+		    
+		    // For singleton tables search is pointless
+		    $this->_conf['_prefs']['show_search'] = 0;
+		}
+		
+		if (!@$query['-sort'] and @$table->_atts['default_sort']) {
+		    $query['-sort'] = $table->_atts['default_sort'];
+		}
+		
 		$this->fireEvent('beforeHandleRequest');
 		$applicationDelegate = $this->getDelegate();
 		if ( isset($applicationDelegate) and method_exists($applicationDelegate, 'beforeHandleRequest') ){
@@ -2162,9 +2187,7 @@ END
 			$applicationDelegate->beforeHandleRequest();
 		}
 		
-		// Set up security filters
-		$query =& $this->getQuery();
-		$table = Dataface_Table::loadTable($query['-table']);
+		
 
 		//$table->setSecurityFilter();
 		/*
@@ -2553,7 +2576,7 @@ END
 			if ( $loginPrompt ){
 				// The user is supposed to see a login prompt to log in.
 				// Show the login prompt.
-				
+				//header("HTTP/1.1 401 Unauthorized");
 				$authTool->showLoginPrompt($loginError);
 			} else if ($permissionDenied) {
 				// The user is supposed to see the permissionm denied page.

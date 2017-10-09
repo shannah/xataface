@@ -24,7 +24,7 @@ require_once 'HTML/QuickForm/file.php';
 class HTML_QuickForm_webcam extends HTML_QuickForm_file {
 	
 
-	function HTML_QuickForm_webcam($elementName=null, $elementLabel=null, $attributes=null, $properties=array())
+	function __construct($elementName=null, $elementLabel=null, $attributes=null, $properties=array())
     {
     	if ( isset($elementName) ){
 			
@@ -32,6 +32,7 @@ class HTML_QuickForm_webcam extends HTML_QuickForm_file {
 		}
 		
     } //end constructor
+    	function HTML_QuickForm_webcam($elementName=null, $elementLabel=null, $attributes=null, $properties=array()) { self::__construct($elementName, $elementLabel, $attributes, $properties); }
     
     
     function toHtml(){

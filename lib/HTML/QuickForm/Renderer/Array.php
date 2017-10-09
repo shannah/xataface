@@ -155,13 +155,14 @@ class HTML_QuickForm_Renderer_Array extends HTML_QuickForm_Renderer
     * @param  bool    true: Elements arrays are keyed on names instead of indices.
     * @access public
     */
-    function HTML_QuickForm_Renderer_Array($collectHidden = false, $staticLabels = false, $assoc = false)
+    function __construct($collectHidden = false, $staticLabels = false, $assoc = false)
     {
         $this->HTML_QuickForm_Renderer();
         $this->_collectHidden = $collectHidden;
         $this->_staticLabels  = $staticLabels;
         $this->_assoc = $assoc;
     } // end constructor
+        function HTML_QuickForm_Renderer_Array($collectHidden=false, $staticLabels=false, $assoc=false) { self::__construct($collectHidden, $staticLabels, $assoc); }
 
 
    /**

@@ -29,7 +29,7 @@ class Dataface_ActionTool {
 	var $actions=array();
 	var $tableActions=array();
 	
-	function Dataface_ActionTool($conf=null){
+	function __construct($conf=null){
 		if ( $conf === null ){
 			$this->_loadActionsINIFile(/*DATAFACE_PATH."/actions.ini"*/);
 			//$this->_loadActionsINIFile(DATAFACE_SITE_PATH."/actions.ini");
@@ -38,6 +38,7 @@ class Dataface_ActionTool {
 		}
 	
 	}
+		function Dataface_ActionTool($conf=null) { self::__construct($conf); }
 	
 	
 	

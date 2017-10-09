@@ -11,7 +11,7 @@ class Dataface_RecordView {
 	var $status;
 	var $showLogo = false; // Whether or not to show the logo spot
 	
-	function Dataface_RecordView(&$record){
+	function __construct(&$record){
 
 		$this->record =& $record;
 		$tablename = $this->record->_table->tablename;
@@ -56,7 +56,6 @@ class Dataface_RecordView {
 			$delegate_fields = preg_grep('/^field__/', $delegate_methods);
 			$delegate_sections = preg_grep('/^section__/', $delegate_methods);
 			
-			
 			foreach ($delegate_fields as $dfield){
 				$dfieldname = substr($dfield,7);
 				$fields[$dfieldname] = $this->record->_table->_newSchema('varchar(32)', $dfieldname);
@@ -66,7 +65,6 @@ class Dataface_RecordView {
 					$this->record->_table->_parseINISection($this->record->_table->_atts[$dfieldname], $fields[$dfieldname]);
 					
 				}
-				
 				
 			}
 			
@@ -317,6 +315,7 @@ class Dataface_RecordView {
 		
 		
 	}
+		function Dataface_RecordView(&$record) { self::__construct($record); }
 	
 	
 	

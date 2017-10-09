@@ -217,7 +217,7 @@
 			
 								
 			
-								
+								<!--ui-root=main-content-->
 								<div class="documentContent mainArea" id="region-content">
 								
 			
@@ -236,6 +236,7 @@
 									{block name="after_main_section"}
 		
 								</div>
+								<!--/ui-root=main-content-->
 								
 							{/define_slot}<!-- main_column-->
 						</td>
@@ -248,11 +249,13 @@
 				{include file="Dataface_Fineprint.html"}
 				{block name="after_fineprint"}
 			{/define_slot}
+            <!-- end-html-body-->
 			{block name="before_global_footer"}
 			{define_slot name="global_footer"}{include file="global_footer.html"}{/define_slot}
 				{block name="after_global_footer"}
 		
 		{/define_slot} <!-- html_body -->
+
 		{block name="javascript_tool_includes"}
 	</body>
 </html>
