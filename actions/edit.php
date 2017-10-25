@@ -198,6 +198,12 @@ class dataface_actions_edit {
 							"Record successfully saved.<br>"
 						).$msg
 					);
+					$editAction = Dataface_ActionTool::getInstance()->getAction(array('name'=>'edit'));
+					if (@$editAction['after_action.'.$query['-table']]) {
+							$vals['-query'] = preg_replace('/([&\?])-action=[^&]+/', '$1-action='.$editAction['after_action.'.$query['-table']], $vals['-query']);
+					} else if (@$editAction['after_action']) {
+							$vals['-query'] = preg_replace('/([&\?])-action=[^&]+/', '$1-action='.$editAction['after_action'], $vals['-query']);
+					}
 
 					if ( preg_match('/[&\?]-action=edit&/', $vals['-query']) and !$form->_record->checkPermission('edit') ){
 						$vals['-query'] = preg_replace('/([&\?])-action=edit&/', '$1-action=view&', $vals['-query']);
