@@ -134,7 +134,7 @@ class Dataface_Application_blob {
       if (!@$field['contentDisposition'] or $field['contentDisposition'] == 'attachment') {
 			     header('Content-disposition: attachment; filename="'.basename($rec->val($fieldname)).'"');
       }
-			read_file($savepath.'/'.basename($rec->val($fieldname)));
+			readfile($savepath.'/'.basename($rec->val($fieldname)));
 			exit;
 
 		}
