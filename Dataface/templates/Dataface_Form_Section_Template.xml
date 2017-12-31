@@ -1,0 +1,107 @@
+
+
+		<section data-xf-record-id="{$form_record_id|xmlescape}">
+			{if $section.field.description}<description>{$section.field.description|xmlescape}</description>{/if}
+			{*
+				#03 - Inner elements loop
+				--------------------------
+				Now we go through each element in this section and render
+				it.
+			*}
+			{foreach from=$elements item=element}
+				{*
+					#04 - Render Element
+					------------------------------
+					This section is used to render an element to be displayed.
+				*}
+				{define_slot name="xml__`$element.field.name`" table=$element.field.tablename}
+					<field type="{$element.field.Type|xmlescape}" name="{$element.field.name|xmlescape}">
+						<label>
+							{$element.field.widget.label|xmlescape}
+						</label>
+
+						{if $element.error}
+							<error>{$element.error|xmlescape}</error>
+						{/if}
+
+						{if $element.value}
+							<value>{$element.value|xmlescape}</value>
+						{/if}
+						{if $element.field.widget.type == 'file'}
+							{if $element.field.allowed_mimetypes}
+								{foreach from=$element.field.allowed_mimetypes item=mimetype}
+									<mimetype allowed="true" value="{$mimetype|xmlescape}" />
+								{/foreach}
+							{/if}
+							{if $element.field.disallowed_mimetypes}
+								{foreach from=$element.field.disallowed_mimetypes item=mimetype}
+									<mimetype allowed="false" value="{$mimetype|xmlescape}" />
+								{/foreach}
+							{/if}
+							{if $element.field.allowed_extensions}
+								{foreach from=$element.field.allowed_extensions item=extension}
+									<extension allowed="true" value="{$extension|xmlescape}" />
+								{/foreach}
+							{/if}
+							{if $element.field.disallowed_extensions}
+								{foreach from=$element.field.disallowed_extensions item=extension}
+									<extension allowed="false" value="{$extension|xmlescape}" />
+								{/foreach}
+							{/if}
+							{if $element.field.transform}
+								<transform value="{$element.field.transform|xmlescape}" />
+							{/if}
+						{/if}
+
+						<description>{$element.field.widget.description|xmlescape}</description>
+
+						{if $element.properties.preview}
+							<preview>
+								{define_slot name="xml__`$element.field.name`_preview_image" src=$element.properties.image_preview}
+								{if $element.properties.image_preview}
+									<img src="{$element.properties.image_preview|xmlescape}" alt="{$element.field.name|xmlescape} preview image"/>
+								{/if}
+								{/define_slot}
+								{define_slot name="xml__`$element.field.name`_preview_link" src=$element.properties.preview}<a href="{$element.properties.preview|xmlescape}">Preview content</a>{/define_slot}
+							</preview>
+						{/if}
+						{if $element.field.widget.question}
+							<question>{$element.field.widget.question|xmlescape}</question>
+						{/if}
+						{define_slot name="xml__`$element.field.name`_widget" table=$element.field.tablename}
+							{block name="xml__before_`$element.field.name`_widget" table=$element.field.tablename}
+							{if $element.xml}
+								{$element.xml}
+							{elseif $element.elements}
+								<fieldset>
+								{foreach from=$element.elements item=groupel name=grouploop}
+									<field name="{$groupel.field.name|escape}">
+										<label>
+												{$groupel.field.widget.label|xmlescape}
+										</label>
+										{if $groupel.required}
+											<validator type="required"/>
+										{/if}
+										{if $groupel.error}
+											<error>{$groupel.error|xmlescape}</error>
+										{/if}
+										{if $groupel.xml}
+											{$groupel.xml}
+										{else}
+											<widget type="{$element.field.widget.type|xmlescape}">
+											</widget>
+										{/if}
+										<description>{$groupel.field.widget.description|xmlescape}</description>
+									</field>
+								{/foreach}
+								</fieldset>
+							{else}
+								<widget type="{$element.field.widget.type|xmlescape}"/>
+							{/if}
+							{block name="xml__after_`$element.field.name`_widget" table=$element.field.tablename}
+						{/define_slot}
+					</field>
+				{/define_slot}
+				{block name="xml__after_`$element.field.name`" table=$element.field.tablename}
+			{/foreach}
+		</section>

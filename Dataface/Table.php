@@ -4886,6 +4886,14 @@ class Dataface_Table {
 		return in_array( $type, array('date','datetime','time','timestamp') );
 	}
 
+    function isTime($fieldname){
+		$type = $this->getType($fieldname);
+		if ( PEAR::isError($type) ){
+			return false;
+		}
+		return in_array( $type, array('datetime','time','timestamp') );
+	}
+
 
 	/**
 	 * @brief Checks a field to see if it is a blob type.

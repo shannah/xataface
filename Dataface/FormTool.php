@@ -16,12 +16,12 @@ class Dataface_FormTool {
 	 * The classes for handling widgets.
 	 */
 	var $widgetHandlerClasses = array();
-	
+
 	/**
 	 * Cache for instantiated widget handler objects.
 	 */
 	var $widgetHandlers = array();
-	
+
 	/**
 	 * @brief Singleton method for obtaining a reference to the Dataface_FormTool
 	 * object.
@@ -31,16 +31,16 @@ class Dataface_FormTool {
 		if ( $instance === 0 ){
 			$instance = new Dataface_FormTool();
 			Dataface_Application::getInstance()->fireEvent('Dataface_FormTool::init', $instance);
-			
+
 		}
 		return $instance;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
-	 * @brief Pulls the data from the underlying $record object into the field.  
+	 * @brief Pulls the data from the underlying $record object into the field.
 	 * This method will obtain it's value from the following mechanisms in order:
 	 *
 	 * -# WidgetHandler::pullField() if it exists (for the widget handler for the current widget type
@@ -56,7 +56,7 @@ class Dataface_FormTool {
 	 * @param Dataface_Record &$record The Dataface_Record object from which the
 	 *			data is being pulled.
 	 *
-	 * @param array &$field The field configuration array for the field being 
+	 * @param array &$field The field configuration array for the field being
 	 *				pulled.
 	 *
 	 * @param HTML_QuickForm &$form The form that is pulling the data.
@@ -73,19 +73,19 @@ class Dataface_FormTool {
 	 *
 	 */
 	function pullField($record, &$field, $form, $formFieldName, $new=false){
-		
+
 		$element =& $this->getElement($form,$field,$formFieldName);
 		// Reference to the form element that will contain the field's value
 
 		if ( PEAR::isError($element) ){
-			
+
 			return $element;
 		}
-		
-		
+
+
 	// Step 1: Load references to objects that we will need to use
 		$table =& $record->_table;
-		
+
 		if ( !$table->hasField($field['name']) ){
 			return PEAR::raiseError("Table ".$table->tablename." has no field $field[name] while trying to pull field value.", DATAFACE_E_NOTICE);
 		}
@@ -93,37 +93,37 @@ class Dataface_FormTool {
 
 			// Reference to the field descriptor array that we are pulling
 		$widget =& $field['widget'];
-		
+
 		// See if there is a widgethandler registered for this widget type
 		$widgetHandler =& $this->getWidgetHandler($widget['type']);
 		if ( isset($widgetHandler) and method_exists($widgetHandler, 'pullField') ){
 			return $widgetHandler->pullField($record, $field, $form, $formFieldName, $new);
 		}
-		
+
 			// Reference to the widget descriptor
-		if ( !Dataface_PermissionsTool::view($record, array('field'=>$field['name'])) ) 
+		if ( !Dataface_PermissionsTool::view($record, array('field'=>$field['name'])) )
 			return Dataface_Error::permissionDenied(
 				df_translate(
 					'scripts.Dataface.QuickForm.pullField.ERROR_NO_ACCESS_TO_FIELD',
 					"No read access on field '$field[name]'",
 					array('fieldname'=>$field['name'])
 					)
-				
-			);
-		
 
-		
+			);
+
+
+
 		$raw = $record->getValue($field['name']);
 			// the raw value from the field
 		$delegate =& $table->getDelegate();
 			// Reference to the table's delegate object (may be null).
 		// Step 2: Insert the value into the form element
-		
+
 		$filterValue = true;
 			// In most cases we give the application an opportunity to
 			// filter the value using the 'FormTool::pullValue' event.
 			// This flag will store which case it is.
-		
+
 		if ( $delegate !== null and method_exists($delegate, $field['name']."__pullValue") ){
 			/*
 			 *
@@ -133,10 +133,10 @@ class Dataface_FormTool {
 			$method = $field['name'].'__pullValue';
 			$val = $delegate->$method($record, $element);
 			$filterValue = false;
-			
+
 		} else if ( isset($widgetHandler) and method_exists($widgetHandler, 'pullValue') ){
 			$val = $widgetHandler->pullValue($record, $field, $form, $element, $new);
-			
+
 		} else {
 			$val = $record->getValueAsString($field['name']);
 
@@ -152,22 +152,22 @@ class Dataface_FormTool {
 			$table->app->fireEvent('FormTool::pullValue', $evt);
 			$val = $evt->value;
 		}
-		
+
 		$form->setDefaults( array( $formFieldName=>$val) );
 
-		
-		
+
+
 		/*
 		 *
 		 * If we got this far, it must have been a success.  Return true.
 		 *
 		 */
 		return true;
-	
-	
+
+
 	}
-	
-	
+
+
 	/**
 	 * @brief Pushes data from a form widget into a Dataface_Record object.  This will
 	 * try to delegate to the following mechanisms if found:
@@ -190,24 +190,24 @@ class Dataface_FormTool {
 		if ( !is_array($field) ) throw new Exception("No field passed to pushField");
 		// See if there is a widgethandler registered for this widget type
 		$table =& $record->_table;
-		
+
 		$widget =& $field['widget'];
-		
+
 		$widgetHandler =& $this->getWidgetHandler($widget['type']);
-		
-		
+
+
 		if ( isset($widgetHandler) and method_exists($widgetHandler, 'pushField') ){
-			
+
 			return $widgetHandler->pushField($record, $field['name'], $form, $formFieldName, $new);
 		}
-		
-		
+
+
 		$metaValues = array();	// will store any meta values that are produced by pushValue
 								// a meta value is a field that exists only to support another field.
-								// Currently the only examples of this are filename and mimetype fields 
+								// Currently the only examples of this are filename and mimetype fields
 								// for File fields.
-		
-		
+
+
 		/*
 		 *
 		 * First we must obtain the value from the element on the form.
@@ -224,25 +224,25 @@ class Dataface_FormTool {
 		} else {
 			$element =& $this->getElement($form, $field, $formFieldName);
 		}
-		
-		
+
+
 		if ( PEAR::isError($element) || !is_a($element, 'HTML_QuickForm_element') || $element->isFrozen() || $element->getType() == 'static'){
-			
+
 			return;
 		}
-		
+
 		$value = $this->pushValue($record, $field, $form, $element, $metaValues);
-		
-		
-		
-		
+
+
+
+
 		$params = array();
 		if ( !$record->validate($field['name'], $value, $params) ){
-			
+
 			return Dataface_Error::permissionDenied($params['message']);
 		}
-		
-		
+
+
 		if ( PEAR::isError($value) ){
 			$value->addUserInfo(
 				df_translate(
@@ -251,25 +251,25 @@ class Dataface_FormTool {
 					array('file'=>"_", 'line'=>0,'fieldname'=>$field['name'])
 					)
 				);
-			
+
 			return $value;
 		}
-		
-		
-		if ( !$table->isMetaField($field['name']) ){
-			
 
-		
+
+		if ( !$table->isMetaField($field['name']) ){
+
+
+
 			/*
 			 *
 			 * A MetaField is a field that should not be updated on its own merit.
 			 * An example of a MetaField is a mimetype field for a BLOB field.  This
-			 * field will be updated as a meta value for the BLOB field when the BLOB 
+			 * field will be updated as a meta value for the BLOB field when the BLOB
 			 * field is updated.
 			 *
 			 */
 			$res = $record->setValue($field['name'], $value);
-			
+
 			if (PEAR::isError($res) ){
 				$value->addUserInfo(
 					df_translate(
@@ -282,7 +282,7 @@ class Dataface_FormTool {
 				return $res;
 			}
 		}
-		
+
 		/*
 		 *
 		 * If this field has any meta fields, then we will set them now.
@@ -302,18 +302,18 @@ class Dataface_FormTool {
 
 			}
 		}
-		
-		
-		
+
+
+
 	}
-	
-	
+
+
 	/**
 	 * @brief Extracts value from the form ready to be stored in the table.  This doesn't
-	 * actually push the data into the record, only obtains the data ready to 
+	 * actually push the data into the record, only obtains the data ready to
 	 * be pushed.
 	 *
-	 * This method will delegate to the WidgetHandler::pushValue() method of 
+	 * This method will delegate to the WidgetHandler::pushValue() method of
 	 * the field's widget if defined.
 	 *
 	 *
@@ -322,10 +322,10 @@ class Dataface_FormTool {
 	 *
 	 * @param HTML_QuickForm &$form The form from which the data is taken.
 	 *
-	 * @param HTML_QuickForm_element The element (i.e. widget)  from which the 
+	 * @param HTML_QuickForm_element The element (i.e. widget)  from which the
 	 *			data is taken.
 	 *
-	 * @param array &$metaValues An associative array of meta values in case 
+	 * @param array &$metaValues An associative array of meta values in case
 	 *				there are other fields that should be filled in based on
 	 *				the data in this field.
 	 *
@@ -335,17 +335,17 @@ class Dataface_FormTool {
 	function pushValue($record,&$field, $form, &$element, &$metaValues){
 		if ( is_string($field) ){
 			throw new Exception("Invalid field parameter: $field", E_USER_ERROR);
-			
+
 		}
-		
+
 		$widgetHandler =& $this->getWidgetHandler($field['widget']['type']);
-		
+
 		//$formFieldName = $element->getName();
-		
+
 		$app =& Dataface_Application::getInstance();
 		// Obtain references to frequently used objects
 		$table =& $record->_table;
-		
+
 		if ( PEAR::isError($field) ){
 			$field->addUserInfo(
 				df_translate(
@@ -356,16 +356,16 @@ class Dataface_FormTool {
 				);
 			return $field;
 		}
-		
+
 		$widget =& $field['widget'];
-		
-		
-		
-		
+
+
+
+
 		$delegate =& $table->getDelegate();
-		
+
 		$out = null;
-		
+
 			// chops off the relationship part of the field name if it is there.
 		if ( $delegate !== null and method_exists( $delegate, $field['name'].'__pushValue') ){
 			// A delegate is defined and contains a 'prepare' method for this field --- we use it
@@ -380,7 +380,7 @@ class Dataface_FormTool {
 					);
 				return $val;
 			}
-			
+
 			// call the delegate's prepare function
 			$method = $field['name'].'__pushValue';
 			$val = $delegate->$method($record, $element);
@@ -394,7 +394,7 @@ class Dataface_FormTool {
 					);
 				return $val;
 			}
-			
+
 			// If the delegate class defines a custom push value then
 			// we return it directly... we don't push it through any further filters.
 			return $val;
@@ -403,12 +403,12 @@ class Dataface_FormTool {
 		} else {
 			// There is no delegate defined... we just do standard preparations based on field and widget types.
 			$out = $element->getValue();
-					
-			
+
+
 		}
-		
-		
-		
+
+
+
 		$evt = new stdClass;
 		$evt->record = $record;
 		$evt->field =& $field;
@@ -418,27 +418,27 @@ class Dataface_FormTool {
 		$evt->value = $out;
 		$app->fireEvent('FormTool::pushValue', $evt);
 		$out = $evt->value;
-		
+
 		if (@$field['sanitize_html']) {
 		    if (!defined('HTMLAWED_LOADED')) {
 		        import('lib/htmLawed.php');
 		    }
-            $hconfig = array('safe'=>1); 
+            $hconfig = array('safe'=>1);
             $out = htmLawed($out, $hconfig);
 		}
-		
+
 		return $out;
-		
-			
-	
+
+
+
 	}
-	
+
 	/**
 	 * @brief Builds a widget that can be added to a form.  This will delegate
 	 * to the WidgetHandler::buildWidget() method if defined for the field's widget
 	 * type.
 	 *
-	 * @param Dataface_Record &$record The Dataface Record that this widget 
+	 * @param Dataface_Record &$record The Dataface Record that this widget
 	 * 			is to be editing.
 	 * @param array &$field The field definition.
 	 * @param HTML_QuickForm The form to which the widget will be added.
@@ -447,31 +447,31 @@ class Dataface_FormTool {
 	 */
 	function &buildWidget($record, &$field, $form, $formFieldName, $new=false, $permissions=null){
 		$table =& $record->_table;
-		
-		
+
+
 		$widget =& $field['widget'];
 		if ( !isset($permissions) ){
 			//$permissions =& $record->getPermissions(array('field'=>$field['name']));
 			$permissions = Dataface_PermissionsTool::ALL();
 			// reference to widget descriptor array
 		}
-		
+
 		$pt =& Dataface_PermissionsTool::getInstance();
 			// Reference to permissions tool to operate on $permissions
-		
-		
+
+
 		$widgetHandler =& $this->getWidgetHandler($widget['type']);
 		if ( isset($widgetHandler) and method_exists($widgetHandler, 'buildWidget') ){
 			$el =& $widgetHandler->buildWidget($record, $field, $form, $formFieldName, $new);
-			
+
 		} else {
 			$factory =& Dataface_FormTool::factory();
 				// A dummy HTML_QuickForm used as a factory to create temporary elements.
 				// Reference to the table object.
 			$el =& $factory->addElement($widget['type'], $formFieldName, $widget['label'], array('class'=>$widget['class'], 'id'=>$formFieldName) );
 		}
-		
-		
+
+
 		if ( PEAR::isError($el) ){
 			throw new Exception($el->toString(), E_USER_ERROR);
 		}
@@ -493,6 +493,9 @@ class Dataface_FormTool {
 		if ( !isset($atts['data-xf-field']) ){
 			$atts['data-xf-field'] = $field['name'];
 		}
+
+
+
 		$el->setAttributes($atts);
 		if ( $new and !$pt->checkPermission('new', $permissions) ){
 			$el->freeze();
@@ -508,7 +511,7 @@ class Dataface_FormTool {
 		}
 		*/
 		$el->record =& $record;
-		
+
 		$form->addElement($el);
 		/*
 		 *
@@ -517,7 +520,7 @@ class Dataface_FormTool {
 		 *
 		 */
 		$validators = $field['validators'];
-		
+		$validatorXml = '';
 		foreach ($validators as $vname=>$validator){
 			/*
 			 *
@@ -539,22 +542,51 @@ class Dataface_FormTool {
 			if ( $vname == 'required' && $widget['type'] == 'file' ){
 				continue;
 			}
-			
-			$form->addRule($formFieldName, $validator['message'], $vname, @$validator['arg'], (($widget['type'] == 'htmlarea' or @$widget['validation'] == 'server' or $el->getAttribute('data-validation') == 'server'  )?null:'client'));
-			
+			$clientSide = (
+				($widget['type'] == 'htmlarea' or @$widget['validation'] == 'server' or $el->getAttribute('data-validation') == 'server'  ) ?
+				null
+				:'client'
+			);
+			if (isset($clientSide)) {
+				$validatorXml .= '<validator type="'.xmlentities($vname).'" arg="'.(is_string($validator['arg'])? xmlentities($validator['arg']):'').'" message="'.xmlentities($validator['message']).'"/>';
+			}
+
+			$form->addRule($formFieldName, $validator['message'], $vname, @$validator['arg'], $clientSide);
+
 		}
 
-		
-		
+
+		if (property_exists($form, 'xml') and $form->xml) {
+			$xml = $el->getXML();
+			if (!isset($xml)) {
+				$xml = '<widget type="'.xmlentities($widget['type']).'"';
+				if (isset($field['widget']['xmlatts'])) {
+					foreach ( $field['widget']['xmlatts'] as $k=>$v ){
+						$xml .= ' ' . $k . '="'.xmlentities($v).'"';
+					}
+				}
+				foreach ($el->xmlAtts as $k=>$v) {
+					$xml .= ' ' . $k . '="'.xmlentities($v).'"';
+				}
+				if (isset($atts['data-xf-xml-body'])) {
+					$xml .= '>' . $atts['data-xf-xml-body'].'</widget>';
+					unset($atts['data-xf-xml-body']);
+				} else {
+					$xml .= '/>';
+				}
+				$el->setXML($xml.$validatorXml);
+			}
+		}
+
 		$this->pullField($record, $field, $form, $formFieldName, $new);
-		
-		
+
+
 		$el->_persistantFreeze = true;
 		return $el;
 	}
-	
+
 	/**
-	 * @brief Registers a class to handle the pushing and pulling for a particular type 
+	 * @brief Registers a class to handle the pushing and pulling for a particular type
 	 * of widget.  This is the mechanism by which custom widgets can be created and
 	 * registered.  All that is required is to define a WidgetHandler and then
 	 * register that handler with the form tool with this method.
@@ -579,8 +611,8 @@ class Dataface_FormTool {
 		$this->widgetHandlerClasses[$widgetType] = $class;
 		$this->widgetHandlerPaths[$widgetType] = $path;
 	}
-	
-	
+
+
 	/**
 	 * @brief Unregisters a particular widget handler.
 	 * @see registerWidgetHandler()
@@ -590,7 +622,7 @@ class Dataface_FormTool {
 		unset($this->widgetHandlerPaths[$widgetType]);
 		unset($this->widgetHandlers[$widgetType]);
 	}
-	
+
 	/**
 	 * @brief Obtains a reference to the widget handler object for a particular type
 	 * of widget.
@@ -600,28 +632,28 @@ class Dataface_FormTool {
 	 * @returns WidgetHandler The widget handler.
 	 */
 	function &getWidgetHandler($widgetType){
-		
+
 		if ( !isset($this->widgetHandlers[$widgetType]) ){
-			
+
 			if ( !isset($this->widgetHandlerPaths[$widgetType]) and !isset($this->widgetHandlerClasses[$widgetType]) ){
-				
+
 				$class = 'Dataface_FormTool_'.$widgetType;
 				if ( class_exists('Dataface_FormTool_'.$widgetType) ){
-					
+
 					$this->widgetHandlers[$widgetType] = new $class;
 				} else if ( $this->_file_exists_incpath('Dataface/FormTool/'.$widgetType.'.php') ){
-					
+
 					import('Dataface/FormTool/'.$widgetType.'.php');
-					$this->widgetHandlers[$widgetType] = new $class; 
+					$this->widgetHandlers[$widgetType] = new $class;
 				} else {
-					
+
 					//$err = PEAR::raiseError("Attempt to get widget handler for '$widgetType' which is not registered.");
 					$out = null;
-					
+
 					return $out;
 				}
 			} else {
-			
+
 				if ( !class_exists($this->widgetHandlerClasses[$widgetType]) ){
 					import($this->widgetHandlerPaths[$widgetType]);
 				}
@@ -631,8 +663,8 @@ class Dataface_FormTool {
 		}
 		return $this->widgetHandlers[$widgetType];
 	}
-	
-	
+
+
 	/**
 	 * @brief Returns a QuickForm object that can be used to generate elements safely.
 	 */
@@ -643,12 +675,12 @@ class Dataface_FormTool {
 		}
 		return $factory;
 	}
-	
+
 	/**
 	 * @brief Gets a vocabulary that can be used in a particular field.
 	 *
 	 * @param Dataface_Record &$record The record that is being edited.
-	 * 
+	 *
 	 * @param array &$field The config array for the field.
 	 *
 	 * @returns array The associative array of options in the valuelist.
@@ -657,13 +689,13 @@ class Dataface_FormTool {
 		$res = Dataface_FormTool::_getVocabAndClasses($record, $field);
 		return $res['options'];
 	}
-	
+
 	/**
 	 * @brief Gets the list of meta values that is associated with the valuelist
 	 * for a particular field.  The idea is that the options in a valuelist
 	 * can be categorized into classes.  This returns those classes.
 	 * @param Dataface_Record &$record The record that is being edited.
-	 * 
+	 *
 	 * @param array &$field The config array for the field being edited.
 	 *
 	 * @returns array The associative array of classes [key => class]
@@ -672,7 +704,7 @@ class Dataface_FormTool {
 		$res = Dataface_FormTool::_getVocabAndClasses($record, $field);
 		return $res['options__classes'];
 	}
-	
+
 	/**
 	 * @brief Reutrns a 2-element array of arrays, containing both the classes
 	 * and values for a valuelist.
@@ -688,11 +720,11 @@ class Dataface_FormTool {
 	static function _getVocabAndClasses($record, &$field){
 		if ( !$record ) {
 			throw new Exception("No record foudn in getVocabulary()", E_USER_ERROR);
-			
+
 		}
 		$table =& $record->_table;
 		$options = null;
-		
+
 		if ( isset($field['vocabulary']) and $field['vocabulary'] ){
 			/*
 			 *
@@ -702,14 +734,14 @@ class Dataface_FormTool {
 			 */
 			$options =& $table->getValuelist($field['vocabulary']);
 			$options__classes =& $table->getValuelist($field['vocabulary'].'__meta');
-			
+
 			if ( PEAR::isError($options) ){
 				$options->addUserInfo("Error getting vocabulary '$field[vocabulary]' when building widget for field '$field[name]' in QuickForm::buildWidget() ");
 				throw new Exception($options->toString(), E_USER_ERROR);
 			}
-			
+
 			/*
-			 * 
+			 *
 			 * We should have the option to choose none of the options, so we will add a blank option
 			 * to the beginning of the options list.
 			 *
@@ -721,11 +753,11 @@ class Dataface_FormTool {
 				}
 				$options = $opts;
 			}
-			
+
 		}
 		return array('options'=>&$options, 'options__classes'=>&$options__classes);
 	}
-	
+
 	/**
 	* @brief Check if a file exists in the include path
 	* @private
@@ -739,23 +771,23 @@ class Dataface_FormTool {
 	 function _file_exists_incpath ($file)
 	 {
 		 $paths = explode(PATH_SEPARATOR, get_include_path());
-	  
+
 		 foreach ($paths as $path) {
 			 // Formulate the absolute path
 			 $fullpath = $path . DIRECTORY_SEPARATOR . $file;
-	  
+
 			 // Check it
 			 if (@file_exists($fullpath)) {
 				 return $fullpath;
 			 }
 		 }
-	  
+
 		 return false;
 	 }
-	 
-	 
+
+
 	 /**
-	  * @brief Checks to see if a field group exists in a given form.  This refers to a 
+	  * @brief Checks to see if a field group exists in a given form.  This refers to a
 	  * group in the sense of an HTML_QuickForm_group element and not the Dataface
 	  * notion of a 'group' widget.
 	  * @private
@@ -768,11 +800,11 @@ class Dataface_FormTool {
 	 	$el =& $form->getElement($group);
 	 	return ( $el and !PEAR::isError($el) and ($el->getType() == 'group') );
 	 }
-	 
+
 	 /**
 	  * @brief Gets an element from a form.
 	  *
-	  * @param HTML_QuickForm &$form The form from which the element is being 
+	  * @param HTML_QuickForm &$form The form from which the element is being
 	  *			retrieved.
 	  *
 	  * @param array &$field The field config array for the field in question.
@@ -804,10 +836,10 @@ class Dataface_FormTool {
 						)
 					);
 				throw new Exception($el->toString(), E_USER_ERROR);
-				
+
 				return $el;
 			}
-			
+
 			/*
 			 *
 			 * Find the field within this group that has the same name as the field we are looking for.
@@ -848,12 +880,12 @@ class Dataface_FormTool {
 			 */
 			$element =& $form->getElement($name);
 		}
-		
-	
+
+
 		return $element;
-	
+
 	}
-	
+
 	/**
 	 * @brief Groups a collection of fields together by group.
 	 *
@@ -865,7 +897,7 @@ class Dataface_FormTool {
 	function groupFields(&$fields){
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
-		
+
 		// Take query parameters to set the collapsed config settings
 		// for the groups.
 		if ( isset($query['--collapsed']) ){
@@ -873,7 +905,7 @@ class Dataface_FormTool {
 		} else {
 			$collapsed = array();
 		}
-		
+
 		if ( isset($query['--expanded']) ){
 			$expanded = explode(',', $query['--expanded']);
 		} else {
@@ -909,7 +941,7 @@ class Dataface_FormTool {
 		}
 		return $groupOrders;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -919,7 +951,7 @@ class Dataface_FormTool {
 		if ( $o1 <= $o2 ) return -1;
 		return 1;
 	}
-	
+
 	/**
 	 * @brief Displays a form.
 	 *
@@ -930,12 +962,12 @@ class Dataface_FormTool {
 	 *			if this is the case, then only one field from the form will be
 	 *			rendered and it will include a javascript onblur handler to auto
 	 *			save as soon as the user leaves the field.
-	 * 
+	 *
 	 * @returns void
 	 */
 	function display(&$form, $template=null, $singleField=false, $useTabs=false){
-		
-		
+
+
 		import('HTML/QuickForm/Renderer/ArrayDataface.php');
 		//$skinTool =& Dataface_SkinTool::getInstance();
 		$renderer = new HTML_QuickForm_Renderer_ArrayDataface(true);
@@ -957,15 +989,15 @@ class Dataface_FormTool {
 					if ( !isset($form_data['tabs'][$tabname] ) ){
 						$table =& Dataface_Table::loadTable($element['field']['table']);
 						if ( PEAR::isError($table) ) throw new Exception($table->getMessage(), E_USER_ERROR);
-						
+
 						$form_data['tabs'][$tabname] = $table->getTab($element['field']['tab']);
 						$form_data['tabs'][$tabname]['elements'] = array();
 						$form_data['tabs'][$tabname]['sections'] = array();
 						unset($table);
 					}
 					$form_data['tabs'][$tabname]['elements'][$key] =& $form_data['elements'][$key];
-				
-					
+
+
 				}
 			}
 			if ( is_array($form_data['sections']) ){
@@ -978,29 +1010,29 @@ class Dataface_FormTool {
 						if ( !isset($form_data['tabs'][$tabname] ) ){
 							$table =& Dataface_Table::loadTable($element['field']['tablename']);
 							if ( PEAR::isError($table) ) throw new Exception($table->getMessage(), E_USER_ERROR);
-							
+
 							$form_data['tabs'][$tabname] = $table->getTab($tabname);
 							$form_data['tabs'][$tabname]['elements'] = array();
 							$form_data['tabs'][$tabname]['sections'] = array();
 							unset($table);
 						}
-						
+
 						if ( !isset($form_data['tabs'][$tabname]['sections'][$skey]) ){
 							$section_copy = $section;
 							$section_copy['elements'] = array();
 							$form_data['tabs'][$tabname]['sections'][$skey] =& $section_copy;
 							unset($section_copy);
 						}
-						
+
 						$form_data['tabs'][$tabname]['sections'][$skey]['elements'][$ekey] =& $form_data['sections'][$skey]['elements'][$ekey];
-						
+
 					}
 				}
 			}
 			uasort($form_data['tabs'], array(&$this, '_sortTabs'));
 		}
 		$context = array('form_data'=>$form_data);
-		
+
 		if ( isset($form->_record) and method_exists($form->_record, 'getId') ){
 			$context['form_record_id'] = $form->_record->getId();
 		}
@@ -1012,7 +1044,7 @@ class Dataface_FormTool {
 		if ( !isset($template) ) $template = 'Dataface_Form_Template.html';
 		df_display($context, $template);
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -1028,8 +1060,8 @@ class Dataface_FormTool {
 		if ( $aOrder === @$bOrder ) return 0;
 		return ($aOrder < $bOrder) ? -1 : 1;
 	}
-	
-	
+
+
 	/**
 	 * @brief Builds an HTML_QuickForm object to edit the given record.
 	 * @param Dataface_Record &$record The record that is to be edited.
@@ -1055,21 +1087,21 @@ class Dataface_FormTool {
 			$form =  $this->createRecordForm($record->getJoinRecord($tab), $new, null, $query, $fields);
 			$form->overrideNoQuery = true;
 			return $form;
-			
-		} else { 
+
+		} else {
 			// TO DO:  Finish this method
 			$form = new Dataface_QuickForm($table->tablename, df_db(),  $query, '', $new, $fields);
 			$form->_record =& $record;
 			$form->tab = $tab;
 			return $form;
-		} 
-		
+		}
+
 	}
 	/**
-	 * @brief Adds the necessary extra fields to a form to equip it to be used to edit the 
-	 * given record.  In particular, it adds the next, submit, etc.. buttons to the 
+	 * @brief Adds the necessary extra fields to a form to equip it to be used to edit the
+	 * given record.  In particular, it adds the next, submit, etc.. buttons to the
 	 * bottom of the form.  It also adds a __keys__ group to store/submit the keys
-	 * of the record so that the correct record is processed when the form is 
+	 * of the record so that the correct record is processed when the form is
 	 * submitted.
 	 *
 	 * @param Dataface_Record &$record The record that the form is to edit.
@@ -1082,8 +1114,8 @@ class Dataface_FormTool {
 	function decorateRecordForm($record, &$form, $new=false, $tab=null){
 		@$form->removeElement('__keys__');
 		if ( $new ){
-			
-			
+
+
 		} else {
 			$factory =& self::factory();
 			$els = array();
@@ -1098,7 +1130,7 @@ class Dataface_FormTool {
 		$form->addElement('header','__submit__','Submit');
 		$grp =& $form->addGroup($this->createRecordButtons($record, $tab));
 		$grp->_separator = "\n";
-		
+
 		$data = $this->getSessionData($tab);
 		if ( isset($data) ){
 			//$form->setDefaults($data);
@@ -1107,14 +1139,14 @@ class Dataface_FormTool {
 				$fvals = array_merge($data['_submitFiles'], $_FILES);
 				$form->_setSubmitValues($vals, $fvals);
 			} else {
-			
+
 				// TODO: File uploads will not be handled properly with this method.
 				// Need to make it so that we can support file uploads before actually
 				// saving the record.
 				$form->setDefaults($data['_submitValues']);
 			}
 		}
-		
+
 		if ( $record->_table->hasJoinTable($tab, $record ) ){
 			foreach ( $record->getJoinKeys($tab) as $key=>$value ){
 				@$form->removeElement($key);
@@ -1122,12 +1154,12 @@ class Dataface_FormTool {
 				//$form->addElement('hidden',$key, $value);
 			}
 		}
-		
-		
-		
+
+
+
 	}
-	
-	
+
+
 	/**
 	 * @brief Validates a form to see if it is ready to be processed.
 	 * @param Dataface_Record &$record The record that is being edited with this form.
@@ -1137,17 +1169,17 @@ class Dataface_FormTool {
 	 * @return boolean True if the form validates.
 	 */
 	function validateRecordForm($record, &$form, $new=false, $tab=null){
-	
+
 		if ( !$form->validate() ) return false;
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
-		
+
 		$targets = preg_grep('/^--session:target:/', array_keys($query));
 
 		if ( count($targets) > 0 ) return true;
-		
+
 		$tabs = $record->tabs();
-		
+
 		if ( count($tabs) <= 1 ) return true;
 			// There is only one tab so we don't have to do anything fancy.
 		$session_data =& $this->getSessionData();
@@ -1156,33 +1188,33 @@ class Dataface_FormTool {
 			if ( !$session_data or !$session_data['tabs'] or !in_array($tabname, array_keys($session_data['tabs'])) ) continue;
 			$currForm =& $this->createRecordForm($record, $new, $tabname);
 			$currForm->_build();
-			
+
 			//$currForm->setConstants($currForm->_defaultValues);
 			//$_POST = $currForm->exportValues();
 			$this->decorateRecordForm($record, $currForm, $new, $tabname);
 			//$currForm->_submitValues = $currForm->_defaultValues;
 			$currForm->_flagSubmitted = true;
 			if ( !$currForm->validate() ){
-				
+
 				$form->setElementError('global.'.$tabname, df_translate('classes.FormTool.errors.ERROR_IN_TAB', 'A validation error occurred in the '.$tabs[$tabname]['label'].' tab.  Please verify that this tab\'s input is correct before saving.', array('tab'=>$tabs[$tabname]['label'])));
-				
+
 			}
 			unset($currForm);
 		}
 
-		
+
 
 		return (count($form->_errors) == 0 );
-		
-		
+
+
 	}
-	
+
 	/**
 	 * @brief Handles form submission for the given form.  It handles multi-tab forms
 	 * and even sends an HTTP redirect to the correct tab upon submission, if
 	 * the action requested was to go to a different tab.
 	 *
-	 * This uses the special --session:target:xyz POST variables to 
+	 * This uses the special --session:target:xyz POST variables to
 	 * see which tab is being submitted.
 	 *
 	 * @param Dataface_Record The record to be edited.
@@ -1201,33 +1233,33 @@ class Dataface_FormTool {
 		}
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
-		
+
 		$targets = preg_grep('/^--session:target:/', array_keys($query));
 		if ( isset($tab) and count($targets) >0  ){
-			// We aren't saving this session, so we'll just forward to 
+			// We aren't saving this session, so we'll just forward to
 			// the next tab.
 			$target = reset($targets);
-			
+
 			$res = preg_match('/--session:target:(.*)$/', $target, $matches);
 			if ( !$res ) throw new Exception("Programming error: no matching target in query.", E_USER_ERROR);
-			
+
 			$target = $matches[1];
-			
+
 			if ( $target == '__default__' ) $target = $query['--session:target:__default__'];
 			if ( $target == '__save__' ) return;
-			
+
 			$currentTabKey = array_search($tab, $tabnames);
 			if ( $currentTabKey === false ){
-				// Current tab was not in the list of tabs.. this si 
+				// Current tab was not in the list of tabs.. this si
 				// a problem
 				return PEAR::raiseError("Sorry there was a problem finding the specified tab: ".$query['--tab']." in the tabs for the record ".$currentRecord->getId().".  The available tabs are '".implode(', ', $tabnames).".");
-					
-			} 
+
+			}
 			$currentTabKey = intval($currentTabKey);
 			if ( $target == '__next__' ){
 				// The user clicked the 'next' button so they should
 				// be directed to the next tab
-				
+
 				if ( isset($tabnames[$currentTabKey+1]) ){
 					$target = $tabnames[$currentTabKey+1];
 				} else {
@@ -1236,21 +1268,21 @@ class Dataface_FormTool {
 			} else if ( $target == '__back__' ){
 				// The user clicked the 'back' button so they should
 				// be directed to the previous tab
-				
+
 				if ( isset($tabnames[$currentTabKey-1]) ){
 					$target = $tabnames[$currentTabKey-1];
 				} else {
 					$target = $tab;
 				}
 			}
-			
-			
+
+
 			// Now we just redirect to the next tab
 			if ( isset( $query['-query'] ) ){
 				$q = $query['-query'];
 			} else if ( isset($_SERVER['HTTP_REFERER']) and strpos($_SERVER['HTTP_REFERER'], '?') !== false ){
 				$q = substr($_SERVER['HTTP_REFERER'], strpos($_SERVER['HTTP_REFERER'], '?')+1);
-				
+
 			} else {
 				$couples = array();
 				foreach ( $record->keys() as $key=>$value ){
@@ -1258,24 +1290,24 @@ class Dataface_FormTool {
 				}
 				$q = '-table='.urlencode($query['-table']).'&-action='.$query['-action'].'&'.implode('&', $couples);
 			}
-			
+
 			if ( strpos($q, '&--form-session-key=') === false ) $q .= '&--form-session-key='.$this->getSessionKey();
 			if ( strpos($q,'&--tab=') === false ) $q .= '&--tab='.urlencode($target);
 			else $q = preg_replace('/([&?])--tab=[^&]*(&?)/', '${1}--tab='.urlencode($target).'$2', $q);
 			$q = preg_replace('/[&?]--msg=[^&]*/', '',$q);
-			
+
 			$url = DATAFACE_SITE_HREF.'?'.$q;
 			$app->redirect($url);
-			
-			
-		} 
 
-	
-	
+
+		}
+
+
+
 	}
-	
+
 	/**
-	 * @brief Creates an data-structure representing the tabs that can be displayed for a 
+	 * @brief Creates an data-structure representing the tabs that can be displayed for a
 	 * record form.
 	 *
 	 * @param Dataface_Record &$record The record that is being edited.
@@ -1291,7 +1323,7 @@ class Dataface_FormTool {
 	 *			),
 	 *			...
 	 *		);
-	 */		
+	 */
 	function createHTMLTabs($record, $form, $selectedTab){
 		$out = array();
 		$formname = $form->getAttribute('name');
@@ -1299,17 +1331,17 @@ class Dataface_FormTool {
 		if ( !$tabs or count($tabs)<2 ) return null;
 		foreach ( $tabs as $tab ){
 			$tab['url'] = 'javascript: document.forms[\''.$formname.'\'].elements[\'--session:target:'.$tab['name'].'\'].click()';
-			
+
 			$tab['css_class'] = 'edit-form-tab'. ( ( $tab['name'] == $selectedTab ) ? ' selected tabs-selected':'');
 			$out[] = $tab;
 		}
 		uasort($out, array($this, '_sortTabs'));
 		return $out;
 	}
-	
+
 	/**
 	 * @brief Returns the key that is used to keep track of this particular session.
-	 * This manifests itself as the $_GET['--form-session-key'] variable. 
+	 * This manifests itself as the $_GET['--form-session-key'] variable.
 	 * If no session key is set, this will generate a new one and add
 	 * a '--form-session-key' variable to the current $query.
 	 *
@@ -1326,12 +1358,12 @@ class Dataface_FormTool {
 			return $key;
 		}
 	}
-	
+
 	/**
 	 * @brief Returns an associative array of the session data, either for the current
 	 * tab or for all tabs.
 	 *
-	 * @param string $tab The name of the tab that we wish to get data for.  
+	 * @param string $tab The name of the tab that we wish to get data for.
 	 *		  If this is left null, it will return all tabs data.
 	 * @param string $session_key The session key.  If this is left null, it will
 	 *		  return data for the current session.
@@ -1355,19 +1387,19 @@ class Dataface_FormTool {
 		Dataface_Application::getInstance()->startSession();
 		if ( !isset($session_key) ) $session_key = $this->getSessionKey();
 		if ( isset($tab) and isset($_SESSION[$session_key]['tabs'][$tab]) ){
-		
+
 			return $_SESSION[$session_key]['tabs'][$tab];
-			
+
 		} else if ( !isset($tab) and  isset($_SESSION[$session_key]) ) {
 			return $_SESSION[$session_key];
-			
+
 		} else {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * @brief Clears the session data for the tab current form.  This does not clear 
+	 * @brief Clears the session data for the tab current form.  This does not clear
 	 * the session data for the entire session, just this form.
 	 * @param string $session_key The session key that is being cleared.  Null
 	 * for current key.
@@ -1376,16 +1408,16 @@ class Dataface_FormTool {
 	function clearSessionData($session_key=null){
 	   Dataface_Application::getInstance()->startSession();
 		if ( !isset($session_key) ) $session_key = $this->getSessionKey();
-		
+
 		unset($_SESSION[$session_key]);
 	}
-	
+
 	/**
 	 * @brief Stores data from a form session so that it can be retrieved in the next
 	 * page or the next time a tab is loaded for this form.
 	 *
 	 * If we are using a multi-tab implementation, then we need to store
-	 * the data for each tab in sessions until we are ready to save the 
+	 * the data for each tab in sessions until we are ready to save the
 	 * entire record.
 	 */
 	function storeSessionData($data, $tab, $session_key = null, $record_id=null){
@@ -1399,25 +1431,25 @@ class Dataface_FormTool {
 			}
 		}
 		if ( !isset($_SESSION[$session_key]) ) $_SESSION[$session_key] = array('tabs'=>array(),'table'=>$data['_submitValues']['-table'], 'id'=>$record_id);
-		
+
 		$_SESSION[$session_key]['tabs'][$tab] = $data;
 		return true;
-		
+
 	}
-	
+
 	/**
 	 * @brief Creates and HTML_QuickForm group that can be added a a QuickForm object
-	 * to serve as the submit buttons for edit (or new record) forms. 
-	 * By default this will create buttons for each tab, a back, next, and 
+	 * to serve as the submit buttons for edit (or new record) forms.
+	 * By default this will create buttons for each tab, a back, next, and
 	 * save buttons.
 	 *
 	 * CSS is used to hide the tabs by default.
 	 *
 	 * @return array(HTML_QuickForm_element) An array of submit elements.
 	 *
-	 */ 
+	 */
 	function createRecordButtons($record, $currentTab=null){
-		
+
 		$factory =& self::factory();
 		$out = array();
 		$tabs = $record->tabs();
@@ -1426,8 +1458,8 @@ class Dataface_FormTool {
 		$saveButtonLabel = df_translate('tables.'.$record->table()->tablename.'.save_button_label', '');
 		if ( !$saveButtonLabel ) $saveButtonLabel = df_translate('save_button_label','Save');
 		$out[] = $factory->createElement('submit', '--session:save', $saveButtonLabel);
-	
-		
+
+
 		if ( isset($currentTab) and count($tabnames)>1 ){
 			if ( isset($tabs[$currentTab]['actions']['default']) ){
 				$default = $tabs[$currentTab]['actions']['default'];
@@ -1435,7 +1467,7 @@ class Dataface_FormTool {
 				$default = '__save__';
 			}
 			$out[] = $factory->createElement('submit', '--session:target:__default__', $default, array('style'=>'display:none'));
-			
+
 			$currIndex = array_search($currentTab, $tabnames);
 			$next = ( isset( $tabnames[$currIndex+1] ) ? $tabnames[$currIndex+1] : null);
 			$prev = ( isset( $tabnames[$currIndex-1] ) ? $tabnames[$currIndex-1] : null);
@@ -1443,100 +1475,100 @@ class Dataface_FormTool {
 			if ( isset($tabs[$currentTab]['actions']['back']) ) $prev = $tabs[$currentTab]['actions']['back'];
 			$default = null;
 			if ( isset($tabs[$currentTab]['actions']['default'] ) ) $default = $tabs[$currentTab]['actions']['default'];
-			
+
 			foreach ( $tabs as $tab ){
 				if ( @$params['tab'] == $tab['name'] ) continue; // we don't include a button to the current tab
 				$tabname = $tab['name'];
 				$atts = array();
-				
+
 				if ( isset($tab['button']['atts']) ) $atts = $tab['button']['atts'];
 				if ( isset($params['atts']['__global__']) ) $atts = array_merge($atts, $params['atts']['__global__']);
 				if ( isset($params['atts'][$tab]) ) $atts = array_merge($atts, $params['atts'][$tab]);
 				if ( !isset($atts['style']) ) $atts['style'] = 'display: none';
-				
-				
-				
+
+
+
 				$out[] = $factory->createElement('submit', '--session:target:'.$tabname, $tab['label'], $atts);
 			}
 		}
 		if ( isset($prev) ) $out[] = $factory->createElement('submit', '--session:target:__back__', df_translate('scripts.GLOBAL.LABEL_BACK', 'Back'));
 		if ( isset($next) ) $out[] = $factory->createElement('submit', '--session:target:__next__', df_translate('scripts.GLOBAL.LABEL_NEXT', 'Next'));
-		
+
 		return $out;
 	}
-	
+
 	/**
-	 * @brief Now that we allow tabbed forms, we may be temporarily storing data in 
-	 * the session.  This goes through the session data and saves it to the 
+	 * @brief Now that we allow tabbed forms, we may be temporarily storing data in
+	 * the session.  This goes through the session data and saves it to the
 	 * appropriate places
 	 */
 	function saveSession($record, $new=false, $session_key = null ){
 		// First get the session data
 		$session_data = $this->getSessionData(null, $session_key);
 		if ( !isset($session_data) ) return false;
-		
+
 		// Next make sure that the session is acting on the same record
 		if ( !$new and $session_data['id'] != $record->getId() ){
 
 			return PEAR::raiseError('Failed to save session because the session data is not registered to the same record.');
 		}
-		
+
 		if ( $session_data['table'] != $record->_table->tablename ){
 
 			return PEAR::raiseError('Failed to save session because the session data is for a different table than the record.');
 		}
-		
+
 		$joinRecords = array();	// A form to store all of the join records
 								// that need to be saved.
-		
+
 
 		foreach ( array_keys($session_data['tabs']) as $tabname ){
 			$temp =& $this->createRecordForm($record, $new, $tabname);
-			
+
 				// Note that this form could be a form for the $record object
 				// or it could be a form for one of its join records
-			
+
 			$temp->_build();
 			$this->decorateRecordForm($record, $temp, $new, $tabname);
 			$temp->push();
-			
+
 			if ( $temp->_record->getId() != $record->getId() ){
 				$joinRecords[$tabname] =& $temp->_record;
 			}
 			unset($temp);
 		}
-		
+
 		// Now we need to save the current record..
 		$res = $record->save(null, true);
 		if ( PEAR::isError($res) ) return $res;
-		
+
 		// Now we save all of the join records
-		
+
 		foreach ( $joinRecords as $name=>$jrecord ){
 			// Let's make sure we have the proper join keys so that the
 			// record is linked properly to the current record.
-			
+
 			$jrecord->setValues($record->getJoinKeys($name));
-			
-			
+
+
 			$res = $jrecord->save(null, true);
 			if ( PEAR::isError($res) ){
 				return $res;
 			}
 			unset($jrecord);
 		}
-		
-		
+
+
 		$this->clearSessionData($session_key);
 
 		return true;
-		
-		
-		
+
+
+
 	}
-	 
-		
-	
+
+
+
 
 }
 
@@ -1551,13 +1583,13 @@ class HTML_QuickFormFactory extends HTML_QuickForm {
 		$this->HTML_QuickForm($name);
 	}
 		function HTML_QuickFormFactory($name) { self::__construct($name); }
-	
+
 	function &addElement($element){
 		$args = func_get_args();
 		if ( is_object($element) and $this->elementExists($element->getName()) ){
 			$this->removeElement($element->getName());
 		} else {
-			
+
 			if ( $this->elementExists($args[1]) ){
 				$this->removeElement($args[1]);
 			}

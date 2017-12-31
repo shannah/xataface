@@ -98,6 +98,8 @@ define('QUICKFORM_INVALID_DATASOURCE',     -9);
 class HTML_QuickForm extends HTML_Common {
     // {{{ properties
 
+    var $xml = false;
+
     /**
      * Array containing the form fields
      * @since     1.0

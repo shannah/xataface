@@ -2,17 +2,17 @@
 /*-------------------------------------------------------------------------------
  * Xataface Web Application Framework
  * Copyright (C) 2005-2008 Web Lite Solutions Corp (shannah@sfu.ca)
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -25,9 +25,9 @@
  * Description:
  * 	An extension of HTML_QuickForm to auto-generate a form for a particular table
  * 	in an SQL database.
- * 	
+ *
  *******************************************************************************/
- 
+
 import( 'HTML/QuickForm.php');
 import( 'Dataface/Table.php');
 import( 'Dataface/Vocabulary.php');
@@ -57,53 +57,54 @@ define( 'QUICKFORM_NO_SUCH_FIELD_ERROR',3);
 class Dataface_QuickForm extends HTML_QuickForm {
 
 	public static $TRACK_SUBMIT = true;
-	
+
+
 	/**
 	 * The name of the table upon which this form is based.
 	 */
 	var $tablename;
-	
+
 	/**
 	 * Database handle.
 	 */
 	var $db;
-	
+
 	/**
 	 * Path to the ini file for this form.  This is used when the form is defined by an ini file.
 	 * If no ini file is set, then this form is generated based on the fields of the table.
 	 */
 	var $_iniFile;
-	
+
 	/**
 	 * Array of query values that dictate which record is loaded in this form.
 	 */
 	var $_query;
-	
+
 	/**
 	 * ???
 	 */
 	var $_exactMatches = false;
-	
+
 	/**
 	 * Reference to the Dataface_Table object for this form.
 	 */
 	var $_table;
-	
+
 	/**
 	 * Dataface_Record object used as a model for the data in this form.
 	 */
 	var $_record;
-	
+
 	/**
 	 * Reference to the result set.  This is used to load the appropriate record into the form for editing.
 	 */
 	var $_resultSet;
-	
+
 	/**
 	 * ???
 	 */
 	var $_attributes = array();
-	
+
 	/**
 	 * The renderer used for this form.
 	 */
@@ -113,48 +114,48 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 * Boolean flag indicating if we are creating a new record or editing an existing record.
 	 */
 	var $_new = false;
-	
+
 	/**
 	 * A flag that overrides the noquery directive that is passed for new record forms.
 	 * This is needed for join record forms because they are created as new record forms
 	 * but still the query needs to allow loading the existing record.
 	 */
 	var $overrideNoQuery = false;
-	
-	
+
+
 	/**
-	 * Some columns may require some special loading mechanisms.  This is an 
+	 * Some columns may require some special loading mechanisms.  This is an
 	 * associative array of columns => callbacks to load the column.
 	 */
 	var $_fields = array();
-	
+
 	/**
 	 * Flag that indicates whether the form has been built yet.
 	 */
-	
+
 	var $_isBuilt = false;
-	
+
 	var $_fieldnames = null;
-	
+
 	var $_lang;
-	
+
 	/**
 	 * Will store an array of the names of fields that were changed as a result
 	 * of processing this form.
 	 */
 	var $_changed_fields=array();
-	
-	
+
+
 	/**
 	 * The name of the tab that this quick form is on.
 	 */
 	var $tab;
-	
+
 	var $app;
-	
-	
+
+
 	var $submitLabel = null;
-	
+
 	/**
 	 * @param $tablename The name of the table upon which this form is based. - or a Dataface_Record object to edit.
 	 * @type string | Dataface_Record
@@ -193,7 +194,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				$this->tablename = $tablename;
 				$this->_table =& Dataface_Table::loadTable($this->tablename);
 			}
-				
+
 		} else  if ( !$new ){
 			if ( $tablename == $appQuery['-table'] ){
 				$this->_record =& Dataface_QuickForm::getRecord();
@@ -201,18 +202,18 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				$this->_record =& df_get_record($tablename, $query);
 			}
 			if ( !$this->_record ) $this->_record = new Dataface_Record($tablename, array());
-			
+
 			$this->tablename = $tablename;
-			
+
 			$this->_table =& Dataface_Table::loadTable($this->tablename);
-			
+
 			//$tablename = $this->tablename;
 		} else {
 			$this->tablename = $tablename;
 			$this->_table =& Dataface_Table::loadTable($this->tablename, $this->db);
 			$this->_record = new Dataface_Record($this->tablename, array());
 		}
-		
+
 		$this->_new = $new;
 		if ( !$formname ) {
 			if ( $new ){
@@ -220,44 +221,44 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			} else {
 				$formname = "existing_".$tablename."_record_form";
 			}
-		
+
 		}
 		if ( !$db  ){
-			
+
 			$db = $app->db();
-		} 
-			
+		}
+
 		$this->db = $db;
 		$this->_query = is_array($query) ? $query : array();
 		// The cursor tells us which record in the dataset we will be editing.
 		if ( !isset( $this->_query['-cursor'] ) ){
 			$this->_query['-cursor'] = 0;
 		}
-		
+
 		// Load the results of the query.
 		$this->_resultSet =& Dataface_QueryTool::loadResult($tablename, $db, $this->_query);
-		
+
 		parent::HTML_QuickForm($formname, 'post', df_absolute_url($_SERVER['PHP_SELF']),'',array('accept-charset'=>$app->_conf['ie']),self::$TRACK_SUBMIT);
-		
+
 		$this->setJsWarnings(
 			df_translate('quickform.warning.prefix', $this->_jsPrefix),
 			df_translate('quickform.warning.postfix', $this->_jsPostfix)
 		);
-		
+
 		//$this->_fields =& $this->_table->fields(false,false,true);
 		$this->_fields =& $this->_table->formFields(false,true);
 		if ( @$appQuery['-xf-hide-fields'] ){
 		    $hiddenFields = explode(' ', $appQuery['-xf-hide-fields']);
 		    $css = array();
 		    foreach ( $hiddenFields as $f ){
-		        
+
 		        if ( isset($this->_fields[$f]) ){
 		            $css[] = "#{$f}_form_row { display:none;}";
 		        //    $this->_fields[$f]['widget']['type'] = 'hidden';
 		        //    $fieldDef =& Dataface_Table::loadTable($this->_fields[$f]['tablename'])->getField($f);
 		        //    $fieldDef['widget']['type'] = 'hidden';
 		        //    unset($fieldDef);
-		        //    //$field =& 
+		        //    //$field =&
 		        }
 		    }
 		    if ( $css ){
@@ -268,8 +269,8 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		$this->_renderer = new HTML_QuickForm_Renderer_Dataface($this); //$this->defaultRenderer();
 		$this->_renderer->setFormTemplate($this->getFormTemplate());
 		$this->_requiredNote = '';
-		
-		
+
+
 		if ( is_array($fieldnames) ){
 		    /*
 		     * $fieldnames were specified in the parameters.  We will use the provided
@@ -282,25 +283,25 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				}
 			}
 		}
-		
+
 		//$this->_build();
 
-			
+
 	}
-		function Dataface_QuickForm($tablename, $db='', $query='', $formname='', $new=false, $fieldnames=null, $lang=null) { self::__construct($tablename, $db, $query, $formname, $new, $fieldnames, $lang); }
-	
-	
+	function Dataface_QuickForm($tablename, $db='', $query='', $formname='', $new=false, $fieldnames=null, $lang=null) { self::__construct($tablename, $db, $query, $formname, $new, $fieldnames, $lang); }
+
+
 	function formSubmitted(){
 		return ( isset( $_POST['__keys__']) and isset( $_POST['-table']) );
 	}
-	
+
 	function &getRecord(){
-		
+
 		if ( Dataface_QuickForm::formSubmitted() ){
 			$record = new Dataface_Record($_POST['-table'], array());
 			$io = new Dataface_IO($_POST['-table']);
 			$query = $_POST['__keys__'];
-			
+
 			if ( is_array($query) ){
 				foreach ( array_keys($query) as $postKey ){
 					if ( $query[$postKey]{0} != '=' ){
@@ -311,19 +312,19 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			$io->read($query, $record);
 			return $record;
 		} else {
-		
+
 			$app =& Dataface_Application::getInstance();
-			
+
 			$qt =& Dataface_QueryTool::loadResult($app->_currentTable);
-				
+
 			$curr =& $qt->loadCurrent();
-			
+
 			return $curr;
 		}
 	}
-	
+
 	/**
-	 * @brief Sets the label of the submit button for this form.  This 
+	 * @brief Sets the label of the submit button for this form.  This
 	 * will override the default submit label in xataface.  If it is set
 	 * to null then the default label will be used.
 	 *
@@ -332,7 +333,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	function setSubmitLabel($label){
 		$this->submitLabel = $label;
 	}
-	
+
 	/**
 	 * @brief Returns the label to use as the submit button for the form.
 	 * @returns string The submit button label.  This may be null in which
@@ -344,10 +345,10 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	function getSubmitLabel(){
 		return $this->submitLabel;
 	}
-	
-	
+
+
 	/**
-	 * Fills arr1 with elements of arr2 if they don't already exist in arr1.  This 
+	 * Fills arr1 with elements of arr2 if they don't already exist in arr1.  This
 	 * will work to infinite levels of depth.
 	 */
 	function _fillArray( &$arr1, $arr2 ){
@@ -360,8 +361,8 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 *
 	 * Build an HTML_QuickForm_element object to represent a field from the table.
@@ -373,7 +374,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 */
 	function _buildWidget(&$field){
 		global $myctr;
-		
+
 		if ( func_num_args() > 1 ){
 			/*
 			 *
@@ -381,7 +382,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			 *
 			 */
 			$permissions = func_get_arg(1);
-				
+
 		} else {
 			/*
 			 *
@@ -390,21 +391,21 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			 */
 			$permissions = Dataface_PermissionsTool::ALL();
 		}
-		
-		
-		
+
+
+
 		$formTool =& Dataface_FormTool::getInstance();
 		$el =& $formTool->buildWidget($this->_record, $field, $this, $field['name'], $this->_new, $permissions);
-		
-		
+
+
 		return $el;
-		
-	
-	
+
+
+
 	}
-	
+
 	/**
-	 * Tags the form and the session with matching hash codes that can be used to prevent spoof 
+	 * Tags the form and the session with matching hash codes that can be used to prevent spoof
 	 * form submissions.  The goal is to make it so that this form will only be processed if the hash
 	 * is in place.  Of course, if there is no session set up, this won't work. So this method first
 	 * does a check to see if there is a session.  If there is a session, it tags the form.
@@ -414,12 +415,12 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 */
 	function tagFormAndSession(){
 		if ( session_id() ){
-			
+
 		}
-	
+
 	}
-	
-	
+
+
 	/**
 	 *
 	 * Builds the form. (Ie: adds all of the fields, sets the default values, etc..)
@@ -434,8 +435,8 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			 */
 			return;
 		}
-		
-		
+
+
 		/*
 		 * Now to figure out which fields will be displayed on the form.
 		 */
@@ -446,7 +447,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		     */
 		   // if ( isset( $query['--tab'] ) and !$new ){
 		   // 	$flds =& $this->_table->fields(true);
-		    
+
 		   // 	$this->_fieldnames = array_keys($flds[$query['--tab']]);
 		   // } else {
 			$this->_fieldnames = array();
@@ -458,14 +459,14 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				//$this->_fieldnames = array_keys($this->_fields);
 			}
 			//}
-		} 
-		
-		
-		
-		
+		}
+
+
+
+
 		$this->_isBuilt = true;
 			// set flag to indicate that the form has already been built.
-		
+
 		if ( !$this->_record || !is_a($this->_record, 'Dataface_Record') ){
 			return PEAR::raiseError(
 				Dataface_LanguageTool::translate(
@@ -475,11 +476,11 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				E_USER_ERROR
 			);
 		}
-		
+
 		$relationships =& $this->_table->relationships();
 			// reference to relationship descriptors for this table.
-		
-		
+
+
 		$formTool =& Dataface_FormTool::getInstance();
 		$groups = $formTool->groupFields($this->_fields);
 		foreach ( $groups as $sectionName => $fields ){
@@ -488,9 +489,9 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			if ( PEAR::isError($group) ){
 				unset($group);
 				$group = array('label'=>df_translate('scripts.Dataface_QuickForm.LABEL_EDIT_DETAILS', 'Edit Details'), 'order'=>1);
-				
+
 			}
-			
+
 			$groupEmpty = true; // A flag to check when the group has at least one element
 			if ( !$fields ) continue;
 			foreach ( $fields as $field){
@@ -498,17 +499,17 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				//if ( isset($this->tab) and ($this->tab != @$field['tab']) and ($this->tab != @$group['tab']) ) continue;
 					// If we are using tabs, and this field isn't in the current tab, then
 					// we skip it.
-				
-			
+
+
 				$name = $field['name'];
 					// reference to field descriptor array.
 				$widget =& $field['widget'];
 					// reference to widget descriptor array
 				$vocabulary = $field['vocabulary'];
 					// reference to field's vocabulary
-			
+
 				/*
-				 * 
+				 *
 				 * If the user does not have permission to view this field, we should not generate this widget.
 				 *
 				 */
@@ -517,18 +518,18 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				){
 					unset($widget);
 					continue;
-				
+
 				}
-				
+
 				if ( $groupEmpty ){
-					// This is the first field in the group, so we add a header for the 
+					// This is the first field in the group, so we add a header for the
 					// group.
 					$headerel =& $this->addElement('header', $group['label'], $group['label']);
 					$headerel->setFieldDef($group);
 					unset($headerel);
 					$groupEmpty = false;
 				}
-				
+
 				/*
 				 *
 				 * Build the widget for this field.  Note that we pass the permissions array
@@ -546,23 +547,23 @@ class Dataface_QuickForm extends HTML_QuickForm {
 						);
 					return $el;
 				}
-				
-				
-					
+
+
+
 				//$this->addElement($el);
-				
+
 				unset($field);
 				unset($el);
 				unset($widget);
-				
+
 			}
 		} // end foreach $groups
 		/*
 		 *
 		 * We need to add elements to the form to specifically store the keys for the current
-		 * record.  These elements should not be changeable by the user as they are used upon 
+		 * record.  These elements should not be changeable by the user as they are used upon
 		 * submission to find out which record is currently being updated.  We will store
-		 * the keys for this record in a group of hidden fields where a key named "ID" would 
+		 * the keys for this record in a group of hidden fields where a key named "ID" would
 		 * be stored in a hidden field as follows:
 		 * <input type="hidden" name="__keys__[ID]" value="10"/>  (assuming the value of the ID field for this record is 10)
 		 *
@@ -570,14 +571,14 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		$factory = new HTML_QuickForm('factory');
 			// a dummy quickform object to be used tgo create elements.
 		$keyEls = array();
-			// 
+			//
 		$keyDefaults = array();
 		foreach ( array_keys($this->_table->keys()) as $key ){
 			$keyEls[] = $factory->addElement('hidden', $key);
-			
+
 		}
 		$this->addGroup($keyEls,'__keys__');
-		
+
 		/*
 		 *
 		 * We add a field to flag whether or not we are creating a new record.
@@ -586,46 +587,46 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		 *
 		 */
 		$this->addElement('hidden','-new');
-		
+
 		$this->setDefaults(array('-new'=>$this->_new));
-		if ( ($this->_new and Dataface_PermissionsTool::checkPermission('new',$this->_table) ) or 
+		if ( ($this->_new and Dataface_PermissionsTool::checkPermission('new',$this->_table) ) or
 		     (!$this->_new and Dataface_PermissionsTool::edit($this->_record) ) ){
 		     $saveButtonLabel = df_translate('tables.'.$this->_table->tablename.'.save_button_label', '');
 			if ( !$saveButtonLabel ) $saveButtonLabel = df_translate('save_button_label','Save');
 			$this->addElement('submit','--session:save',$saveButtonLabel);
 			//$this->addGroup($formTool->createRecordButtons($this->_record, $this->tab));
 		}
-		
+
 		if ( $this->_new and !$this->overrideNoQuery){
-		
+
 			$this->addElement('hidden','--no-query',1);
 		}
 			// add the submit button.
-		
-		
-		
-		
+
+
+
+
 		/*
 		 *
 		 * We need to set the default values for this form now.
 		 *
 		 */
-		
+
 		$keys = $this->getKeys();
 			// may not be necessary -- not sure....
-			
+
 		if ( $this->isSubmitted() and !$this->_new){
 			/*
 			 *
 			 * This part is unnecessary because the record is not populated
 			 * in the Dataface_QuickForm constructor.
 			 *
-			 */ 
+			 */
 			$key_vals = $this->exportValues('__keys__');
 			$query = $key_vals['__keys__'];
 			//$io = new Dataface_IO($this->tablename, $this->db);
 			//$io->read($query, $this->_record);
-			
+
 		} else if ( !$this->_new ){
 			/*
 			 *
@@ -635,34 +636,34 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			 */
 			foreach ( array_keys($this->_table->keys()) as $key ){
 				$keyDefaults[$key] = $this->_record->strval($key);
-				
+
 			}
-			
+
 			$this->setConstants( array('__keys__'=>$keyDefaults) );
 			$this->pull();
-			
-			
+
+
 		} else { // $this->_new
 			$defaults = array();
 			foreach ( array_keys($this->_fields) as $key ){
 				$defaultValue = $this->_table->getDefaultValue($key);
 				if ( isset($defaultValue) ){
 					//if ( isset($this->_fields[$key]['group']) and $this->_fields[$key]['group'] ){
-						
+
 					//	$defaults[$this->_fields[$key]['group']][$key] = $defaultValue;
 					//} else {
 						$defaults[$key] = $defaultValue;
 					//}
 				}
 			}
-			
+
 			$this->setDefaults($defaults);
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 *
 	 * Returns a reference to the Quickform element that is used to display a specified field.
@@ -672,16 +673,16 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 */
 	function &getElementByFieldName($fieldname){
 		$field =& $this->_table->getField($fieldname);
-		
+
 		$formTool =& Dataface_FormTool::getInstance();
 		$el =& $formTool->getElement($this, $field, $fieldname);
 		return $el;
 	}
-	
+
 	/**
 	 *
 	 * Pulls the value from the record into its appropriate field in the form.
-	 * 
+	 *
 	 * @param $fieldname The name of the field to pull.
 	 *
 	 */
@@ -690,16 +691,16 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		$s =& $this->_table;
 			// Reference to the table
 		$field =& $s->getField($fieldname);
-		
+
 		$formTool =& Dataface_FormTool::getInstance();
 		$res = $formTool->pullField($this->_record, $field, $this, $fieldname, $this->_new);
 		return $res;
-		
-	
+
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Fills in the form fields with values from the record.  In a sense, this "Pulls"
 	 * the values from the record into the form.
 	 *
@@ -711,17 +712,17 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			$res = $this->pullField($field);
 			if ( PEAR::isError($res) ){
 				continue;
-				
-				
+
+
 			}
-			
+
 		}
 		return true;
-	
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 *
 	 * Pushes the values in all form elements into their corresponding field in
@@ -737,7 +738,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		$fields =& $this->_fieldnames;
 		//$ctr = 0;
 		foreach ($fields as $field){
-			
+
 			$res = $this->pushField($field);
 			if ( Dataface_Error::isPermissionDenied($res) ){
 				/*
@@ -750,9 +751,9 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				return $res;
 			}
 			if (PEAR::isError($res) ){
-				
-				
-				
+
+
+
 				continue;
 				$res->addUserInfo(
 					df_translate(
@@ -762,18 +763,18 @@ class Dataface_QuickForm extends HTML_QuickForm {
 						)
 					);
 				throw new Exception($res->toString(), E_USER_ERROR);
-				
+
 			}
 		}
-		
+
 		return true;
-	
+
 	}
-	
-	
+
+
 	/**
 	 *
-	 * Validates the form input to make sure that it is valid.  This extends the 
+	 * Validates the form input to make sure that it is valid.  This extends the
 	 * standard QuickForm method by adding custom validation from the Record object.
 	 *
 	 */
@@ -784,7 +785,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 		$app =& Dataface_Application::getInstance();
 	 		$res = $app->fireEvent('Dataface_QuickForm_before_validate');
 	 		if ( PEAR::isError($res) ){
-	 			
+
 	 			$this->_errors[] = $res->getMessage();
 	 		}
 	 		/*
@@ -793,7 +794,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 		 *
 	 		 */
 	 		//foreach ( array_keys($this->_fields) as $field ){
-	 		
+
 	 		$rec = new Dataface_Record($this->_record->_table->tablename, array());
 	 		$rec->pouch = $this->_record->pouch;
 	 		$formTool =& Dataface_FormTool::getInstance();
@@ -814,11 +815,11 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 				unset($el);
 	 				continue;
 	 			}
-	 			
-	 			
+
+
 	 			$params = array('message'=>df_translate('scripts.GLOBAL.MESSAGE.PERMISSION_DENIED',"Permission Denied"));
 	 				// default error message to be displayed beside the field.
-	 			
+
 	 			$res = $rec->validate($field, $el->getValue(), $params );
 	 			if ( !$res){
 	 				/*
@@ -829,18 +830,18 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 				 * false.
 	 				 *
 	 				 */
-	 				 
+
 	 				$this->_errors[$el->getName()] = $params['message'];
 	 			}
-	 			
-	 			
+
+
 	 			unset($params);
 	 		}
-	 		
+
 	 	}
-	 	
-	 	
-	 	
+
+
+
 	 	/*
 	 	 *
 	 	 * Now that we have done our work, we can let the default validate method do the rest
@@ -848,9 +849,9 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 	 *
 	 	 */
 	 	return parent::validate();
-	 	
+
 	 }
-	
+
 	/**
 	 *
 	 * "Pushes" the value in a form element into the record.
@@ -858,43 +859,43 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 *
 	 */
 	function pushField($fieldname){
-		
+
 		$formTool =& Dataface_FormTool::getInstance();
 		$field =& $this->_table->getField($fieldname);
-		
+
 		$res = $formTool->pushField($this->_record, $field, $this, $fieldname, $this->_new);
-		
+
 		return $res;
-		
+
 	}
-	
+
 	/**
 	 * REturns a value for the specified field name that is in a format that can be "pulled"
 	 * into the corresponding widget of the form.
 	 */
 	function pullValue($fieldname){
 		$fieldname = $this->_formatFieldName($fieldname);
-	
-	
+
+
 	}
-	
+
 	/**
 	 * Extracts value from the form ready to be stored in the table.
 	 */
 	function pushValue($fieldname, &$metaValues, $element=null){
-	
+
 		$formTool =& Dataface_FormTool::getInstance();
 		$field =& $this->_table->getField($fieldname);
 		if ( !isset($element) ) $element =& $formTool->getElement($this, $field, $fieldname);
 
 		$res = $formTool->pushValue($this->_record, $field, $this, $element, $metaValues);
-		return $res;			
-	
+		return $res;
+
 	}
-	
-	
-	
-	
+
+
+
+
 	function display(){
 		if ( $this->_resultSet->found()>0 || $this->_new ){
 			$res = $this->_build();
@@ -906,16 +907,16 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				if ( !$this->_new and !Dataface_PermissionsTool::edit($this->_record) ){
 					$this->freeze();
 				}
-				
+
 				if ( $this->_new  and /*!Dataface_PermissionsTool::edit($this->_table)*/!Dataface_PermissionsTool::checkPermission('new',$this->_table) ){
 					$this->freeze();
 				}
 				$formTool =& Dataface_FormTool::getInstance();
-				
-				
+
+
 				if ( $this->_new || Dataface_PermissionsTool::view($this->_record) ){
 					//echo $this->_renderer->toHtml();
-					echo $formTool->display($this);
+					echo $formTool->display($this, $this->xml ? 'Dataface_Form_Template.xml' : null);
 				} else {
 					echo "<p>".df_translate('scripts.GLOBAL.INSUFFICIENT_PERMISSIONS_TO_VIEW_RECORD','Sorry you have insufficient permissions to view this record.')."</p>";
 				}
@@ -925,10 +926,10 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			echo "<p>".df_translate('scripts.GLOBAL.NO_RECORDS_MATCHED_REQUEST','No records matched your request.')."</p>";
 		}
 	}
-	
-	
+
+
 	function displayTabs(){
-		
+
 		if ( isset($this->_record) ){
 			echo "<ul id=\"quick-form-tabs\">";
 			foreach ( $this->_record->_table->getTabs() as $tab ){
@@ -937,18 +938,18 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			echo "</ul>";
 		}
 	}
-	
+
 	function getElementTemplate($fieldName=''){
 		$fieldname = $this->_formatFieldName($fieldname);
-		
+
 		if ( $fieldName && isset($this->_fields[$fieldName]) && isset($this->_fields[$fieldName]['widget']['description']) ){
 			$widget = $this->_fields[$fieldName]['widget'];
 			$description = $widget['description'];
-			
+
 		} else {
 			$description = '';
 		}
-			
+
 		$o = "<div class=\"field\">
 			<label>{label}</label>
 			<!-- BEGIN required --><span style=\"color: #ff0000\" class=\"fieldRequired\" title=\"required\">*</span><!-- END required -->
@@ -958,16 +959,16 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			</div>
 			";
 		return $o;
-	
+
 	}
-	
+
 	function getFormTemplate(){
 		$atts =& $this->_table->attributes();
 		$formname = $this->getAttribute('name');
 		return <<<END
 			<script language="javascript" type="text/javascript"><!--
 			function Dataface_QuickForm(){
-				
+
 			}
 			Dataface_QuickForm.prototype.setFocus = function(element_name){
 				document.{$formname}.elements[element_name].focus();
@@ -975,49 +976,49 @@ class Dataface_QuickForm extends HTML_QuickForm {
 			}
 			var quickForm = new Dataface_QuickForm();
 			//--></script>
-		
+
 				<form{attributes}>
 					<fieldset>
 					<legend>{$atts['label']}</legend>
 					<table width="100%" class="Dataface_QuickForm-table-wrapper">
-					
+
 					{content}
 					</table>
 					</fieldset>
 				</form>
 END;
 	}
-	
+
 	function getFieldGroupTemplate($name){
 		$name = $this->_formatFieldName($name);
 		$group =& $this->_table->getFieldgroup($name);
-		
-		
+
+
 		$o = "<tr><td colspan=\"2\"><fieldset class=\"fieldgroup\" style=\"border: 1px solid #8cacbb; margin: 0.5em;\">
 			<legend>".$group['label']."</legend>
 			<div class=\"formHelp\">".$group['description']."</div>
 			<table width=\"100%\" border=\"0\" class=\"Dataface_QuickForm-group-table-wrapper\">
 			{content}
 			</table>
-			
+
 			</fieldset></td></tr>";
 		return $o;
 	}
-	
+
 	function getGroupTemplate($name){
 		$name = $this->_formatFieldName($name);
 		$group =& $this->_table->getField($name);
-		
+
 		$context = array( 'group'=>&$group, 'content'=>'{content}');
 		$skinTool =& Dataface_SkinTool::getInstance();
 		ob_start();
 		$skinTool->display($context, 'Dataface_Quickform_group.html');
 		$o = ob_get_contents();
 		ob_end_clean();
-		
+
 		return $o;
 	}
-	
+
 	function getGroupElementTemplate($groupName=''){
 		$groupName = $this->_formatFieldName($groupName);
 		$group =& $this->_table->getFieldgroup($groupName);
@@ -1031,26 +1032,26 @@ END;
 				);
 			return $group;
 		}
-		
+
 		$description = '';
 		$label = '';
-		
+
 		if ( $group['element-description-visible'] ){
 			$description = "<div class=\"formHelp\" style=\"display: inline\">".$group['description']."</div>";
 		}
-		
+
 		if ( $group['element-lavel-visible'] ){
 			$label = '';
 		}
-		
+
 		if ( $fieldName && isset($this->_fields[$fieldName]) && isset($this->_fields[$fieldName]['widget']['description']) ){
 			$widget = $this->fields[$fieldName]['widget'];
 			$description = $widget['description'];
-			
+
 		} else {
 			$description = '';
 		}
-			
+
 		$o = "<div class=\"field\">
 			<label>{label}</label>
 			<!-- BEGIN required --><span style=\"color: #ff0000\" class=\"fieldRequired\" title=\"required\">*</span><!-- END required -->
@@ -1059,19 +1060,19 @@ END;
 			{element}
 			</div>
 			";
-			
+
 		return $o;
-	
+
 	}
-	
+
 	function save( $values ){
-		
+
 		// First let's find out if we should SAVE the data or if we should just be
 		// storing it in the session or if we are saving the data to the database
-		
-		
+
+
 		if (!$this->_new){
-			// Make sure that the correct form is being submitted.  
+			// Make sure that the correct form is being submitted.
 			if ( !isset( $values['__keys__'] ) ){
 				throw new Exception(
 					df_translate(
@@ -1095,7 +1096,7 @@ END;
 		$res = $this->push();
 		if ( !$this->_new ){
 			if ( $this->_record->snapshotExists() ){
-				
+
 				$tempRecord = new Dataface_Record($this->_record->_table->tablename, $this->_record->getSnapshot());
 			} else {
 				$tempRecord =& $this->_record;
@@ -1108,11 +1109,11 @@ END;
 						), E_USER_ERROR);
 			}
 		}
-		
-		
+
+
 		if (PEAR::isError($res) ){
-			
-			
+
+
 			$res->addUserInfo(
 				df_translate(
 					'scripts.Dataface.QuickForm.save.ERROR_PUSHING_DATA',
@@ -1120,12 +1121,12 @@ END;
 					array('line'=>0,'file'=>"_")
 					)
 				);
-			
-			
+
+
 			return $res;
 		}
 
-		
+
 		// Let's take an inventory of which fields were changed.. because
 		// we are going to make their values available in the htmlValues()
 		// method which is used by the ajax form to gather updates.
@@ -1134,7 +1135,7 @@ END;
 				$this->_changed_fields[] = $changedfield['name'];
 			}
 		}
-	
+
 		$io = new Dataface_IO($this->tablename, $this->db);
 		$io->lang = $this->_lang;
 		if ( $this->_new ) $keys = null;
@@ -1148,11 +1149,11 @@ END;
 				 * decide what to do with it.
 				 */
 				return $res;
-			} 
+			}
 			if ( Dataface_Error::isNotice($res) ){
 				return $res;
-			} 
-		
+			}
+
 			$res->addUserInfo(
 				df_translate(
 					'scripts.Dataface.QuickForm.save.ERROR_SAVING_RECORD',
@@ -1161,24 +1162,24 @@ END;
 					)
 				);
 			throw new Exception($res->toString(), E_USER_ERROR);
-			
+
 		}
-		
-		
-		
+
+
+
 		if ( isset( $io->insertIds[$this->tablename]) and $this->_table->getAutoIncrementField() ){
 			$this->_record->setValue($this->_table->getAutoIncrementField(), $io->insertIds[$this->tablename]);
 			$this->_record->setSnapshot();
 
-		} 
-		
+		}
+
 		return true;
-		
-		
+
+
 
 	}
-		
-	
+
+
 	/**
 	 * Returns an array of references to the key fields of this form.
 	 */
@@ -1191,29 +1192,29 @@ END;
 		}
 		return $keys;
 	}
-	
-	
+
+
 	/**
 	 * @deprecated Use Dataface_IO::read()
 	 */
 	function deserialize($field){
 		return Dataface_Table::_deserialize($field);
-		
-					
+
+
 	}
-	
-	
+
+
 	/**
 	 * @deprecated Use Dataface_Serializer::serialize()
 	 */
 	function serialize($field){
-	
+
 		return Dataface_Table::_serialize($field);
-		
-		
-		
+
+
+
 	}
-	
+
 	/**
 	 * Does nothing....
 	 */
@@ -1221,12 +1222,12 @@ END;
 		return $fieldname;
 		//return str_replace(':','.', $fieldname);
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * Static method to create a New record form (ie: A form to create a new record).
-	 * 
+	 *
 	 * @param $tablename The name of the table in which to store the record.
 	 * @type string
 	 *
@@ -1248,18 +1249,18 @@ END;
 	 *
 	 */
 	public static function &createNewRecordForm($tablename, $fieldnames=null){
-	
+
 		$form = new Dataface_QuickForm($tablename, '','','',true, $fieldnames);
 		return $form;
-	
-	
+
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Static method to create an Edit record form (ie: a form to edit an existing record).
 	 *
-	 * @param $tablenameOrRecord Either the name of the table from which to edit the record or a 
+	 * @param $tablenameOrRecord Either the name of the table from which to edit the record or a
 	 *        Dataface_Record object that is to be edited.  If this parameter is the name of the
 	 *        table then the record to be edited will be obtained form the request parameters
 	 *        and Dataface_QueryTool.
@@ -1285,7 +1286,7 @@ END;
 		$form = new Dataface_QuickForm($tablenameOrRecord, '','','',false,$fieldnames);
 		return $form;
 	}
-	
+
 	function htmlValues(){
 		$vals = array();
 		$record =& $this->_record;
@@ -1296,5 +1297,5 @@ END;
 		$vals['__url__'] = $record->getURL('-action=view');
 		return $vals;
 	}
-	
+
 }

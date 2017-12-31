@@ -6,7 +6,7 @@
  *
  * @see <a href="http://xataface.com/wiki/URL_Conventions">Xataface URL Conventions</a>
  *
- * This action will always return a JSON array.  If no record is found then it will be an 
+ * This action will always return a JSON array.  If no record is found then it will be an
  * empty array.  If only one record is selected, then it will be an array with one item.
  * Etc...
  *
@@ -31,7 +31,7 @@
  *	</tr>
  *	<tr>
  *		<td>--displayMethod</td>
- *		<td>The method to use to render the field content.  Xataface includes different 
+ *		<td>The method to use to render the field content.  Xataface includes different
  *			methods to get field values.  The most basic is Dataface_Record::val() which
  *			just returns the value as it is stored (e.g. dates are stored as an associative
  *			array, integers are ints, etc...  The next step up is Dataface_Record::display()
@@ -75,7 +75,7 @@
  * @par Using the --fields Parameter
  *
  * Using the --fields parameter to to only retrieve the group_id and group_name.
- * 
+ *
  * URL: index.php?-table=my_groups&-action=export_json&--fields=group_id%20group_name
  * Output:
  * @code
@@ -87,8 +87,8 @@
  * @endcode
  *
  * @par Using the --displayMethod Parameter
- * 
- * Using the --displayMethod parameter to tell Xataface to render values with the 
+ *
+ * Using the --displayMethod parameter to tell Xataface to render values with the
  * Dataface_Record::display() method.  This will result in the access_level field displaying
  * the human readable value (because it uses a vocabulary) instead of the access level integer.
  *
@@ -102,9 +102,9 @@
  * ]
  * @endcode
  *
- * 
+ *
  * @par Using the -mode Parameter
- * 
+ *
  * Using the -mode Parameter to cause only a single record to be returned based
  * on the -cursor parameter.
  *
@@ -120,7 +120,7 @@
  * record by the Xataface Record ID.
  *
  * URL: index.php?-table=my_groups&-action=export_json&-mode=browse&-recordid=my_groups%3Fgroup_id%3D3
- * Output: 
+ * Output:
  * @code
  * [{"group_id":"3","group_name":"FCAT Group Test","access_level":"3"}]
  * @endcode
@@ -131,15 +131,15 @@
  *
  * @section export_json_javascript_api Javascript Wrapper API
  *
- * @see <a href="http://xataface.com/dox/core/latest/jsdoc/symbols/xataface.IO.html#.load">xataface.IO.load()</a> javascript 
- * function for information on the javascript way of loading records from this action. 
+ * @see <a href="http://xataface.com/dox/core/latest/jsdoc/symbols/xataface.IO.html#.load">xataface.IO.load()</a> javascript
+ * function for information on the javascript way of loading records from this action.
  *
- */			
+ */
 class dataface_actions_export_json {
 	function handle(&$params){
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
-		
+
 		$records = df_get_selected_records($query);
 		if ( !$records ){
 			if ( $query['-mode'] == 'list' ){
@@ -152,41 +152,49 @@ class dataface_actions_export_json {
 				}
 			}
 		}
-		
+
 		$jsonProfile = 'basic';
 		if ( @$query['--profile'] ){
 		    $jsonProfile = $query['--profile'];
 		}
-		
+
 		$displayMethod = 'val';
 		if ( @$query['--displayMethod'] == 'display' ){
 			$displayMethod = 'display';
 		} else if ( @$query['--displayMethod'] == 'htmlValue' ){
 			$displayMethod = 'htmlValue';
 		}
-		
+
 		$out = array();
 		if ( isset( $query['--fields'] ) ){
 			$fields = explode(' ', $query['--fields']);
 		} else {
 			$fields = null;
 		}
-		
-		
+
+		$includeTitle = @$query['--include-title'];
+		$includeId = @$query['--include-id'] ;
+		$displayMethodForFiles = $displayMethod;
+		if (@$query['--filesDisplayMethod'] == 'display') {
+			$displayMethodForFiles = 'display';
+		} else if (@$query['--filesDisplayMethod'] == 'getURL') {
+			$displayMethodForFiles = 'getURL';
+		}
+		$useDifferentDisplayMethodForFiles = ($displayMethodForFiles !== $displayMethod);
 		foreach ($records as $record){
 			if ( !$record->checkPermission('export_json')  ){
 				continue;
 			}
-			
-			$del = $record->table()->getDelegate();
+			$table = $record->table();
+			$del = $table->getDelegate();
 			$row = null;
 			if ( isset($del) and method_exists($del, 'export_json') ){
 			    $row = $del->export_json($record, $jsonProfile, $records);
-			} 
+			}
 			if ( !isset($row) ){
-			
+
                 if ( !is_array($fields) ){
-                    $fields = array_keys($record->table()->fields(false,true));
+                    $fields = array_keys($table->fields(false,true));
                 }
                 if ( is_array($fields) ){
                     $allowed_fields = array();
@@ -196,40 +204,44 @@ class dataface_actions_export_json {
                         }
                         $allowed_fields[] = $field;
                     }
-                } 
-                
-                $row = array();
-                
-                foreach ( $allowed_fields as $fld ){
-                    $row[$fld] = $record->$displayMethod($fld);
                 }
-                if ( @$query['--include-title'] ){
+
+                $row = array();
+
+                foreach ( $allowed_fields as $fld ){
+					if ($useDifferentDisplayMethodForFiles and ($table->isContainer($fld) or $table->isBlob($fld))) {
+						$row[$fld] = $record->$displayMethodForFiles($fld);
+					} else {
+                    	$row[$fld] = $record->$displayMethod($fld);
+					}
+                }
+                if ($includeTitle){
                     $row['__title__'] = $record->getTitle();
                 }
-                if ( @$query['--include-id'] ){
+                if ($includeId){
                     $row['__id__'] = $record->getId();
                 }
             }
-            
+
             if ( isset($del) and method_exists($del, 'filter_json') ){
                 $del->filter_json($record, $row, $jsonProfile, $records);
             }
-            
+
 			$out[] = $row;
 		}
-		
+
 		if ( @$query['--single'] ){
 			if ( count($out) > 0 ){
 				$out = $out[0];
-			} 
+			}
 		}
-		
+
 		if ( @$query['--var'] ){
 			$out = array(
 				'code' => 200,
 				$query['--var'] => $out
 			);
-			
+
 			if ( @$query['--stats'] ){
 			    $queryTool = Dataface_QueryTool::$lastIterated;
 			    if ( isset($queryTool) ){
@@ -247,7 +259,7 @@ class dataface_actions_export_json {
 			    }
 			}
 		}
-		
+
 		//import('Services/JSON.php');
 		//$json = new Services_JSON;
 		$enc_out = json_encode($out);

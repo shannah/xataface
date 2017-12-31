@@ -6,7 +6,7 @@
 class Dataface_FormTool_select {
 	function &buildWidget(&$record, &$field, &$form, $formFieldName, $new=false){
 		$table =& $record->_table;
-		
+
 		$widget =& $field['widget'];
 		$factory = Dataface_FormTool::factory();
 		$attributes = array('class'=>$widget['class'], 'id'=>$field['name']);
@@ -22,7 +22,7 @@ class Dataface_FormTool_select {
 			if ( !@$field['repeat'] and !isset($options[$record->strval($field['name'])]) ){
 				$opts[$record->strval($field['name'])] = $record->strval($field['name']);
 			} else if ( @$field['repeat'] ){
-			
+
 				$vals = $record->val($field['name']);
 				if ( is_array($vals) ){
 					foreach ( $vals as $thisval){
@@ -36,8 +36,19 @@ class Dataface_FormTool_select {
 		foreach($options as $kopt=>$opt){
 			$opts[$kopt] = $opt;
 		}
+
+		if ($form->xml) {
+			$xmlbody = '';
+			foreach ($options as $kopt=>$opt) {
+				$xmlbody .= '<value key="'.xmlentities($kopt).'">'.xmlentities($opt).'</value>';
+			}
+			$attributes['data-xf-xml-body'] = $xmlbody;
+		}
+
 		$el =  $factory->addElement('select', $formFieldName, $widget['label'], $opts, $attributes  );
-		
+
+
+
 		// Now to make it editable
 		if ( @$field['vocabulary'] ){
 			try {
@@ -45,7 +56,7 @@ class Dataface_FormTool_select {
 				if ( $rel and !PEAR::isError($rel) ){
 					if ( !is_a($rel, 'Dataface_Relationship') ){
 						throw new Exception("The relationship object for the vocabulary ".$field['vocabulary']." could not be loaded.");
-						
+
 					}
 					if ( !$rel->getDomainTable() ){
 						throw new Exception("The relationship object for the vocabulary ".$field['vocabulary']." could not be loaded or the domain table could not be found");
@@ -84,7 +95,7 @@ class Dataface_FormTool_select {
 											var key = data[keyfld];
 											var val = data[valfld];
                                                                                         var $option = $(\'<option value="\'+key+\'">\'+val+\'</option>\');
-                                                                                        
+
 											$("#"+fieldname).append($option);
 											$("#"+fieldname).val(key);
                                                                                         if ( !val || val === key ){
@@ -100,7 +111,7 @@ class Dataface_FormTool_select {
                                                                                                 }
                                                                                             });
                                                                                         }
-											
+
 										}
 									});
 								});
@@ -110,44 +121,44 @@ class Dataface_FormTool_select {
 							$widget['suffix'] = $suffix;
 						}
 					}
-					
-					
+
+
 				}
 			} catch (Exception $ex){
 				error_log($ex->getMessage());
 			}
 		}
-		
+
 		//$el->setFieldDef($field);
 		//return $el;
 		return $el;
 	}
-	
+
 	function pushValue(&$record, &$field, &$form, &$element, &$metaValues){
-		// quickform stores select fields as arrays, and the table schema will only accept 
+		// quickform stores select fields as arrays, and the table schema will only accept
 		// array values if the 'repeat' flag is set.
 		$table =& $record->_table;
 		$formTool =& Dataface_FormTool::getInstance();
 		//$formFieldName =& $element->getName();
-		
+
 		if ( !$field['repeat'] ){
-		
+
 			$val = $element->getValue();
-			
+
 			if ( count($val)>0 ){
 				return $val[0];
-				
+
 			} else {
 				return null;
-				
+
 			}
 		} else {
 			return $element->getValue();
 		}
-			
-		
-		
+
+
+
 	}
-	
-	
+
+
 }

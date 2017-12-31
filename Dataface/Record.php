@@ -4484,6 +4484,15 @@ class Dataface_Record {
 	 */
 	function getURL($params=array()){
 		if ( is_string($params) ){
+			if ($this->_table->hasField($params)
+					and ($this->_table->isBlob($params) or
+						$this->_table->isContainer($params))) {
+				if ($this->secureDisplay and
+						!$this->checkPermission('view', array('field' => $params))) {
+					return "javascript:alert('Permission denied')";
+				}
+				return df_absolute_url($this->display($params));
+			}
 			$pairs = explode('&',$params);
 			$params = array();
 			foreach ( $pairs as $pair ){
