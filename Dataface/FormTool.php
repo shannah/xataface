@@ -1252,9 +1252,10 @@ class Dataface_FormTool {
 			if ( $currentTabKey === false ){
 				// Current tab was not in the list of tabs.. this si
 				// a problem
-				return PEAR::raiseError("Sorry there was a problem finding the specified tab: ".$query['--tab']." in the tabs for the record ".$currentRecord->getId().".  The available tabs are '".implode(', ', $tabnames).".");
-
-			}
+				// FIX: $currentRecord seems to be sometime NULL, so error message throws exception itself
+				return PEAR::raiseError("Sorry there was a problem finding the specified tab: ".$query['--tab'].". The available tabs are '".implode(', ', $tabnames).".");
+					
+			} 
 			$currentTabKey = intval($currentTabKey);
 			if ( $target == '__next__' ){
 				// The user clicked the 'next' button so they should
