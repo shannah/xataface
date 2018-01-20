@@ -157,6 +157,25 @@ class dataface_actions_export_json {
 		if ( @$query['--profile'] ){
 		    $jsonProfile = $query['--profile'];
 		}
+		$includeOntologyData = false;
+		$ontologies = array();
+		$ontologyNames = array();
+		if (@$query['--ontologies']) {
+			if (@$query['--includeOntologyData']) {
+				$includeOntologyData = true;
+			}
+			import('Dataface/Ontology.php');
+
+			$ontologies = array_map('basename', array_map('trim', explode(',', $query['--ontologies'])));
+			foreach ($ontologies as $k=>$o) {
+				Dataface_Ontology::loadByName($o);
+				$ontologyNames[$k] = $o;
+
+				$oo = Dataface_Ontology::newOntology($o, $query['-table']);
+				$ontologies[$k] = $oo;
+
+			}
+		}
 
 		$displayMethod = 'val';
 		if ( @$query['--displayMethod'] == 'display' ){
@@ -181,6 +200,7 @@ class dataface_actions_export_json {
 			$displayMethodForFiles = 'getURL';
 		}
 		$useDifferentDisplayMethodForFiles = ($displayMethodForFiles !== $displayMethod);
+		$table = null;
 		foreach ($records as $record){
 			if ( !$record->checkPermission('export_json')  ){
 				continue;
@@ -221,6 +241,22 @@ class dataface_actions_export_json {
                 if ($includeId){
                     $row['__id__'] = $record->getId();
                 }
+				if ($includeOntologyData and $ontologies) {
+					$rowOntologies = array();
+					foreach ($ontologies as $k=>$o) {
+						$individual = $o->newIndividual($record);
+						$orow = new StdClass;
+
+						foreach ($o->getAttributes() as $key=>$att) {
+							if ( !$individual->checkPermission('export_json', array('field'=>$field) ) ){
+								continue;
+	                        }
+							$orow->{$key} = $individual->$displayMethod($key);
+						}
+						$rowOntologies[$ontologyNames[$k]] = $orow;
+					}
+					$row['ontologies'] = $rowOntologies;
+				}
             }
 
             if ( isset($del) and method_exists($del, 'filter_json') ){
@@ -257,6 +293,28 @@ class dataface_actions_export_json {
                         'found' => count($records)
                     );
 			    }
+			}
+
+			if (@$query['--fieldMetaData'] and isset($fields) and isset($table)) {
+				$fmd = array();
+				foreach ($fields as $fld) {
+					$fieldDef =& $table->getField($fld);
+					$fmd[$fld] = array('Type' => $fieldDef['Type']);
+				}
+				if (!@$out['metaData']) {
+					$out['metaData'] = array();
+				}
+				$out['metaData']['fields'] = $fmd;
+			}
+			if ($ontologies) {
+				foreach ($ontologies as $k=>$o) {
+					$orow = new StdClass;
+					foreach ($o->getAttributes() as $key=>$att) {
+
+						$orow->{$key} = $o->getFieldname($key);
+					}
+					$out['metaData']['ontologies'][$ontologyNames[$k]] = $orow;
+				}
 			}
 		}
 
