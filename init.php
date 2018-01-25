@@ -56,15 +56,16 @@ function init($site_path, $dataface_url){
                 $port = intval($_SERVER['HTTP_X_FORWARDED_PORT']);
             }
             $protocol = $_SERVER['SERVER_PROTOCOL'];
-            if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-                $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
-            }
+            
             if ( strtolower($protocol) == 'included' ){
                     $protocol = 'HTTP/1.0';
             }
             $protocol = substr( $protocol, 0, strpos($protocol, '/'));
             $protocol = ((@$_SERVER['HTTPS']  == 'on' || $port == 443) ? $protocol.'s' : $protocol );
             $protocol = strtolower($protocol);
+            if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+                $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+            }
 
             if (isset($_SERVER['HTTP_X_FORWARDED_PATH'])) {
                 $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_FORWARDED_PATH'];
