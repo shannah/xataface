@@ -88,30 +88,6 @@ if (get_magic_quotes_gpc()) {
 }
 
 
-
-
-
-
-// first we resolve some differences between CGI and Module php
-if ( !isset( $_SERVER['QUERY_STRING'] ) ){
-	$_SERVER['QUERY_STRING'] = @$_ENV['QUERY_STRING'];	
-} 
-
-// define a HOST_URI variable to contain the host portion of all urls
-$host = $_SERVER['HTTP_HOST'];
-$port = $_SERVER['SERVER_PORT'];
-$protocol = $_SERVER['SERVER_PROTOCOL'];
-if ( strtolower($protocol) == 'included' ){
-	$protocol = 'HTTP/1.0';
-}
-$protocol = substr( $protocol, 0, strpos($protocol, '/'));
-$protocol = ((@$_SERVER['HTTPS']  == 'on' || $port == 443) ? $protocol.'s' : $protocol );
-$protocol = strtolower($protocol);
-$_SERVER['HOST_URI'] = $protocol.'://'.$host;//.($port != 80 ? ':'.$port : '');
-if ( (strpos($_SERVER['HTTP_HOST'], ':') === false) and !($protocol == 'https' and $port == 443 ) and !($protocol == 'http' and $port == 80) ){
-	$_SERVER['HOST_URI'] .= ':'.$port;
-}
- 
 if ( defined('DATAFACE_DEBUG') and DATAFACE_DEBUG){
 	/*
 	 * Debug with APD.
