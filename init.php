@@ -40,6 +40,14 @@ function init($site_path, $dataface_url){
             if (@$originalUrl["query"]) {
                 $_SERVER['REQUEST_URI'] .= '?' . $originalUrl['query'];
             }
+            
+            if (strpos($dataface_url, 'http:') === 0 or strpos($dataface_url, 'https:') === 0) {
+                // We leave dataface_url alone
+            } else {
+                if ($dataface_url{0} !== '/') {
+                    $dataface_url = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')) . '/' . $dataface_url;
+                }
+            }
 
         } else {
             // first we resolve some differences between CGI and Module php
@@ -73,6 +81,14 @@ function init($site_path, $dataface_url){
                     $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
                 }
                 $_SERVER['PHP_SELF'] = $_SERVER['HTTP_X_FORWARDED_PATH'];
+                if (strpos($dataface_url, 'http:') === 0 or strpos($dataface_url, 'https:') === 0) {
+                    // We leave dataface_url alone
+                } else {
+                    if ($dataface_url{0} !== '/') {
+                        $dataface_url = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')) . '/' . $dataface_url;
+                    }
+                }
+
             }
         }
         $_SERVER['HOST_URI'] = $protocol.'://'.$host;//.($port != 80 ? ':'.$port : '');
