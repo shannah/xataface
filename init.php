@@ -69,10 +69,15 @@ function init($site_path, $dataface_url){
                     $protocol = 'HTTP/1.0';
             }
             $protocol = substr( $protocol, 0, strpos($protocol, '/'));
-            $protocol = ((@$_SERVER['HTTPS']  == 'on' || $port == 443) ? $protocol.'s' : $protocol );
+            $protocol = ((@$_SERVER['HTTPS']  == 'on' || "$port" == "443") ? $protocol.'s' : $protocol );
             $protocol = strtolower($protocol);
             if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
                 $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+                if ($protocol == 'https' and "$port" == "80") {
+                    $port = 443;
+                } else if ($protocol == 'http' and "$port" == "443") {
+                    $port = 80;
+                }
             }
 
             if (isset($_SERVER['HTTP_X_FORWARDED_PATH'])) {
@@ -92,7 +97,7 @@ function init($site_path, $dataface_url){
             }
         }
         $_SERVER['HOST_URI'] = $protocol.'://'.$host;//.($port != 80 ? ':'.$port : '');
-        if ( (strpos($_SERVER['HTTP_HOST'], ':') === false) and !($protocol == 'https' and $port == 443 ) and !($protocol == 'http' and $port == 80) ){
+        if ( (strpos($host, ':') === false) and !($protocol == 'https' and "$port" == "443" ) and !($protocol == 'http' and "$port" == "80") ){
                 $_SERVER['HOST_URI'] .= ':'.$port;
         }
     
