@@ -11,13 +11,13 @@ class Dataface_FormTool_file {
 		$app =& Dataface_Application::getInstance();
 		if ( $element->isUploadedFile() ){
 		    $cachePath = $app->_conf['cache_dir'].'/'.basename($app->_conf['_database']['name']).'-'.basename($table->tablename).'-'.basename($field['name']).'-';
-			
+
 			$cachedFiles = glob($cachePath.'*');
 			foreach ($cachedFiles as $cachedFile){
 				@unlink($cachedFile);
 			}
 			// Need to delete the cache for this field
-			
+
 			// a file has been uploaded
 			$val = $element->getValue();
 				// eg: array('tmp_name'=>'/path/to/uploaded/file', 'name'=>'filename.txt', 'type'=>'image/gif').
@@ -32,9 +32,9 @@ class Dataface_FormTool_file {
 				throw new Exception($val->toString(), E_USER_ERROR);
 				return $val;
 			}
-			
-			
-			
+
+
+
 			if ( $table->isContainer($field['name']) ){
 				$src = $record->getContainerSource($field['name']);
 				if ( strlen($record->strval($field['name']) ) > 0  // if there is already a valud specified in this field.
@@ -48,7 +48,7 @@ class Dataface_FormTool_file {
 					}
 					@unlink( $src);
 				}
-				
+
 				// Make sure that the file does not already exist by that name in the destination directory.
 				$savepath = $field['savepath'];
 				$filename = basename($val['name']);	// we use basename to guard against maliciously named files.
@@ -71,14 +71,14 @@ class Dataface_FormTool_file {
 						$fileindex = 0;
 						// We should just leave the filebase the same.
 						//$filebase = $filename;
-						
+
 					}
 					if ( $filebase{strlen($filebase)-1} == '-' ) $filebase = substr($filebase,0, strlen($filebase)-1);
 					$fileindex++;
 					$filebase = $filebase.'-'.$fileindex;
 					$filename = $filebase.'.'.$extension;
 				}
-				
+
 				if (!is_writable( $field['savepath']) ){
 					throw new Exception(
 						df_translate(
@@ -87,13 +87,81 @@ class Dataface_FormTool_file {
 							array('fieldname'=>$field['name'], 'savepath'=>$field['savepath'])
 							), E_USER_ERROR);
 				}
-				
-				move_uploaded_file($val['tmp_name'], $field['savepath'].'/'.$filename);
-				chmod($field['savepath'].'/'.$filename, 0744);
-					
+				$filePath = $field['savepath'].'/'.$filename;
+				move_uploaded_file($val['tmp_name'], $filePath);
+				chmod($filePath, 0744);
+
+				// Now transform the image
+				if (@$field['transform']) {
+					$commands = array_map('trim', explode(';', $field['transform']));
+					foreach ($commands as $command) {
+						if (!trim($command)) {
+							continue;
+						}
+						list($nameAndOp, $arg) = array_map('trim', explode(':', $field['transform']));
+						if (!$nameAndOp) {
+							throw new Exception("No name/op specified for field transform.");
+						}
+						if (!$arg) {
+							throw new Exception("No argument provided for transform ".$nameAndOp);
+						}
+						$op = null;
+						list($thumbName, $op) = @explode(' ', $nameAndOp);
+						if (!$thumbName) {
+							throw new Exception("No name provided for transform operation ".$command);
+
+						}
+
+						if (!$op) {
+							$op = $thumbName;
+							$thumbName = "default";
+						}
+
+						$thumbDir = $field['savepath'].'/'.basename($thumbName);
+						if (!file_exists($thumbDir)) {
+							if (!mkdir($thumbDir)) {
+								throw new Exception("Failed to create directory ".$thumbDir);
+							}
+						}
+
+						$thumbPath = $thumbDir.'/'.$filename;
+						if (file_exists($thumbPath)) {
+							if (!unlink($thumbPath)) {
+								throw new Exception("Failed to delete old thumbnail ".$thumbPath);
+							}
+						}
+
+						import('xf/image/crop.php');
+						$crop = new \xf\image\Crop;
+
+						list($dimensions) = array_map('trim', explode(' ', $arg));
+						list($maxWidth, $maxHeight) = array_map('intval', explode('x', $dimensions));
+
+
+						switch ($op) {
+							case 'fit' :
+								// we fit the image to the given dimensions
+								$crop->fit($filePath, $thumbPath, $maxWidth, $maxHeight);
+								break;
+							case 'fill' :
+								// we fill the given dimensions with the image
+								$crop->fill($filePath, $thumbPath, $maxWidth, $maxHeight);
+								break;
+						}
+
+						if ($thumbName == 'default') {
+							copy($thumbPath, $filePath);
+							unlink($thumbPath);
+							chmod($filePath, 0744);
+						} else {
+							chmod($thumbPath, 0744);
+						}
+					}
+				}
+
 				$out = $filename;
 				$element->last_pushed_value = $out;
-			
+
 			} else {
 				if ( file_exists($val['tmp_name']) ){
 					if ( !@$app->_conf['multilingual_content'] ){
@@ -114,25 +182,25 @@ class Dataface_FormTool_file {
 				}
 				$element->last_pushed_value = $out;
 			}
-			
+
 			if ( is_array( $metaValues ) ){
 				if ( isset( $field['filename'] ) ){
 					// store the file name in another field if one is specified
 					$metaValues[$field['filename']] = $val['name'];
-					
+
 				}
 				if ( isset( $field['mimetype'] ) ){
 					// store the file mimetype in another field if one is specified
 					$metaValues[$field['mimetype']] = $val['type'];
-					
+
 				}
 			}
-			
+
 			return $out;
-			
-				
+
+
 		}
-		
+
 		if ( $table->isContainer($field['name']) ){
 		    if (isset($element->last_pushed_value) and !empty($element->last_pushed_value)) {
                 return $element->last_pushed_value;
@@ -142,17 +210,17 @@ class Dataface_FormTool_file {
 		return null;
 
 	}
-	
+
 	function pullValue(&$record, &$field, &$form, &$element){
 		/*
-		 * 
+		 *
 		 * We don't bother pulling the values of file widgets because it would take too long.
 		 *
 		 */
-		
+
 		$widget =& $field['widget'];
 		$formFieldName = $element->getName();
-		
+
 		$val = null;
 		if ( $widget['type'] == 'webcam' ) $val = $record->getValueAsString($field['name']);
 		if ( $record->getLength($field['name']) > 0 ){
@@ -165,8 +233,8 @@ class Dataface_FormTool_file {
 		} else {
 			//echo "No data in field '$fieldname'";
 		}
-		
+
 		return $val;
 	}
-	
+
 }

@@ -170,7 +170,11 @@
                                     var inputname = input.getAttribute('name');
                                     inputname = inputname.replace(/^([^\]]+)\[[0-9]+\]/, '$1['+row_id+']');
                                     input.setAttribute('name', inputname);
-                            }
+                                    // increment id with row number
+                                    if (!input.getAttribute("id")) continue;
+                                    var input_id = input.getAttribute("id");
+                                    input_id = input_id.replace(/^([^\]]+)_[0-9]+/, "$1_" + row_id);
+                                    input.setAttribute("id", input_id);                            }
 
 
             }

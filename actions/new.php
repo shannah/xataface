@@ -67,7 +67,9 @@ class dataface_actions_new {
 		}
 
 		$form = $formTool->createRecordForm($currentRecord, true, @$query['--tab'], $query, $includedFields);
-
+		if (@$query['-format'] == 'xml') {
+			$form->xml = true;
+		}
 
 		//$form = new Dataface_QuickForm($query['-table'], $app->db(),  $query, '',$new);
 		$res = $form->_build();
@@ -221,17 +223,30 @@ class dataface_actions_new {
 
 		}
 
+
+
 		ob_start();
 		$form->setDefaults($_GET);
 		$form->display();
 		$out = ob_get_contents();
 		ob_end_clean();
 
+
+
 		if ( count($form->_errors) > 0 ){
 			//$app->clearMessages();
 			//$app->addError(PEAR::raiseError("Some errors occurred while processing this form: <ul><li>".implode('</li><li>', $form->_errors)."</li></ul>"));
 		}
+		if (@$query['-format'] == 'xml') {
+			header('Content-type: application/xml; charset="'.$app->_conf['oe'].'"');
+			$doc = new DOMDocument();
+			$doc->preserveWhiteSpace = false;
+			$doc->formatOutput = true;
+			$doc->loadXML($out);
+			echo $doc->saveXML();
 
+			exit;
+		}
 		$context = array('form'=>&$out);
 		$context['tabs'] = $formTool->createHTMLTabs($currentRecord, $form, @$query['--tab']);
 
@@ -240,7 +255,7 @@ class dataface_actions_new {
                 else if ( @$query['-headless'] ) $template = 'Dataface_New_Record_headless.html';
 		else $template = 'Dataface_New_Record.html';
 
-		Dataface_JavascriptTool::getInstance()->import('xataface/widgets/depends.js');        
+		Dataface_JavascriptTool::getInstance()->import('xataface/widgets/depends.js');
 		df_display($context, $template, true);
 	}
 }

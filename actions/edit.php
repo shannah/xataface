@@ -67,6 +67,9 @@ class dataface_actions_edit {
 
 		if ( $resultSet->found()> @$query['-cursor']){
 			$form = $formTool->createRecordForm($currentRecord, false, @$query['--tab'], $query, $includedFields);
+			if (@$query['-format'] == 'xml') {
+				$form->xml = true;
+			}
 			/*
 			 * There is either a result to edit, or we are creating a new record.
 			 *
@@ -236,6 +239,16 @@ class dataface_actions_edit {
 			if ( count($form->_errors) > 0 ){
 				$app->clearMessages();
 				$app->addError(PEAR::raiseError("Some errors occurred while processing this form: <ul><li>".implode('</li><li>', $form->_errors)."</li></ul>"));
+			}
+			if (@$query['-format'] == 'xml') {
+				header('Content-type: application/xml; charset="'.$app->_conf['oe'].'"');
+				$doc = new DOMDocument();
+				$doc->preserveWhiteSpace = false;
+				$doc->formatOutput = true;
+				$doc->loadXML($out);
+				echo $doc->saveXML();
+
+				exit;
 			}
 			$context = array('form'=>$out);
 

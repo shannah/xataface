@@ -3,6 +3,7 @@
 //require-css <jquery-ui/jquery-ui.css>
 //require <RecordBrowser/RecordBrowser.js>
 //require <RecordDialog/RecordDialog.js>
+//require <xatajax.form.core.js>
 
 (function(){
 
@@ -12,7 +13,7 @@
 	
 		$('.xf-lookup', node).each(function(){
 	
-	
+                        var lookup = this;
 			var options = {};
 			if ( $(this).attr('data-xf-lookup-options') ){
 				eval('options='+$(this).attr('data-xf-lookup-options')+';');
@@ -31,12 +32,13 @@
 				eval('options.callback='+options.callback+';');
 			}
 			options.click = function(){
-				$.each(options.dynFilters, function(key,val){
-					delete options.filters[key];
-					$("form *[name="+val+"]").each(function(){
-						options.filters[key] = $(this).val();
-					});
-				});
+                            $.each(options.dynFilters, function(key,val){
+                                delete options.filters[key];
+                                var fld = XataJax.form.findField(lookup, val);
+                                if (fld) {
+                                    options.filters[key] = $(fld).val();
+                                }
+                            });
 				
 			};
 			$(this).RecordBrowserWidget(options);

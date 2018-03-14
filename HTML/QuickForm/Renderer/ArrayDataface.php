@@ -97,6 +97,7 @@ require_once 'HTML/QuickForm/Renderer/Array.php';
  */
 class HTML_QuickForm_Renderer_ArrayDataface extends HTML_QuickForm_Renderer_Array
 {
+    var $xml = false;
 
    /**
     * Constructor
@@ -108,13 +109,16 @@ class HTML_QuickForm_Renderer_ArrayDataface extends HTML_QuickForm_Renderer_Arra
     function __construct($collectHidden = false, $staticLabels = false, $assoc = true)
     {
     	$this->HTML_QuickForm_Renderer_Array($collectHidden, $staticLabels, $assoc);
-        
+
     } // end constructor
 	    function HTML_QuickForm_Renderer_ArrayDataface($collectHidden=false, $staticLabels=false, $assoc=true) { self::__construct($collectHidden, $staticLabels, $assoc); }
 
 
 	function startForm(&$form){
-	
+        if (property_exists($form, 'xml')) {
+            $this->xml = $form->xml;
+        }
+
 		parent::startForm($form);
 		foreach ( $form->_errors as $key=>$val){
 			if ( is_int($key) ){
@@ -137,7 +141,7 @@ class HTML_QuickForm_Renderer_ArrayDataface extends HTML_QuickForm_Renderer_Arra
     */
     function _elementToArray(&$element, $required, $error)
     {
-  		
+
   		$ret = array(
             'name'      => $element->getName(),
             'value'     => $element->getValue(),
@@ -165,24 +169,26 @@ class HTML_QuickForm_Renderer_ArrayDataface extends HTML_QuickForm_Renderer_Arra
         }
 
         // set the style for the element
-        
+
         if (isset($this->_elementStyles[$ret['name']])) {
             $ret['style'] = $this->_elementStyles[$ret['name']];
         }
-        if ('group' == $ret['type']) {
+        if ($this->xml) {
+            $ret['xml'] = $element->getXML();
+        } else if ('group' == $ret['type']) {
             $ret['separator'] = $element->_separator;
             $ret['elements']  = array();
         } else {
             $ret['html']      = $element->toHtml();
         }
-        
+
         if (!empty($error)) {
             $this->_ary['errors'][$ret['name']] = $error;
         }
         return $ret;
     }
-    
-    
+
+
      function renderHeader(&$header)
     {
         $this->_ary['sections'][$this->_sectionCount] = array(
@@ -192,8 +198,8 @@ class HTML_QuickForm_Renderer_ArrayDataface extends HTML_QuickForm_Renderer_Arra
         );
         $this->_currentSection = $this->_sectionCount++;
     } // end func renderHeader
-    
-    
+
+
 
 
 }

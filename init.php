@@ -20,6 +20,87 @@
  */
  
 function init($site_path, $dataface_url){
+    
+        $originalUrl = isset($_SERVER['HTTP_X_ORIGINAL_URL']) ? parse_url($_SERVER['HTTP_X_ORIGINAL_URL']) : null;
+        if ($originalUrl) {
+            $host = @$originalUrl["host"];
+            $port = @$originalUrl["port"];
+            
+            $protocol = $originalUrl["scheme"];
+            if (!$port) {
+                if ($protocol == 'https') {
+                    $port = 443;
+                } else {
+                    $port = 80;
+                }
+            }
+            $_SERVER['QUERY_STRING'] = @$originalUrl["query"];
+            $_SERVER['REQUEST_URI'] = @$originalUrl["path"];
+            $_SERVER['PHP_SELF'] = @$originalUrl['path'];
+            if (@$originalUrl["query"]) {
+                $_SERVER['REQUEST_URI'] .= '?' . $originalUrl['query'];
+            }
+            
+            if (strpos($dataface_url, 'http:') === 0 or strpos($dataface_url, 'https:') === 0) {
+                // We leave dataface_url alone
+            } else {
+                if ($dataface_url{0} !== '/') {
+                    $dataface_url = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')) . '/' . $dataface_url;
+                }
+            }
+
+        } else {
+            // first we resolve some differences between CGI and Module php
+            if ( !isset( $_SERVER['QUERY_STRING'] ) ){
+                    $_SERVER['QUERY_STRING'] = @$_ENV['QUERY_STRING'];	
+            } 
+            // define a HOST_URI variable to contain the host portion of all urls
+            $host = $_SERVER['HTTP_HOST'];
+            if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+                $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
+            }
+            $port = $_SERVER['SERVER_PORT'];
+            if (isset($_SERVER['HTTP_X_FORWARDED_PORT'])) {
+                $port = intval($_SERVER['HTTP_X_FORWARDED_PORT']);
+            }
+            $protocol = $_SERVER['SERVER_PROTOCOL'];
+            
+            if ( strtolower($protocol) == 'included' ){
+                    $protocol = 'HTTP/1.0';
+            }
+            $protocol = substr( $protocol, 0, strpos($protocol, '/'));
+            $protocol = ((@$_SERVER['HTTPS']  == 'on' || "$port" == "443") ? $protocol.'s' : $protocol );
+            $protocol = strtolower($protocol);
+            if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+                $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+                if ($protocol == 'https' and "$port" == "80") {
+                    $port = 443;
+                } else if ($protocol == 'http' and "$port" == "443") {
+                    $port = 80;
+                }
+            }
+
+            if (isset($_SERVER['HTTP_X_FORWARDED_PATH'])) {
+                $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_FORWARDED_PATH'];
+                if (strpos($_SERVER['REQUEST_URI'], '?') === false and @$_SERVER['QUERY_STRING']) {
+                    $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
+                }
+                $_SERVER['PHP_SELF'] = $_SERVER['HTTP_X_FORWARDED_PATH'];
+                if (strpos($dataface_url, 'http:') === 0 or strpos($dataface_url, 'https:') === 0) {
+                    // We leave dataface_url alone
+                } else {
+                    if ($dataface_url{0} !== '/') {
+                        $dataface_url = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')) . '/' . $dataface_url;
+                    }
+                }
+
+            }
+        }
+        $_SERVER['HOST_URI'] = $protocol.'://'.$host;//.($port != 80 ? ':'.$port : '');
+        if ( (strpos($host, ':') === false) and !($protocol == 'https' and "$port" == "443" ) and !($protocol == 'http' and "$port" == "80") ){
+                $_SERVER['HOST_URI'] .= ':'.$port;
+        }
+    
 	if (defined('DATAFACE_SITE_PATH')){
 		trigger_error("Error in ".__FILE__."
 			DATAFACE_SITE_PATH previously defined when trying to initialize the site."/*.Dataface_Error::printStackTrace()*/, E_USER_ERROR);

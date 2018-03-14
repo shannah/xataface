@@ -296,7 +296,7 @@ class Dataface_TreeTable {
 		$q['-relationship'] = $this->relationship;
 		
 		echo Dataface_Utilities::query2html($q, array('-action'));
-		echo '<input type="hidden" name="-redirect" value="'.$_SERVER['REQUEST_URI'].'"/>';
+		echo '<input type="hidden" name="-redirect" value="'.df_escape($_SERVER['REQUEST_URI']).'"/>';
 		echo "</form>";
 		echo "
 		<script language=\"javascript\" type=\"text/javascript	\"><!--
