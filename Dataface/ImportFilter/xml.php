@@ -51,10 +51,11 @@ require_once 'xml2array.php';
 
 class Dataface_ImportFilter_xml extends Dataface_ImportFilter {
 
-	function Dataface_ImportFilter_xml(){
+	function __construct(){
 		$this->name = 'xml';
 		$this->label = 'XML';
 	}
+		function Dataface_ImportFilter_xml() { self::__construct(); }
 	
 	
 	function import(&$data){

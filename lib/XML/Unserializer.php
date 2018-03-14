@@ -369,7 +369,7 @@ class XML_Unserializer extends PEAR
     * @access   public
     * @param    mixed   $options    array containing options for the unserialization
     */
-    function XML_Unserializer($options = null)
+    function __construct($options = null)
     {
         if (is_array($options)) {
             $this->options = array_merge($this->_defaultOptions, $options);
@@ -377,6 +377,7 @@ class XML_Unserializer extends PEAR
             $this->options = $this->_defaultOptions;
         }
     }
+        function XML_Unserializer($options=null) { self::__construct($options); }
 
    /**
     * return API version

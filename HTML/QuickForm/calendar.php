@@ -29,7 +29,7 @@ class HTML_QuickForm_calendar extends HTML_QuickForm_text {
 	
 	var $_basePath = '.';
 	var $calendar;
-	function HTML_QuickForm_calendar($elementName=null, $elementLabel=null, $attributes=null, $properties=null)
+	function __construct($elementName=null, $elementLabel=null, $attributes=null, $properties=null)
     {
 
         parent::HTML_QuickForm_input($elementName, $elementLabel, $attributes);
@@ -71,6 +71,7 @@ class HTML_QuickForm_calendar extends HTML_QuickForm_text {
         						$this->getProperty('stripped')
         						);
     } //end constructor
+    	function HTML_QuickForm_calendar($elementName=null, $elementLabel=null, $attributes=null, $properties=null) { self::__construct($elementName, $elementLabel, $attributes, $properties); }
     
     
     

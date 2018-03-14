@@ -91,7 +91,7 @@ class Text_Wiki_Parse_Smiley extends Text_Wiki_Parse {
      * @return The parser object
      * @access public
      */
-    function Text_Wiki_Parse_Smiley(&$obj)
+    function __construct(&$obj)
     {
         $default = $this->conf;
         parent::Text_Wiki_Parse($obj);
@@ -132,6 +132,7 @@ class Text_Wiki_Parse_Smiley extends Text_Wiki_Parse {
              ')(' . ($reg1 ? $reg1 . '):' . ($reg2 ? '|' : '') : '') . $reg2 .
              ')(?=' . $delim . ')#i';
     }
+        function Text_Wiki_Parse_Smiley(&$obj) { self::__construct($obj); }
 
     /**
      * Generates a replacement token for the matched text.  Token options are:

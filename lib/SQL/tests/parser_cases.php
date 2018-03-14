@@ -11,9 +11,10 @@ class SqlParserTest extends PHPUnit_TestCase {
 
 
     //constructor of the test suite
-    function SqlParserTest($name) {
+    function __construct($name) {
         $this->PHPUnit_TestCase($name);
     }
+        function SqlParserTest($name) { self::__construct($name); }
 
     function setUp() {
         $this->parser = new Sql_parser();

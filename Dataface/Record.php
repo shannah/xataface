@@ -2,17 +2,17 @@
 /*-------------------------------------------------------------------------------
  * Xataface Web Application Framework
  * Copyright (C) 2005-2008 Web Lite Solutions Corp (shannah@sfu.ca)
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -43,13 +43,13 @@ define('DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE', 30);
  * @section synopsis Synopsis
  *
  * The Dataface_Record class a core class as it encapsulates a single row of a table.  Most
- * interactions with the database will go through this class in some shape or form.  It 
+ * interactions with the database will go through this class in some shape or form.  It
  * provides access to configuration, triggers, delegate classes, permissions, and just about
  * every other facet of the framework.
  *
  * @section examples Example Usage
  *
- * Generally this class is used to view and edit records in the database.  It is frequently used 
+ * Generally this class is used to view and edit records in the database.  It is frequently used
  * delegate classes for responding to events.
  *
  * Sample loading a record and reading some values:
@@ -75,7 +75,7 @@ define('DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE', 30);
  *     echo "Sucessfully saved record.";
  * }
  * @endcode
- * 
+ *
  * Sample creating a new record and saving it to the database.
  * @code
  * $record = new Dataface_Record('people', array());
@@ -112,10 +112,10 @@ class Dataface_Record {
 	/**
 	 * A unique ID for this record (for making object comparisons in PHP 4)
 	 * sinc the comparison operators don't work properly until PHP 5.
-	 * @private 
+	 * @private
 	 */
 	var $_id;
-	
+
 	/**
 	 * @brief Generates the next unique record ID for the system.
 	 *
@@ -128,47 +128,47 @@ class Dataface_Record {
 	}
 
 	/**
-	 * This will hold a reference to the parent record if this table is 
+	 * This will hold a reference to the parent record if this table is
 	 * an extension of another table.  A table can be "extended" or "inherit"
 	 * from another table by defining the __isa__ parameter to the fields.ini
-	 * file. 
+	 * file.
 	 * @see getParentRecord()
 	 * @private
 	 */
 	var $_parentRecord;
-	
-	
+
+
 	/**
 	 * Handles the property change listeners for this record.
 	 *
 	 * @private
 	 */
 	var $propertyChangeListeners=array();
-	
+
 	/**
 	 * Associative array of values of this record.  [Column Names] -> [Column Values]
 	 *
 	 * @private
 	 */
 	var $_values;
-	
-	
+
+
 	/**
 	 * Reference to the Dataface_Table object that owns this Record.
 	 *
 	 * @type Dataface_Table
 	 */
 	var $_table;
-	
-	
+
+
 	/**
 	 * The name of the table that owns this record.
 	 *
 	 * @type string
 	 */
 	var $_tablename;
-	
-	
+
+
 	/**
 	 * Associative array of values of related records to this record.
 	 *			[Relationship name] ->[
@@ -179,14 +179,14 @@ class Dataface_Record {
 	 * @private
 	 */
 	var $_relatedValues = array();
-	
+
 	/**
 	 * A boolean array indicating whether or not a block of related records is loaded.
 	 * The block size is defined in the DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE constant.
 	 * @private
 	 */
 	var $_relatedValuesLoaded = array();
-	
+
 	/**
 	 * @private
 	 */
@@ -195,25 +195,25 @@ class Dataface_Record {
 	 * @private
 	 */
 	var $_lastRelatedRecordStart = 0;
-	
+
 	/**
 	 * @private
 	 */
 	var $_lastRelatedRecordLimit = 30;
-	
+
 	/**
 	 * @private
 	 */
 	var $_relationshipRanges;
-	
-	
+
+
 	/**
-	 * @private 
+	 * @private
 	 * The title of the record
 	 */
 	var $_title;
-	
-	
+
+
 	/**
 	 * Associative array of snapshot values.  It is possible to take a snapshot of a record
 	 * so that it can be compared when updating (to only update those fields that have been
@@ -221,20 +221,20 @@ class Dataface_Record {
 	 * @private
 	 */
 	var $_oldValues;
-	
+
 	/**
 	 * @private
 	 */
 	var $_transientValues=array();
-	
-	
+
+
 	/**
 	 * @brief Flag indicating if we are using meta data fields.  Meta data fields (if this flag is set)
 	 * are signalled by '__' preceeding the field name.
 	 */
 	var $useMetaData = true;
-	
-	
+
+
 	/**
 	 * Flags to indicate if a field has been changed.
 	 * Associative array. [Field name] -> [boolean]
@@ -242,63 +242,63 @@ class Dataface_Record {
 	 * @private
 	 */
 	var $_dirtyFlags = array();
-	
+
 	/**
 	 * Flags to indicate if values of a related field have been changed.
 	 * Associative array. [Relationship name] -> [  [Field name] -> [Field value]  ]
 	 * @private
 	 */
 	var $_relatedDirtyFlags = array();
-	
+
 	/**
 	 * @private
 	 */
 	var $_isLoaded = array();
-	
+
 	/**
 	 * @private
 	 */
 	var $_metaDataValues=array();
-	
-	
+
+
 	/**
 	 * @brief Indicator to say whether blob columns should be loaded.  This is useful for the blob
 	 * columns of related records.
 	 * @type boolean
 	 */
 	var $loadBlobs = false;
-	
+
 	/**
 	 * Stores metadata for related records. Index keys are identical to relatedValues array.
 	 * @private
 	 */
 	var $_relatedMetaValues=array();
-	
-	
+
+
 	/**
 	 * @brief Reference to the delegate class object.
 	 * @private
 	 */
 	var $_delegate = null;
-	
+
 	/**
-	 * @private 
+	 * @private
 	 */
 	var $cache=array();
-	
+
 	/**
 	 * This flag is used to veto security settings of changes.
-	 * If this flag is set when setValue() is called, then it records this 
+	 * If this flag is set when setValue() is called, then it records this
 	 * as a veto change, which means that the normal security checks won't
 	 * be in effect.  All changes made to a record inside the beforeSave()
-	 * beforeInsert() and beforeUpdate() triggers are performed in 
+	 * beforeInsert() and beforeUpdate() triggers are performed in
 	 * veto mode so that the changes will be exempt from security checks.
 	 *
 	 * @type boolean
 	 * @private
 	 */
 	var $vetoSecurity = false;
-	
+
 	/**
 	 * This array tracks any fields that should be exempt from security
 	 * checks.
@@ -306,15 +306,15 @@ class Dataface_Record {
 	 * @private
 	 */
 	var $vetoFields = array();
-	
-	
+
+
 	/**
 	 * @brief This is a multi-purpose pouch that allows triggers to attach data to a record
 	 * and retrieve it later.
 	 */
 	var $pouch = array();
-	
-	
+
+
 	/**
 	 * @brief The language code of this record.  This is automatically set to the language
 	 * of content that was loaded when the record was loaded.
@@ -322,16 +322,16 @@ class Dataface_Record {
 	 * @type string
 	 */
 	var $lang = null;
-	
-	
+
+
 	var $escapeOutput = true;
-	
+
 	//--------------------------------------------------------------------------------
 	// @{
 	/**
 	 * @name Initialization
 	 */
-	
+
 	/**
 	 * @param $tablename The name of the table that owns this record.
 	 * @param $values An associative array of values to populate the record.
@@ -343,7 +343,7 @@ class Dataface_Record {
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		$this->_delegate =& $this->_table->getDelegate();
 		$this->lang = $app->_conf['lang'];
-		
+
 		if ( $values !== null ){
 			if ( is_a($values, 'StdClass') ){
 				$values = get_object_vars($values);
@@ -355,20 +355,20 @@ class Dataface_Record {
 				$this->setSnapshot();
 			}
 			//$this->setValues($values);
-			
+
 		}
 	}
-	
+
 	// @}
-	// END Initialization 
+	// END Initialization
 	//---------------------------------------------------------------------------------
-	
+
 	/**
 	 * This was necessary to fix a memory leak with records that have a parent record.
 	 *  Thanks to http://bugs.php.net/bug.php?id=33595 for the details of this
 	 * workaround.
 	 *
-	 * When looping through and discarding records, it is a good idea to 
+	 * When looping through and discarding records, it is a good idea to
 	 * explicitly call __destruct.
 	 *
 	 */
@@ -381,23 +381,23 @@ class Dataface_Record {
 		unset($this->_metaDataValues);
 		unset($this->_transientValues);
 		unset($this->_oldValues);
-	
+
 		if ( isset($this->_parentRecord) ){
 			$this->_parentRecord->__destruct();
 			unset($this->_parentRecord);
 		}
-		
-		
+
+
 	}
-	
+
 	//------------------------------------------------------------------------------------
 	// @{
 	/**
 	 * @name Utility Methods
 	 */
-	
+
 	/**
-	 * @brief Calls a delegate class method with no parameters (if it exists) and returns 
+	 * @brief Calls a delegate class method with no parameters (if it exists) and returns
 	 *  the result.
 	 *
 	 * @param string $function The name of the method to try to call.
@@ -416,18 +416,18 @@ class Dataface_Record {
 			return $del->$function($this, $param);
 			//return call_user_func(array(&$del, $function), $this);
 		} else if ( isset($parent) ){
-		
+
 			return $parent->callDelegateFunction($function, $fallback, $param);
 		} else {
 			return $fallback;
 		}
-	
-	}
-	
-	
 
-	
-	
+	}
+
+
+
+
+
 	/**
 	 * @brief Returns actions associated with this record.
 	 *
@@ -437,22 +437,22 @@ class Dataface_Record {
 	 *
 	 * @return array Associative array of action definitions.
 	 * @since 0.6
-	 * 
+	 *
 	 * @see Dataface_Table::getActions()
 	 *
 	 */
 	function getActions($params=array()){
 		$params['record'] =& $this;
 		$actions = $this->_table->getActions($params);
-		
+
 		$parent =& $this->getParentRecord();
 		if ( isset($parent) ){
 			$actions = array_merge_recursive_unique($parent->getActions($params), $actions);
 		}
 		return $actions;
 	}
-	
-	
+
+
 	/**
 	 * @brief Returns a reference to the Dataface_Table object.
 	 * @return Dataface_Table
@@ -461,10 +461,10 @@ class Dataface_Record {
 	function &table(){
 		return $this->_table;
 	}
-	
-	
+
+
 	/**
-	 * @brief Clears all of the various caches in this record.  
+	 * @brief Clears all of the various caches in this record.
 	 *
 	 * This is called generally when values are changed.
 	 *
@@ -472,23 +472,23 @@ class Dataface_Record {
 	 * @since 0.5
 	 */
 	function clearCache(){
-		
+
 		unset($this->cache);
-		
+
 		$this->cache=array();
-		
+
 		$this->_relatedValuesLoaded = array();
-		
+
 		$this->_relatedValues = array();
 		$this->_relatedMetaValues = array();
-		
-		
+
+
 	}
-	
-	
-	
-	
-		
+
+
+
+
+
 	/**
 	 * @brief Parses the string to replace column name variables with the corresponding
 	 *	column value.
@@ -496,7 +496,7 @@ class Dataface_Record {
 	 * @param string $str The string to be parsed.
 	 * @return string The parsed string
 	 * @since 0.5
-	 * 
+	 *
 	 * <p>Parses a string, resolving any variables to the values in this record.  A variable is denoted by
 	 * a dollar sign preceeding the name of a field in the table.  This method replaces the variable
 	 * with its corresponding value from this record.</p>
@@ -511,7 +511,7 @@ class Dataface_Record {
 	 *	there is no way to specify the third record in a variable.  Variables refering to related fields are automatically replaced
 	 *	with the value found in the first related record.</p>
 	 *
-	 * 
+	 *
 	 */
 	function parseString( $str){
 		if ( !is_string($str) ) return $str;
@@ -520,39 +520,39 @@ class Dataface_Record {
 		while ( preg_match( '/(?<!\\\)\$([0-9a-zA-Z\._\-]+)/', $blackString, $matches ) ){
 			if ( $this->_table->hasField($matches[1]) ){
 				$replacement = $this->strval($matches[1]);
-				
-				
+
+
 			} else {
 				$replacement = $matches[1];
 			}
 			$str = preg_replace( '/(?<!\\\)\$'.$matches[1].'/', $replacement, $str);
 			$blackString = preg_replace( '/(?<!\\\)\$'.$matches[1].'/', "", $blackString);
-			
+
 		}
 		return $str;
 	}
-	
+
 	// @}
 	// END Utility Methods
 	//-------------------------------------------------------------------------------
-	
-	
+
+
 	//---------------------------------------------------------------------------------
 	//{@
-	
+
 	/**
 	 * @name Relationships
 	 *
 	 * Methods for working with related records.
 	 *
 	 */
-	
-	
-	
+
+
+
 	/**
 	 * @brief Gets the range of records that should be loaded for related records.
 	 * @param string $relationshipName The name of the relationship
-	 * @return array A 2-element array with integers [lower, upper] marking the lower and 
+	 * @return array A 2-element array with integers [lower, upper] marking the lower and
 	 *	upper bounds.
 	 * @since 0.5
 	 *
@@ -567,7 +567,7 @@ class Dataface_Record {
 			return $this->_table->getRelationshipRange($relationshipName);
 		}
 	}
-	
+
 	/**
 	 * @brief Sets the range that should be included for a given relationship.
 	 *
@@ -583,23 +583,23 @@ class Dataface_Record {
 	function setRelationshipRange($relationshipName, $lower, $upper){
 		if ( !isset( $this->_relationshipRanges ) ) $this->_relationshipRanges = array();
 		$this->_relationshipRanges[$relationshipName] = array($lower, $upper);
-		
+
 	}
 
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	/**
 	 * @brief Indicates whether a paricular related record has been loaded yet.
 	 * @param string $relname The relationship name.
 	 * @param int $index The integer index of the record that we are checking to see if it is loaded.
-	 * @param string $where 
+	 * @param string $where
 	 *  (optional) A string SQL clause to be used to filter the results.
-	 * @param mixed $sort 
+	 * @param mixed $sort
 	 *  (optional) A comma-delimited list of columns to sort on.
 	 * @return boolean True of the specified related record has already been loaded.
 	 *
@@ -607,15 +607,15 @@ class Dataface_Record {
 	 * @since 0.5
 	 */
 	function _relatedRecordLoaded($relname, $index, $where=0, $sort=0){
-	
+
 		$blockNumber = floor($index / DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE);
 		return ( isset( $this->_relatedValuesLoaded[$relname][$where][$sort][$blockNumber] ) and $this->_relatedValuesLoaded[$relname][$where][$sort][$blockNumber] );
 	}
-	
-	
+
+
 	/**
-	 * @brief Converts an index range to a block range.  
-	 * Related records are loaded in blocks where 
+	 * @brief Converts an index range to a block range.
+	 * Related records are loaded in blocks where
 	 * a single block contains a number of records (as defined in the DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE
 	 * constant.
 	 *
@@ -623,15 +623,15 @@ class Dataface_Record {
 	 * @param int $upper The upper index range
 	 * @return array 2-element array with lower and upper bounds of blocks.
 	 * @since 0.5
-	 * @private 
+	 * @private
 	 */
 	function _translateRangeToBlocks($lower, $upper){
-	
+
 		$lowerBlock = floor($lower / DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE);
 		$upperBlock = floor($upper / DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE);
 		return array(intval($lowerBlock), intval($upperBlock));
 	}
-	
+
 	/**
 	 * @brief Boolean indicator to see if a block has already been loaded.
 	 *
@@ -644,17 +644,17 @@ class Dataface_Record {
 	 * @return boolean True if the specified block has already been loaded.
 	 *
 	 * @since 0.5
-	 * @private 
+	 * @private
 	 *
 	 */
 	function _relatedRecordBlockLoaded($relname, $block, $where=0, $sort=0){
 		return ( isset( $this->_relatedValuesLoaded[$relname][$where][$sort][$block] ) and $this->_relatedValuesLoaded[$relname][$where][$sort][$block] );
 	}
-	
+
 	/**
-	 * @brief Loads a block of related records into memory.  
-	 * Records are loaded in as blocks so that we don't load too much more than 
-	 * neccessary (imaging a relationship with a million related records.  We couldn't 
+	 * @brief Loads a block of related records into memory.
+	 * Records are loaded in as blocks so that we don't load too much more than
+	 * neccessary (imaging a relationship with a million related records.  We couldn't
 	 * possibly want to load more than a few  hundred at a time.
 	 *
 	 * @param string $relname The name of the relationship from which to return records.
@@ -669,7 +669,7 @@ class Dataface_Record {
 	 * @since 0.5
 	 * @private
 	 */
-	function _loadRelatedRecordBlock($relname, $block, $where=0, $sort=0){
+	function _loadRelatedRecordBlock($relname, $block, $where=0, $sort=0, $rawSort=-1){
 		if ( $this->_relatedRecordBlockLoaded($relname, $block, $where, $sort) ) return true;
 
 		$relationship =& $this->_table->getRelationship($relname);
@@ -681,28 +681,28 @@ class Dataface_Record {
 					array('relationship'=>$relname, 'retval'=>$relationship)
 					), E_USER_ERROR);
 		}
-		
+
 		$start = $block * DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE;
 		$limit = DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE;
-		
+
 		if ( $start >= $this->numRelatedRecords($relname, $where) ){
 
 
 			return false;
 		}
-		
+
 		//$sql = $this->parseString($relationship->_schema['sql']);
 		$sql = $this->parseString($relationship->getSQL($this->loadBlobs, $where, $sort));
 
 		// TODO We need to change this so that it is compatible with relationships that already specify a limit.
 		$sql .= " LIMIT ".addslashes($start).",".addslashes($limit);
-		
+
 
 		//$res = xf_db_query($sql, $this->_table->db);
 		$db =& Dataface_DB::getInstance();
 		$res = $db->query($sql, $this->_table->db, null, true);
 		if ( !$res and !is_array($res) ){
-			
+
 			throw new Exception( xf_db_error($this->_table->db).
 				df_translate(
 					'scripts.Dataface.Record._loadRelatedRecordBlock.ERROR_LOADING_RELATED_RECORDS',
@@ -717,7 +717,7 @@ class Dataface_Record {
 			$record_row = array();
 			$meta_row = array();
 			foreach ($row as $key=>$value){
-				
+
 				if (  strpos($key, '__') === 0  ){
 					$meta_row[$key] = $value;
 				} else {
@@ -727,17 +727,21 @@ class Dataface_Record {
 			}
 			$this->_relatedValues[$relname][$where][$sort][$index++] =& $record_row;
 			$this->_relatedMetaValues[$relname][$where][$sort][$index-1] =& $meta_row;
+			if ($rawSort >=0 and $rawSort !== $sort) {
+			    $this->_relatedValues[$relname][$where][$rawSort][$index-1] =& $record_row;
+			    $this->_relatedMetaValues[$relname][$where][$rawSort][$index-1] =& $meta_row;
+			}
 			unset($record_row);
 			unset($meta_row);
-			
+
 		}
 
 		$this->_relatedValuesLoaded[$relname][$where][$sort][$block] = true;
-		
+
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * @brief Returns the total number of related records for a given relationship.
 	 *
@@ -752,8 +756,8 @@ class Dataface_Record {
 	 * @endcode
 	 *
 	 * @subsection where_clause Using 'Where' Clause
-	 * 
-	 * The following example counts the number of books in the relationship that 
+	 *
+	 * The following example counts the number of books in the relationship that
 	 *	where published in 1986.
 	 * @code
 	 * $numBooksIn1986 = $record->numRelatedRecords('books', "year='1986'");
@@ -783,7 +787,7 @@ class Dataface_Record {
 			//}
 			$sql = stristr($sql, ' FROM ');
 			$sql = "SELECT COUNT(*) as num".$sql;
-			//$dbObj = 
+			//$dbObj =
 			//$res = xf_db_query($sql, $this->_table->db);
 			//$res = xf_db_query($sql, $this->_table->db);
 			$db =& Dataface_DB::getInstance();
@@ -797,16 +801,16 @@ class Dataface_Record {
 						array('relationship'=>$relname,'table'=>$this->_table->tablename,'xf_db_error'=>xf_db_error($this->_table->db),'sql'=>$sql)
 						), E_USER_ERROR);
 			}
-			
+
 			$this->_numRelatedRecords[$relname][$where] = $res[0]['num'];
 		}
 		return $this->_numRelatedRecords[$relname][$where];
-		
+
 	}
-	
+
 	/**
 	 * @brief Returns an array of all of the records returned by a specified relation.
-	 * 
+	 *
 	 * Each record is an associative array where the values are in raw format as returned by the database.
 	 *
 	 * @section Examples
@@ -848,7 +852,7 @@ class Dataface_Record {
 	 * @endcode
 	 *
 	 * @param string $relname The name of the relationship whose records we are retrieveing.
-	 * @param boolean $multipleRows 
+	 * @param boolean $multipleRows
 	 *	(optional) If true, this will return an array of records.  If it is false it only returns the first record.
 	 * @param integer $start The start position from this relationship to return records from.
 	 * @param integer $limit The number of records to return
@@ -857,12 +861,12 @@ class Dataface_Record {
 	 * @return array A 2-dimensional array of records.  Each record is represented by an associative array.
 	 *
 	 * @see http://www.xataface.com/wiki/relationships.ini_file
-	 * @see http://xataface.com/documentation/tutorial/getting_started/relationships 
+	 * @see http://xataface.com/documentation/tutorial/getting_started/relationships
 	 * @see docs/examples/getRelatedRecords.example.php Getting a list of courses that a student record is enrolled in.
 	 * @see docs/examples/getRelatedRecords.example2.php A more complex example using sorting and filtering of results.
 	 * @see Dataface_Record::getRelatedRecordObjects()
 	 * @see Dataface_Record::getRelationshipIterator()
-	 * @see Dataface_Record::numRelatedRecords() 
+	 * @see Dataface_Record::numRelatedRecords()
 	 *
 	 * @since 0.5
 	 */
@@ -884,8 +888,8 @@ class Dataface_Record {
 			$limit = $this->numRelatedRecords($relname, $where) + 1;
 			$multipleRows = true;
 
-		
-		
+
+
 		} else if ( is_string($multipleRows) and intval($multipleRows) === 0 and $multipleRows !== "0"){
 
 			if ( is_string($start) and intval($start) === 0 and $start !== "0" ){
@@ -895,14 +899,14 @@ class Dataface_Record {
 				$limit = $where;
 			} else {
 				$sort = $where;
-			
+
 			}
 			$where = $multipleRows;
 			$multipleRows = 'all';
 			return $this->getRelatedRecords($relname, $multipleRows, $where, $sort);
 		}
-			
-		
+
+
 		if ( $where === null ) $where = 0;
 		if ( $sort === null ) $sort = 0;
 		list($defaultStart, $defaultEnd) = $this->getRelationshipRange($relname);
@@ -912,37 +916,65 @@ class Dataface_Record {
 		} else {
 			$this->_lastRelatedRecordStart = $start;
 		}
-		
+
 		if ( $limit === null ){
 			//$limit = $this->_lastRelatedRecordLimit;
 			$limit = $defaultEnd-$defaultStart;
 		} else {
 			$this->_lastRelatedRecordLimit = $limit;
 		}
-		
-		
+
+
 		$range = $this->_translateRangeToBlocks($start,$start+$limit-1);
 		if ( $where === null ) $where = 0;
 		if ( $sort === null ) $sort = 0;
+		$relationship =& $this->_table->getRelationship($relname);
 		if ( !$sort ){
-			$relationship =& $this->_table->getRelationship($relname);
 			$order_column = $relationship->getOrderColumn();
 			if ( !PEAR::isError($order_column) and $order_column){
 				$sort = $order_column;
 			}
 		}
+
+		// If there is no sort, or the sort is on a low-cardinality
+		// column, then we might get non-deterministic behaviour
+		// So add the key columns to the sort
+		$sortArr = $sort === 0 ? array() : array_map('trim', explode(',', $sort));
+		foreach ($sortArr as $k=>$v) {
+		    $spacePos = strpos(' ', $v);
+		    if ($spacePos >= 0) {
+		        $sortArr[$k] = substr($v, 0, $spacePos);
+		    }
+		}
+		$relKeys =& $relationship->keys();
+		$sortAppend = '';
+		$first = true;
+		foreach (array_keys($relKeys) as $k=>$v) {
+		    if (!in_array($v, $sortArr)) {
+		        if ($first) $first = false;
+		        else $sortAppend .= ',';
+		        $sortAppend .= $v;
+		    }
+		}
+		$rawSort = $sort;
+		$sort = ($sort === 0) ? $sortAppend : $sort . ',' . $sortAppend;
+		$sort = trim($sort);
+		if (!$sort) {
+		    // If there were no keys in the relationship we might still have an empty sort
+		    $sort = 0;
+		}
+
 		// [0]->startblock as int , [1]->endblock as int
 		for ( $i=$range[0]; $i<=$range[1]; $i++){
-			$res = $this->_loadRelatedRecordBlock($relname, $i, $where, $sort);
-			
+		    $res = $this->_loadRelatedRecordBlock($relname, $i, $where, $sort, $rawSort);
 			// If the above returned false, that means that we have reached the end of the result set.
 			if (!$res ) break;
 		}
-		
-		
+
+
 		if ( $multipleRows === true ){
-		
-		
+
+
 			$out = array();
 			for ( $i=$start; $i<$start+$limit; $i++){
 				if ( !isset( $this->_relatedValues[$relname][$where][$sort][$i] ) ) continue;
@@ -975,8 +1007,8 @@ class Dataface_Record {
 				if ( $match ) return $row;
 				unset($row);
 			}
-			
-		
+
+
 		} else {
 			if (@count($this->_relatedValues[$relname][$where][$sort])>0){
 				if ( is_int( $start ) ){
@@ -992,15 +1024,15 @@ class Dataface_Record {
 				return $null;
 			}
 		}
-				
+
 	}
-	
+
 	/**
-	 * @brief Returns the "children" of this record. 
-	 * 
+	 * @brief Returns the "children" of this record.
+	 *
 	 * <p>A record's children can be defined by two means:
 	 * <ol><li>Adding &quot;meta:class = children&quot; to a relationship
-	 * in the <em>relationships.ini</em> file to indicate the the records in 
+	 * in the <em>relationships.ini</em> file to indicate the the records in
 	 * that relationship are considered &quot;child&quot; records of the parent
 	 * record.</li>
 	 * <li>Defining a method named <em>getChildren()</em> in the delegate class
@@ -1016,8 +1048,8 @@ class Dataface_Record {
 	 *     echo $pg->val('path');
 	 * }
 	 * @endcode
-	 * Note that the above example relies on the fact that either the 
-	 * getChildren method has been defined in the delegate class or 
+	 * Note that the above example relies on the fact that either the
+	 * getChildren method has been defined in the delegate class or
 	 * a relationship has the meta:class=children designator for this
 	 * table.
 	 *
@@ -1051,17 +1083,17 @@ class Dataface_Record {
 			}
 			return $out;
 		} else {
-			
+
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
-	 * @brief Gets a particular child at the specified index.  
-	 * 
-	 * <p>If only one child is needed, then this method is preferred to 
-	 * getChildren() because it avoids loading the unneeded records from the 
+	 * @brief Gets a particular child at the specified index.
+	 *
+	 * <p>If only one child is needed, then this method is preferred to
+	 * getChildren() because it avoids loading the unneeded records from the
 	 * database.</p>
 	 *
 	 * @param int $index The zero-based index of the child to retrieve.
@@ -1079,19 +1111,19 @@ class Dataface_Record {
 		if ( !isset($children) || count($children) == 0 ) return null;
 		return $children[0];
 	}
-	
+
 	/**
 	 * @brief Returns the "parent" record of this record.
 	 *
 	 * @attention
 	 *		DO NOT CONFUSE THIS WITH getParentRecord().
-	 *		getParentRecord() returns this record's parent in terms of the 
-	 *		table heirarchy.  This method obtains the parent record in terms of the content 
+	 *		getParentRecord() returns this record's parent in terms of the
+	 *		table heirarchy.  This method obtains the parent record in terms of the content
 	 *		heirarchy.
 	 *
 	 * <p>A record's parent can be defined in two ways:
 	 * <ol>
-	 * <li>Adding &quot;meta:class = parent&quot; to a relationship in the 
+	 * <li>Adding &quot;meta:class = parent&quot; to a relationship in the
 	 *     <em>relationships.ini</em> file to indicate that the first record
 	 *     in the relationship is the &quot;parent&quot; record of the source record.</li>
 	 * <li>Defining a method named <em>getParent()</em> in the delegate class that
@@ -1101,7 +1133,7 @@ class Dataface_Record {
 	 * </p>
 	 *
 	 * <h3>Changes for 2.0</h3>
-	 * <p>This method has been modified for Xataface 2.0 to return the parent 
+	 * <p>This method has been modified for Xataface 2.0 to return the parent
 	 * record provided by the new -portal-context parameter.  This is a last
 	 * option that is only used if the other standard options for defining a record
 	 * parent have not been implemented.</p>
@@ -1123,7 +1155,7 @@ class Dataface_Record {
 			return $parent;
 		} else if ( ( $rel =& $this->_table->getParentRelationship() ) !== null ){
 			$it = $this->getRelationshipIterator($rel->getName());
-			
+
 			if ( $it->hasNext() ){
 				$parent = $it->next();
 				$out = $parent->toRecord();
@@ -1140,12 +1172,12 @@ class Dataface_Record {
 			return null;
 		}
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	/**
 	 * @brief Obtains an iterator to iterate through the related records for a specified
 	 * relationship.
@@ -1179,11 +1211,11 @@ class Dataface_Record {
 		}
 		return new Dataface_RelationshipIterator($this, $relationshipName, $start, $limit, $where, $sort);
 	}
-	
+
 	/**
-	 * @brief Gets an array of Dataface_RelatedRecords 
+	 * @brief Gets an array of Dataface_RelatedRecords
 	 *
-	 * This is basically a wrapper around the getRelatedRecords method that returns 
+	 * This is basically a wrapper around the getRelatedRecords method that returns
 	 * an array of Dataface_RelatedRecord objects instead of just an array of associative
 	 * arrays.
 	 *
@@ -1196,7 +1228,7 @@ class Dataface_Record {
 	 * @return array Array of Dataface_RelatedRecord objects.
 	 *
 	 * @since 0.5
-	 * 
+	 *
 	 * @see http://xataface.com/documentation/tutorial/getting_started/relationships
 	 * @see http://www.xataface.com/wiki/relationships.ini_file
 	 * @see Dataface_Record::getRelatedRecords()
@@ -1206,17 +1238,17 @@ class Dataface_Record {
 	 */
 	function &getRelatedRecordObjects($relationshipName, $start=null, $end=null,$where=0, $sort=0){
 		$out = array();
-			
+
 		$it = $this->getRelationshipIterator($relationshipName, $start, $end,$where,$sort);
 		while ($it->hasNext() ){
 			$out[] =& $it->next();
 		}
 		return $out;
 	}
-	
-	
+
+
 	/**
-	 * @brief Returns a single Dataface_RelatedRecord object from the relationship 
+	 * @brief Returns a single Dataface_RelatedRecord object from the relationship
 	 * specified by $relationshipName .
 	 *
 	 * @param string $relationshipName The name of the relationship.
@@ -1247,10 +1279,10 @@ class Dataface_Record {
 			return $null;
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * @brief Moves a related record up one in the list.
 	 *
@@ -1271,13 +1303,13 @@ class Dataface_Record {
 	 * @see sortRelationship()
 	 */
 	function moveUp($relationship, $index){
-		
+
 		$r =& $this->_table->getRelationship($relationship);
 		$order_col = $r->getOrderColumn();
 		if ( PEAR::isError($order_col) ) return $order_col;
 		$order_table =& $r->getTable($order_col);
 		if ( PEAR::isError($order_table) ) return $order_table;
-		
+
 		if ( $index == 0 ) return PEAR::raiseError("Cannot move up index 0");
 		$it =& $this->getRelationshipIterator($relationship, $index-1, 2);
 		if ( PEAR::isError($it) ) return $it;
@@ -1287,19 +1319,19 @@ class Dataface_Record {
 				$curr_record =& $it->next();
 			}
 		}
-		
+
 		if ( !isset($prev_record) || !isset($curr_record) ){
 			return PEAR::raiseError('Attempt to move record up in "'.$relationship.'" but the index "'.$index.'" did not exist.');
 		}
-		
+
 		if ( intval($prev_record->val($order_col)) == intval($curr_record->val($order_col)) ){
 			// The relationship's records are not ordered yet (consecutive records should have distinct order values.
 			$res = $this->sortRelationship($relationship);
 			if ( PEAR::isError($res) ) return $res;
 			return $this->moveUp($relationship, $index);
 		}
-		
-		
+
+
 		$prev = $prev_record->toRecord($order_table->tablename);
 		$curr = $curr_record->toRecord($order_table->tablename);
 		$temp = $prev->val($order_col);
@@ -1311,12 +1343,12 @@ class Dataface_Record {
 		if ( PEAR::isError($res) ) return $res;
 		$res = $curr->save();
 		if ( PEAR::isError($res) ) return $res;
-		
+
 		return true;
-		
-		
+
+
 	}
-	
+
 	/**
 	 * @brief Moves a related record down one in the list.
 	 *
@@ -1338,9 +1370,9 @@ class Dataface_Record {
 	function moveDown($relationship, $index){
 		return $this->moveUp($relationship, $index+1);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Sorts the records of this relationship (or just a subset of the
 	 * relationship.
@@ -1354,14 +1386,14 @@ class Dataface_Record {
 		if ( PEAR::isError($order_col) ) return $order_col;
 		$order_table =& $r->getTable($order_col);
 		if ( PEAR::isError($order_table) ) return $order_table;
-		
+
 		// Our strategy for sorting only a subset.
 		// Let R be the list of records in the relationship ordered
 		// using the default order.
 		//
-		// Let A be the list of records in our subset of R using the 
+		// Let A be the list of records in our subset of R using the
 		// default order.
-		// 
+		//
 		// Let b = A[0]
 		// Let a be the predecessor of b.
 		// Let c be the last record in A.
@@ -1373,7 +1405,7 @@ class Dataface_Record {
 		//
 		//  The algorithm we will use to sort our subset is as follows:
 		// 	if ( !exists(a) or ord(a) < ord(b) )
-		//		and 
+		//		and
 		//	( !exists(d) or ord(c) < ord(d) )
 		//		and
 		//	( ord(c) - ord(b) >= count(A) ){
@@ -1381,8 +1413,8 @@ class Dataface_Record {
 		//  } else {
 		//		sort(R)
 		//	}
-		
-		
+
+
 		if ( isset($start) ){
 			// We are dealing with a subset, so let's go through our algorithm
 			// to see if we can get away with only sorting the subset
@@ -1391,33 +1423,33 @@ class Dataface_Record {
 			$countA = count($subset);
 			$B =& $this->getRelatedRecordObjects($relationship, max($start-1,0), $countA+2);
 			$countB = count($B);
-		
-			
+
+
 			if ( $aExists ){
 				$dExists = ( $countB-$countA >=2 );
 			} else {
 				$dExists = ($countB-$countA >= 1);
 			}
-			
-			
+
+
 			$AOffset = 0;
-			if ( $aExists ) $AOffset++; 
-			
-			
+			if ( $aExists ) $AOffset++;
+
+
 			if ( (!$aExists or $B[0 + $AOffset]->val($order_col) > $B[0]->val($order_col) )
 					and
 				 (!$dExists or $B[$countA-1+$AOffset]->val($order_col) < $B[$countB-1]->val($order_col) )
 				 	and
 				 ( ($B[$countA-1+$AOffset]->val($order_col) - $B[0+$AOffset]->val($order_col)) >= ($countA - 1) ) ){
-				 
-				
+
+
 				 $sortIndex = array();
 				 $i = $B[0+$AOffset]->val($order_col);
 				 foreach ($subset as $record){
 				 	$sortIndex[$record->getId()] = $i++;
 				 }
-				 
-				 
+
+
 				 $i0 = $AOffset;
 				 $i1 = $countA+$AOffset;
 				 for ( $i = $i0; $i<$i1; $i++ ){
@@ -1428,14 +1460,14 @@ class Dataface_Record {
 				 $this->clearCache();
 				 return true;
 			}
-			
-			
-			
+
+
+
 		}
-		
+
 		$it = $this->getRelationshipIterator($relationship, 'all');
 		$i = 1;
-		
+
 		while ( $it->hasNext() ){
 			$rec =& $it->next();
 			//$rec->setValue($order_col, $i++);
@@ -1445,24 +1477,24 @@ class Dataface_Record {
 			if ( PEAR::isError($res) ) return $res;
 			unset($rec);
 			unset($orderRecord);
-			
+
 		}
 		$this->clearCache();
-		
+
 	}
-	
+
 	// @}
 	// End Relationships
 	//--------------------------------------------------------------------------------------
-	
+
 	// @{
-	
+
 	/**
 	 * @name Field Values
 	 * Methods for working with field values.
 	 */
-	
-	
+
+
 	/**
 	 * @brief Sets the value of a field.
 	 *
@@ -1473,7 +1505,7 @@ class Dataface_Record {
 	 * @since 0.5
 	 *
 	 * @section Synopsis
-	 * 
+	 *
 	 * This is meant to accept the value in a number of different formats as it will
 	 * first try to parse and normalize the value before storing it.  It normalizes
 	 * it using the Dataface_Table::parse() method.
@@ -1497,15 +1529,15 @@ class Dataface_Record {
 	 * @see removePropertyChangeListener()
 	 */
 	function setValue($key, $value, $index=0){
-		
+
 		$oldValue = $this->getValue($key, $index);
-		
-		
+
+
 		if ( strpos($key, '.')!== false ){
 			throw new Exception("Unsupported operation: setting value on related record.", E_USER_ERROR);
-		
+
 		}
-			
+
 		// This is a local field
 		else {
 			if ( strpos($key, "__") === 0 && $this->useMetaData ){
@@ -1514,58 +1546,57 @@ class Dataface_Record {
 				 */
 				return $this->setMetaDataValue($key, $value);
 			}
-			
+
 			$add=true;
-			
-			 
+
+
 			if ( !array_key_exists($key, $this->_table->fields() ) ){
-				
+
 				if ( array_key_exists($key, $this->_table->transientFields()) ){
-					
+
 					$this->_transientValues[$key] = $value;
 					$add=false;
 					//return;
 				}
-			
+
 				else if ( !array_key_exists($key, $this->_table->graftedFields(false)) ){
 					$parent =& $this->getParentRecord();
-					
+
 					if ( isset($parent) and $parent->_table->hasField($key) ){
-						
+
 						$parent->setValue($key, $value, $index);
-				
+
 					}
 					$add=false;
 				} else {
-					
-					
-					
+
+
+
 					$add=true;
 				}
-				
-			} 
+
+			}
 			if ( $add ){
 				$this->_values[$key] = $this->_table->parse($key, $value);
-				
 				$this->_isLoaded[$key] = true;
 			}
 		}
-		
-		
+
+
 		// now set the flag to indicate that the value has been changed.
-		
+
 		$this->clearCache();
-		
+
 		if ($oldValue != $this->getValue($key, $index) ){
-			
+
 			$this->setFlag($key, $index);
 			if ( $this->vetoSecurity ){
 				$this->vetoFields[$key] = true;
 			}
 			$this->clearCache();
-			
+
 			$this->firePropertyChangeEvent($key, $oldValue, $this->getValue($key,$index));
-			
+
 			// Now we should notify the parent record if this was a key field
 			if ( array_key_exists($key, $this->_table->keys() ) ){
 				if ( !isset($parent) ) $parent =& $this->getParentRecord();
@@ -1573,19 +1604,19 @@ class Dataface_Record {
 					$keys = array_keys($this->_table->keys());
 					$pkeys = array_keys($parent->_table->keys());
 					$key_index = array_search($key, $keys);
-					
+
 					$parent->setValue($pkeys[$key_index], $this->getValue($key, $index));
 				}
 			}
 		}
-		
-		
+
+
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * @brief Sets muliple values at once.
 	 *
@@ -1612,8 +1643,8 @@ class Dataface_Record {
 			}
 		}
 	}
-	
-	
+
+
 	function getVersion(){
 		$versionField = $this->_table->getVersionField();
 		if ( !isset($versionField) ){
@@ -1622,7 +1653,7 @@ class Dataface_Record {
 			return intval($this->val($versionField));
 		}
 	}
-	
+
 	/**
 	 * @brief Gets the value of a field in this record.
 	 *
@@ -1636,7 +1667,7 @@ class Dataface_Record {
 	 *
 	 * @section Synopsis
 	 *
-	 * This method returns the raw data structure of the stored data which could be 
+	 * This method returns the raw data structure of the stored data which could be
 	 * an array, an object, a string, or just about anything.  For varchar fields
 	 * this will generally be a string, but for other field types (e.g. dates) it may
 	 * return an actual data structure.
@@ -1649,12 +1680,12 @@ class Dataface_Record {
 	 *   - minutes
 	 *   - seconds
 	 *
-	 * @attention If you wish to retrieve dates as a string, you should use the 
+	 * @attention If you wish to retrieve dates as a string, you should use the
 	 *	getValueAsString() method instead of this one.
 	 *
 	 * @section Rendering The Field Rendering Pipeline
 	 *
-	 * Dataface_Record provides a number of methods for returning the value of a 
+	 * Dataface_Record provides a number of methods for returning the value of a
 	 * field and each is a little bit different.  The difference between these methods
 	 * is based on the amount of processing that is performed on the value before it
 	 * is returned.
@@ -1662,15 +1693,15 @@ class Dataface_Record {
 	 * The following table summarizes the differences between these methods.
 	 *
 	 * <table>
-	 *		
+	 *
 	 *			<tr>
 	 *				<th>Method</th>
 	 *				<th>Output Type</th>
 	 *				<th>Respects Permissions</th>
 	 *				<th>Valuelist Replacement</th>
 	 *			</tr>
-	 *		
-	 *		
+	 *
+	 *
 	 *			<tr>
 	 *				<td>getValue()</th>
 	 *				<td>Mixed.  (May be a string, number, or data structure).</td>
@@ -1695,14 +1726,14 @@ class Dataface_Record {
 	 *				<td>Yes</td>
 	 *				<td>Yes</td>
 	 *			</tr>
-	 *		
+	 *
 	 *	</table>
 	 *
 	 * @subsection permissions "Respects Permissions"
 	 *
 	 * The "Respects Permissions" column in the above table indicates whether the method will first check the current
 	 * users' permissions before returning the field value.  Notice that the display() method
-	 * respects permissions while the getValueAsString() method does not.  This means that if the current 
+	 * respects permissions while the getValueAsString() method does not.  This means that if the current
 	 * user doesn't have the <em>view</em> permission for the given field it will just return
 	 * "NO ACCESS" (or some other pre-defined value to indicate that the user doesn't have access
 	 * to view the field content.
@@ -1717,7 +1748,7 @@ class Dataface_Record {
 	 * specified by the <em>vocabulary</em> directive.
 	 *
 	 * For example, a table "books" might have an "author_id" field that stores the ID of an
-	 * author record.  The <a href="http://xataface.com/wiki/fields.ini_file">fields.ini file</a> directives for this 
+	 * author record.  The <a href="http://xataface.com/wiki/fields.ini_file">fields.ini file</a> directives for this
 	 * field might look something like:
 	 *
 	 * @code
@@ -1737,29 +1768,29 @@ class Dataface_Record {
 	 * @section containerFields Container Fields
 	 *
 	 * getValue() will simply return the name of the file that is stored in <em>container</em> fields.  It doesn't
-	 * actually load the value of the field.  
+	 * actually load the value of the field.
 	 *
 	 * @subsection containerFieldsURL Getting the URL for a File in a <em>container</em> Field
-	 * 
+	 *
 	 * The display() method will return the URL to the file in a <em>container</em> field.
 	 *
 	 * @subsection containerFieldsPath Getting the Path to a File in a <em>container</em> Field
-	 * 
+	 *
 	 * The getContainerSource() method will return the path to the file in a <em>container</em> field.
 	 *
 	 * @subsection moreOnContainers More Information about Container Fields
-	 * 
+	 *
 	 * See <a href="http://xataface.com/documentation/how-to/how-to-handle-file-uploads">How to Handle File Uploads</a> (Tutorial)
-	 * 
+	 *
 	 * @section blobFields Blob Fields
-	 * 
-	 * getValue() will return an empty string for blob fields as Xataface knows not to 
+	 *
+	 * getValue() will return an empty string for blob fields as Xataface knows not to
 	 * load blob fields into memory.  The only exception to this rule is when you want to
 	 * save data to a blob field and have previously performed a setValue() call on the
 	 * blob field with the blob data.
 	 *
 	 * @subsection blobFieldURLs Getting the URL for the File in a <em>blob</em> Field
-	 * 
+	 *
 	 * The display() method will return the URL to download the file that is stored
 	 * in a blob field.
 	 *
@@ -1767,7 +1798,7 @@ class Dataface_Record {
 	 * @section dateFields Date Fields
 	 *
 	 * getValue() will return a data structure for date, datetime, time, and timestamp fields.
-	 * This can often be more difficult to deal with when performing PHP date and time 
+	 * This can often be more difficult to deal with when performing PHP date and time
 	 * operations, so you may want to use getValueAsString() instead when working with
 	 * date fields.  getValueAsString() will return a string representation of the date
 	 * in MySQL format (e.g. YYYY-mm-dd HH:MM:SS)
@@ -1784,7 +1815,7 @@ class Dataface_Record {
 	 *
 	 * // Get the title of the second book in the record's 'books' relationship.
 	 * $record->getValue('books.title',1);
-	 * 
+	 *
 	 * // Get the title of the first book in the record's 'books' relationship
 	 * // that was published in 1988
 	 * $record->getValue('books.title', 0, "year=1988");
@@ -1794,7 +1825,7 @@ class Dataface_Record {
 	 * $record->getValue('books.title', 0, 0, 'year asc');
 	 *
 	 * @endcode
-	 * 
+	 *
 	 * @see val()
 	 * @see value()
 	 * @see getValueAsString()
@@ -1813,9 +1844,9 @@ class Dataface_Record {
 		if ( isset($this->cache[__FUNCTION__][$fieldname][$index][$where][$sort]) ){
 			return $this->cache[__FUNCTION__][$fieldname][$index][$where][$sort];
 		}
-		
-		
-		
+
+
+
 		if ( is_array($index) ){
 			throw new Exception(
 				df_translate(
@@ -1837,11 +1868,11 @@ class Dataface_Record {
 					"In Dataface_Record.getValue() expected 4th parameter to be a string but received array."
 					), E_USER_ERROR);
 		}
-		
+
 		$out = null;
 		if ( strpos($fieldname,'.') === false ){
 			$delegate =& $this->_delegate;
-			
+
 			if ( !isset( $this->_values[$fieldname] ) ) {
 				// The field is not set... check if there is a calculated field we can use.
 				if ( $delegate !== null and method_exists($delegate, "field__$fieldname")){
@@ -1860,8 +1891,8 @@ class Dataface_Record {
 						$relKeys =& $currRelationship->keys();
 						//print_r(array_keys($currRelationship->keys()));
 						foreach ($rrecords as $rrecord){
-							$row = $rrecord->strvals();
-							
+							$row = $rrecord->vals();
+
 							foreach ( array_keys($row) as $row_field ){
 								$ptable =& $rrecord->_relationship->getTable($row_field);
 								$precord =& $rrecord->toRecord($ptable->tablename);
@@ -1872,7 +1903,7 @@ class Dataface_Record {
 								unset($ptable);
 							}
 							$row['__id__'] = $rrecord->getId();
-							
+
 							$out[] = $row;
 							unset($rrecord);
 							unset($row);
@@ -1888,13 +1919,13 @@ class Dataface_Record {
 						foreach ($rrecords as $rrecord){
 							$row = $rrecord->strvals();
 							$domRec = $rrecord->toRecord();
-							
+
 							$rowstr = array();
 							foreach (array_keys($domRec->_table->keys()) as $relKey){
 								$rowStr[] = urlencode($relKey).'='.urlencode($row[$relKey]);
 							}
 							$out[] = implode('&',$rowStr);
-							
+
 							unset($rowStr, $domRec);
 							unset($rrecord);
 							unset($row);
@@ -1904,7 +1935,7 @@ class Dataface_Record {
 						unset($rrecords);
 						$this->_transientValues[$fieldname] = $out;
 					} else {
-						
+
 						if ( isset($delegate) and  method_exists($delegate, $fieldname.'__init') ){
 							$methodname = $fieldname.'__init';
 							$out = $delegate->$methodname($this);
@@ -1912,7 +1943,7 @@ class Dataface_Record {
 								$this->_transientValues[$fieldname] = $out;
 							}
 						}
-						
+
 						if ( !isset($out) ){
 							$methodname = 'initTransientField';
 							$app = Dataface_Application::getInstance();
@@ -1923,34 +1954,34 @@ class Dataface_Record {
 									$this->_transientValues[$fieldname] = $out;
 								}
 							}
-							
-						
+
+
 						}
-						
+
 						if ( !isset($out) ){
 							$event = new StdClass;
 							$event->record = $this;
 							$event->field = $transientFields[$fieldname];
 							$out = null;
-							
-							
+
+
 							$app = Dataface_Application::getInstance();
 							$app->fireEvent('initTransientField', $event);
-							
-							
+
+
 							$out = @$event->out;
 							if ( isset($out) ){
 								$this->_transientValues[$fieldname] = $out;
 							}
 						}
-							
-						
-						
+
+
+
 						$out = null;
 					}
-					
+
 				} else if ( ( $parent =& $this->getParentRecord() ) and $parent->_table->hasField($fieldname) ){
-				
+
 					return $parent->getValue($fieldname,$index,$where,$sort,$debug);
 				} else {
 					$this->_values[$fieldname] = null;
@@ -1960,7 +1991,7 @@ class Dataface_Record {
 				$out = $this->_values[$fieldname];
 			}
 			if ( isset($out) ){
-				// We only store non-null values in cache.  We were having problems 
+				// We only store non-null values in cache.  We were having problems
 				// with segfaulting in PHP5 when groups are used.
 				// This seems to fix the issue, but let's revisit it later.
 				$this->cache[strval(__FUNCTION__)][strval($fieldname)][$index][$where][$sort] = $out;
@@ -1968,28 +1999,28 @@ class Dataface_Record {
 			return $out;
 		} else {
 			list($relationship, $fieldname) = explode('.', $fieldname);
-			
+
 			$rec =& $this->getRelatedRecords($relationship, false, $index, 1, $where, $sort);
 			$this->cache[__FUNCTION__][$relationship.'.'.$fieldname][$index][$where][$sort] =& $rec[$fieldname];
 			return $rec[$fieldname];
-			
-			
+
+
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * @brief Alias for getValue()
-	 * 
+	 *
 	 * @see getValue()
 	 */
 	function &value($fieldname, $index=0, $where=0, $sort=0){
 		$val =& $this->getValue($fieldname, $index,$where, $sort);
 		return $val;
 	}
-	
+
 	/**
 	 * @brief Alias for getValue()
 	 * @see getValue()
@@ -1998,10 +2029,10 @@ class Dataface_Record {
 		$val =& $this->getValue($fieldname, $index, $where, $sort);
 		return $val;
 	}
-	
+
 	/**
 	 * @brief Gets the values of this Record in an associative array. [Field names] -> [Field values].
-	 * 
+	 *
 	 * @section Examples
 	 *
 	 * @subsection example1 Example 1: All Fields
@@ -2014,7 +2045,7 @@ class Dataface_Record {
 	 *     echo "Field name: ".$key." : Field value: ".$val."\n";
 	 * }
 	 * @endcode
-	 * 
+	 *
 	 * Output would be something like:
 	 * @code
 	 * Field name: name : Field value: Steve
@@ -2035,7 +2066,7 @@ class Dataface_Record {
 	 *
 	 *
 	 * @subsection example2 Example 2: Only Some Fields
-	 * 
+	 *
 	 * @code
 	 * // Only retrieve the name and age fields.
 	 * $vals = $record->getValues(array('name','age'));
@@ -2050,8 +2081,8 @@ class Dataface_Record {
 	 * Field name: age : Field value: 27
 	 * @endcode
 	 *
-	 * 
-	 * 
+	 *
+	 *
 	 * @param array $fields Array of column names that we wish to retrieve.  If this parameter is omitted, all of the fields are returned.
 	 * @param int $index If we are returning related fields, then this is the index of the record
 	 *		whose values should be returned.
@@ -2074,20 +2105,20 @@ class Dataface_Record {
 		foreach ($fields as $field){
 			$values[$field] =& $this->getValue($field, $index, $where, $sort);
 		}
-			
+
 		return $values;
 	}
-	
+
 	/**
 	 * @brief Alias for getValues()
-	 * 
+	 *
 	 * @see getValues()
 	 */
 	function &values($fields = null, $index=0, $where=0, $sort=0){
 		$vals =& $this->getValues($fields, $index, $where, $sort);
 		return $vals;
 	}
-	
+
 	/**
 	 * @brief Alias for getValues()
 	 * @see getValues()
@@ -2096,24 +2127,24 @@ class Dataface_Record {
 		$vals =& $this->getValues($fields, $index, $where, $sort);
 		return $vals;
 	}
-	
+
 	/**
-	 * @brief Gets the values of a field as a string.  
-	 * 
+	 * @brief Gets the values of a field as a string.
+	 *
 	 * @param string $fieldname The name of the field whose value we want to retrieve.
 	 * @param int $index For related fields, the index of the record within the related list whose
 	 *		field value we wish to retrieve.
 	 * @param string $where Where clause used to filter related list if retrieving a related
 	 *	 field.
 	 * @param string $sort A sort clause used to sort the related list if retrieving a related field.
-	 * 
+	 *
 	 * @return string The stringified value stored in the record at the specified field.
 	 *
 	 * @section Synopsis
 	 *
-	 * 
+	 *
 	 * This method is a wrapper for the getValue() method.  It converts values to strings
-	 * before returning them.  This is helpful for fields that store structures (e.g. 
+	 * before returning them.  This is helpful for fields that store structures (e.g.
 	 * date fields.
 	 *
 	 * @section Examples
@@ -2121,8 +2152,8 @@ class Dataface_Record {
 	 * @code
 	 * $record->val('person_id');  // returns integer.
 	 * $record->getValueAsString('person_id');  // returns string representation of integer
-	 * $record->val('date_posted');  
-	 *     // returns something like 
+	 * $record->val('date_posted');
+	 *     // returns something like
 	 *     // array('year'=>2010, 'month'=>10, 'day'=>2, 'hours'=>9, 'minutes'=>23, 'seconds'=>5);
 	 * $record->getValueAsString('date_posted');
 	 *     // returns something like 2010-10-2 09:23:05
@@ -2130,10 +2161,10 @@ class Dataface_Record {
 	 *
 	 * @section differences getValueAsString() vs display() and getValue()
 	 *
-	 * Dataface_Record provides a sort of display stack with 4 main types of output.  The stack 
+	 * Dataface_Record provides a sort of display stack with 4 main types of output.  The stack
 	 * looks like:
 	 *
-	 * htmlValue()  which wraps display() which wraps getValueAsString() which wraps getValue(). 
+	 * htmlValue()  which wraps display() which wraps getValueAsString() which wraps getValue().
 	 * For a description of the differences between these methods, see getValue()
 	 *
 	 * @section overriding Overriding the String Representation of a Field
@@ -2158,7 +2189,7 @@ class Dataface_Record {
 	 * @subsection warning1 Warning 1: Output in Edit Form
 	 *
 	 * @attention Be careful when overriding the string representation of a field in this way as it affects every time
-	 *  the field value is loaded as a string, including in an edit record form.  If you simply want to 
+	 *  the field value is loaded as a string, including in an edit record form.  If you simply want to
 	 *	change the way a field value is displayed in the list or details view, it is much better
 	 *  to instead override the output of the display() method via the fieldname__display() delegate class method
 	 *  which is not used for displaying a field's value in a form widget.
@@ -2166,10 +2197,10 @@ class Dataface_Record {
 	 * @subsection warning2 Warning 2: Implement fieldname__parse()
 	 *
 	 * @attention When implementing the fieldname__toString() delegate class method, you should
-	 *  almost always implement a complementary fieldname__parse() delegate class method to 
-	 *  perform the reverse operation.  This will allow you to remove any extra decoration 
+	 *  almost always implement a complementary fieldname__parse() delegate class method to
+	 *  perform the reverse operation.  This will allow you to remove any extra decoration
 	 *  that has been added when calling the setValue() method.
-	 * 
+	 *
 	 * @subsection warning3 Warning 3: Use fieldname__display() instead
 	 *
 	 * @attention Don't implement the fieldname__toString() method unless you really know what
@@ -2185,34 +2216,34 @@ class Dataface_Record {
 	 */
 	function getValueAsString($fieldname, $index=0, $where=0, $sort=0){
 		//return $this->_table->getValueAsString($fieldname, $this->getValue($fieldname), $index);
-		
+
 		$value = $this->getValue($fieldname, $index, $where, $sort);
-		
-		
+
+
 		$table =& $this->_table->getTableTableForField($fieldname);
 		$delegate =& $table->getDelegate();
 		$rel_fieldname = $table->relativeFieldName($fieldname);
 		if ( $delegate !== null and method_exists( $delegate, $rel_fieldname.'__toString') ){
 			$methodname = $rel_fieldname.'__toString';
 			$value = $delegate->$methodname($value); //call_user_func( array(&$delegate, $rel_fieldname.'__toString'), $value);
-		} else 
-		
-		
+		} else
+
+
 		if ( !is_scalar($value) ){
 			$methodname = $this->_table->getType($fieldname)."_to_string";
 			if ( method_exists( $this->_table, $methodname) ){
-				
+
 				$value = $this->_table->$methodname($value); //call_user_func( array( &$this->_table, $this->_table->getType($fieldname)."_to_string"), $value );
 			} else {
 				$value = $this->array2string($value);
-				
+
 			}
 		}
-		
+
 		else if ( ( $parent =& $this->getParentRecord() ) and $parent->_table->hasField($fieldname) ){
 			return $parent->getValueAsString($fieldname, $index, $where, $sort);
 		}
-		
+
 		$evt = new stdClass;
 		$evt->table = $table;
 		$evt->field =& $table->getField($rel_fieldname);
@@ -2220,10 +2251,10 @@ class Dataface_Record {
 		$evt->type = $table->getType($rel_fieldname);
 		$table->app->fireEvent('after_getValueAsString', $evt);
 		$value = $evt->value;
-		
+
 		return $value;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -2239,8 +2270,8 @@ class Dataface_Record {
 		}
 		return '';
 	}
-	
-	
+
+
 	/**
 	 * @brief Gets the values stored in this table as an associative array.  The values
 	 * are all returned as strings.
@@ -2276,31 +2307,31 @@ class Dataface_Record {
 		}
 		return $values;
 	}
-	
+
 	/**
 	 * @brief Alias for getValuesAsStrings()
 	 */
 	function strvals($fields='', $index=0, $where=0, $sort=0){
 		return $this->getValuesAsStrings($fields, $index, $where, $sort);
 	}
-	
-	
+
+
 	/**
 	 * @brief Alias for getValueAsString()
 	 */
 	function strval($fieldname, $index=0, $where=0, $sort=0){
 		return $this->getValueAsString($fieldname, $index, $where, $sort);
 	}
-	
-	
+
+
 	/**
 	* @brief Alias for getValueAsString()
 	*/
 	function stringValue($fieldname, $index=0, $where=0, $sort=0){
 		return $this->getValueAsString($fieldname, $index, $where, $sort);
 	}
-	
-	
+
+
 	/**
 	 * @brief Returns the value of a field except it is serialzed to be instered into a database.
 	 *
@@ -2312,23 +2343,23 @@ class Dataface_Record {
 	 * @return string The field value exactly as it would be placed into an SQL query.
 	 *
 	 * @since 0.5
-	 * 
+	 *
 	 * @see Dataface_Serializer
 	 */
 	function getSerializedValue($fieldname, $index=0, $where=0, $sort=0){
 		$s = $this->_table->getSerializer();
 		return $s->serialize($fieldname, $this->getValue($fieldname, 0, $where, $sort));
-	
+
 	}
-	
-	
+
+
 	/**
 	 * @brief Returns a the value of a field in a meaningful state so that it can be displayed.
 	 *
 	 * @param string $fieldname The name of the field to return.
 	 * @param int $index For related fields indicates the index within the related list of the record to retrieve.
 	 * @param string $where Optional where clause to filter related list when retrieving a related field.
-	 * @param string $sort Optional sort clause when retrieving a related field.  Used to sort related list before 
+	 * @param string $sort Optional sort clause when retrieving a related field.  Used to sort related list before
 	 *  selecting the related record from which the value is to be returned.
 	 * @param boolean $urlencode Optional parameter to urlencode the output.
 	 * @return string The displayable result.
@@ -2336,12 +2367,12 @@ class Dataface_Record {
 	 * @since 0.5
 	 *
 	 * @section Synopsis
-	 * 
+	 *
 	 * This method is similar to getValueAsString() except that this goes a step further and resolves
-	 * references. For example, some fields may store an integer that represents the id for a related 
-	 * record in another table.  If a vocabulary is assigned to that field that defines the meanings for 
+	 * references. For example, some fields may store an integer that represents the id for a related
+	 * record in another table.  If a vocabulary is assigned to that field that defines the meanings for
 	 * the integers, then this method will return the resolved vocabulary rather than the integer itself.</p>
-	 * 
+	 *
 	 * @section Examples
 	 * @code
 	 * // Column definitions:
@@ -2356,7 +2387,7 @@ class Dataface_Record {
 	 * @section Permissions
 	 *
 	 * The display() method, unlike the getValueAsString() method, respects permissions which
-	 * means that if the current user doesn't have <em>view</em> permission granted on the 
+	 * means that if the current user doesn't have <em>view</em> permission granted on the
 	 * record, it will simply return 'NO ACCESS' (or some other configurable string to indicate
 	 * that the user has no access to view this field.
 	 *
@@ -2369,7 +2400,7 @@ class Dataface_Record {
 	 *     function sin__permissions($record){
 	 *         return array('view'=>0);
 	 *	   }
-	 *     
+	 *
 	 *     function name__permissions($record){
 	 *         return array('view'=>1);
 	 *     }
@@ -2388,7 +2419,7 @@ class Dataface_Record {
 	 *
 	 * // We have full permission to the 'name' field so we can always get the value
 	 * echo $record->display('name'); // 'tom'
-	 * 
+	 *
 	 * // We don't have view permission for the 'sin' field so display() will return no access
 	 * echo $record->display('sin'); // 'NO ACCESS'
 	 *
@@ -2401,16 +2432,16 @@ class Dataface_Record {
 	 * echo $record->display('sin'); // '123456789'
 	 *
 	 * @endcode
-	 * 
+	 *
 	 * The above example shows how the display() method respects permissions whereas the
 	 * getValueAsString() method does not.  For more information about the different
 	 * field rendering methods and their differences see the documentation for the getValue()
 	 * method.
 	 *
 	 * @subsection DisablingPerms Disregarding Permissions
-	 * 
+	 *
 	 * If you want to use the output of display() and don't want to be limited by the user's actual permissions
-	 * to see the field content, you can turn secure display off on the record by setting the 
+	 * to see the field content, you can turn secure display off on the record by setting the
 	 * secureDisplay flag to false.
 	 *
 	 * @code
@@ -2426,13 +2457,13 @@ class Dataface_Record {
 	 *    $record1, $record2, $record3
 	 * );
 	 * df_secure($records, false);  // disregard security
-	 * 
+	 *
 	 * $record1->secureDisplay; // false
 	 * $record2->secureDisplay; // false
 	 * $record3->secureDisplay; // false
 	 *
 	 * df_secure($records, true); // re-enable security
-	 * 
+	 *
 	 * $record1->secureDisplay; // true
 	 * $record2->secureDisplay; // true
 	 * $record3->secureDisplay; // true
@@ -2441,7 +2472,7 @@ class Dataface_Record {
 	 * @subsection OverrideNoaccess Overriding 'NO ACCESS' Text
 	 *
 	 * If you call display() on a field for which the user does not have the 'view' permission
-	 * it simply returns the string 'NO ACCESS'.  You can, however, override this string by 
+	 * it simply returns the string 'NO ACCESS'.  You can, however, override this string by
 	 * 	implementing the no_access_text() method in the table's delegate class.
 	 *
 	 * e.g.
@@ -2455,12 +2486,12 @@ class Dataface_Record {
 	 * @section Overriding Overriding the Display Method
 	 *
 	 * Since the display() method is used by Xataface for most field display in the Xataface
-	 * application, it is often desirable to override its output on particular fields to 
+	 * application, it is often desirable to override its output on particular fields to
 	 * improve usability of the application.
 	 *
 	 * For example you may want to store prices as simple decimal numbers, want them to be displayed
 	 * formatted in the local currency.  In this case you can implement the fieldname__display()
-	 * method in the table's delegate class. 
+	 * method in the table's delegate class.
 	 *
 	 * e.g.
 	 * tables/products/products.php
@@ -2513,12 +2544,12 @@ class Dataface_Record {
 			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 			return $out;
 		}
-		
-		
-	
+
+
+
 		$table =&  $this->_table->getTableTableForField($fieldname);
-		
-		
+
+
 		$delegate =& $this->_table->getDelegate();
 		if ( $delegate !== null and method_exists( $delegate, $fieldname."__display") ){
 			$methodname = $fieldname."__display";
@@ -2526,12 +2557,12 @@ class Dataface_Record {
 			//$out = call_user_func(array(&$delegate, $fieldname."__display"), $this);
 			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 			return $out;
-			
+
 		}
-		
+
 		$field =& $this->_table->getField($fieldname);
 		if ( $this->_table->isBlob($fieldname) or ($this->_table->isContainer($fieldname) and @$field['secure'])  ){
-			
+
 			unset($table);
 			$table =& Dataface_Table::loadTable($field['tablename']);
 			$keys = array_keys($table->keys());
@@ -2543,7 +2574,7 @@ class Dataface_Record {
 			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 			return $out;
 		}
-		
+
 		else if ( $this->_table->isContainer($fieldname) ){
 			$field =& $this->_table->getField($fieldname);
 			$strvl=$this->strval($fieldname,$index,$where,$sort);
@@ -2558,17 +2589,17 @@ class Dataface_Record {
 			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 			return $out;
 		}
-		
+
 		else { //if ( !$this->_table->isBlob($fieldname) ){
-		
+
 			$field =& $this->_table->getField($fieldname);
-			
-			
+
+
 			if ( PEAR::isError($field) ){
 				$field->addUserInfo("Failed to get field '$fieldname' while trying to display its value in Record::display()");
 				return $field;
-				
-				
+
+
 			}
 			$vocab = $field['vocabulary'];
 			if ( $vocab ){
@@ -2590,7 +2621,7 @@ class Dataface_Record {
 					$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 					return $out;
 				}
-				
+
 				//else if ( isset( $valuelist[$value]) ){
 				else {
 					if ( is_array($value) ) $value = $this->strval($fieldname, $index, $where, $sort);
@@ -2609,22 +2640,22 @@ class Dataface_Record {
 					} else {
 						return $value;
 					}
-				} 
+				}
 			} else {
 				$parent =& $this->getParentRecord();
-				
-				
-				
+
+
+
 				if ( isset($parent) and $parent->_table->hasField($fieldname) ){
-					
+
 					return $parent->display($this->_table->getDisplayField($fieldname), $index, $where, $sort);
 				}
 				$out = $this->getValueAsString($this->_table->getDisplayField($fieldname), $index, $where, $sort);
-				
-				
+
+
 				$out = $table->format($fieldname, $out);
-				
-				
+
+
 				// Let's pass the value through an event filter to give modules
 				// a crack at the final output.
 				$evt = new stdClass;
@@ -2633,32 +2664,32 @@ class Dataface_Record {
 				$evt->value = $out;
 				$table->app->fireEvent('Record::display', $evt);
 				$out = $evt->value;
-				
-				
-				
+
+
+
 				$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 				return $out;
 			}
-		
-		
+
+
 			//return $this->_table->display($fieldname, $this->getValue($fieldname, $index));
-		} 
-				
-				
+		}
+
+
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * @brief Returns an HTML-friendly value of a field.
 	 *
 	 * @param string $fieldname The name of the field to return.
 	 * @param int $index For related fields indicates the index within the related list of the record to retrieve.
 	 * @param string $where Optional where clause to filter related list when retrieving a related field.
-	 * @param string $sort Optional sort clause when retrieving a related field.  Used to sort related list before 
+	 * @param string $sort Optional sort clause when retrieving a related field.  Used to sort related list before
 	 *  selecting the related record from which the value is to be returned.
-	 * @param array $params Optional additional parameters to customize the HTML output.  This may be passed to 
+	 * @param array $params Optional additional parameters to customize the HTML output.  This may be passed to
 	 *		include HTML attributes width and height to blob fields containing an image.
 	 *
 	 * @return string The HTML string result.
@@ -2666,7 +2697,7 @@ class Dataface_Record {
 	 * @since 0.5
 	 *
 	 * @section Synopsis
-	 * 
+	 *
 	 * This method sits above "display" on the output stack for a field.
 	 * I.e. it wraps display() and adds some extra filtering to make the
 	 * output directly appropriate to be displayed as HTML.  In text fields
@@ -2674,19 +2705,19 @@ class Dataface_Record {
 	 * either the full a-href tag or img tag depending on the type of content that
 	 * is stored.
 	 *
-	 * 
+	 *
 	 * @see display()
 	 * @see getValue()
 	 * @see getValueAsString()
-	 * 
+	 *
 	 */
 	function htmlValue($fieldname, $index=0, $where=0, $sort=0,$params=array()){
 		$recid = $this->getId();
 		$uri = $recid.'#'.$fieldname;
 		$domid = $uri.'-'.rand();
-		
-		
-		
+
+
+
 		$delegate =& $this->_table->getDelegate();
 		if ( isset($delegate) && method_exists($delegate, $fieldname.'__htmlValue') ){
 			$methodname = $fieldname.'__htmlValue';
@@ -2697,7 +2728,7 @@ class Dataface_Record {
 			}
 			return $res;
 		}
-                
+
                 $event = new StdClass;
                 $event->record = $this;
                 $event->fieldname = $fieldname;
@@ -2706,16 +2737,16 @@ class Dataface_Record {
                 $event->sort = $sort;
                 $event->params = $params;
                 $event->out = null;
-                
+
                 Dataface_Application::getInstance()->fireEvent('Dataface_Record__htmlValue', $event);
                 if ( isset($event->out) ){
                     return $event->out;
                 }
-                
+
 		$parent =& $this->getParentRecord();
 		if ( isset($parent) and $parent->_table->hasField($fieldname) ){
 			return $parent->htmlValue($fieldname, $index, $where, $sort, $params);
-		}	
+		}
 		$val = $this->display($fieldname, $index, $where, $sort);
                 $strval = $this->strval($fieldname, $index, $where, $sort);
 		$field = $this->_table->getField($fieldname);
@@ -2732,11 +2763,11 @@ class Dataface_Record {
 				return '<a href="'.df_escape($link).'">'.$val.'</a>';
 			}
 		}
-		
-		
+
+
 		//if ( $field['widget']['type'] != 'htmlarea' ) $val = htmlentities($val,ENT_COMPAT, 'UTF-8');
 		//if ( $this->_table->isText($fieldname) and $field['widget']['type'] != 'htmlarea' and $field['contenttype'] != 'text/html' ) $val = nl2br($val);
-		
+
 		if ( $this->_table->isBlob($fieldname) or $this->_table->isContainer($fieldname) ){
 			if ( $this->getLength($fieldname, $index,$where,$sort) > 0 ){
 				if ( $this->isImage($fieldname, $index, $where, $sort) ){
@@ -2770,12 +2801,12 @@ class Dataface_Record {
 			$val = '<span id="'.df_escape($domid).'" df:id="'.df_escape($uri).'" class="df__editable">'.$val.'</span>';
 		}
 		return $val;
-		
-	
-	
+
+
+
 	}
-	
-	
+
+
 	/**
 	 * @brief Returns a preview of a field.  A preview is a shortened version of the text of a field
 	 * with all html tags stripped out.
@@ -2784,9 +2815,9 @@ class Dataface_Record {
 	 * @param $index The index of the field (for related field only).
 	 * @param $maxlength The number of characters for the preview.
 	 * @param string $where Optional where clause to filter related list when retrieving a related field.
-	 * @param string $sort Optional sort clause when retrieving a related field.  Used to sort related list before 
-	 * 
-	 * 
+	 * @param string $sort Optional sort clause when retrieving a related field.  Used to sort related list before
+	 *
+	 *
 	 * @return string The preview of the field value
 	 * @since 0.6
 	 *
@@ -2795,7 +2826,7 @@ class Dataface_Record {
 	 *
 	 */
 	function preview($fieldname, $index=0, $maxlength=255, $where=0, $sort=0){
-		
+
 		$strval = strip_tags($this->display($fieldname,$index, $where, $sort));
 		$field =& $this->table()->getField($fieldname);
 		if ( $field['Type'] == 'container' ){
@@ -2807,9 +2838,9 @@ class Dataface_Record {
 		}
 		$out = html_entity_decode($out, ENT_COMPAT, Dataface_Application::getInstance()->_conf['oe']);
 		return $out;
-		
+
 	}
-	
+
 	/**
 	 * @brief Returns the URL to a thumbnail of the image stored in a field.
 	 *
@@ -2840,9 +2871,9 @@ class Dataface_Record {
 		else $out .= '&';
 		$out .= $params;
 		return $out;
-	
+
 	}
-	
+
 	/**
 	 * @brief Alias for display()
 	 * @deprecated
@@ -2851,7 +2882,7 @@ class Dataface_Record {
 	function printValue($fieldname, $index=0, $where=0, $sort=0 ){
 		return $this->display($fieldname, $index, $where, $sort);
 	}
-	
+
 	/**
 	 * @brief Alias of display()
 	 * @deprecated
@@ -2860,7 +2891,7 @@ class Dataface_Record {
 	function printval($fieldname, $index=0, $where=0, $sort=0){
 		return $this->display($fieldname, $index, $where, $sort);
 	}
-	
+
 	/**
 	 * @brief Alias of  display()
 	 * @deprecated
@@ -2869,7 +2900,7 @@ class Dataface_Record {
 	function q($fieldname, $index=0, $where=0, $sort=0){
 		return $this->display($fieldname, $index, $where, $sort);
 	}
-	
+
 	/**
 	 * @brief Alias of htmlValue()
 	 * @deprecated
@@ -2879,9 +2910,9 @@ class Dataface_Record {
 	function qq($fieldname, $index=0, $where=0, $sort=0){
 		return $this->htmlValue($fieldname, $index, $where, $sort);
 	}
-	
+
 	/**
-	 * @brief Indicates whether a field exists in the table. 
+	 * @brief Indicates whether a field exists in the table.
 	 *
 	 * @attention This method has an extremely confusing name as it doesn't actually check
 	 *  to see if the field has a value.  It just checks if there is a place for the value
@@ -2898,10 +2929,10 @@ class Dataface_Record {
 	function hasValue($fieldname){
 		return (isset( $this->_values) and array_key_exists($fieldname, $this->_values) );
 	}
-	
-	
+
+
 	/**
-	 * @brief Returns associative array of the record's values where the keys are the 
+	 * @brief Returns associative array of the record's values where the keys are the
 	 * absolute field paths including the table name (using dot notation).
 	 *
 	 * @return array Associative array mapping absolute field names to their values.
@@ -2910,7 +2941,7 @@ class Dataface_Record {
 	 *
 	 * @section Synopsis
 	 *
-	 * This method is very similar to getValues() except that the array keys are the 
+	 * This method is very similar to getValues() except that the array keys are the
 	 * absolute field name (including the table name) instead of just the field name.
 	 *
 	 * Eg.
@@ -2938,9 +2969,9 @@ class Dataface_Record {
 		}
 		return $absValues;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @brief Returns the full path to the  file contained in a container field.
 	 *
@@ -2948,11 +2979,11 @@ class Dataface_Record {
 	 * @return string The path to the file in the container field or null if field is empty.
 	 *
 	 * @since 1.0
-	 * 
+	 *
 	 * @section Synopsis
-	 * 
+	 *
 	 * Since container fields only store the filename of the stored file, and doesn't store
-	 * the full path to the directory that contains the file, loading the file requires 
+	 * the full path to the directory that contains the file, loading the file requires
 	 * more than just a call to getValue().  This method bridges the gap by returning the
 	 * full filesystem path to where the file is stored.
 	 *
@@ -2971,26 +3002,26 @@ class Dataface_Record {
 		}
 		$field =& $this->_table->getField($fieldname);
 		return $field['savepath'].'/'.$filename;
-	
+
 	}
 
-	
+
 	/**
-	 * @brief Sets the value of a metadata field.  
+	 * @brief Sets the value of a metadata field.
 	 *
 	 * @param string $key The field key.
 	 * @param mixed $value The value to store
 	 *
 	 * @since 0.5
 	 *
-	 * Metadata fields are fields that store supplementary information for other fields.   
-	 * E.g. If you have a container field, you probably have other fields to store the 
+	 * Metadata fields are fields that store supplementary information for other fields.
+	 * E.g. If you have a container field, you probably have other fields to store the
 	 * mimetype of the file.  This is also used to store the lengths of all field
 	 * data that is loaded.
 	 *
 	 * @see getLength()
 	 *
-	 */  
+	 */
 	function setMetaDataValue($key, $value){
 		if ( !isset( $this->_metaDataValues ) ) $this->_metaDataValues = array();
 		$this->_metaDataValues[$key] = $value;
@@ -2999,13 +3030,13 @@ class Dataface_Record {
 			$parent->setMetaDataValue($key, $value);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	/**
 	 * @brief Clears all fields in this record.
 	 *
@@ -3015,16 +3046,16 @@ class Dataface_Record {
 		$this->_values = array();
 		$this->_relatedValues = array();
 		$this->_valCache = array();
-		
+
 		$this->clearFlags();
-		
+
 		$parent =& $this->getParentRecord();
 		if ( isset($parent) ){
 			$parent->clearValues();
 		}
-	
+
 	}
-	
+
 	/**
 	 * @brief Clears the value in a field.
 	 *
@@ -3033,29 +3064,29 @@ class Dataface_Record {
 	 *
 	 */
 	function clearValue($field){
-		
+
 		unset($this->_values[$field]);
 		$this->clearFlag($field);
-		
+
 		$parent =& $this->getParentRecord();
 		if ( isset($parent) ){
 			$parent->clearValue();
 		}
 	}
-	
-	
-	
+
+
+
 	// @}
 	// End Field Values Methods
 	//-------------------------------------------------------------------------------
-	
-	
+
+
 	// @{
 	/**
 	 * @name Property Change Events
 	 */
-	
-	
+
+
 	/**
 	 * @brief Adds a listener to be notified when field values are changed.
 	 *
@@ -3063,17 +3094,17 @@ class Dataface_Record {
 	 * @param Object &$listener The listener to register to receive notifications.
 	 *
 	 * @section Synopsis
-	 * 
+	 *
 	 * Any object implementing the informal PropertyChangeListener interface
 	 * may be added as a listener to receive notifications of changes to field
 	 * values.  This this interface dictates only that a a method with the
 	 * following signature is implemented:
 	 *
 	 * @code
-	 * function propertyChanged( 
-	 *                Dataface_Record $source, 
-	 *                string $field, 
-	 *                mixed $oldValue, 
+	 * function propertyChanged(
+	 *                Dataface_Record $source,
+	 *                string $field,
+	 *                mixed $oldValue,
 	 *                mixed $newValue
 	 *           );
 	 * @endcode
@@ -3087,9 +3118,9 @@ class Dataface_Record {
 	function addPropertyChangeListener($key, &$listener){
 		$this->propertyChangeListeners[$key][] = &$listener;
 	}
-	
+
 	/**
-	 * @brief Removes a listener from the list of objects to be notified when 
+	 * @brief Removes a listener from the list of objects to be notified when
 	 * changes are made on a particular field.
 	 *
 	 * @param string $key The name of the field that was changed.
@@ -3111,11 +3142,11 @@ class Dataface_Record {
 			}
 		}
 	}
-	
+
 	/**
 	 * @brief Fires a property change event to all listeners registered to be notifed
 	 * of changes to the specified field.
-	 * 
+	 *
 	 * @param string $key The name of the field that was changed.
 	 * @param mixed $oldValue The old value of the field.
 	 * @param mixed $newValue The new value of the field.
@@ -3134,13 +3165,13 @@ class Dataface_Record {
 			if ( !isset($this->propertyChangeListeners[$key] ) ) continue;
 			foreach ( array_keys($this->propertyChangeListeners[$key]) as $lkey){
 				$this->propertyChangeListeners[$key][$lkey]->propertyChanged($this,$origKey, $oldValue, $newValue);
-				
+
 			}
 		}
-		
-		
+
+
 	}
-	
+
 	/**
 	 * @brief This method is to implement the PropertyChangeListener interface.  This method
 	 * will be called whenever a change is made to the parent record's primary
@@ -3152,7 +3183,7 @@ class Dataface_Record {
 	 * @param mixed $newValue The new value.
 	 *
 	 * @since 1.2
-	 * 
+	 *
 	 * @see addPropertyChangeListener()
 	 * @see removePropertyChangeListener()
 	 * @see firePropertyChangeEvent()
@@ -3165,57 +3196,57 @@ class Dataface_Record {
 			$pkey_names = array_keys($pkeys);
 			$okeys = $this->_table->keys();
 			$okey_names = array_keys($okeys);
-			
+
 			if ( !array_key_exists($key, $pkeys) ) return false;
 				// The field that was changed was not a key so we don't care
-				
+
 			$key_index = array_search($key, $pkey_names);
 			if ( $key_index === false ) throw new Exception("An error occurred trying to find the index of the parent's key.  This is a code error that should be fixded by the developer.", E_USER_ERROR);
-			
-			
+
+
 			if ( !isset($okey_names[$key_index]) )
 				throw new Exception("Attempt to keep the current record in sync with its parent but they seem to have a different number of primary keys.  To use Dataface inheritance, tables must have a corresponding primary key.", E_USER_ERROR);
-			
-			
+
+
 			$this->setValue( $okey_names[$key_index], $newValue);
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	// @}
 	// END Property Change Events
 	//-------------------------------------------------------------------------------------
-	
+
 	// @{
 	/**
 	 * @name Tab Management
 	 */
-	
+
 	/**
-	 * @brief Returns a join record for the given table.  
+	 * @brief Returns a join record for the given table.
 	 *
 	 * @param string $tablename The name of the table from which the join record
 	 * 				should be drawn.
-	 * @param boolean $nullIfNotFound If set, then this will return null if no join 
+	 * @param boolean $nullIfNotFound If set, then this will return null if no join
 	 *		record yet exists in the database.  Added in Xataface 2.0
 	 *
-	 * @return Dataface_Record Join record from the specified join table or 
+	 * @return Dataface_Record Join record from the specified join table or
 	 * 			a new record with the correct primary key values if none exists.
 	 *
 	 * @return PEAR_Error If the specified table in incompatible.
 	 * @since 0.8
 	 *
 	 * @section Synopsis
-	 * 
-	 * A join record is one that contains auxiliary data for the current record.  
-	 * It is specified by the [__join__] section of the fields.ini file or the __join__() 
+	 *
+	 * A join record is one that contains auxiliary data for the current record.
+	 * It is specified by the [__join__] section of the fields.ini file or the __join__()
 	 * method of the delegate class.
 	 *
 	 * It is much like a one-to-one relationship.  The key difference
-	 * between a join record and a related record is that a join record 
-	 * is assumed to be one-to-one, and an extra tab is added to the edit form 
+	 * between a join record and a related record is that a join record
+	 * is assumed to be one-to-one, and an extra tab is added to the edit form
 	 * to edit a join record.
 	 *
 	 *
@@ -3226,7 +3257,7 @@ class Dataface_Record {
 		foreach ( $query as $key=>$val ){
 			$query[$key] = '='.$val;
 		}
-		
+
 		$record = df_get_record($tablename, $query);
 		if ( !$record ){
 			if ( $nullIfNotFound ) return null;
@@ -3237,10 +3268,10 @@ class Dataface_Record {
 			}
 		}
 		return $record;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * @brief Gets the keys that are necessary to exist in a join record for the given
 	 * table.
@@ -3268,22 +3299,22 @@ class Dataface_Record {
 	function getJoinKeys($tablename){
 		$table =& Dataface_Table::loadTable($tablename);
 		$query = array();
-		
+
 		$pkeys1 = array_keys($this->_table->keys());
 		$pkeys2 = array_keys($table->keys());
-		
+
 		if ( count($pkeys1) != count($pkeys2) ){
 			return PEAR::raiseError("Attempt to get join record [".$this->_table->tablename."] -> [".$table->tablename."] but they have a different number of columns as primary key.");
 		}
-		
+
 		for ($i =0; $i<count($pkeys1); $i++ ){
 			$query[$pkeys2[$i]] = $this->strval($pkeys1[$i]);
 		}
-		
+
 		return $query;
-	
+
 	}
-	
+
 	/**
 	 * @brief Returns the list of tabs that are to be used in the edit form for this record.
 	 *
@@ -3295,21 +3326,21 @@ class Dataface_Record {
 	function tabs(){
 		return $this->_table->tabs($this);
 	}
-	
+
 	// @}
 	// END TAB Management
-	
-	
+
+
 	//---------------------------------------------------------------------------
 	// @{
 	/**
 	* @name Permissions
 	* Methods that deal with the record permissions.
 	*/
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * @brief Returns an array of the roles assigned to the current user with respect
 	 * to this record.
@@ -3328,9 +3359,9 @@ class Dataface_Record {
 	 */
 	function getRoles($params=array()){
 		return $this->_table->getRoles($this, $params);
-		
+
 	}
-	
+
 	/**
 	 * @brief Returns permissions as specified by the current users' roles.  This differs
 	 * from getPermissions() in that getPermissions() allows the possibility of
@@ -3340,11 +3371,11 @@ class Dataface_Record {
 	function getRolePermissions($params=array()){
 		return $this->_table->getRolePermissions($this, $params);
 	}
-	
-	
+
+
 	/**
 	 * Gets the permissions associated witha  field.  Permissions are returned
-	 * as an associative array whose keys are the permissions names, where a 
+	 * as an associative array whose keys are the permissions names, where a
 	 * permission is granted only if a key by its name exists and evaluates to
 	 * true.
 	 * @param array $params (Optional) Associative array with keys to target the method toward a particular field or relationship.  The possible keys are as follows:
@@ -3383,7 +3414,7 @@ class Dataface_Record {
 	 *		<td> Dataface_PermissionsTool::ALL() </td>
 	 *		<td> Returns associative array with all permissions granted. </td>
 	 *  </tr>
-	 *  
+	 *
 	 *  <tr>
 	 *		<td>Dataface_PermissionsTool::NO_ACCESS()</td>
 	 *		<td>Returns associative array with all permissions explicitly denied.</td>
@@ -3408,7 +3439,7 @@ class Dataface_Record {
 	 * The following flowchart shows the flow of control Xataface uses to determine the
 	 * record-level permissions for a record.  (<a href="http://media.weblite.ca/files/photos/Xataface_Permissions_Flowchart.png" target="_blank">click here to enlarge</a>):
 	 * <img src="http://media.weblite.ca/files/photos/Xataface_Permissions_Flowchart.png?max_width=640"/>
-	 * 
+	 *
 	 *
 	 * The following flowchart shows the flow of control Xataface uses to determine the field-level permissions for a field in a record.
 	 *
@@ -3431,7 +3462,7 @@ class Dataface_Record {
 		$params['record'] =& $this;
 		return $this->_table->getPermissions($params);
 	}
-	
+
 	/**
 	 * @brief Checks to see is a particular permission is granted in this record.
 	 *
@@ -3445,15 +3476,15 @@ class Dataface_Record {
 		$perms = $this->getPermissions($params);
 		return ( isset($perms[$perm]) and $perms[$perm] );
 	}
-	
-	
-	
+
+
+
 	// @}
 	// END Permissions
 	//----------------------------------------------------------------------------------
-	
+
 	/**
-	 * @brief Validates a value against a field name.  Returns true if the value is a valid 
+	 * @brief Validates a value against a field name.  Returns true if the value is a valid
 	 * value to be stored in the field.
 	 *
 	 * This method will always return true.  The Delegate class can be used to override
@@ -3470,7 +3501,7 @@ class Dataface_Record {
 	 *     echo "Message was ".$params['message'];
 	 * }
 	 * @endcode
-	 * 
+	 *
 	 * @return boolean True if the value is valid.  False otherwise.
 	 *
 	 * @see DelegateClass::fieldname__validate()
@@ -3484,14 +3515,14 @@ class Dataface_Record {
 		//else {
 		//	$params = array();
 		//}
-		
+
 		if ( !is_array($params) ){
 			$params = array('message'=> &$params);
 		}
 		$res = $this->_table->validate($fieldname, $value, $params);
-		
+
 		$field =& $this->_table->getField($fieldname);
-		
+
 		if ( $field['widget']['type'] == 'file' and @$field['validators']['required'] and is_array($value) and $this->getLength($fieldname) == 0 and !is_uploaded_file(@$value['tmp_name'])){
 				// This bit of validation operates on the upload values assuming the file was just uploaded as a form.  It assumes
 				// that $value is of the form
@@ -3518,26 +3549,26 @@ class Dataface_Record {
 				$res = $delegate->$methodname($this,$value,$params);
 				//$res = call_user_func(array(&$delegate, $fieldname."__validate"), $this, $value, $params);
 			}
-			
-			
+
+
 		}
-		
+
 		if ($res){
 			$parent =& $this->getParentRecord();
 			if ( isset($parent) and $parent->_table->hasField($fieldname) ){
 				$res = $parent->validate($fieldname, $value, $params);
 			}
 		}
-		
+
 		return $res;
-		
-		
+
+
 	}
-	
+
 
 	/**
-	 * @brief Obtains a reference to the Dataface_Record object that holds the parent 
-	 * of this record (in terms of table heirarchy).  
+	 * @brief Obtains a reference to the Dataface_Record object that holds the parent
+	 * of this record (in terms of table heirarchy).
 	 *
 	 * Tables can extend other tables using the __isa__ property of the fields.ini
 	 * file.
@@ -3554,20 +3585,20 @@ class Dataface_Record {
 				foreach ( array_keys($parent->keys()) as $key ){
 					$this->_parentRecord->addPropertyChangeListener( $key, $this);
 				}
-			}	
+			}
 		}
 		return $this->_parentRecord;
-	
+
 	}
-	
-	
+
+
 	//------------------------------------------------------------------------------------
-	// @{ 
+	// @{
 	/**
 	 * @name transactions Transaction Support
 	 */
-	
-	
+
+
 	/**
 	 * @brief Signifies that we are beginning a transaction.  So a snapshot of the values
 	 * can be saved and possibly be later reverted.
@@ -3577,7 +3608,7 @@ class Dataface_Record {
 	 * @see clearFlags()
 	 */
 	function setSnapshot(){
-		 
+
 		$this->clearFlags();
 		if ( isset($this->_values) ){
 			// If there are no values, then we don't need to set the snapshot
@@ -3587,14 +3618,14 @@ class Dataface_Record {
 		if ( isset($parent) ){
 			$parent->setSnapshot();
 		}
-		
+
 		return $this;
-		
+
 	}
-	
+
 	/**
 	 * @brief Indicates whether a snapshot of values exists.
-	 * 
+	 *
 	 * @return boolean True if a snapshot has been created.
 	 *
 	 * @see setSnapshot()
@@ -3603,14 +3634,14 @@ class Dataface_Record {
 	function snapshotExists(){
 		return (is_array($this->_oldValues) and count($this->_oldValues) > 0);
 	}
-	
+
 	/**
-	 * @brief Clears a snapshot of values.  Note that for an update to take place 
-	 * properly, a snapshot should be obtained before any changes are made to the 
+	 * @brief Clears a snapshot of values.  Note that for an update to take place
+	 * properly, a snapshot should be obtained before any changes are made to the
 	 * Table schema.
 	 *
 	 * @return Dataface_Record Self for chaining.
-	 * 
+	 *
 	 */
 	function clearSnapshot(){
 		$this->_oldValues = null;
@@ -3620,7 +3651,7 @@ class Dataface_Record {
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * @brief Returns the snapshot values for this table.  These are copies of the values
 	 * as they appeared the last time a snapshot was taken.
@@ -3638,13 +3669,13 @@ class Dataface_Record {
 					$out[$field] = $this->_oldValues[$field];
 				}
 			}
-			
+
 			return $out;
 		} else {
 			return $this->_oldValues;
 		}
 	}
-	
+
 	/**
 	 * @brief Returns snapshots of only the primary key fields in this record.
 	 * @return array Associative array of snapshot values of the primary key fields.
@@ -3656,7 +3687,7 @@ class Dataface_Record {
 	function snapshotKeys(){
 		return $this->getSnapshot(array_keys($this->_table->keys()));
 	}
-	
+
 	/**
 	 * @brief Indicates whether a value in the record has been updated since the flags have been cleared.
 	 * @param string $fieldname The name of the field we are checking
@@ -3672,13 +3703,13 @@ class Dataface_Record {
 		if ( strpos($fieldname, '.') !== false ){
 			// This is a related field, so we have to check the relationship for dirty flags
 			$path = explode('.', $fieldname);
-			
+
 			if ( is_array($index) ){
 				$index = $this->getRelatedIndex($index);
 			}
-			
-			return (isset( $this->_relatedDirtyFlags[$path[0]]) and 
-					isset( $this->_relatedDirtyFlags[$path[0]][$path[1]]) and 
+
+			return (isset( $this->_relatedDirtyFlags[$path[0]]) and
+					isset( $this->_relatedDirtyFlags[$path[0]][$path[1]]) and
 					$this->_relatedDirtyFlags[$path[0]][$path[1]] === true );
 		} else {
 			// this is a local related field... just check the local dirty flags array.
@@ -3691,8 +3722,8 @@ class Dataface_Record {
 			return (@$this->_dirtyFlags[$fieldname]);
 		}
 	}
-	
-	
+
+
 	/**
 	 * @brief Boolean indicator to see whether the record has been changed since its flags were last cleared.
 	 *
@@ -3709,22 +3740,22 @@ class Dataface_Record {
 				if ( $res ) return true;
 			}
 		}
-		
+
 		$fields =& $this->_table->fields();
 		foreach ( array_keys( $fields) as $fieldname){
 			if ( $this->valueChanged($fieldname) ) return true;
 		}
 		return false;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @brief Clears all of the dirty flags to indicate that this record is up to date.
 	 * @return Dataface_Record Self for chaining.
 	 *
 	 * @see clearSnapshot()
-	 * 
+	 *
 	 */
 	function clearFlags(){
 		$keys = array_keys($this->_dirtyFlags);
@@ -3737,18 +3768,18 @@ class Dataface_Record {
 				$this->_relatedDirtyFlags[$rel_name][$field_name] = false;
 			}
 		}
-		
+
 		// Clear the snapshot of old values.
 		$this->clearSnapshot();
-		
+
 		$parent =& $this->getParentRecord();
 		if ( isset($parent) ){
 			$parent->clearFlags();
 		}
 		return $this;
-		
+
 	}
-	
+
 	/**
 	 * Clears the dirty flag on a particular field.
 	 *
@@ -3764,7 +3795,7 @@ class Dataface_Record {
 		if ( strpos($name, '.') !== false ){
 			// This is a related field.  We store dirty flags in the relationship array.
 			$path = explode('.', $name);
-			
+
 			if ( !isset($this->_relatedDirtyFlags[$path[0]]) ){
 				return;
 			}
@@ -3773,7 +3804,7 @@ class Dataface_Record {
 			}
 			$this->_relatedDirtyFlags[$path[0]][$path[1]] = false;
 		} else {
-			
+
 			$this->_dirtyFlags[$name] = false;
 			$this->vetoFields[$name] = false;
 			$parent =& $this->getParentRecord();
@@ -3781,11 +3812,11 @@ class Dataface_Record {
 				$parent->clearFlag($name);
 			}
 		}
-		
+
 		return $this;
 	}
-		
-	
+
+
 	/**
 	 * @brief Sets a dirty flag on a field to indicate that it has been changed.
 	 *
@@ -3801,8 +3832,8 @@ class Dataface_Record {
 		if ( strpos($fieldname, '.') !== false ){
 			// This is a related field.  We store dirty flags in the relationship array.
 			$path = explode('.', $fieldname);
-			
-			
+
+
 			if ( !isset($this->_relatedDirtyFlags[$path[0]]) ){
 				$this->_relatedDirtyFlags[$path[0]] = array();
 			}
@@ -3816,11 +3847,11 @@ class Dataface_Record {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @brief Boolean value indicating if a particular field is loaded.
-	 * 
+	 *
 	 * @param string $fieldname The name of the field to check.
 	 * @return boolean True if the field is loaded. False otherwise.
 	 *
@@ -3832,12 +3863,12 @@ class Dataface_Record {
 		}
 		return ( isset( $this->_isLoaded[$fieldname] ) and $this->_isLoaded[$fieldname]);
 	}
-	
-	
+
+
 	// @}
-	// END OF TRANSACTIONS 
+	// END OF TRANSACTIONS
 	//-----------------------------------------------------------------------------------------
-		
+
 	/**
 	 * @brief Sometimes a link is specified to be associated with a field.  These links
 	 * will be displayed on the forms next to the associated field.
@@ -3847,7 +3878,7 @@ class Dataface_Record {
 	 * @deprecated See Dataface_Record::getLink()
 	 */
 	function getLink($fieldname){
-		
+
 		$field =& $this->_table->getField($fieldname);
 		if ( PEAR::isError($field) ){
 			return null;
@@ -3855,54 +3886,54 @@ class Dataface_Record {
 		$table =& Dataface_Table::loadTable($field['tablename']);
 		$delegate =& $table->getDelegate();
 		if ( !$table->hasField($fieldname) ) return null;
-		
-		
-		
+
+
+
 		// Case 1: Delegate is defined -- we use the delegate's link
 		if ( method_exists($delegate, $fieldname."__link") ){
 			$methodname = $fieldname."__link";
 			$link = $delegate->$methodname($this);
 			//$link = call_user_func(array(&$delegate, $fieldname."__link"), $this);
-			
-		
+
+
 		// Case 2: The link was specified in an ini file.
 		} else if ( isset($field['link']) ){
-			
+
 			$link = $field['link'];
-			
+
 		// Case 3: The link was not specified
 		} else {
-			
+
 			$link = null;
 		}
-		
-		
+
+
 		if ( is_array($link) ){
 			foreach ( array_keys($link) as $key){
 				$link[$key] = $this->parseString($link[$key]);
 			}
-			
-			
+
+
 			return $link;
-			
+
 		} else if ( $link  ){
 			return $this->parseString($link);
 		} else {
-			
+
 			return null;
 		}
-	
+
 	}
-	
+
 	//-----------------------------------------------------------------------------------
 	// @{
 	/**
 	* @name Record Metadata
 	*/
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * @private
 	 */
@@ -3921,7 +3952,7 @@ class Dataface_Record {
 		}
 		return $temp2;
 	}
-	
+
 	/**
 	 * @brief Returns the title of this particular record.
 	 *
@@ -3956,7 +3987,7 @@ class Dataface_Record {
 	 * @endcode
 	 *
 	 * If no title column has been explicitly assigned, the first_name field
-	 * will be treated as the source of the title because it is the first 
+	 * will be treated as the source of the title because it is the first
 	 * varchar field.
 	 *
 	 * e.g.
@@ -3967,7 +3998,7 @@ class Dataface_Record {
 	 * ));
 	 *
 	 * echo $record->getTitle(); // 'Steve'
-	 * 
+	 *
 	 * // Without guessing
 	 * $title = $record->getTitle(); // null
 	 * echo isset($title) ? 'Yes':'No'; // 'No'
@@ -3996,7 +4027,7 @@ class Dataface_Record {
 	 * ));
 	 *
 	 * echo $record->getTitle(); // 'Steve Hannah'
-	 * 
+	 *
 	 * // Without guessing
 	 * $title = $record->getTitle(); // 'Steve Hannah'
 	 * echo isset($title) ? 'Yes':'No'; // 'Yes'
@@ -4011,26 +4042,26 @@ class Dataface_Record {
 			$delegate =& $this->_table->getDelegate();
 			$title = null;
 			if ( $delegate !== null and method_exists($delegate, 'getTitle') ){
-				
+
 				$title = $delegate->getTitle($this);
 			} else {
-			
+
 				$parent =& $this->getParentRecord();
 				if ( isset($parent) ){
 					$title = $parent->getTitle(true);
 				}
 			}
-			
+
 			if ( $dontGuess ){
 				if ( isset($title) ) $this->_title = $title;
 				return $title;
 			}
-			
-			if ( !isset($title) ){	
+
+			if ( !isset($title) ){
 				$fields =& $this->_table->fields();
 				$found_title = false; // flag to specify that a specific title field has been found
 									  // declared by the 'title' flag in the fields.ini file.
-									  
+
 				foreach (array_keys($fields) as $field_name){
 				    $field =& $fields[$field_name];
                     if ( isset($field['title']) ){
@@ -4046,25 +4077,25 @@ class Dataface_Record {
 					unset($field);
 					if ( $found_title) break;
 				}
-				
+
 				if ( !isset( $title) ){
                                         $titleStr = "Untitled %s Record";
-                                        $title = sprintf(df_translate('Untitled table record', $titleStr), 
+                                        $title = sprintf(df_translate('Untitled table record', $titleStr),
                                                 $this->_table->getLabel());
 					//$title = "Untitled ".$this->_table->getLabel()." Record";
 				}
-				
+
 			}
 			$this->_title = $title;
 		}
-		
+
 		return $this->_title;
-		
-	
+
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @brief Returns a brief description of the record for use in listings and summaries.
 	 *
@@ -4074,14 +4105,14 @@ class Dataface_Record {
 	 *
 	 * @section Synopsis
 	 *
-	 * This method first checks to see if a getDescription() method has been explicitly 
+	 * This method first checks to see if a getDescription() method has been explicitly
 	 * defined in the delegate class and returns its result if found.  If none is found
-	 * it will try to guess which field is meant to be used as a description based on 
+	 * it will try to guess which field is meant to be used as a description based on
 	 * various heuristics.  Usually it will just use the first TEXT field it finds and
 	 * treat that as a description.
 	 *
 	 * This method is used throughout Xataface, most notably at the top of the details
-	 * view (just below the title) where it displays what is intended to be a record 
+	 * view (just below the title) where it displays what is intended to be a record
 	 * summary.
 	 *
 	 * @see http://www.xataface.com/wiki/Delegate_class_methods
@@ -4096,9 +4127,9 @@ class Dataface_Record {
 		} else {
 			return '';
 		}
-	
+
 	}
-	
+
 	/**
 	 * @brief Returns a Unix timestamp representing the date/time that this record was
 	 * created.
@@ -4107,7 +4138,7 @@ class Dataface_Record {
 	 * @since 0.9
 	 *
 	 * @section Synopsis
-	 * 
+	 *
 	 * This method will first check to see if the delegate class defines a method named
 	 * getCreated() and return its value.  Failing that, it will try to guess which field
 	 * holds the creation date based on various heuristics.  These heuristics involve
@@ -4128,14 +4159,14 @@ class Dataface_Record {
 			if ( strcasecmp($this->_table->getType($createdField),'timestamp') === 0 ){
 				$date = $this->val($createdField);
 				return strtotime($date['year'].'-'.$date['month'].'-'.$date['day'].' '.$date['hours'].':'.$date['minutes'].':'.$date['seconds']);
-				
+
 			}
 			return strtotime($this->display($createdField));
 		} else {
 			return '';
 		}
 	}
-	
+
 	/**
 	 * @brief Returns the name of the person who created this record (i.e. the author).
 	 *
@@ -4143,11 +4174,11 @@ class Dataface_Record {
 	 * @since 0.9
 	 *
 	 * @section Synopsis
-	 * 
+	 *
 	 * This method will first check to see if the delegate class implements a method named
-	 * getCreator() and return its result.  Otherwise it will try to guess which field 
-	 * contains the creator/author information for this record based on heuristics 
-	 * (handled by the Dataface_Table::getCreatorField() method).  If it 
+	 * getCreator() and return its result.  Otherwise it will try to guess which field
+	 * contains the creator/author information for this record based on heuristics
+	 * (handled by the Dataface_Table::getCreatorField() method).  If it
 	 * cannot find any appropriate field, it will simply return ''.
 	 *
 	 * This method is used throughout Xataface to display the author of various records.
@@ -4166,8 +4197,8 @@ class Dataface_Record {
 			return '';
 		}
 	}
-	
-	
+
+
 	/**
 	 * @brief Returns the last modified time of the record.
 	 *
@@ -4178,8 +4209,8 @@ class Dataface_Record {
 	 * @section Synopsis
 	 *
 	 * This method will first check to see if the delegate class implements a method
-	 * named getLastModified() and return its result.  If none can be found it will 
-	 * attempt to guess which field is used to store the last modified date 
+	 * named getLastModified() and return its result.  If none can be found it will
+	 * attempt to guess which field is used to store the last modified date
 	 * (based on the Dataface_Table::getLastUpdatedField() method).  Otherwise it will
 	 * simply return 0.
 	 *
@@ -4196,14 +4227,14 @@ class Dataface_Record {
 			if ( strcasecmp($this->_table->getType($lastModifiedField),'timestamp') === 0 ){
 				$date = $this->val($lastModifiedField);
 				return strtotime($date['year'].'-'.$date['month'].'-'.$date['day'].' '.$date['hours'].':'.$date['minutes'].':'.$date['seconds']);
-				
+
 			}
 			$strtime = $this->strval($lastModifiedField);
 			if ( $strtime){
 				return strtotime($strtime);
-			} 
-		} 
-		
+			}
+		}
+
 		if ( !isset($this->pouch['__mtime']) ){
 			$sql = "select mtime from dataface__record_mtimes where recordhash='".addslashes(md5($this->getId()))."'";
 			try {
@@ -4223,9 +4254,9 @@ class Dataface_Record {
 		}
 		return $this->pouch['__mtime'];
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @brief Returns the "body" of a record.
 	 *
@@ -4258,23 +4289,23 @@ class Dataface_Record {
 			return '';
 		}
 	}
-	
+
 	/**
 	 * @brief Returns the "public" URL to the record.
 	 *
-	 * @param array $params Supplementary parameters that can be 
+	 * @param array $params Supplementary parameters that can be
 	 *  passed through to getURL().
 	 * @return string The "public" URL to the record.
 	 *
 	 * @section Synopsis
 	 *
-	 * It is often the case that a record may be the subject of a public facing 
-	 * page on a website and you want to be able to associate the record with 
-	 * this page.  The getURL() method will generally return a URL to the record's 
+	 * It is often the case that a record may be the subject of a public facing
+	 * page on a website and you want to be able to associate the record with
+	 * this page.  The getURL() method will generally return a URL to the record's
 	 * details view in the back end.  This method, by contrast, is meant to allow you
 	 * to link to the public page that features the record.
 	 *
-	 * This method will first attempt to call the getPublicLink() method defined in 
+	 * This method will first attempt to call the getPublicLink() method defined in
 	 * the delegate class.  If one cannot be found, it will simply call getURL().
 	 *
 	 * So, in essence, this method is just a wrapper around the getURL() method that
@@ -4285,7 +4316,7 @@ class Dataface_Record {
 	 *
 	 * Most of the Xataface interface uses the getURL() method directly for linking to records.
 	 * However there are some parts, which are meant for public consumption, that use the
-	 * getPublicLink() method by default.  This includes the RSS feeds and the full-text site 
+	 * getPublicLink() method by default.  This includes the RSS feeds and the full-text site
 	 * search.
 	 *
 	 * @section Example
@@ -4314,23 +4345,23 @@ class Dataface_Record {
 	 * @see http://www.xataface.com/wiki/Delegate_class_methods
 	 * @see http://xataface.com/documentation/tutorial/getting_started/delegate_classes
 	 * @see getURL()
-	 */ 
+	 */
 	function getPublicLink($params=null){
 		if ( $res = $this->callDelegateFunction('getPublicLink') ){
 			return $res;
 		} else {
 			return $this->getURL($params);
 		}
-	
+
 	}
-	
-	
+
+
 	/**
 	 * @brief Returns an array of parts of the bread-crumbs leading to this record.
 	 *
 	 * @return array Associative array of the form [Part Label]->[Part URL]
 	 * @since 0.6
-	 * 
+	 *
 	 * @section Synopsis
 	 *
 	 * Breadcrumbs are used to display the navigational heirarchy for a record.  This method
@@ -4344,7 +4375,7 @@ class Dataface_Record {
 	 * some default breadcrumbs involving only the table name and the 'browse' action.
 	 *
 	 * @section Examples
-	 * 
+	 *
 	 * Building breadcrumbs string:
 	 *
 	 * @code
@@ -4365,32 +4396,32 @@ class Dataface_Record {
 		if ( $delegate !== null and method_exists($delegate, 'getBreadCrumbs') ){
 			return $delegate->getBreadCrumbs($this);
 		}
-		
-		
+
+
 		if ( ( $parent = $this->getParent() ) !== null ){
 			$bc = $parent->getBreadCrumbs();
 			$bc[$this->getTitle()] = $this->getURL( array('-action'=>'browse'));
 			return $bc;
 		}
-		
-		
+
+
 		return array(
-			$this->_table->getLabel() => Dataface_LinkTool::buildLink(array('-action'=>'list', '-table'=>$this->_table->tablename)), 
+			$this->_table->getLabel() => Dataface_LinkTool::buildLink(array('-action'=>'list', '-table'=>$this->_table->tablename)),
 			$this->getTitle() => $this->getURL(array('-action'=>'browse'))
 			);
 	}
-	
+
 	/**
 	 * @brief Returns the URL to this record.
 	 *
-	 * @param mixed $params An array or urlencode string of parameters to use when 
-	 * building the url.  e.g., array('-action'=>'edit') would cause the URL to be 
+	 * @param mixed $params An array or urlencode string of parameters to use when
+	 * building the url.  e.g., array('-action'=>'edit') would cause the URL to be
 	 * for editing this record.
 	 *
 	 * @return string The URL to the record.
 	 *
 	 * @since 0.5
-	 * 
+	 *
 	 * @section Examples
 	 *
 	 * @code
@@ -4402,7 +4433,7 @@ class Dataface_Record {
 	 *     '-action'=>'my_custom_action'
 	 * ));
 	 *     // index.php?-table=people&-action=my_custom_action&person_id=10
-	 * 
+	 *
 	 * // Using urlencoded string parameters instead
 	 * echo $record->getURL('-action=my_custom_action');
 	 *     // index.php?-table=people&-action=my_custom_action&person_id=10
@@ -4412,13 +4443,13 @@ class Dataface_Record {
 	 * @section Permissions
 	 *
 	 * If secureDisplay is set to true in this record and the 'link' permission
-	 * is denied to the current user, this method will look for the delegate 
+	 * is denied to the current user, this method will look for the delegate
 	 * class's no_access_link() methood to override its output. If the method hasn't
 	 * been defined, or the link permission is granted, or secureDisplay is set to false
 	 * this method will simply return its normal result.
 	 *
 	 * @subsection Example
-	 * 
+	 *
 	 * A delegate class which denies the 'link' permission and defines
 	 * the no_access_link() method.
 	 *
@@ -4464,9 +4495,9 @@ class Dataface_Record {
 			$del =& $this->_table->getDelegate();
 			if ( $del and method_exists($del, 'no_access_link')){
 				return $del->no_access_link($this, $params);
-			} 
+			}
 		}
-		
+
 		$params['-table'] = $this->_table->tablename;
 		if ( !isset($params['-action']) ) $params['-action'] = 'browse';
 		foreach (array_keys($this->_table->keys()) as $key){
@@ -4477,14 +4508,14 @@ class Dataface_Record {
 			$res = $delegate->getURL($this, $params);
 			if ( $res and is_string($res) ) return $res;
 		}
-		
+
 		import('Dataface/LinkTool.php');
 		//$linkTool =& Dataface_LinkTool::getInstance();
-	
+
 		return Dataface_LinkTool::buildLink($params ,false);
 	}
-	
-	
+
+
 	/**
 	 * This returns a unique id to this record.  It is in a format similar to a url:
 	 * table?key1=value1&key2=value2
@@ -4498,18 +4529,18 @@ class Dataface_Record {
 		}
 		return $this->_table->tablename.'?'.implode('&',$params);
 	}
-	
-	
+
+
 	// @}
 	// END Record Metadata
 	//--------------------------------------------------------------------------------------
-	
-	
+
+
 	// @{
 	/**
 	 * @name Field Metadata
 	 */
-	 
+
 	/**
 	 * @brief Gets the mimetime of a blob or container field.
 	 *
@@ -4526,7 +4557,7 @@ class Dataface_Record {
 		if ( isset($field['mimetype'])  and strlen($field['mimetype']) > 0 ){
 			return $this->getValue($field['mimetype'], $index,$where,$sort);
 		}
-		
+
 		if ( $this->_table->isContainer($fieldname) ){
 			$filename = $this->strval($fieldname,$index,$where,$sort);
 			if ( strlen($filename) > 0 ){
@@ -4539,20 +4570,20 @@ class Dataface_Record {
 					$res = finfo_open(FILEINFO_MIME); /* return mime type ala mimetype extension */
 					$mimetype = finfo_file($res, $path);
 				} else if (function_exists('mime_content_type')) {
-					
-				
+
+
 					$mimetype = mime_content_type($path);
-					
+
 				}
-				
-				
+
+
 				return $mimetype;
 			}
 		}
 		return '';
-		
+
 	}
-	 
+
 	/**
 	 * @brief Checks to see if a container or blob field contains an image.
 	 *
@@ -4568,10 +4599,10 @@ class Dataface_Record {
 	 */
 	function isImage($fieldname, $index=0, $where=0, $sort=0){
 		return preg_match('/^image/', $this->getMimetype($fieldname,$index,$where,$sort));
-	
+
 	}
-	 
-	 
+
+
 	/**
 	 * @brief Gets the length of the value in a particular field.  This can be especially
 	 * useful for blob and longtext fields that aren't loaded into memory.  It allows
@@ -4588,7 +4619,7 @@ class Dataface_Record {
 	 */
 	function getLength($fieldname, $index=0, $where=0, $sort=0){
 		if ( strpos($fieldname, '.') !== false ){
-			
+
 			list($relname, $localfieldname) = explode('.',$fieldname);
 			$record =& $this->getRelatedRecords($relname, false, $index, null, $where, $sort);
 			$relatedRecord = new Dataface_RelatedRecord($this, $relname,$record);
@@ -4608,14 +4639,14 @@ class Dataface_Record {
 				return strlen($this->getValueAsString($fieldname));
 			}
 		}
-		
+
 	}
-	
+
         /**
          * @brief Gets the group role metadata for this record as an Object.
          * @return \StdClass An object tree that contains all of the role
          * assignments of this record for each user and group.
-         * 
+         *
          * The structure would be something like:
          * <code>
          * Object(
@@ -4629,7 +4660,7 @@ class Dataface_Record {
          *          57 => Array('ROLE3, 'ROLE5', etc...),
          *          etc...
          *      )
-         * ) 
+         * )
          * </code>
          *
          * @deprecated
@@ -4637,12 +4668,12 @@ class Dataface_Record {
         function getGroupRoleMetadata(){
             $perms = $this->_metaDataValues['__roles__'];
 	    if ( !trim($perms) ){
-	        
+
 	        return null;
 	    }
             return json_decode($perms);
         }
-        
+
         /**
          * @brief Gets the roles that are assigned to the currently logged-in
          * user using the group_permissions module.
@@ -4653,7 +4684,7 @@ class Dataface_Record {
 	    if ( isset($this->pouch['__roles__']) ){
 	        return $this->pouch['__roles__'];
 	    }
-	    
+
 	    if ( !$this->table()->hasField('__roles__') ){
 	        return null;
 	    }
@@ -4662,31 +4693,31 @@ class Dataface_Record {
 	        $this->pouch['__roles__'] = array();
 	        return null;
 	    }
-	    
+
 	    $perms = json_decode($perms);
 	    if ( !$perms ){
 	        $this->pouch['__roles__'] = array();
 	        return null;
 	    }
-	    
+
 	    if ( !class_exists('Dataface_AuthenticationTool') ){
 	        $this->pouch['__roles__'] = array();
 	        return null;
 	    }
 
 	    $authTool = Dataface_AuthenticationTool::getInstance();
-	    
-	    
+
+
 	    // Todo get user groups
 	    $groups = $authTool->getUserGroupNames();
-	        
+
 	    $userName = $authTool->getLoggedInUserName();
 	    if (!$userName ){
 	        $userName = 'Anonymous';
 	    }
-	    
+
 	    $roles = array();
-	    
+
 	    foreach ( $groups as $group ){
 	        if ( isset($perms->groups) and is_array(@$perms->groups->{$group}) ){
 	            foreach ( $perms->groups->{$group} as $groupRole){
@@ -4694,7 +4725,7 @@ class Dataface_Record {
 	            }
 	        }
 	    }
-	    
+
 	    if ( isset($perms->users) and is_array(@$perms->users->{$userName}) ){
 	        foreach ( $perms->users->{$userName}  as $userRole ){
 	            $roles[] = $userRole;
@@ -4702,30 +4733,30 @@ class Dataface_Record {
 	    }
 	    $this->pouch['__roles__'] = $roles;
 	    return $roles;
-	    
+
 	}
-	 
-	 
+
+
 	 // @}
 	 // END Field Metadata
 	 //--------------------------------------------------------------------------------------
-	
-	
-	
-	
+
+
+
+
 	//-------------------------------------------------------------------------------------
 	// @{
 	/**
 	* @name IO Methods
 	* Methods for reading and writing records to and from the database.
 	*/
-	
-	
+
+
 	/**
 	 * @brief Saves the current record to the database.
 	 *
 	 * @param string $lang The 2-digit language code of the language for which to save the record to.  Defaults to the value Dataface_Application::_conf['lang']
-	 * @param boolean $secure Whether to check permissions before saving.  If it fails it will return 
+	 * @param boolean $secure Whether to check permissions before saving.  If it fails it will return
 	 *  a PEAR::Error object.
 	 *
 	 * @return mixed True on success.  PEAR_Error object on fail.
@@ -4735,7 +4766,7 @@ class Dataface_Record {
 		if ( !isset($lang) ) $lang = $this->lang;
 		return df_save_record($this, $this->strvals(array_keys($this->_table->keys())), $lang, $secure);
 	}
-	
+
 	/**
 	 * @brief Deletes the record from the database.
 	 *
@@ -4747,21 +4778,21 @@ class Dataface_Record {
 		import('Dataface/IO.php');
 		$io = new Dataface_IO($this->_table->tablename);
 		return $io->delete($this, $secure);
-		
+
 	}
-	
-	
+
+
 	// @}
 	// END IO Methods
 	//---------------------------------------------------------------------------------------
-	
+
 	function toJS($fields=null, $override = array()){
 		$strvals = $this->strvals($fields);
 		$out = array();
 		foreach ( $strvals as $key=>$val){
 			if ( $this->checkPermission('view', array('field'=>$key)) ){
 				$out[$key] = $val;
-				
+
 			}
 		}
 		$out['__title__'] = $this->getTitle();
@@ -4770,25 +4801,25 @@ class Dataface_Record {
 		//$out[] = "'__url__': '".addslashes($this->getURL())."'";
 		$out['__expandable'] = ($this->checkPermission('expandable')?1:0);
 		//$out[] = "'__expandable__': ".($this->checkPermission('expandable')?1:0);
-		
+
 		foreach ($override as $k=>$v){
 			$out[$k] = $v;
 		}
-		
+
 		return json_encode($out);
 		//return '{'.implode(',',$out).'}';
-		
+
 	}
-	
+
 	function getStdObject(){
 		return new Dataface_Record_StdClass($this);
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 }
 
 /**
@@ -4805,26 +4836,26 @@ class Dataface_RecordIterator {
 		$this->_tablename = $tablename;
 		$this->reset();
 	}
-	
+
 	function &next(){
 		$out = new Dataface_Record($this->_tablename, $this->_records[current($this->_keys)]);
 		next($this->_keys);
 		return $out;
 	}
-	
+
 	function &current(){
 		return new Dataface_Record($this->_tablename, $this->_records[current($this->_keys)]);
 	}
-	
+
 	function reset(){
 		return reset($this->_keys);
 	}
-	
+
 	function hasNext(){
-		
+
 		return (current($this->_keys) !== false);
 	}
-	
+
 }
 
 
@@ -4844,7 +4875,7 @@ class Dataface_RelationshipIterator{
 		$this->_where = $where;
 		$this->_sort = $sort;
 		if ( $start !== 'all' ){
-		
+
 			$this->_records =& $record->getRelatedRecords($relationshipName, true, $start, $limit, $where, $sort);
 		} else {
 			$this->_records =& $record->getRelatedRecords($relationshipName, 'all',$where, $sort);
@@ -4855,23 +4886,23 @@ class Dataface_RelationshipIterator{
 			$this->_keys = array();
 		}
 	}
-	
+
 	function &next(){
 		$out =& $this->current();
 		next($this->_keys);
 		return $out;
 	}
-	
+
 	function &current(){
 		$rec = new Dataface_RelatedRecord($this->_record, $this->_relationshipName, $this->_records[current($this->_keys)]);
 		$rec->setValues($this->_record->_relatedMetaValues[$this->_relationshipName][$this->_where][$this->_sort][current($this->_keys)]);
 		return $rec;
 	}
-	
+
 	function reset(){
 		return reset($this->_keys);
 	}
-	
+
 	function hasNext(){
 		return (current($this->_keys) !== false);
 	}
@@ -4880,23 +4911,22 @@ class Dataface_RelationshipIterator{
 
 class Dataface_Record_StdClass extends StdClass {
 	private $r;
-	
+
 	public function __construct(Dataface_Record $r){
 		$this->r = $r;
 	}
-	
+
 	public function __get($name){
 		return $this->r->val($name);
 	}
-	
+
 	public function __set($name, $value){
 		$this->r->setValue($name, $value);
 	}
-	
+
 	public function __unset($name){
 		$this->r->setValue($name, null);
 	}
-	
-	
-}
 
+
+}

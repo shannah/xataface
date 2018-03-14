@@ -53,7 +53,7 @@ class Text_Wiki_Parse_Freelink extends Text_Wiki_Parse {
     * 
     */
     
-    function Text_Wiki_Parse_Freelink(&$obj)
+    function __construct(&$obj)
     {
         parent::Text_Wiki_Parse($obj);
         
@@ -75,6 +75,7 @@ class Text_Wiki_Parse_Freelink extends Text_Wiki_Parse {
             "()\\)\\)" .                                           // double close-parens
             '/';                                                   // END regex
     }
+        function Text_Wiki_Parse_Freelink(&$obj) { self::__construct($obj); }
     
     
     /**

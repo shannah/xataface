@@ -103,10 +103,11 @@ class Net_URL
     *
     * @see __construct()
     */
-    function Net_URL($url = null, $useBrackets = true)
+    function __construct($url = null, $useBrackets = true)
     {
         $this->__construct($url, $useBrackets);
     }
+        function Net_URL($url=null, $useBrackets=true) { self::__construct($url, $useBrackets); }
 
     /**
     * PHP5 Constructor

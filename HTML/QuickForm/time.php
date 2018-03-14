@@ -23,7 +23,7 @@ require_once 'HTML/QuickForm/select.php';
  */
 class HTML_QuickForm_time extends HTML_QuickForm_select {
 
-	function HTML_QuickForm_time($elementName=null, $elementLabel=null, $attributes=null, $properties=array())
+	function __construct($elementName=null, $elementLabel=null, $attributes=null, $properties=array())
     {
     	if ( isset($elementName) ){
 			$start = (isset($properties['starttime']) ? $properties['starttime'] : '08:00');
@@ -56,6 +56,7 @@ class HTML_QuickForm_time extends HTML_QuickForm_select {
 		}
 		
     } //end constructor
+    	function HTML_QuickForm_time($elementName=null, $elementLabel=null, $attributes=null, $properties=array()) { self::__construct($elementName, $elementLabel, $attributes, $properties); }
     
     
     function getValue(){

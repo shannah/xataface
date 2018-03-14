@@ -61,7 +61,7 @@ class Text_Wiki_Parse_Wikilink extends Text_Wiki_Parse {
     *
     */
 
-    function Text_Wiki_Parse_Wikilink(&$obj)
+    function __construct(&$obj)
     {
         parent::Text_Wiki_Parse($obj);
 
@@ -96,6 +96,7 @@ class Text_Wiki_Parse_Wikilink extends Text_Wiki_Parse {
             "[-_$either]" .    // 1 dash, alpha, digit, or underscore
             ")?)?)";           // end subpatterns (/4)(/3)(/2)
     }
+        function Text_Wiki_Parse_Wikilink(&$obj) { self::__construct($obj); }
 
 
     /**

@@ -104,7 +104,7 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 	 * 		@type string
 	 * @param db A database resource handle.
 	 */
-	function Dataface_ShortRelatedRecordForm(&$record, $relationshipName, $db='', $fieldNames=null){
+	function __construct(&$record, $relationshipName, $db='', $fieldNames=null){
 		$app =& Dataface_Application::getInstance();
 		if ( is_a($record, 'Dataface_Record') ){
 			/*
@@ -148,6 +148,7 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 			$this->_fieldNames =& $fieldNames;
 		}
 	}
+		function Dataface_ShortRelatedRecordForm(&$record, $relationshipName, $db='', $fieldNames=null) { self::__construct($record, $relationshipName, $db, $fieldNames); }
 
 	
 	/**

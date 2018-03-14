@@ -21,7 +21,7 @@ class DHTML_Calendar {
     var $calendar_theme_file;
     var $calendar_options;
 
-    function DHTML_Calendar($calendar_lib_path = '/calendar/',
+    function __construct($calendar_lib_path = '/calendar/',
                             $lang              = 'en',
                             $theme             = 'calendar-win2k-1',
                             $stripped          = true) {
@@ -38,7 +38,12 @@ class DHTML_Calendar {
         $this->calendar_options = array('ifFormat' => '%Y/%m/%d',
                                         'daFormat' => '%Y/%m/%d');
     }
-
+    function DHTML_Calendar($calendar_lib_path = '/calendar/',
+                            $lang              = 'en',
+                            $theme             = 'calendar-win2k-1',
+                            $stripped          = true) {
+                              self::__construct($calendar_lib_path, $lang, $theme, $stripped);
+                            }
     function set_option($name, $value) {
         $this->calendar_options[$name] = $value;
     }

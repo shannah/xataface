@@ -148,7 +148,7 @@ class XML_RSS extends XML_Parser
      *                default encoding (ISO-8859-1)
      * @return void
      */
-    function XML_RSS($handle = '', $srcenc = null, $tgtenc = null)
+    function __construct($handle = '', $srcenc = null, $tgtenc = null)
     {
         if ($srcenc === null && $tgtenc === null) {
             $this->XML_Parser();
@@ -162,6 +162,7 @@ class XML_RSS extends XML_Parser
             $this->raiseError('No input passed.');
         }
     }
+        function XML_RSS($handle='', $srcenc=null, $tgtenc=null) { self::__construct($handle, $srcenc, $tgtenc); }
 
     // }}}
     // {{{ startHandler()

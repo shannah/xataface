@@ -2,17 +2,17 @@
 /*-------------------------------------------------------------------------------
  * Xataface Web Application Framework
  * Copyright (C) 2005-2008 Web Lite Solutions Corp (shannah@sfu.ca)
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -25,21 +25,21 @@
  * Created:	Sept. 2, 2005
  * Description:
  * 	Builds SQL queries based on key-value pair queries.
- * 	
+ *
  ******************************************************************************/
- 
-import( 'PEAR.php'); 
+
+import( 'PEAR.php');
 import( 'Dataface/Table.php');
 import( 'Dataface/Error.php');
 import( 'Dataface/Serializer.php');
 import('Dataface/DB.php'); // for Blob registry.
 
 define('QUERYBUILDER_ERROR_EMPTY_SELECT', 1);
- 
+
 class Dataface_QueryBuilder {
 
 	/**
-	 * Associative array containing the query.  
+	 * Associative array containing the query.
 	 * Keys are column names to match.
 	 * Values are column values.
 	 * Keys beginning with hyphen are ignored in query and treated as special.
@@ -48,52 +48,52 @@ class Dataface_QueryBuilder {
 	 * -limit : The max records to return.
 	 */
 	var $_query;
-	
+
 	/**
 	 * The name of the table to query.
 	 */
 	var $_tablename;
-	
+
 	/**
 	 * @type Dataface_Table .  The table of the table to query.
 	 */
 	var $_table;
-	
+
 	/**
 	 * Convenience array.. holds references to $_table->fields()
 	 */
 	var $_fields;
-	
+
 	var $_mutableFields;
-	
+
 	/**
 	 * If true then queries will use '=' instead of 'LIKE' for matching.
 	 */
 	var $_exactMatches = false;
-	
+
 	/**
 	 * If true we will omit blob columns from the result.
 	 */
 	var $_omitBlobs = true;
-	
+
 	/**
 	 * We usually don't want to be loading password fields.
 	 */
 	var $_omitPasswords = true;
-	
+
 	/**
 	 * Key-value pairs of column name - column value to be used as security
 	 * limitations on select queries.  These constraints are added automatically added
-	 * to queries to hide rows from the user that he doesn't have access to.  This 
+	 * to queries to hide rows from the user that he doesn't have access to.  This
 	 * should be seamless.
 	 */
 	var $_security = array();
-	
-	
+
+
 	var $_serializer;
-	
+
 	var $errors = array();
-	
+
 	/*
 	 * Whether or not meta data should be selected along with select statements.
 	 * Meta data includes calculations of the "lengths" of the data in particular
@@ -101,25 +101,25 @@ class Dataface_QueryBuilder {
 	 * in the size of the blob.
 	 */
 	var $selectMetaData = false;
-	
+
 	/**
 	 * Boolean flag indicating whether we should include metadatas in the queries.
 	 */
 	var $metadata = false;
-	
-	
+
+
 	/**
-	 * @var string Stores the current action ('select','update','insert','delete','select_num_rows') 
-	 * so that submethods know the whole context of what is going on.  In particular this is 
+	 * @var string Stores the current action ('select','update','insert','delete','select_num_rows')
+	 * so that submethods know the whole context of what is going on.  In particular this is
 	 * helpful for the _from() method so that it knows to left join onto the metadata table
 	 * on selects but not on deletes.
 	 */
 	var $action = null;
-	
-	
-		
 
-	
+
+
+
+
 	/**
 	 * Creates a new Dataface_QueryBuilder object.
 	 * @param tablename The name of the table to query.
@@ -127,7 +127,7 @@ class Dataface_QueryBuilder {
 	 * @param query Associative array with keys = column names and values equal
 	 *  query values for that column.
 	 */
-	function Dataface_QueryBuilder($tablename, $query=''){
+	function __construct($tablename, $query=''){
 		$this->_tablename = $tablename;
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		$this->_query = is_array($query) ? $query : array();
@@ -135,27 +135,28 @@ class Dataface_QueryBuilder {
 		$this->_mutableFields =& $this->_table->fields();
 		$this->_serializer = new Dataface_Serializer($tablename);
 		$this->action = null;
-		
+
 		$app =& Dataface_Application::getInstance();
 		if ( @$app->_conf['metadata_enabled'] ){
 			$this->metadata = true;
 		}
-		
+
 		$keys = array_keys( $this->_query );
 		foreach ($keys as $key){
 			if ( $this->_query[$key] === ''){
 				unset( $this->_query[$key] );
 			}
 		}
-		
-		
+
+
 		if ( isset( $GLOBALS['DATAFACE_QUERYBUILDER_SECURITY_CONSTRAINTS'][$tablename]) ){
 			$this->_security = $GLOBALS['DATAFACE_QUERYBUILDER_SECURITY_CONSTRAINTS'][$tablename];
 		}
-		
-		
+
+
 	}
-	
+		function Dataface_QueryBuilder($tablename, $query='') { self::__construct($tablename, $query); }
+
 	function _opt($code, $isText=true){
 		switch ( $code ){
 			case '=':
@@ -168,13 +169,13 @@ class Dataface_QueryBuilder {
 				return 'LIKE';
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Generates SQL to perform a full text search.
 	 *
-	 * @param $queryStr A query string that can be used in an AGAINST clause of 
+	 * @param $queryStr A query string that can be used in an AGAINST clause of
 	 *                  a MySQL full text search.  Eg: 'foo bar', '+foo -bar', '"foo bar"'
 	 * @type string
 	 *
@@ -204,8 +205,8 @@ class Dataface_QueryBuilder {
 		if ( strlen($limit)>0 ) $ret .= ' '.$limit;
 		$this->action = null;
 		return $ret;
-		
-	
+
+
 	}
 	/**
 	 * Returns the select sql query as a string.
@@ -218,21 +219,21 @@ class Dataface_QueryBuilder {
 			$query = array();
 		}
 		$query = array_merge( $this->_query, $query);
-		
+
 		$ret = $this->_select($columns, array(), $preview);
 		if ( PEAR::isError($ret) ){
 			$ret->addUserInfo("Failed to select columns in select() ");
-			
+
 			return $ret;
 		}
 		$from = trim($this->_from($tablename));
 		$where = trim($this->_where($query));
 		$where = $this->_secure($where);
 		//$having = $this->_having($query);
-		
+
 		$order = trim($this->_orderby($query));
 		$limit = trim($this->_limit($query, $nolimit));
-		
+
 		if ( strlen($from)>0 ) $ret .= ' '.$from;
 		if ( strlen($where)>0 ) $ret .= ' '.$where;
 		//if ( strlen($having)>0 ) $ret .= ' '.$having;
@@ -242,37 +243,37 @@ class Dataface_QueryBuilder {
 		//echo $ret;
 		return $ret;
 	}
-	
+
 	/**
 	 * Returns the sql query to find the number of rows of the select query.
 	 * eg: SELECT COUNT(*) from foo where bar='1'
 	 */
-	
-	
+
+
 	function select_num_rows($query=array(), $tablename=null){
-		
+
 		$this->action='select_num_rows';
 		$query = array_merge( $this->_query, $query);
 		$ret = 'SELECT COUNT(*) as num';
 		$from = $this->_from($this->tablename($tablename));
 		$where = $this->_where($query);
 		$where = $this->_secure($where);
-		
+
 		if ( strlen($from)>0 ) $ret .= ' '.$from;
 		if ( strlen($where)>0 ) $ret .= ' '.$where;
 		$this->action = null;
 		return trim($ret);
-	
-	
+
+
 	}
-        
+
         function select_totals($query=array(), $tablename=null, $fields = array()){
             $tablename = $this->tablename($tablename);
             $table = Dataface_Table::loadTable($tablename);
             if ( PEAR::isError($table) ){
                 throw new Exception($table->getMessage());
             }
-            
+
             $this->action='select_totals';
             $query = array_merge( $this->_query, $query);
             $sql = array();
@@ -295,7 +296,7 @@ class Dataface_QueryBuilder {
                     case 'var_pop':
                     case 'var_samp':
                     case 'variance':
-                        
+
                         $sql[] = strtoupper($func).'('.$this->wc($tablename, $fieldname).') as `'.$fieldname.'_'.strtoupper($func).'`';
                         break;
                     default:
@@ -303,7 +304,7 @@ class Dataface_QueryBuilder {
 
                 }
             }
-            
+
             $ret = 'SELECT ';
 	    $from = $this->_from($this->tablename($tablename));
 	    $where = $this->_where($query);
@@ -313,15 +314,15 @@ class Dataface_QueryBuilder {
 	    if ( strlen($where)>0 ) $ret .= ' '.$where;
 	    $this->action = null;
             return trim($ret);
-            
-            
+
+
         }
-	
-	
+
+
 	/**
 	 * <p>Generates a string SQL statement to update the given record.</p>
 	 * @param $record Reference to the Dataface_Record object to be updated.
-	 * @param $key_vals Optional override of key values to be used in the where clause.  Alternatively, this method will use the key values from 
+	 * @param $key_vals Optional override of key values to be used in the where clause.  Alternatively, this method will use the key values from
 	 * 			the record's snapshot in the where clause if this parameter is left out (or is null).
 	 */
 	function update(&$record, $key_vals=null, $tablename=null){
@@ -331,9 +332,9 @@ class Dataface_QueryBuilder {
 		if ( !is_a($record, "Dataface_Record") ){
 			throw new Exception("Attempt to use QueryBuilder::update() where something other than a Dataface_Record object is defined.", E_USER_ERROR);
 		}
-		
-		// Step 2: Start building the sql query.  We use an array to build up the query, but 
-		// string concatenation would work just as well.  We switched to arrays in an attempt to 
+
+		// Step 2: Start building the sql query.  We use an array to build up the query, but
+		// string concatenation would work just as well.  We switched to arrays in an attempt to
 		// fix a bug related to updating BLOB fields, but it turned out that the problem was different.
 		$tableObj =& Dataface_Table::loadTable($this->tablename($tablename));
 		$dbObj =& Dataface_DB::getInstance();
@@ -360,13 +361,13 @@ class Dataface_QueryBuilder {
 				continue;
 			}
 			//echo "$fieldname changed\n";
-			
+
 			// If we made it this far, then the current field has indeed changed
 			$changed = true;
-			
+
 			$sval = $this->_serializer->serialize($fieldname, $record->getValue($fieldname));
 				// Serialize the field's value to prepare it for the database
-			if ( @$fieldArr['timestamp'] != 'update' and (!isset($sval) or 
+			if ( @$fieldArr['timestamp'] != 'update' and (!isset($sval) or
 			        (strlen(strval($sval)) == 0 and strtolower(@$fieldArr['Null']) == 'yes')
 			        )){
 				$sql[] = "`$fieldname` = NULL, ";
@@ -376,14 +377,14 @@ class Dataface_QueryBuilder {
 				// Instead we register the BLOB and store its id number.
 				$blobID = $dbObj->registerBlob($sval);
 				$sql[] = "`$fieldname` = '-=-=B".$blobID."=-=-', ";
-			} else if ( $tableObj->isDate($fieldname)  and 
-					isset($fieldArr['timestamp']) and 
+			} else if ( $tableObj->isDate($fieldname)  and
+					isset($fieldArr['timestamp']) and
 					strtolower($fieldArr['timestamp']) == 'update'){
 				$sql[] = "`$fieldname` = NOW(), ";
-				
+
 			} else {
 				$sql[] = "`$fieldname` = ".$this->prepareValue($fieldname, $sval).", ";
-			}		
+			}
 		}
 		if ( !$changed ) return '';
 			// If no fields have changed, then we will just return an empty string for the query.
@@ -391,12 +392,12 @@ class Dataface_QueryBuilder {
 			$versionField = $tableObj->getVersionField();
 			$sql[] = "`$versionField` = ifnull(`$versionField`,0)+1, ";
 		}
-		
+
 		$sql[count($sql)-1] = substr($sql[count($sql)-1], 0, strlen($sql[count($sql)-1])-2);
 			// chop off the trailing comma from the update clause
 		$vals = $record->snapshotExists() ? $record->snapshotKeys() : $record->getValues( array_keys($this->_table->keys()));
 			// If a snapshot has been set we will use its key values in the where clause
-		
+
 		if ( $key_vals === null ){
 			$query = unserialize(serialize($vals));
 			foreach ( array_keys($query) as $qkey){
@@ -408,21 +409,21 @@ class Dataface_QueryBuilder {
 				$query[$qkey] = "=".$query[$qkey];
 			}
 		}
-		
+
 		$sql[] = " ".$this->_where($query);
 		$sql[] = " LIMIT 1";
-		
-		
-		
+
+
+
 		$sql = implode($sql);
 		//echo $sql;
 		$this->action = null;
 		return $sql;
-	
+
 	}
-	
-	
-	
+
+
+
 	function insert(&$record, $tablename=null){
 		$app =& Dataface_Application::getInstance();
 		$this->action = 'insert';
@@ -436,6 +437,7 @@ class Dataface_QueryBuilder {
 		$keys =& $this->_table->keys();
 		$insertedKeys = array();
 		$insertedValues = array();
+<<<<<<< HEAD
 		$authTool = class_exists('Dataface_AuthenticationTool') ? Dataface_AuthenticationTool::getInstance() : null;
 		
 		$gid = $tableObj->setGroup;  // group
@@ -452,6 +454,9 @@ class Dataface_QueryBuilder {
 		}
 		
 		
+=======
+
+>>>>>>> master
 		foreach ($this->_mutableFields as $key=>$field){
 			if ( @$field['ignore'] ) continue;
 			if ( $tableObj->isDate($key) ){
@@ -461,7 +466,7 @@ class Dataface_QueryBuilder {
 				if ( isset($fieldArr['timestamp']) and in_array(strtolower($fieldArr['timestamp']), array('insert','update')) ){
 					$insertedKeys[] = '`'.$key.'`';
 					$insertedValues[] = 'NOW()';
-					
+
 					continue;
 				}
 			}
@@ -504,7 +509,7 @@ class Dataface_QueryBuilder {
 				//$sql .= 'NULL,';
 			} else {
 				$insertedKeys[] = '`'.$key.'`';
-				
+
 				$insertedValues[] = $this->prepareValue($key,$sval2);
 				//$sql .= "'".addslashes($sval2)."',";
 			}
@@ -515,8 +520,8 @@ class Dataface_QueryBuilder {
 		$this->action = null;
 		return $sql;
 	}
-	
-	
+
+
 	function prepareValue($fieldname, $value,$serialize=false){
 		$quotes = true;
 		if ( $serialize ) $value = $this->_serializer->serialize($fieldname, $value);
@@ -527,16 +532,16 @@ class Dataface_QueryBuilder {
 		if ( $quotes ) $value = "'".addslashes($value)."'";
 		$value = $this->_serializer->encrypt($fieldname,$value);
 		return $value;
-		
+
 	}
-	
-	
-	
+
+
+
 	function delete($query=array(), $nolimit=false, $tablename=null){
 		$this->action = 'delete';
 		if ( !isset($tablename) ) $tablename = $this->_table->tablename;
 		$table =& Dataface_Table::loadTable($tablename);
-		
+
 		$query = array_merge($this->_query, $query);
 		$tsql=$table->sql();
 		$parent =& $table->getParent();
@@ -548,33 +553,50 @@ class Dataface_QueryBuilder {
 			}
 			$joinclause = implode(' AND ', $joinclause);
 			$from = "FROM `{$talias}` USING `{$tablename}` as `{$talias}` left join ".substr($this->_from($tablename), 5)." on ($joinclause)";
-			
+
 		} else {
 			$from = $this->_from($tablename);
-					
+
 		}
 		$where = $this->_where($query);
 		$limit = $this->_limit($query, $nolimit);
 		$ret = "DELETE ".$from;
-		
+
 		if ( strlen($where)>0 )  $ret .= ' '.$where;
 		if ( strlen($limit)>0 )  $ret .= ' '.$limit;
 		$this->action = null;
 		return trim($ret);
-		
-		
+
+
 	}
-	
-	function wc($tablename, $colname){
+
+	function wc($tablename, $colname, $collate = ''){
+        if ($collate) $collate = ' COLLATE '.$collate;
 		if ( in_array($this->action, array('select','delete', 'select_num_rows', 'select_totals')) ){
-			return "`{$tablename}`.`{$colname}`";
+			return "`{$tablename}`.`{$colname}`".$collate;
 		} else {
-			return "`{$colname}`";
+			return "`{$colname}`".$collate;
 		}
 	}
-	
-	function _fieldWhereClause(&$field, $value, &$use_where, $tableAlias=null){
-		$key = $field['Field'];
+    function _fieldWhereClause(&$field, $value, &$use_where, $tableAlias=null){
+        $collate = @$field['collate'];
+        if (!$collate) $collate = '';
+        if (strlen($value) > 6 and
+            $value{0} == '~' and
+            $value{1} == '#' and
+            $value{strlen($value)-1} == '#' and
+            ($commandParts = explode('#', $value)) and
+            count($commandParts) === 4) {
+            $value = trim($commandParts[1]);
+            $commands = explode(' ', $commandParts[2]);
+            if (in_array('ci', $commands)) {
+                $collate = 'utf8_general_ci';
+            } else if (in_array('cs', $commands)) {
+                $collate = 'utf8_general_cs';
+            }
+
+        }
+        $key = $field['Field'];
 		$where = '';
 		$table =& Dataface_Table::loadTable($field['tablename']);
 		$changeTable = false;
@@ -598,11 +620,11 @@ class Dataface_QueryBuilder {
 		} else {
 			$conj = 'AND';
 		}
-		
+
 		// A value with a prefix of '<>' indicates we are searching for values NOT equal to...
 		if ( isset($field['repeat']) and $field['repeat']){
 			$repeat = true;
-			
+
 		} else {
 			$repeat = false;
 		}
@@ -625,16 +647,16 @@ class Dataface_QueryBuilder {
                                         $oldval = trim($value);
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true );
 					if ( $repeat ){
-						$where .= $this->wc($tableAlias, $key)." NOT RLIKE CONCAT('[[:<:]]',$value,'[[:>:]]') AND ";
+						$where .= $this->wc($tableAlias, $key, $collate)." NOT RLIKE CONCAT('[[:<:]]',$value,'[[:>:]]') AND ";
 					} else {
                                                 $oper = '<>';
                                                 if (  strlen($oldval) === 0 ){
-                                                        $where .= $this->wc($tableAlias,$key)." $oper $value AND ";
+                                                        $where .= $this->wc($tableAlias,$key, $collate)." $oper $value AND ";
                                                 } else {
-                                                        $where .= '('.$this->wc($tableAlias,$key)." $oper $value OR ".$this->wc($tableAlias,$key)." IS NULL) AND ";
+                                                        $where .= '('.$this->wc($tableAlias,$key, $collate)." $oper $value OR ".$this->wc($tableAlias,$key, $collate)." IS NULL) AND ";
                                                 }
 					}
-				
+
 				// A value with a prefix of '<' indicates that we are searching for values less than
 				// a field.
 				} else if ( !$exact and strpos($value,'<')===0){
@@ -646,8 +668,8 @@ class Dataface_QueryBuilder {
 						$op = '<';
 					}
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true );
-					$where .= $this->wc($tableAlias, $key)." $op $value AND ";
-					
+					$where .= $this->wc($tableAlias, $key, $collate)." $op $value AND ";
+
 				// A value with a prefix of '>' indicates a greater than search
 				} else if ( !$exact and strpos($value, '>')===0 ) {
 					if ( strpos($value,'=') === 1 ){
@@ -658,16 +680,16 @@ class Dataface_QueryBuilder {
 						$op = '>';
 					}
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true );
-					$where .= $this->wc($tableAlias, $key)." $op $value AND ";
-					
-					
+					$where .= $this->wc($tableAlias, $key, $collate)." $op $value AND ";
+
+
 				// If the query term has '..' any where it is interpreted as a range search
 				} else if ( !$exact and strpos($value, '..')> 0 ){
 					list($low,$high) = explode('..',$value);
 					$low = trim($low); $high = trim($high);
 					$low = $this->prepareValue( $key, $table->parse($key, $low), true);
 					$high = $this->prepareValue( $key, $table->parse($key, $high), true);
-					$where .= $this->wc($tableAlias, $key)." >= $low AND ".$this->wc($tableAlias, $key)." <= $high AND ";
+					$where .= $this->wc($tableAlias, $key, $collate)." >= $low AND ".$this->wc($tableAlias, $key, $collate)." <= $high AND ";
 				} else if ( !$exact and (strpos($value, '~') === 0 )){
 					$value = substr($value,1);
 					$oldval = $value;
@@ -676,73 +698,77 @@ class Dataface_QueryBuilder {
 					if (  strlen($oldval) > 0 ){
 						$where .= $this->wc($tableAlias,$key)." $oper $value AND ";
 					} else {
-						$where .= '('.$this->wc($tableAlias,$key)." $oper '' OR ".$this->wc($tableAlias,$key)." IS NULL) AND ";
+						$where .= '('.$this->wc($tableAlias,$key, $collate)." $oper '' OR ".$this->wc($tableAlias,$key, $collate)." IS NULL) AND ";
 					}
-				
+
 				} else if ( !$exact and (strpos($value, '!~') === 0) ){
 					$value = substr($value,2);
 					$oldval = $value;
 					$oper = 'NOT LIKE';
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true);
 					if (  strlen($oldval) > 0 ){
-						$where .= $this->wc($tableAlias,$key)." $oper $value AND ";
+						$where .= $this->wc($tableAlias,$key, $collate)." $oper $value AND ";
 					} else {
-						$where .= '('.$this->wc($tableAlias,$key)." $oper '' OR ".$this->wc($tableAlias,$key)." IS NULL) AND ";
+						$where .= '('.$this->wc($tableAlias,$key, $collate)." $oper '' OR ".$this->wc($tableAlias,$key, $collate)." IS NULL) AND ";
 					}
-				
+
 				} else if ( $repeat ){
-					$value = $this->prepareValue( $key, $table->parse($key, $value), true); 
-					$where .= $this->wc($tableAlias, $key)." RLIKE CONCAT('[[:<:]]',$value,'[[:>:]]') AND ";
+					$value = $this->prepareValue( $key, $table->parse($key, $value), true);
+					$where .= $this->wc($tableAlias, $key, $collate)." RLIKE CONCAT('[[:<:]]',$value,'[[:>:]]') AND ";
 				}
-				
+
 				else if ( $this->_exactMatches || preg_match( '/int|decimal/i', $field['Type']) || $exact ){
 					$oldval = $value;
 					$oper = '=';
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true);
 					if (  strlen($oldval) > 0 ){
-						$where .= $this->wc($tableAlias,$key)." $oper $value AND ";
+						$where .= $this->wc($tableAlias,$key, $collate)." $oper $value AND ";
 					} else {
-						$where .= '('.$this->wc($tableAlias,$key)." $oper '' OR ".$this->wc($tableAlias,$key)." IS NULL) AND ";
+						$where .= '('.$this->wc($tableAlias,$key, $collate)." $oper '' OR ".$this->wc($tableAlias,$key, $collate)." IS NULL) AND ";
 					}
 				} else {
-					$value = $this->prepareValue( $key, $table->parse($key, $value), true); 
-					$where .= $this->wc($tableAlias, $key)." LIKE CONCAT('%',$value,'%') AND ";
+					$value = $this->prepareValue( $key, $table->parse($key, $value), true);
+                    $collation = '';
+                    $where .= $this->wc($tableAlias, $key, $collate)." LIKE CONCAT('%',$value,'%') AND ";
 				}
 				$use_where = true;
 			}
 			$where = substr($where, 0, strlen($where)-5);
 			if (count($factors) > 1){
-				
+
 				$where .= ')';
 			}
 			$where .= ' OR ';
 
-			
+
 		}
 		$where = substr($where, 0, strlen($where)-4);
 		if ( count($words) > 1){
-			
+
 			$where .= ')';
 		}
-		
+
 		if ($changeTable){
 			unset($this->_table);
 			$this->_table =& $oldTable;
 			unset($this->_serializer);
 			$this->_serializer =& $oldSerializer;
 		}
+        if ($collate) {
+            //echo $where;exit;
+        }
 		return $where;
-	
+
 	}
-	
+
 	/**
          * @brief A wrapper around the _where() method that optionally takes
          * a Dataface_Record object as a parameter.  This produces just the
          * where clause of an SQL query.
-         * 
+         *
          * @param mixed $query Either an array of parameters or a Dataface_Record object
          * which will be used for its keys.
-         * @param Boolean $merge Whether to merge the criteria with the object's 
+         * @param Boolean $merge Whether to merge the criteria with the object's
          * current query.
          * @return string The where clause e.g. "WHERE name='Steve' and age=29"
          * @since 2.0.3
@@ -760,24 +786,24 @@ class Dataface_QueryBuilder {
             }
             return $this->_where($query, $merge);
         }
-        
+
 	/**
 	 * Returns the where clause for the sql query.
 	 * eg: WHERE foo = 'bar' and moo = 'cow'
 	 * @param fields Table fields that are used in the where clause
 	 */
 	function _where($query=array(), $merge=true){
-                
+
 		if ( $merge ){
 			$query = array_merge( $this->_query, $query);
-			
+
 		}
 		foreach ($query as $key=>$value) {
 			if ( $value === null or $value === '' ){
 				unset($query[$key]);
 			}
 		}
-		
+
 		if ( isset($query['__id__']) ){
 			$keys = array_keys($this->_table->keys());
 			if ( $keys ){
@@ -785,14 +811,14 @@ class Dataface_QueryBuilder {
 				unset($query['__id__']);
 			}
 		}
-		
-		
-		
+
+
+
 		$where  = "WHERE ";
 		$missing_key = false;
 		$limit = '';
 		$use_where = false;
-			
+
 		$fields = array();
 		//print_r($query);
 		foreach ($query as $key=>$value){
@@ -806,7 +832,7 @@ class Dataface_QueryBuilder {
 				}
 				unset($field);
 			}
-				
+
 		}
 		$charFields = $this->_table->getCharFields(true, true);
 		if ( isset( $query['-search'] ) and strlen($query['-search']) and count($charFields)>0 ){
@@ -821,10 +847,10 @@ class Dataface_QueryBuilder {
 					$where .= '(`'.implode('` LIKE \'%'.addslashes($word).'%\' OR `', $charFields).'` LIKE \'%'.addslashes($word).'%\') AND ';
 			//	}
 			}
-						
+
 			$use_where = true;
 		}
-		
+
 		if ( $this->metadata ){
 			$wfkeys = preg_grep('/^_metadata::/', array_keys($query));
 			$clause = array();
@@ -839,25 +865,25 @@ class Dataface_QueryBuilder {
 				$where .= implode(' AND ', $clause).' AND ';
 			}
 		}
-		
+
 		// Now we will search related fields
 		$rkeys = preg_grep('/^[^\-].*\/.*$/', array_keys($query));
-		
+
 		$rquery = array();
 		foreach ($rkeys as $rkey ){
 			list($relationship, $rfield) = explode('/', $rkey);
 			$rquery[$relationship][] = $rfield;
-			
+
 		}
-		
+
 		foreach ( $rquery as $rname=>$rfields){
 			$r =& $this->_table->getRelationship($rname);
 			if ( PEAR::isError($r) ){
 				unset($r);
 				continue;
 			}
-			
-			
+
+
 			$pairs=array();
 			foreach ( $rfields as $rfield ){
 				$rfieldDef =& $r->getField($rfield);
@@ -866,15 +892,15 @@ class Dataface_QueryBuilder {
 				if ( !$ralias ) $ralias = null;
 				$pairs[] = $this->_fieldWhereClause($rfieldDef, $q, $use_where, $ralias );
 				unset($rfieldDef);
-				
+
 				//$pairs[] = '`'.str_replace('`','',$rfield).'` LIKE \'%'.addslashes($query[$rname.'/'.$rfield]).'%\'';
 			}
 			if ( $pairs ){
 				$subwhere = ' AND '.implode(' AND ',$pairs);
 			}
-			
+
 			$sql = $r->getSQL();
-			
+
 			$fkeys = $r->getForeignKeyValues();
 			foreach ( $fkeys as $tname=>$tfields ){
 				foreach ( $tfields as $tval ){
@@ -888,21 +914,21 @@ class Dataface_QueryBuilder {
 			unset($r);
 			unset($fkeys);
 		}
-		
-		
-		
+
+
+
 		if ( $use_where ){
-			
+
 			$where = substr($where,0, strlen($where)-5);
 		} else {
 			$where = '';
 		}
-		
+
 		return $where;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Returns the from clause for the SQL query.
 	 * eg: FROM users
@@ -910,7 +936,7 @@ class Dataface_QueryBuilder {
 	function _from($tablename=null){
 		$app =& Dataface_Application::getInstance();
 		if ( !isset($tablename) ) $tablename = $this->_table->tablename;
-		
+
 		$table =& Dataface_Table::loadTable($tablename);
 		$proxyView = $table->getProxyView();
 		$tsql = $table->sql();
@@ -922,7 +948,7 @@ class Dataface_QueryBuilder {
 		} else {
 			$fromq = "`".$this->tablename($tablename)."`";
 		}
-		
+
 		$parent =& $table->getParent();
 		if ( isset($parent) ){
 			$qb2 = new Dataface_QueryBuilder($parent->tablename);
@@ -940,25 +966,25 @@ class Dataface_QueryBuilder {
 				$joinq[] = '`t___child`.`'.$ckeys[$i].'`=`t___parent`.`'.$pkeys[$i].'`';
 			}
 			$joinq = implode(' and ', $joinq);
-			
-			
+
+
 			$out = "FROM (select * from ".$fromq." as `t___child` left join ".$pfrom." as `t___parent` on ($joinq)) as `".$this->tablename($tablename)."`" ;
-		
-			
+
+
 		} else if ( isset($tsql) or isset($proxyView) ){
 			$out = "FROM ".$fromq." as `".$this->tablename($tablename)."`";
 		} else {
 			$out = "FROM ".$fromq;
 		}
-		
-		
-		
-		
+
+
+
+
 		if ( $this->metadata and $this->action == 'select') {
 			$out .= " LEFT JOIN `{$tablename}__metadata` ON ";
 			$keys = array_keys($table->keys());
 			if ( count($keys) == 0 ) throw new Exception("The table '".$tablename."' has no primary key.", E_USER_ERROR);
-			
+
 			$clauses = array();
 			foreach ( $keys as $key ){
 				$clauses[] = "`{$tablename}`.`{$key}`=`{$tablename}__metadata`.`{$key}`";
@@ -967,8 +993,8 @@ class Dataface_QueryBuilder {
 		}
 		return $out;
 	}
-	
-	
+
+
 	/**
 	 * Returns the select portion of the sql query.
 	 * eg: SELECT foo, bar
@@ -991,22 +1017,22 @@ class Dataface_QueryBuilder {
 		foreach ($this->_fields as $key=>$field){
 			if ( $this->selectMetaData ){
 				$select .= "length(`{$this->_tablename}`.`".$key."`) as `__".$key."_length`,";
-				
+
 			}
 			if ( is_array($columns) and !in_array($key, $columns) ) continue;
 				// if the columns array is set then we only return the columns listed in that array.
-				
-			
-		
+
+
+
 			if ( $this->_omitBlobs and $this->_table->isBlob($field['name']) ) continue;
 				// if the omitBlobs flag is set then we don't select blob columns
 			if ( $this->_omitPasswords and $this->_table->isPassword($field['name']) ) continue;
 				// if the omitPasswords flag is set then we don't select password columns
-			if ( $preview and $this->_table->isText($field['name']) and !@$field['struct'] and !$this->_table->isXML($field['name'])) 
+			if ( $preview and $this->_table->isText($field['name']) and !@$field['struct'] and !$this->_table->isXML($field['name']))
 				$select .= "SUBSTRING(`{$this->_tablename}`.`$key`, 1, ".$previewLen.") as `$key`,";
 			else if ( in_array(strtolower($this->_table->getType($key)),array('datetime','timestamp')) )
 				$select .= "ifnull(convert_tz(`".$this->_tablename."`.`".$key."`, 'SYSTEM', '".df_tz_or_offset()."'), `".$this->_tablename."`.`".$key."`) as `$key`,";
-			else 
+			else
 				$select .= "`{$this->_tablename}`.`$key`,";
 			$colcount++;
 
@@ -1017,16 +1043,16 @@ class Dataface_QueryBuilder {
 				$clauses[] = "`{$this->_tablename}__metadata`.`{$mdc}`";
 			}
 			$select .= implode(',',$clauses).',';
-			
+
 		}
-		
+
 		if ( $colcount == 0 ){
 			return PEAR::raiseError(QUERYBUILDER_ERROR_EMPTY_SELECT, null,null,null, "No columns were selected in select statement.  Make sure that _omitBlobs property is disabled in QueryBuilder object if you are only wanting to return Blob columns.");
 		}
 		$select = substr($select, 0, strlen($select) -1);
 		return $select;
 	}
-	
+
 	/**
 	 * Returns the limit portion of the sql query.
 	 * eg: LIMIT 1,2
@@ -1039,7 +1065,7 @@ class Dataface_QueryBuilder {
 				unset($query[$key]);
 			}
 		}
-		
+
 		$limit = '';
 		if ( isset( $query['-limit']) && isset($query['-skip'] ) ){
 			if ( preg_match('/^[0-9]+$/',$query['-limit']) &&
@@ -1057,8 +1083,8 @@ class Dataface_QueryBuilder {
 		}
 		return $limit;
 	}
-	
-	
+
+
 	/**
 	 * Returns the ORDER BY clause of the SQL query.
 	 */
@@ -1069,15 +1095,15 @@ class Dataface_QueryBuilder {
 				unset($query[$key]);
 			}
 		}
-		
+
 		if ( isset($query['-sort']) ){
-			
+
 			return 'ORDER BY '.preg_replace_callback('/\b(\w+?)\b/',array(&$this, '_mysql_quote_idents'), $query['-sort']);
 		}
 		return '';
-	
+
 	}
-	
+
 	function _mysql_quote_idents($matches){
 		if (!in_array(strtolower($matches[1]), array('asc','desc') ) ){
 			return '`'.((strpos($matches[1],'.') === false) ?"{$this->_tablename}`.`":'').$matches[1].'`';
@@ -1085,7 +1111,7 @@ class Dataface_QueryBuilder {
 			return $matches[1];
 		}
 	}
-	
+
 	/**
 	 * Generates a MATCH() clause to match against a full-text index.
 	 *
@@ -1100,7 +1126,7 @@ class Dataface_QueryBuilder {
 	 * 						against columns with a full text index.  If false then
 	 *						all char and text colums will be used in the search.
 	 * @type boolean
-	 * 
+	 *
 	 * @returns string Match clause for an SQL query.
 	 */
 	function _match($queryStr){
@@ -1108,12 +1134,12 @@ class Dataface_QueryBuilder {
 		$matches = array();
 		preg_match('/(\d+)\.(\d)+\.(\d)+/', $version, $matches);
 		$majorVersion = intval($matches[1]);
-		
+
 		// We want to escape illegal characters, but in a boolean search
 		// double  quotes are allowed so we much unescape them.
 		$queryStr = addslashes($queryStr);
-		$queryStr = str_replace('\"', '"', $queryStr);		
-		
+		$queryStr = str_replace('\"', '"', $queryStr);
+
 		$out = 'MATCH (';
 
 		// We have at least version 4 so we can do boolean searches
@@ -1124,8 +1150,8 @@ class Dataface_QueryBuilder {
 			// There are no indexed fields so we will just do a search on all character fields.
 			$fields =& $this->_table->getCharFields();
 		}
-		
-		
+
+
 		$empty = true;
 			// flag to indicate if the query will be empty
 		foreach ($fields as $field){
@@ -1133,60 +1159,60 @@ class Dataface_QueryBuilder {
 			$empty = false;
 				// the query is NOT empty
 		}
-		
+
 		if ( $empty ){
 			throw new Exception("Query attempted when no queryable columns are available in table '".$this->_table->tablename."'.  Only tables with a full-text search defined on at least one column are eligiblle to be searched in this way.", E_USER_ERROR);
 		}
-		
+
 		$out = substr($out, 0, strlen($out)-1);
-		
+
 		$out .= ") AGAINST ('$queryStr'";
 		if ( $majorVersion >= 4 ) {
 			$out .= " IN BOOLEAN MODE";
 		}
 		$out .= ")";
-			
+
 		return $out;
-	
+
 	}
-	
-	
+
+
 	function omitBlobs(){
-	
+
 		$this->_omitBlobs = true;
 	}
-	
+
 	function includeBlobs(){
 		$this->_omitBlobs = false;
 	}
-	
-	
+
+
 	function addSecurityConstraint($key, $value){
-	
+
 		$this->_security[$key] = $value;
-	
+
 	}
-	
+
 	function addSecurityConstraints($constraints){
-	
+
 		$this->_security = array_merge($this->_security, $constraints);
 	}
-	
-	
+
+
 	function removeSecurityConstraint($key){
 		unset( $this->_security[$key] );
 	}
-	
+
 	function setSecurityConstraints( $constraints ){
 		$this->_security = $constraints;
 	}
-	
+
 	function _secure($where){
-		
+
 		$swhere = $this->_where($this->_table->getSecurityFilter($this->_security), false);
 		// get rid of the leading "where"
 		$swhere = trim(substr($swhere, 5, strlen($swhere)-5));
-		
+
 		$where = trim($where);
 		if ( strlen($where)>0 ){
 			if (strlen($swhere)>0) {
@@ -1196,12 +1222,12 @@ class Dataface_QueryBuilder {
 			$where = "WHERE $swhere";
 		}
 		return $where;
-		
-		
-	
+
+
+
 	}
-	
-	
+
+
 		/**
 	 * Returns an array of SQL statements that should be executed sequentially to add a related record.
 	 */
@@ -1216,12 +1242,12 @@ class Dataface_QueryBuilder {
 			$error->addUserInfo("Error getting foreign key values for relationship '$relationship_name'");
 			throw new Exception($error->toString());
 		}
-		
-		
+
+
 		$sql = array();
-		
+
 		// now generate the sql
-		// We will go through each table and insert the record for that 
+		// We will go through each table and insert the record for that
 		// table separately.
 		foreach ( $table_cols as $table=>$cols ){
 			if ( isset($recordObj) ) unset($recordObj);
@@ -1234,14 +1260,14 @@ class Dataface_QueryBuilder {
 			}
 			$qb = new Dataface_QueryBuilder($table);
 			$sql[$table] = $qb->insert($recordObj);
-			
+
 		}
-		
+
 		return $sql;
-			
+
 	}
-	
-	
+
+
 	function addExistingRelatedRecord(&$relatedRecord){
 		$record =& $relatedRecord->_record;
 		$relationshipName =& $relatedRecord->_relationshipName;
@@ -1256,13 +1282,13 @@ class Dataface_QueryBuilder {
 		$relationship =& $record->_table->getRelationship($relationshipName);
 		$foreignKeys = $relationship->getForeignKeyValues();
 		$foreignKeys_withValues = $relatedRecord->getForeignKeyValues();
-		
+
 		if ( count($this->errors) > 0 ){
 			$error = array_pop($this->errors);
 			$error->addUserInfo("Error getting foreign key values for relationship '$relationship_name'");
 			throw new Exception($error->toString());
 		}
-		
+
 		$sql = array();
 		foreach ($foreignKeys as $table=>$cols){
 			$skip = true;
@@ -1288,53 +1314,53 @@ class Dataface_QueryBuilder {
 			$skip = true;
 				// indicator to say whether or not to skip this table
 				// we skip the table if it contains an unresolved autoincrement value
-				
+
 			foreach ($cols as $field_name=>$field_value){
 				if ( $field_value != "__".$table."__auto_increment__" ) {
 					$skip = false;
 					break;
 				}
 			}
-			
+
 			if ( $skip == true ) continue;
-				
-			
+
+
 			$cols = $foreignKeys_withValues[$table];
-			
-			
+
+
 			$query = "INSERT INTO `$table`";
 			$colnames = "";
 			$colvals = "";
-			
+
 			foreach ( $cols as $colname=>$colval){
 				$colnames .= $colname.',';
 				$colvals .= "'".addslashes($colval)."',";
 			}
-			
+
 			$colnames = substr($colnames, 0, strlen($colnames)-1);
 			$colvals = substr($colvals, 0, strlen($colvals)-1);
-			
+
 			$query .= " ($colnames) VALUES ($colvals)";
-			
+
 			$sql[$table] = $query;
 			*/
-		
+
 		}
-		
+
 		return $sql;
-		
-		
-	
+
+
+
 	}
-	
+
 	function tablename($tablename=null){
 		if ( $tablename === null ) return $this->_tablename;
 		return $tablename;
-	
+
 	}
-	
-	
-	
+
+
+
 
 
 }

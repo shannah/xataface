@@ -93,7 +93,7 @@ class Dataface_ExistingRelatedRecordForm extends HTML_QuickForm {
 	 *		@type string
 	 * @param db The database resource handle.
 	 */
-	 function Dataface_ExistingRelatedRecordForm(&$record, $relationshipName, $db=''){
+	 function __construct(&$record, $relationshipName, $db=''){
 		if ( !$record ){
 			$record =& $this->getRecord();
 		}
@@ -116,6 +116,7 @@ class Dataface_ExistingRelatedRecordForm extends HTML_QuickForm {
 		);
 	
 	}
+		 function Dataface_ExistingRelatedRecordForm(&$record, $relationshipName, $db='') { self::__construct($record, $relationshipName, $db); }
 	
 	
 	/**

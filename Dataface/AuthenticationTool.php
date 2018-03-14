@@ -76,7 +76,7 @@ class Dataface_AuthenticationTool {
 		return $instance;
 	}
 	
-	function Dataface_AuthenticationTool($params=array()){
+	function __construct($params=array()){
 		$this->conf = $params;
 		$this->usersTable = ( isset($params['users_table']) ? $params['users_table'] : null);
 		$this->usernameColumn = ( isset($params['username_column']) ? $params['username_column'] : null);
@@ -87,6 +87,7 @@ class Dataface_AuthenticationTool {
 		
 		$this->setAuthType(@$params['auth_type']); 
 	}
+		function Dataface_AuthenticationTool($params=array()) { self::__construct($params); }
 	
 	function setAuthType($type){
 		if ( isset( $type ) and $type != $this->authType ){

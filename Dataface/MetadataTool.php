@@ -36,9 +36,10 @@ class Dataface_MetadataTool {
 	 */
 	var $keyColumns = null;
 	
-	function Dataface_MetadataTool($tablename){
+	function __construct($tablename){
 		$this->tablename = $tablename;
 	}
+		function Dataface_MetadataTool($tablename) { self::__construct($tablename); }
 	
 	/**
 	 * Checks a table name to see if it is a metadata table.  A metadata table

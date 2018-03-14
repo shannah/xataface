@@ -43,7 +43,7 @@ class Dataface_TableTool {
 	var $_table;
 	var $_app;
 	
-	function Dataface_TableTool($tablename){
+	function __construct($tablename){
 		$this->_table =& Dataface_Table::loadTable($tablename);
 		$this->_app =& Dataface_Application::getInstance();
 	}
@@ -55,6 +55,7 @@ class Dataface_TableTool {
 		}
 		return $instances[$tablename];
 	}
+		function Dataface_TableTool($tablename) { self::__construct($tablename); }
 	
 	
 	/**

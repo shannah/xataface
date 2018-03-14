@@ -2,10 +2,11 @@
 class Dataface_SummaryList {
 	var $records;
 	var $table;
-	function Dataface_SummaryList(&$records){
+	function __construct(&$records){
 		$this->records =& $records;
 		if ( count($this->records) > 0 ) $this->table =& $this->records[0]->_table;
 	}
+		function Dataface_SummaryList(&$records) { self::__construct($records); }
 	
 	function showSummary(&$record){
 		$del =& $record->_table->getDelegate();

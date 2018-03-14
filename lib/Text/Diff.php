@@ -29,7 +29,7 @@ class Text_Diff {
      *                           lines from a file.
      * @param array $to_lines    An array of strings.
      */
-    function Text_Diff($engine, $params)
+    function __construct($engine, $params)
     {
         // Backward compatibility workaround.
         if (!is_string($engine)) {
@@ -48,6 +48,7 @@ class Text_Diff {
 
         $this->_edits = call_user_func_array(array($diff_engine, 'diff'), $params);
     }
+        function Text_Diff($engine, $params) { self::__construct($engine, $params); }
 
     /**
      * Returns the array of differences.
@@ -225,7 +226,7 @@ class Text_MappedDiff extends Text_Diff {
      * @param array $mapped_to_lines    This array should have the same number
      *                                  of elements as $to_lines.
      */
-    function Text_MappedDiff($from_lines, $to_lines,
+    function __construct($from_lines, $to_lines,
                              $mapped_from_lines, $mapped_to_lines)
     {
         assert(count($from_lines) == count($mapped_from_lines));
@@ -287,7 +288,7 @@ class Text_Diff_Op {
  */
 class Text_Diff_Op_copy extends Text_Diff_Op {
 
-    function Text_Diff_Op_copy($orig, $final = false)
+    function __construct($orig, $final = false)
     {
         if (!is_array($final)) {
             $final = $orig;
@@ -295,6 +296,7 @@ class Text_Diff_Op_copy extends Text_Diff_Op {
         $this->orig = $orig;
         $this->final = $final;
     }
+        function Text_Diff_Op_copy($orig, $final=false) { self::__construct($orig, $final); }
 
     function &reverse()
     {
@@ -312,11 +314,12 @@ class Text_Diff_Op_copy extends Text_Diff_Op {
  */
 class Text_Diff_Op_delete extends Text_Diff_Op {
 
-    function Text_Diff_Op_delete($lines)
+    function __construct($lines)
     {
         $this->orig = $lines;
         $this->final = false;
     }
+        function Text_Diff_Op_delete($lines) { self::__construct($lines); }
 
     function &reverse()
     {
@@ -334,11 +337,12 @@ class Text_Diff_Op_delete extends Text_Diff_Op {
  */
 class Text_Diff_Op_add extends Text_Diff_Op {
 
-    function Text_Diff_Op_add($lines)
+    function __construct($lines)
     {
         $this->final = $lines;
         $this->orig = false;
     }
+        function Text_Diff_Op_add($lines) { self::__construct($lines); }
 
     function &reverse()
     {
@@ -356,11 +360,12 @@ class Text_Diff_Op_add extends Text_Diff_Op {
  */
 class Text_Diff_Op_change extends Text_Diff_Op {
 
-    function Text_Diff_Op_change($orig, $final)
+    function __construct($orig, $final)
     {
         $this->orig = $orig;
         $this->final = $final;
     }
+        function Text_Diff_Op_change($orig, $final) { self::__construct($orig, $final); }
 
     function &reverse()
     {

@@ -42,7 +42,7 @@ class HTML_QuickForm_optionalelement extends HTML_QuickForm_element {
 	var $value;
 	
 	
-	function HTML_QuickForm_optionalelement($elementName=null, $elementLabel=null, $attributes=null)
+	function __construct($elementName=null, $elementLabel=null, $attributes=null)
     {
         $this->HTML_QuickForm_element($elementName, $elementLabel, $attributes);
         $this->_persistantFreeze = true;
@@ -51,6 +51,7 @@ class HTML_QuickForm_optionalelement extends HTML_QuickForm_element {
         $this->_type = 'optionalelement';
        
     } //end constructor
+    	function HTML_QuickForm_optionalelement($elementName=null, $elementLabel=null, $attributes=null) { self::__construct($elementName, $elementLabel, $attributes); }
     
     
     function addField(&$element){

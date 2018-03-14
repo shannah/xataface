@@ -92,7 +92,7 @@ class Dataface_SkinTool extends Smarty{
 	var $resultController = null;
 
 	
-	function Dataface_SkinTool() {
+	function __construct() {
 		
 		if ( is_writable($GLOBALS['Dataface_Globals_Local_Templates_c']) ){
 			
@@ -235,6 +235,7 @@ class Dataface_SkinTool extends Smarty{
 		
 
 	}
+		function Dataface_SkinTool() { self::__construct(); }
 	
 	
 	/**

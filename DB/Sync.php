@@ -15,12 +15,13 @@ class DB_Sync {
 	var $renamed = array();
 	var $listeners = array();
 	
-	function DB_Sync($db1, $db2, $table1=null, $table2=null, $renamed=null){
+	function __construct($db1, $db2, $table1=null, $table2=null, $renamed=null){
 		$this->db1 = $db1;
 		$this->db2 = $db2;
 		
 		$this->init($table1, $table2, $renamed);
 	}
+		function DB_Sync($db1, $db2, $table1=null, $table2=null, $renamed=null) { self::__construct($db1, $db2, $table1, $table2, $renamed); }
 
 	
 	/**

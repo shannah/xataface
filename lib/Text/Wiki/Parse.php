@@ -106,7 +106,7 @@ class Text_Wiki_Parse {
     *
     */
 
-    function Text_Wiki_Parse(&$obj)
+    function __construct(&$obj)
     {
         // set the reference to the calling Text_Wiki object;
         // this allows us access to the shared source text, token
@@ -131,6 +131,7 @@ class Text_Wiki_Parse {
 
         }
     }
+        function Text_Wiki_Parse(&$obj) { self::__construct($obj); }
 
 
     /**

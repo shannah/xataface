@@ -20,10 +20,11 @@ class I18Nv2_LocaleTest extends PHPUnit_TestCase
     * @param string $name The name of the test.
     * @access protected 
     */
-    function I18Nv2_LocaleTest($name)
+    function __construct($name)
     {
         $this->PHPUnit_TestCase($name);
     }
+        function I18Nv2_LocaleTest($name) { self::__construct($name); }
 
     /**
     * Called before the test functions will be executed this function is defined in PHPUnit_TestCase and overwritten here

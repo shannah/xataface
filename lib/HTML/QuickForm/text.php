@@ -46,12 +46,13 @@ class HTML_QuickForm_text extends HTML_QuickForm_input
      * @access    public
      * @return    void
      */
-    function HTML_QuickForm_text($elementName=null, $elementLabel=null, $attributes=null)
+    function __construct($elementName=null, $elementLabel=null, $attributes=null)
     {
         HTML_QuickForm_input::HTML_QuickForm_input($elementName, $elementLabel, $attributes);
         $this->_persistantFreeze = true;
         $this->setType('text');
     } //end constructor
+        function HTML_QuickForm_text($elementName=null, $elementLabel=null, $attributes=null) { self::__construct($elementName, $elementLabel, $attributes); }
         
     // }}}
     // {{{ setSize()

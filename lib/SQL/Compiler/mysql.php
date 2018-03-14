@@ -28,11 +28,12 @@ require_once 'SQL/Compiler.php';
  */
 class SQL_Compiler_mysql extends SQL_Compiler {
 
-	function SQL_Compiler_mysql( $array = null ){
+	function __construct( $array = null ){
 		$this->SQL_Compiler($array);
 		$this->type = 'mysql';
 	
 	}
+		function SQL_Compiler_mysql($array=null) { self::__construct($array); }
 	
 	/**
 	 * Wraps identifier in back-ticks.

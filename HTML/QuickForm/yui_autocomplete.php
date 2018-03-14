@@ -12,7 +12,7 @@ class HTML_QuickForm_yui_autocomplete extends HTML_QuickForm_text {
 	var $scriptQueryParam='-search';
 	
 	
-	function HTML_QuickForm_yui_autocomplete($elementName=null, $elementLabel=null, $attributes=null, $properties=null){
+	function __construct($elementName=null, $elementLabel=null, $attributes=null, $properties=null){
 		parent::HTML_QuickForm_text($elementName, $elementLabel, $attributes);
 		$this->updateAttributes(array(
 			'df:cloneable'=>1, 
@@ -24,6 +24,7 @@ class HTML_QuickForm_yui_autocomplete extends HTML_QuickForm_text {
 		
 	
 	}
+    	function HTML_QuickForm_yui_autocomplete($elementName=null, $elementLabel=null, $attributes=null, $properties=null) { self::__construct($elementName, $elementLabel, $attributes, $properties); }
 	
 	/**
      * Returns the textarea element in HTML

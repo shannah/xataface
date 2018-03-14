@@ -37,10 +37,11 @@ class Dataface_ImportRecord {
 	 * }
 	 * </code>
 	 */
-	function Dataface_ImportRecord($classpath, $data){
+	function __construct($classpath, $data){
 		$this->classpath = $classpath;
 		$this->load($data);
 	}
+		function Dataface_ImportRecord($classpath, $data) { self::__construct($classpath, $data); }
 
 
 	/**

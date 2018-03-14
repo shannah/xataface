@@ -165,26 +165,6 @@ class XML_Parser extends PEAR
     var $_handlerObj;
 
     // }}}
-    // {{{ constructor
-
-    /**
-     * Creates an XML parser.
-     *
-     * This is needed for PHP4 compatibility, it will
-     * call the constructor, when a new instance is created.
-     *
-     * @param string $srcenc source charset encoding, use NULL (default) to use
-     *                       whatever the document specifies
-     * @param string $mode   how this parser object should work, "event" for
-     *                       startelement/endelement-type events, "func"
-     *                       to have it call functions named after elements
-     * @param string $tgenc  a valid target encoding
-     */
-    function XML_Parser($srcenc = null, $mode = 'event', $tgtenc = null)
-    {
-        XML_Parser::__construct($srcenc, $mode, $tgtenc);
-    }
-    // }}}
 
     /**
      * PHP5 constructor
@@ -204,6 +184,9 @@ class XML_Parser extends PEAR
         $this->srcenc = $srcenc;
         $this->tgtenc = $tgtenc;
     }
+    function XML_Parser($srcenc = null, $mode = 'event', $tgtenc = null) {
+        self::__construct($srcenc, $mode, $tgtenc);
+    }
     // }}}
 
     /**
@@ -221,7 +204,7 @@ class XML_Parser extends PEAR
      *
      * @access  public
      * @param   string          mode, either 'func' or 'event'
-     * @return  boolean|object  true on success, PEAR_Error otherwise   
+     * @return  boolean|object  true on success, PEAR_Error otherwise
      */
     function setMode($mode)
     {
@@ -381,7 +364,7 @@ class XML_Parser extends PEAR
             	return self::raiseError('Remote files cannot be parsed, as safe mode is enabled.', XML_PARSER_ERROR_REMOTE);
             }
         }
-        
+
         $fp = @fopen($file, 'rb');
         if (is_resource($fp)) {
             $this->fp = $fp;
@@ -392,12 +375,12 @@ class XML_Parser extends PEAR
 
     // }}}
     // {{{ setInputString()
-    
+
     /**
      * XML_Parser::setInputString()
-     * 
+     *
      * Sets the xml input from a string
-     * 
+     *
      * @param string $data a string containing the XML document
      * @return null
      **/
@@ -406,7 +389,7 @@ class XML_Parser extends PEAR
         $this->fp = $data;
         return null;
     }
-    
+
     // }}}
     // {{{ setInput()
 
@@ -414,7 +397,7 @@ class XML_Parser extends PEAR
      * Sets the file handle to use with parse().
      *
      * You should use setInputFile() or setInputString() if you
-     * pass a string 
+     * pass a string
      *
      * @param    mixed  $fp  Can be either a resource returned from fopen(),
      *                       a URL, a local filename or a string.
@@ -465,7 +448,7 @@ class XML_Parser extends PEAR
         }
         // if $this->fp was fopened previously
         if (is_resource($this->fp)) {
-        
+
             while ($data = fread($this->fp, 4096)) {
                 if (!$this->_parseString($data, feof($this->fp))) {
                     $error = &self::raiseError();
@@ -488,7 +471,7 @@ class XML_Parser extends PEAR
 
     /**
      * XML_Parser::_parseString()
-     * 
+     *
      * @param string $data
      * @param boolean $eof
      * @return bool
@@ -499,13 +482,13 @@ class XML_Parser extends PEAR
     {
         return xml_parse($this->parser, $data, $eof);
     }
-    
+
     // }}}
     // {{{ parseString()
 
     /**
      * XML_Parser::parseString()
-     * 
+     *
      * Parses a string.
      *
      * @param    string  $data XML data
@@ -519,7 +502,7 @@ class XML_Parser extends PEAR
         if (!isset($this->parser) || !is_resource($this->parser)) {
             $this->reset();
         }
-        
+
         if (!$this->_parseString($data, $eof)) {
            $error = &self::raiseError();
            $this->free();
@@ -531,12 +514,12 @@ class XML_Parser extends PEAR
         }
         return true;
     }
-    
+
     /**
      * XML_Parser::free()
-     * 
+     *
      * Free the internal resources associated with the parser
-     * 
+     *
      * @return null
      **/
     function free()
@@ -551,23 +534,24 @@ class XML_Parser extends PEAR
         unset($this->fp);
         return null;
     }
-    
+
     /**
      * XML_Parser::raiseError()
-     * 
+     *
      * Throws a XML_Parser_Error
-     * 
+     *
      * @param string  $msg   the error message
      * @param integer $ecode the error message code
-     * @return XML_Parser_Error 
+     * @return XML_Parser_Error
      **/
-    static function raiseError($msg = null, $ecode = 0)
+    static function & raiseError($message = NULL, $code = 0, $mode = NULL, $options = NULL, $userinfo = NULL, $error_class = NULL, $skipmsg = false)
+    //static function raiseError($msg = null, $ecode = 0)
     {
         //$msg = !is_null($msg) ? $msg : $this->parser;
         $err = new XML_Parser_Error($msg, $ecode);
         return parent::raiseError($err);
     }
-    
+
     // }}}
     // {{{ funcStartHandler()
 
@@ -651,7 +635,7 @@ class XML_Parser_Error extends PEAR_Error
     * prefix for all messages
     *
     * @var      string
-    */    
+    */
     var $error_message_prefix = 'XML_Parser: ';
 
     // }}}
@@ -668,8 +652,8 @@ class XML_Parser_Error extends PEAR_Error
     * @param    integer             error code
     * @param    integer             error handling
     * @param    integer             error level
-    */    
-    function XML_Parser_Error($msgorparser = 'unknown error', $code = 0, $mode = PEAR_ERROR_RETURN, $level = E_USER_NOTICE)
+    */
+    function __construct($msgorparser = 'unknown error', $code = 0, $mode = PEAR_ERROR_RETURN, $level = E_USER_NOTICE)
     {
         if (is_resource($msgorparser)) {
             $code = xml_get_error_code($msgorparser);
@@ -679,6 +663,9 @@ class XML_Parser_Error extends PEAR_Error
                                    xml_get_current_column_number($msgorparser));
         }
         $this->PEAR_Error($msgorparser, $code, $mode, $level);
+    }
+    function XML_Parser_Error($msgorparser = 'unknown error', $code = 0, $mode = PEAR_ERROR_RETURN, $level = E_USER_NOTICE) {
+        self::__construct($msgorparser, $code, $mode, $level);
     }
     // }}}
 }
