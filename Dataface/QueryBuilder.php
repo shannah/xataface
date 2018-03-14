@@ -437,7 +437,7 @@ class Dataface_QueryBuilder {
 		$keys =& $this->_table->keys();
 		$insertedKeys = array();
 		$insertedValues = array();
-<<<<<<< HEAD
+
 		$authTool = class_exists('Dataface_AuthenticationTool') ? Dataface_AuthenticationTool::getInstance() : null;
 		
 		$gid = $tableObj->setGroup;  // group
@@ -454,9 +454,6 @@ class Dataface_QueryBuilder {
 		}
 		
 		
-=======
-
->>>>>>> master
 		foreach ($this->_mutableFields as $key=>$field){
 			if ( @$field['ignore'] ) continue;
 			if ( $tableObj->isDate($key) ){
