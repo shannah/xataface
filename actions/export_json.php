@@ -202,7 +202,7 @@ class dataface_actions_export_json {
 		$useDifferentDisplayMethodForFiles = ($displayMethodForFiles !== $displayMethod);
 		$table = null;
 		foreach ($records as $record){
-			if ( !$record->checkPermission('export_json')  ){
+			if ( !$record->checkPermission('view')  ){
 				continue;
 			}
 			$table = $record->table();
@@ -219,7 +219,7 @@ class dataface_actions_export_json {
                 if ( is_array($fields) ){
                     $allowed_fields = array();
                     foreach ($fields as $field ){
-                        if ( !$record->checkPermission('export_json', array('field'=>$field) ) ){
+                        if ( !$record->checkPermission('view', array('field'=>$field) ) ){
                             continue;
                         }
                         $allowed_fields[] = $field;
@@ -248,7 +248,7 @@ class dataface_actions_export_json {
 						$orow = new StdClass;
 
 						foreach ($o->getAttributes() as $key=>$att) {
-							if ( !$individual->checkPermission('export_json', array('field'=>$field) ) ){
+							if ( !$individual->checkPermission('view', array('field'=>$field) ) ){
 								continue;
 	                        }
 							$orow->{$key} = $individual->$displayMethod($key);
