@@ -519,7 +519,7 @@ class Dataface_AuthenticationTool {
 		$null = null;
 		if ( !$this->authEnabled ) return $null;
 		if ( isset($this->delegate) and method_exists($this->delegate, 'getLoggedInUser') ){
-			$user =&  $this->delegate->getLoggedInUser();
+			$user =  $this->delegate->getLoggedInUser();
 			return $user;
 		}
 		if ( !$this->isLoggedIn() ) return $null;
