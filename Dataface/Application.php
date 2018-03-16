@@ -2411,8 +2411,7 @@ END
 					//print_r($action);
 					$permissions = $this->getPermissions($params);
 				}
-
-				if ( isset($action['permission']) && !(isset($permissions[$action['permission']]) and $permissions[$action['permission']]) ){
+                                if ( isset($action['permission']) && !(isset($permissions[$action['permission']]) and $permissions[$action['permission']]) ){
 
                                     if ( !$permissions ){
                                         return Dataface_Error::permissionDenied(df_translate(

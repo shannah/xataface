@@ -1098,6 +1098,15 @@ END;
 			$this->_record->clearValues();
 		}
 		$res = $this->push();
+                if (@$_POST['--null-fields']) {
+                    $nullFields = array_map('trim', explode(' ', $_POST['--null-fields']));
+                    foreach ($nullFields as $fldname) {
+                        $val = $this->_record->val($fldname);
+                        if (isset($val)) {
+                            $this->_record->setValue($fldname, null);
+                        }
+                    }
+                }
 		if ( !$this->_new ){
 			if ( $this->_record->snapshotExists() ){
 
