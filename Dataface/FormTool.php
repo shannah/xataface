@@ -542,6 +542,9 @@ class Dataface_FormTool {
 			if ( $vname == 'required' && $widget['type'] == 'file' ){
 				continue;
 			}
+                        if ($vname == 'required' and ((@$field['role.user'] == 'OWNER') or (@$field['role.group'] == 'OWNER'))) {
+                            continue;
+                        }
 			$clientSide = (
 				($widget['type'] == 'htmlarea' or @$widget['validation'] == 'server' or $el->getAttribute('data-validation') == 'server'  ) ?
 				null

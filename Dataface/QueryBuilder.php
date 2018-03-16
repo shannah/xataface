@@ -440,19 +440,27 @@ class Dataface_QueryBuilder {
 
 		$authTool = class_exists('Dataface_AuthenticationTool') ? Dataface_AuthenticationTool::getInstance() : null;
 		
-		$gid = $tableObj->setGroup;  // group
+		$gid = null;  // group
 		$uid = null;  // owner
-		$rgid = $tableObj->setReviewersGroup; // reviewer group
+		$rgid =null;
 		
-		$ownerField = $tableObj->ownerField;
-		$groupField = $tableObj->groupField;
-		$reviewersField = $table->reviewersField;
+		$ownerField = null;
+		$groupField = null;
+		$reviewersField = null;
+                foreach ($tableObj->getRoleFields() as $field) {
+                    if (@$field['role.user'] and $field['role.user'] == 'OWNER') {
+                        $ownerField = $field['name'];
+                    }
+                    
+                    if (@$field['role.group'] and $field['role.group'] == 'OWNER') {
+                        $groupField = $field['name'];
+                    }
+                }
 		
 		if ($authTool !== null) {
 		    $gid = $gid ? $gid : $authTool->getPrimaryGroup();
 		    $uid = $authTool->getLoggedInUserName();
 		}
-		
 		
 		foreach ($this->_mutableFields as $key=>$field){
 			if ( @$field['ignore'] ) continue;
@@ -471,7 +479,7 @@ class Dataface_QueryBuilder {
 			if ( !$record->hasValue($key) ){
 			    // We only auto-set owner and group fields if they don't 
 			    // already have a value set
-			    if ($uid !== null && $ownersField !== null && strcmp($ownerField, $key) === 0) {
+			    if ($uid !== null and $ownerField !== null and strcmp($ownerField, $key) === 0) {
 			        $insertedKeys[] = '`'.$key.'`';
 			        $insertedValues[] = $this->prepareValue($key, $uid);
 			    } else if ($gid !== null && $groupField !== null && strcmp($groupField, $key) === 0) {

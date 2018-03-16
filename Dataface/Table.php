@@ -2779,7 +2779,7 @@ class Dataface_Table {
 	 * Gets fields involved in assigning roles to users.
 	 */
 	private $_roleFields;
-	private function &getRoleFields() {
+	public function &getRoleFields() {
 	    if (!isset($this->_roleFields)) {
 	        $this->_roleFields = array();
 	        $roleFields =& $this->_roleFields;
@@ -2796,6 +2796,7 @@ class Dataface_Table {
 	                }
 	                $roleFields[] =& $field;
 	            } else if (@$field['role.user']) {
+                        
 	                if (is_numeric($field['role.user'])) {
 	                    $field['role.user'] = $field['name'];
 	                }
@@ -2878,6 +2879,12 @@ class Dataface_Table {
 	        }
 	        
 	    }
+            $auth = Dataface_AuthenticationTool::getInstance();
+	    if ($auth and $auth->isLoggedIn()) {
+	        $out[] = 'LOGGED IN';
+	    } else {
+	        $out[] = 'ANONYMOUS';
+	    }
 	    return $out;
 	}
 
@@ -2903,10 +2910,7 @@ class Dataface_Table {
 	        $appDel = Dataface_Application::getInstance()->getDelegate();
 	        if (isset($appDel)) {
 	            if (method_exists($appDel, 'getPermissions') or method_exists($delegate, 'getRoles')) {
-	                $this->_useGroupBasedRecordPermissions = isset($this->ownerField) or 
-                            isset($this->groupField) or 
-                            isset($this->tableOwner) or 
-                            isset($this->tableGroup);
+	                $this->_useGroupBasedRecordPermissions = false;
                     return $this->_useGroupBasedRecordPermissions;
 	            }
 	        }
@@ -2926,70 +2930,82 @@ class Dataface_Table {
 	    $auth = Dataface_AuthenticationTool::getInstance();
 	    $readOnly = false;
 	    if ($auth->usersTable and strcasecmp($auth->usersTable, $this->tablename) === 0) {
-            // Default values for fields in the users table
-            // NOBODY should be able to change the username of an added user
-            // EVEN admins
-            if ($auth->usernameColumn and strcasecmp($auth->usernameColumn, $fieldName) === 0) {
-                // This is the username column.  You shouldn't be able to change your username
-                $readOnly = true;
-                
+                // Default values for fields in the users table
+                // NOBODY should be able to change the username of an added user
+                // EVEN admins
+                if ($auth->usernameColumn and strcasecmp($auth->usernameColumn, $fieldName) === 0) {
+                    // This is the username column.  You shouldn't be able to change your username
+                    $readOnly = true;
+
+                }
             }
             
-        }
-	    if (function_exists('isAdmin') and isAdmin()) {
-            // Let's refine this later.  Even admins shouldn't be able to do some
-            // things.  E.g. changing usernames
-            $perms = Dataface_PermissionsTool::ALL();
-            if ($readOnly) {
-                $perms['edit'] = 0;
+            $field =& $this->getField($fieldName);
+            if (!$readOnly and (@$field['role.user'] == 'OWNER' or @$field['role.group'] == 'OWNER')) {
+                if ($record and !$record->checkPermission('edit ownership')) {
+                    $readOnly = true;
+                } else if (!$record and !@$this->getPermissions()['edit ownership']) {
+                    $readOnly = true;
+                }
             }
-            return $perms;
-        } else {
-            if (isset($record)) {
-                $workflowState = $this->getWorkflowStatus($record);
-                if (!isset($record->_groupBasedFieldPermissions[$fieldName][$workflowState])) {
-                    $perms = array();
-                    if ($readOnly) {
-                        $perms['edit'] = 0;
-                    }
-                    
-                    $user = null;
-                    $groups = null;
-                    $auth = Dataface_AuthenticationTool::getInstance();
-                    if ($auth) {
-                        $user = $auth->getLoggedInUserName();
-                        $groups = $auth->getGroups();
-                    }
-                    
-                    $roles = $this->_getRoles($user, $groups, $record);
-                    if ($fieldName == 'active') {
-                    }
-                    $this->_getRoleFieldPermissions($perms, $fieldName, $workflowState, $roles);
-                    
-                    $record->_groupBasedFieldPermissions[$fieldName][$workflowState] = $perms;
+            
+	    if (function_exists('isAdmin') and isAdmin()) {
+                // Let's refine this later.  Even admins shouldn't be able to do some
+                // things.  E.g. changing usernames
+                $perms = Dataface_PermissionsTool::ALL();
+                if ($readOnly) {
+                    $perms['edit'] = 0;
+                    $perms['new'] = 0;
                 }
-                return $record->_groupBasedFieldPermissions[$fieldName][$workflowState];
+                return $perms;
             } else {
-                if (!isset($this->_groupBasedFieldPermissions[$fieldName])) {
-                    $perms = array();
-                    if ($readOnly) {
-                        $perms['edit'] = 0;
+                if (isset($record)) {
+                    $workflowState = $this->getWorkflowStatus($record);
+                    if (!isset($record->_groupBasedFieldPermissions[$fieldName][$workflowState])) {
+                        $perms = array();
+                        if ($readOnly) {
+                            $perms['edit'] = 0;
+                            $perms['new'] = 0;
+                        }
+
+                        $user = null;
+                        $groups = null;
+                        $auth = Dataface_AuthenticationTool::getInstance();
+                        if ($auth) {
+                            $user = $auth->getLoggedInUserName();
+                            $groups = $auth->getGroups();
+                        }
+
+                        $roles = $this->_getRoles($user, $groups, $record);
+                        if ($fieldName == 'active') {
+                        }
+                        $this->_getRoleFieldPermissions($perms, $fieldName, $workflowState, $roles);
+
+                        $record->_groupBasedFieldPermissions[$fieldName][$workflowState] = $perms;
                     }
-                    $user = null;
-                    $groups = null;
-                    $auth = Dataface_AuthenticationTool::getInstance();
-                    if ($auth) {
-                        $user = $auth->getLoggedInUserName();
-                        $groups = $auth->getGroups();
+                    return $record->_groupBasedFieldPermissions[$fieldName][$workflowState];
+                } else {
+                    if (!isset($this->_groupBasedFieldPermissions[$fieldName])) {
+                        $perms = array();
+                        if ($readOnly) {
+                            $perms['edit'] = 0;
+                            $perms['new'] = 0;
+                        }
+                        $user = null;
+                        $groups = null;
+                        $auth = Dataface_AuthenticationTool::getInstance();
+                        if ($auth) {
+                            $user = $auth->getLoggedInUserName();
+                            $groups = $auth->getGroups();
+                        }
+                        $roles = $this->_getTableRoles($user, $groups);
+                        $this->_getRoleFieldPermissions($perms, $fieldName, $workflowState, $roles);
+
+                        $this->_groupBasedFieldPermissions[$fieldName] = $perms;
                     }
-                    $roles = $this->_getTableRoles($user, $groups);
-                    $this->_getRoleFieldPermissions($perms, $fieldName, $workflowState, $roles);
-                    
-                    $this->_groupBasedFieldPermissions[$fieldName] = $perms;
-                }
-                return $this->_groupBasedFieldPermissions[$fieldName];
-            }  
-        }
+                    return $this->_groupBasedFieldPermissions[$fieldName];
+                }  
+            }
 	}
 	
 	
@@ -3068,7 +3084,6 @@ class Dataface_Table {
         foreach ($roleTypes as $roleType) {
             $roles[] = $roleType;
         }
-        
         
         foreach ($roles as $role) {
             if ($pt->roleExists($role)) {

@@ -520,6 +520,10 @@ class Dataface_QuickForm extends HTML_QuickForm {
 					continue;
 
 				}
+                                if ((@$field['role.user'] == 'OWNER' or @$field['role.group'] == 'OWNER') and !$this->_record->checkPermission('edit ownership')) {
+                                    unset($widget);
+                                    continue;
+                                }
 
 				if ( $groupEmpty ){
 					// This is the first field in the group, so we add a header for the
