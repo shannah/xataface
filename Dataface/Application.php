@@ -2567,7 +2567,9 @@ END
 				if ( Dataface_Error::isPermissionDenied($result) ){
 					// The user did not have permission to perform the action
 					// Give the user a login prompt.
-
+                                        if ($this->_conf['show_login_error_message']) {
+                                            $loginError = $result->getMessage();
+                                        }
 					$loginPrompt = true;
 				}
 

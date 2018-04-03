@@ -909,25 +909,108 @@ function df_tz_or_offset(){
             echo json_encode($data);
         }
         
-        function df_post($url, $data=array(), $json=true) {
-
+        function df_http_parse_headers($headers) {
+            $head = array();
+            foreach( $headers as $k=>$v ) {
+                $t = explode( ':', $v, 2 );
+                if( isset( $t[1] ) ) {
+                    $head[ trim($t[0]) ] = trim( $t[1] );
+                } else {
+                    $head[] = $v;
+                    if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) ) {
+                        $head['response_code'] = intval($out[1]);
+                    }
+                }
+            }
+            //print_r($head);
+            return $head;
+        }
+        
+        $df_http_last_response_headers = null;
+        $df_http_last_response_code;
+        
+        function df_http_response_code() {
+            global $df_http_last_response_headers, $df_http_last_response_code;
+            if (is_int($df_http_last_response_code)) {
+                return $df_http_last_response_code;
+            } else {
+                if (isset($df_http_last_response_headers)) {
+                    $parsed = df_http_parse_headers($df_http_last_response_headers);
+                    $df_http_last_response_code = $parsed['response_code'];
+                    return $df_http_last_response_code;
+                }
+                return 0;
+            }
+        }
+        
+        function df_http_response_headers() {
+            global $df_http_last_response_headers;
+            return $df_http_last_response_headers;
+        }
+        
+        function df_http_post($url, $data=array(), $json=true) {
+            global $df_http_last_response_headers, $dt_http_last_response_code;
+            $df_http_last_response_headers = null;
+            $df_http_last_response_code = null;
+            if (isset($data['HTTP_HEADERS'])) {
+                $headers = $data['HTTP_HEADERS'];
+                unset($data['HTTP_HEADERS']);
+            } else {
+                $headers = '';
+            }
             // use key 'http' even if you send the request to https://...
             $options = array(
                 'http' => array(
-                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'ignore_errors' => true,
+                    'header'  => $headers."Content-Type: application/x-www-form-urlencoded\r\n",
                     'method'  => 'POST',
                     'content' => http_build_query($data)
                 )
             );
+            
             $context  = stream_context_create($options);
             $result = file_get_contents($url, false, $context);
             if ($result === FALSE) {
                 throw new Exception("HTTP request failed");
             }
+            $df_http_last_response_headers = $http_response_header;
+            
+            //print_r($http_response_header);
+            //print_r($result);
             if ($json) {
                 return json_decode($result, true);
             }
             return $result;
         }
         
+        function df_http_get($url, $headers = null, $json = true) {
+            global $df_http_last_response_headers, $dt_http_last_response_code;
+            $df_http_last_response_headers = null;
+            $df_http_last_response_code = null;
+            if (is_array($headers)) {
+                $headers = implode("\r\n", $headers) . "\r\n";
+            }
+            $options = array(
+                'http' => array(
+                    'ignore_errors' => true,
+                    'header' => $headers,
+                    'method' => 'GET',
+                )
+            );
+            if (isset($headers)) {
+                $options['http']['header'] = $headers;
+            }
+            $context = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            if ($result === FALSE) {
+                throw new Exception("HTTP request failed");
+            }
+            $df_http_last_response_headers = $http_response_header;
+            
+            if ($json) {
+                return json_decode($result, true);
+            }
+            return $result;
+        }
+
 } // end if ( !defined( DATAFACE_PUBLIC_API_LOADED ) ){

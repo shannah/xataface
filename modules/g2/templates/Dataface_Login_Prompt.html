@@ -114,9 +114,13 @@
 			
 			</form>
 			{actions category="login_actions" var="login_actions"}
-			<ul>
+			<ul class="login-actions">
 			{foreach from=$login_actions item="action"}
-				<li><a href="{$action.url|escape}">{$action.label|escape}</a></li>
+                            {if $action.image}
+                                <li class="action-{$action.name}"><a href="{$action.url|escape}" title="{$action.title|escape}"><img src="{$action.image|escape}" alt="{$action.label|escape}"/></a></li>
+                            {else}
+				<li class="action-{$action.name}"><a href="{$action.url|escape}" title="{$action.title|escape}">{$action.label|escape}</a></li>
+                            {/if}
 			{/foreach}
 			</ul>
 			{/define_slot}

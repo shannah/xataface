@@ -609,6 +609,24 @@ class Dataface_AuthenticationTool {
 	    return array("FOO","BAR");
 	}
 
+        function getUsersTable() {
+            return Dataface_Table::loadTable($this->usersTable);
+        }
+        
+        function findUser($query) {
+            return df_get_record($this->usersTable, $query);
+        }
+        
+        function findUserByUsername($username) {
+            return $this->findUser(array($this->usernameColumn => '='.$username));
+        }
+        
+        function findUserByEmail($email) {
+            $emailColumn = $this->getEmailColumn();
+            if (isset($emailColumn)) {
+                return $this->findUser(array($emailColumn => "=".$email));
+            }
+        }
 
 }
 
