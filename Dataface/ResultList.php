@@ -652,6 +652,8 @@ END;
 			
 			else $queryColVal = @$query[$col];
 			
+			if ($queryColVal == '') $queryColVal = 'all'; //Facilitates null elements searchs
+			
 			//while ( $row = xf_db_fetch_assoc($res) ){
 			foreach ($res as $row){
 				if ( isset($vocab) and isset($vocab[$row[$col]]) ){
@@ -659,7 +661,7 @@ END;
 				} else {
 					$val = $row[$col];
 				}
-				
+				$row[$col] = (string) $row[$col];//Unifiying type for next comparation. Solves 0 values preselected
 				if ( $queryColVal == $row[$col] ) $selected = ' selected';
 				else $selected = '';
 				echo '<option value="'.df_escape($row[$col]).'"'.$selected.'>'.df_escape($val).' ('.$row['num'].')</option>';
