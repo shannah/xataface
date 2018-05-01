@@ -41,11 +41,11 @@
 						</{$td_tag}>
 					{else}
 						<{$td_tag} {if $element.field.display == 'block'}colspan="2" class="Dataface_QuickForm-textarea-label-cell Dataface_QuickForm-block-label-cell"{/if} valign="top" {if $element.field.display != 'block'}align="right" class="Dataface_QuickForm-label-cell"{/if}>
-						<div class="field {if $element.error}error{/if}" id="{$element.field.tablename}-{$element.field.name}-label-wrapper">
+						<div class="field {if $element.error}error{/if}" id="{$element.field.tablename|escape}-{$element.field.name}-label-wrapper">
 							
-							<label for="{$element.field.name}">
+							<label for="{$element.field.name|escape}">
 								{if $element.field.label_link or $element.field.label_click}<a href="{if $element.field.label_link}{$element.field.label_link|escape}{else}#{/if}" target="_blank" {if $element.field.label_click}onclick="{$element.field.label_click|escape}" {/if}class="field-label-link no-link-icon">{/if}
-									{$element.field.widget.label}
+									{$element.field.widget.label|escape}
 								{if $element.field.label_link or $element.field.label_click}</a>{/if}
 							</label>
 						
@@ -70,18 +70,18 @@
 							
 						
 						{if $element.properties.preview}
-							<div id="{$element.field.tablename}-{$element.field.name}-preview">
+							<div id="{$element.field.tablename|escape}-{$element.field.name|escape}-preview">
 								{define_slot name="`$element.field.name`_preview_image" src=$element.properties.image_preview}
 								{if $element.properties.image_preview}
 								
-									<img src="{$element.properties.image_preview}" style="display: block; max-height: 200px" alt="{$element.field.name} preview image"/>
+									<img src="{$element.properties.image_preview|escape}" style="display: block; max-height: 200px" alt="{$element.field.name} preview image"/>
 								
 								{/if}
 								{/define_slot}
 								<script type="text/javascript" language="javascript">
 								require(DATAFACE_URL+'/js/delete_file.js');
 								</script>
-								{define_slot name="`$element.field.name`_preview_link" src=$element.properties.preview}<a href="{$element.properties.preview}" target="_blank">{translate id="scripts.GLOBAL.MESSAGE_VIEW_FIELD_CONTENT"}View Field Content in new Window{/translate}</a>{/define_slot}
+								{define_slot name="`$element.field.name`_preview_link" src=$element.properties.preview}<a href="{$element.properties.preview|escape}" target="_blank">{translate id="scripts.GLOBAL.MESSAGE_VIEW_FIELD_CONTENT"}View Field Content in new Window{/translate}</a>{/define_slot}
 								{define_slot name="`$element.field.name`_delete_link"}<a class="delete-file-link" href="#" title="Delete this file" onclick="Xataface.deleteFile('{$element.properties.record_url}', '{$element.field.Field}', '{$element.field.tablename}-{$element.field.name}-preview');return false;"><img src="{$ENV.DATAFACE_URL}/images/delete.gif" alt="Delete"/></a>{/define_slot}
 							</div>
 						{/if}
@@ -102,7 +102,7 @@
 									<fieldset>
 									<legend>
 									{if $element.field.label_link or $element.field.label_click}<a href="{if $element.field.label_link}{$element.field.label_link|escape}{else}#{/if}" target="_blank" {if $element.field.label_click}onclick="{$element.field.label_click}"{/if} class="field-label-link no-link-icon">{/if}
-										{$element.field.widget.label}
+										{$element.field.widget.label|escape}
 									{if $element.field.label_link or $element.field.label_click}</a>{/if}
 									</legend>
 									<table>
@@ -112,7 +112,7 @@
 												<div class="field {if $groupel.error}error{/if} id="{$element.field.tablename}-{$element.field.name}-{$groupel.field.name}-label-wrapper">
 													<label>
 														{if $groupel.field.label_link or $groupel.field.label_click}<a href="{if $groupel.field.label_link}{$groupel.field.label_link|escape}{else}#{/if}" target="_blank" {if $groupel.field.label_click}onclick="{$groupel.field.label_click|escape}"{/if} class="field-label-link no-link-icon">{/if}
-															{$groupel.field.widget.label}
+															{$groupel.field.widget.label|escape}
 														{if $groupel.field.label_link or $groupel.field.label_click}</a>{/if}
 													</label>
 													{if $groupel.required}
@@ -174,7 +174,7 @@
 							*}
 							{if $element.field.widget.type == 'select' and $element.field.widget.editvalues}
 								<script language="javascript"><!--
-								require('{$ENV.DATAFACE_URL}/js/ajax.js');
+								require('{$ENV.DATAFACE_URL|escape:javascript}/js/ajax.js');
 								makeSelectEditable('{$element.field.tablename}', '{$element.field.vocabulary}', document.getElementById('{$element.field.name}'));
 								//--></script>
 							{/if}
@@ -184,7 +184,7 @@
 							{/if}
 							
 							{if $element.properties.link}
-								<a href="{$element.properties.link}">Go</a>
+								<a href="{$element.properties.link|escape}">Go</a>
 							{/if}
 							{if $element.field.actions}
 								{actions_menu class="field_actions" id="field_actions-`$element.field.name`"  category=$element.field.actions var="actions"}

@@ -12,7 +12,7 @@
         var css = document.createElement('link');
         css.type='text/css';
         css.rel='stylesheet';
-        css.href='{$ENV.DATAFACE_URL}/css/jquery.tabs.css';
+        css.href='{$ENV.DATAFACE_URL|escape:javascript}/css/jquery.tabs.css';
         head[0].appendChild(css);
         </script>
         <!--[if lte IE 7]>
@@ -21,7 +21,7 @@
         var css = document.createElement('link');
         css.type='text/css';
         css.rel='stylesheet';
-        css.href='{$ENV.DATAFACE_URL}/css/jquery.tabs-ie.css';
+        css.href='{$ENV.DATAFACE_URL|escape:javascript}/css/jquery.tabs-ie.css';
         head[0].appendChild(css);
         </script>
         <![endif]-->

@@ -20,8 +20,8 @@ function moveDown(id){
 
 
 {/literal}
-<form style="display: none" name="moveRecordForm" method="POST" action="{$ENV.APPLICATION_OBJECT->url('-action=reorder_related_records')}">
-	<input type="hidden" name="-redirect" value="{$ENV.SERVER.PHP_SELF}?{$ENV.SERVER.QUERY_STRING}"/>
+<form style="display: none" name="moveRecordForm" method="POST" action="{$ENV.APPLICATION_OBJECT->url('-action=reorder_related_records')|escape}">
+	<input type="hidden" name="-redirect" value="{$ENV.SERVER.PHP_SELF|escape}?{$ENV.SERVER.QUERY_STRING|escape}"/>
 	<input type="hidden" name="-reorder:index"/>
 	<input type="hidden" name="-reorder:direction"/>
 </form>

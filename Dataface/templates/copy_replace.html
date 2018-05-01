@@ -13,13 +13,13 @@
 	   	<tr>
 	   		<th>{translate id="templates.copy_replace.th_title"}Title{/translate}</th>
 	   		{foreach from=$columns item="column"}
-	   			<th>{$column.widget.label}</th>
+	   			<th>{$column.widget.label|escape}</th>
 	   		{/foreach}
 	   	</tr>
 	   </thead>
 	   <tbody>
 	  {foreach from=$records item=record}
-	  	<tr><td>{$record->getTitle()}</td>
+	  	<tr><td>{$record->getTitle()|escape}</td>
 	  	{foreach from=$columns item="column"}
 	  		<td>{$record->preview($column.name)}</td>
 	  	{/foreach}
@@ -60,7 +60,7 @@
 	<div id="copy_replace-form">
 	
 	{$form}
-	<p><img src="{$ENV.DATAFACE_URL}/images/exclamation.gif"/>{$warning}</p>
+	<p><img src="{$ENV.DATAFACE_URL|escape}/images/exclamation.gif"/>{$warning}</p>
 	
 	</div>
 	

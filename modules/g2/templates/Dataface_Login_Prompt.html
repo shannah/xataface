@@ -77,7 +77,7 @@
 			{/if}
 			
 			{if $msg}<div class="portalMessage">{$msg}</div>{/if}
-			<form action="{$ENV.DATAFACE_SITE_HREF}" method="post" class="xataface-login-form">
+			<form action="{$ENV.DATAFACE_SITE_HREF|escape}" method="post" class="xataface-login-form">
 			<input type="hidden" name="-action" value="login" />
 			{if !$redirect}
 				{assign var=rkey1 value="-redirect"}

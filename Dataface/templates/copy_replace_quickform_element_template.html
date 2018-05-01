@@ -6,7 +6,7 @@
 		<!-- BEGIN required --><span style="color: #ff0000" class="fieldRequired" title="required">&nbsp;</span><!-- END required -->
 		<!-- BEGIN error --><div class="fieldError" style="color: #ff0000">{literal}{error}{/literal}</div><!-- END error -->
 		{literal}{element}{/literal}
-		(<input type="checkbox" name="-copy_replace:blank_flag[{$fieldname}]" label="Leave Blank"><label for="-copy_replace:blank_flag[{$fieldname}]">{translate id="templates.copy_replace_quickform_element_template.LABEL_MAKE_BLANK"}Make Blank{/translate}</label>)
+		(<input type="checkbox" name="-copy_replace:blank_flag[{$fieldname}]" label="Leave Blank"><label for="-copy_replace:blank_flag[{$fieldname|escape}]">{translate id="templates.copy_replace_quickform_element_template.LABEL_MAKE_BLANK"}Make Blank{/translate}</label>)
 	
 		<button class="xf-remove-field"><span>{translate id="templates.copy_replace_quickform_element_template.LABEL_REMOVE_FIELD"}Remove Field{/translate}</span></button>
 	</td>

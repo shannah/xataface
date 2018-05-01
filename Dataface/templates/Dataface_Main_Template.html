@@ -29,10 +29,10 @@
 	{/if}
 	
 	{define_slot name="html_head"}
-		<meta http-equiv="Content-Type" content="text/html; charset={$ENV.APPLICATION.oe}"/>
+		<meta http-equiv="Content-Type" content="text/html; charset={$ENV.APPLICATION.oe|escape}"/>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" /> 
                 <title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
-		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL}/plone.css"/>{/define_slot}
+		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css"/>{/define_slot}
 		{define_slot name="custom_stylesheets"}<!-- Stylesheets go here -->{/define_slot}
 		{block name="custom_stylesheets2"}
 		{define_slot name="dataface_javascripts"}
@@ -41,18 +41,18 @@
 		
 		
 		<script type="text/javascript" language="javascript"><!--
-		DATAFACE_URL = '{$ENV.DATAFACE_URL}';
-		DATAFACE_SITE_URL = '{$ENV.DATAFACE_SITE_URL}';
-		DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF}';
+		DATAFACE_URL = '{$ENV.DATAFACE_URL|addslashes}';
+		DATAFACE_SITE_URL = '{$ENV.DATAFACE_SITE_URL|escape:javascript}';
+		DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF|escape:javascript}';
 		
 		//--></script>
 	
 		<script type="text/javascript"
-				src="{$ENV.DATAFACE_URL}/plone_javascripts.js">
+				src="{$ENV.DATAFACE_URL|escape}/plone_javascripts.js">
 		</script>
 		{if $ENV.APPLICATION.usage_mode == 'edit'}
 		<script type="text/javascript"
-				src="{$ENV.DATAFACE_URL}/js/editable.js">
+				src="{$ENV.DATAFACE_URL|escape}/js/editable.js">
 		</script>
 		{/if}
 		
@@ -79,7 +79,7 @@
 	</head>
 	<body onload="bodyOnload()" {block name="body_atts"}>
 
-		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')}"
+		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')|escape}"
           title="RSS 1.0" type="application/rss+xml" />
 
 	{block name="before_body"}
@@ -93,9 +93,9 @@
 		{block name="before_search"}
 		{define_slot name="search_form"}
 		<div class="search_form" style="float: right; white-space: nowrap" id="top-search-form">
-			<form method="GET" action="{$smarty.server.HOST_URI}{$ENV.DATAFACE_SITE_HREF}">
+			<form method="GET" action="{$smarty.server.HOST_URI|escape}{$ENV.DATAFACE_SITE_HREF|escape}">
 			<label>{translate id="scripts.GLOBAL.LABEL_SEARCH"}Search{/translate}:</label>
-			<input type="hidden" name="-table" value="{$ENV.APPLICATION_OBJECT->_currentTable}"/>
+			<input type="hidden" name="-table" value="{$ENV.APPLICATION_OBJECT->_currentTable|escape}"/>
 			<input type="text" name="-search" value="{$ENV.search|escape}"/>
 			{actions category="find_actions" var="find_actions"}
 			{if $find_actions|@count > 1}
@@ -109,7 +109,7 @@
 				{if !$option_value}
 					{assign var=option_value value=$find_action.name}
 				{/if}
-				<option value="{$option_value}">{$option_label}</option>
+				<option value="{$option_value|escape}">{$option_label|escape}</option>
 			{/foreach}
 			</select>
 			{else}
@@ -119,7 +119,7 @@
 				{if !$option_value}
 					{assign var=option_value value=$find_action.name}
 				{/if}
-				<input type="hidden" name="-action" value="{$option_value}"/>
+				<input type="hidden" name="-action" value="{$option_value|escape}"/>
 			{/foreach}
 				
 			{/if}
@@ -150,11 +150,11 @@
 		<div id="user-status">
 		{if $ENV.username}
 			{block name="before_user_status_logged_in"}
-			{define_slot name="user_status_logged_in"}{assign var='username' value=$ENV.username}{translate id="Logged in as user" username=$username}Logged in as {$username}{/translate} (<a href="{$APP->url('-action=logout')}" title="{translate id="scripts.GLOBAL.LABEL_LOGOUT}Logout{/translate}">{translate id="scripts.GLOBAL.LABEL_LOGOUT}Logout{/translate}</a>){/define_slot}
+			{define_slot name="user_status_logged_in"}{assign var='username' value=$ENV.username}{translate id="Logged in as user" username=$username}Logged in as {$username|escape}{/translate} (<a href="{$APP->url('-action=logout')|escape}" title="{translate id="scripts.GLOBAL.LABEL_LOGOUT}Logout{/translate}">{translate id="scripts.GLOBAL.LABEL_LOGOUT}Logout{/translate}</a>){/define_slot}
 			{block name="after_user_status_logged_in"}
 		{elseif $APP->getAuthenticationTool()}
 			{block name="before_user_status_not_logged_in"}
-			{define_slot name="user_status_not_logged_in"}<a href="{$APP->url('-action=login')}" title="Login">{translate id="scripts.GLOBAL.LABEL_LOGIN"}Login{/translate}</a>{/define_slot}
+			{define_slot name="user_status_not_logged_in"}<a href="{$APP->url('-action=login')|escape}" title="Login">{translate id="scripts.GLOBAL.LABEL_LOGIN"}Login{/translate}</a>{/define_slot}
 			{block name="after_user_status_not_logged_in"}
 		{/if}
 		</div>

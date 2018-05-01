@@ -23,7 +23,7 @@
 			table=$ENV.table_object->getLabel()
 			cursor=$ENV.resultSet->cursor()+1
 			total=$ENV.resultSet->cardinality()
-			}<b>Found</b> {$ENV.resultSet->found()} of {$ENV.resultSet->cardinality()} records in table <b><i>{$ENV.table_object->getLabel()}</i></b>
+			}<b>Found</b> {$ENV.resultSet->found()} of {$ENV.resultSet->cardinality()} records in table <b><i>{$ENV.table_object->getLabel()|escape}</i></b>
 			<br/><b>Now Showing</b> {$ENV.resultSet->cursor()+1} of {$ENV.resultSet->found()}{/translate}
 			
 	</div>

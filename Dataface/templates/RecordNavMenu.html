@@ -187,8 +187,8 @@
 	{foreach from=$relationships item="relationship"}
 	<li class="level1" >
 		<img src="{$ENV.DATAFACE_URL}/images/treeCollapsed.gif" alt="Show details" onclick="expandNode(this,'{$record->getId()}/{$relationship.name}')" />&nbsp;
-		{$relationship.label}
-		<ul style="display: none" id="navtree-{$record->getId()}/{$relationship.name}">
+		{$relationship.label|escape}
+		<ul style="display: none" id="navtree-{$record->getId()|escape}/{$relationship.name|escape}">
 			<li>{translate id="templates.RecordNavMenu.MESSAGE_LOADING"}Loading ...{/translate}</li>
 		
 		</ul>

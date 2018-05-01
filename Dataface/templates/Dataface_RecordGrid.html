@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  *}
-<table id="{$id}" class="listing {$class}">
+<table id="{$id}" class="listing {$class|escape}">
 	<thead>
 		<tr>
 		{foreach from=$labels item=label}
-		<th>{$label}</th>
+		<th>{$label|escape}</th>
 		{/foreach}
 		</tr>
 	</thead>

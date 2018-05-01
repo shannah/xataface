@@ -20,10 +20,10 @@
 <ul class="contentViews">
 {section loop=$tabs name="i"}
             
-              <li id="contentview-{$tabs[i].name}"
+              <li id="contentview-{$tabs[i].name|escape}"
                   {if $tabs[i].name==$selectedTab}class="selected"{else}class="plain"{/if}>
-                <a href="{$tabs[i].link}"
-                   accesskey="{$tabs[i].accessKey}">{$tabs[i].label}</a>
+                <a href="{$tabs[i].link|escape}"
+                   accesskey="{$tabs[i].accessKey|escape}">{$tabs[i].label|escape}</a>
               </li>
             
 {/section}

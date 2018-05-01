@@ -3,7 +3,7 @@
 <table class="record-view-table"><tbody>
 {foreach from=$fields item=field}
 
-	<tr><th>{$field.fielddef.widget.label|escape}</th><td id="{$field.tdid}" class="{$field.tdclass}">{$field.value}</td></tr>
+	<tr><th>{$field.fielddef.widget.label|escape}</th><td id="{$field.tdid|escape}" class="{$field.tdclass|escape}">{$field.value|escape}</td></tr>
 
 {/foreach}
 </tbody></table>

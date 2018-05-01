@@ -29,7 +29,7 @@
 		{block name="before_record_heading"}
 		{define_slot name="record_heading"}
 
-			<h2 class="dataface-record-title">{if $ENV.record}<span class="dataface-current-record-prelabel"><b>{translate id="templates.Dataface_Record.LABEL_CURRENT_RECORD"}Current Record{/translate}:</b> </span>{$ENV.record->getTitle()}{else}No Records Matched your Request{/if}</h2>
+			<h2 class="dataface-record-title">{if $ENV.record}<span class="dataface-current-record-prelabel"><b>{translate id="templates.Dataface_Record.LABEL_CURRENT_RECORD"}Current Record{/translate}:</b> </span>{$ENV.record->getTitle()|escape}{else}No Records Matched your Request{/if}</h2>
 		{/define_slot}
 		{block name="after_record_heading"}
 		{block name="before_record_tabs"}
@@ -51,11 +51,11 @@
 							 {foreach from=$menus item="menu" key="name"}
 			
 							<li>
-								<a href="{$menu.url}"
+								<a href="{$menu.url|escape}"
 								   id="record-actions-menu-{$menu.id}"
 								   onmouseup="if (activeButton != null) resetButton(activeButton);"
-								   title="{$menu.description}">
-								  <img src="{$menu.icon}"
+								   title="{$menu.description|escape}">
+								  <img src="{$menu.icon|escape}"
 									   alt="" width="16" height="16" />
 								  {$menu.label}
 								</a>

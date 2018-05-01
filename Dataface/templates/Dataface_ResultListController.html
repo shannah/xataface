@@ -25,7 +25,7 @@
 			start=$ENV.resultSet->start()+1
 			end=$ENV.resultSet->end()+1
 			total=$ENV.resultSet->cardinality()
-			}<b>Found</b> {$ENV.resultSet->found()} of {$ENV.resultSet->cardinality()} records in table <b><i>{$ENV.table_object->getLabel()}</i></b>
+			}<b>Found</b> {$ENV.resultSet->found()} of {$ENV.resultSet->cardinality()} records in table <b><i>{$ENV.table_object->getLabel()|escape}</i></b>
 			<br/><b>Now Showing</b> {$ENV.resultSet->start()+1} to {$ENV.resultSet->end()+1}{/translate}
 			
 	</div>
