@@ -54,7 +54,7 @@
 			<ul id="edit-record-tabs" class="tabs-nav">
 			
 			{foreach from=$tabs item=tab}
-				<li class="{$tab.css_class}"><a href="{$tab.url}">{$tab.label}</a><span></span></li>
+				<li class="{$tab.css_class|escape}"><a href="{$tab.url|escape}">{$tab.label|escape}</a><span></span></li>
 			{/foreach}
 			</ul>
 			<script language="javascript">
@@ -62,7 +62,7 @@
 			var css = document.createElement('link');
 			css.type='text/css';
 			css.rel='stylesheet';
-			css.href='{$ENV.DATAFACE_URL}/css/jquery.tabs.css';
+			css.href='{$ENV.DATAFACE_URL|escape:"javascript"}/css/jquery.tabs.css';
 			head[0].appendChild(css);
 			</script>
 			<!--[if lte IE 7]>

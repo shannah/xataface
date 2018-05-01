@@ -17,18 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  *}
-<div class="groupField" id="{$field.tablename}-{$field.name}-wrapper">
+<div class="groupField" id="{$field.tablename|escape}-{$field.name|escape}-wrapper">
 {if $properties.translation}
 	<div style="clear: both;"/>
 	<div class="fieldTranslation" id="{$field.name}_translation}">
-	<label>{$field.widget.label}</label>
-	<div>{$properties.translation}</div>
+	<label>{$field.widget.label|escape}</label>
+	<div>{$properties.translation|escape}</div>
 	</div>
 	{/if}
 	{if $properties.translation}
 	<div class="fieldTranslationField">
 	{/if}
-<div class="groupFieldLabelWrapper"><label class="groupFieldLabel"><b>{$field.widget.label}</b></label></div>
+<div class="groupFieldLabelWrapper"><label class="groupFieldLabel"><b>{$field.widget.label|escape}</b></label></div>
 {if $required}
 	<span style="color: #ff0000" class="fieldRequired" title="required">&nbsp;</span>
 {/if}
@@ -37,13 +37,13 @@
 {/if}
 {$element}
 	{if $properties.link}
-		<a href="{$properties.link}">Go</a>
+		<a href="{$properties.link|escape}">Go</a>
 	{/if}
 	{if $field.actions}
 		{actions_menu class="field_actions" id="field_actions-`$field.name`"  category=$field.actions var="actions"}
 	{/if}
 {if $field.widget.description and !$frozen}<div class="formHelp groupFormHelp">{$field.widget.description}</div>{/if}
-	{if $properties.translation}
+	{if $properties.translation|escape}
 	</div>
 	{/if}
 </div>

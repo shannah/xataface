@@ -29,7 +29,7 @@
                            accesskey="accesskeys-navigation"
                            class="table-selection-tab {if $nav.selected}selected{/if}"
                            title="{$nav.label|escape}"
-                           id="TableLink_{$table}">
+                           id="TableLink_{$table|escape}">
                             
                             
                                   {$nav.label|escape}
@@ -57,7 +57,7 @@
                            accesskey="accesskeys-navigation"
                            class="navItem {if $nav.selected}currentNavItem{/if}"
                            title="{$nav.label|escape}"
-                           id="TableLink_{$table}">
+                           id="TableLink_{$table|escape}">
                             <img
     src="{$ENV.DATAFACE_URL}/images/folder_icon.gif" alt="" class="navIconRoot" title="{$nav.label|escape}" />
                             <span class="navItemText">

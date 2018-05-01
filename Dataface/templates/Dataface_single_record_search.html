@@ -1,7 +1,7 @@
 {use_macro file="Dataface_View_Record.html"}
 	{fill_slot name="record_view_main_section"}
 		<h3>Search results for <em>&quot;{$queryString|escape}&quot;</em>
-		<a title="Subscribe to an RSS feed of these results" href="{$ENV.APPLICATION_OBJECT->url('')}&--subsearch={$queryString|escape}&--format=RSS2.0"><img src="{$ENV.DATAFACE_URL}/images/feed-icon-14x14.png" alt="RSS" /></a>
+		<a title="Subscribe to an RSS feed of these results" href="{$ENV.APPLICATION_OBJECT->url('')|escape}&--subsearch={$queryString|escape}&--format=RSS2.0"><img src="{$ENV.DATAFACE_URL|escape}/images/feed-icon-14x14.png" alt="RSS" /></a>
 		</h3>
 		
 		{if $results|@count > 0 }
@@ -23,7 +23,7 @@
 					{/foreach}
 					</ol>
 					{else}
-						<p>No matching records in the <em>{$relationship}</em> relationship</p>
+						<p>No matching records in the <em>{$relationship|escape}</em> relationship</p>
 					{/if}
 				{/collapsible_sidebar}
 				

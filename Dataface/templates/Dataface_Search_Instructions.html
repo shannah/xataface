@@ -5,7 +5,7 @@
 		{translate id="actions.find.show_search_instructions_link"}Show Search Instructions{/translate}
 	</span>
 </a>
-<h2>{$tableLabel} &raquo; {translate id="actions.find.advanced_search_heading"}Advanced Search{/translate}</h2>
+<h2>{$tableLabel|escape} &raquo; {translate id="actions.find.advanced_search_heading"}Advanced Search{/translate}</h2>
 			
 <div class="formHelp">
 	{define_slot name="find_form_help"}
@@ -17,7 +17,7 @@
 {define_slot name="search_instructions"}
 
 	<div class="accordion search-instruction-items">
-		{block name="before_seach_instruction_items"}
+		{block name="before_search_instruction_items"}
 		{define_slot name="search_instruction_items"}
 			<h6>
 				<a href="#">

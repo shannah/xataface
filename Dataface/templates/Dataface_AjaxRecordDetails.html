@@ -46,11 +46,11 @@
 	<tr>
 		<td {if $table->isText($field.name)}colspan="2" {/if}class="details_label_cell">
 			<label>
-				{$field.widget.label}:
+				{$field.widget.label|escape}:
 			</label>
 		</td>
 		{if $table->isText($field.name)}</tr><tr>{/if}
-		<td id="ajax-details-{$record->getId()}#{$field.name}" {if $table->isText($field.name)}colspan="2" {/if}class="details_value_cell df__editable df__editable_wrapper {if $table->isText($field.name)}max-10-rows{/if}">
+		<td id="ajax-details-{$record->getId()}#{$field.name|escape}" {if $table->isText($field.name)}colspan="2" {/if}class="details_value_cell df__editable df__editable_wrapper {if $table->isText($field.name)}max-10-rows{/if}">
 
 			{$record->htmlValue($field.name)}
 			

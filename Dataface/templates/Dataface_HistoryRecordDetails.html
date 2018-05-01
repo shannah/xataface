@@ -12,7 +12,7 @@
 	<tr>
 		<td {if $table->isText($field.name)}colspan="2" {/if}class="details_label_cell">
 			<label>
-				{$field.widget.label}:
+				{$field.widget.label|escape}:
 			</label>
 		</td>
 		{if $table->isText($field.name)}</tr><tr>{/if}

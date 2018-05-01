@@ -154,12 +154,11 @@ jQuery(document).ready(function($){
 
 {if $form_data.tabs and $form_data.tabs|@count>1}
 	
-	<script type="text/javascript" src="{abs}{$ENV.DATAFACE_URL}/js/jquery-ui-1.7.2.custom.min.js{/abs}"></script>
-	<!--<script type="text/javascript" src="{abs}{$ENV.DATAFACE_URL}/js/jquery-ui-tabs.packed.js{/abs}"></script>-->
+	<script type="text/javascript" src="{abs}{$ENV.DATAFACE_URL|escape}/js/jquery-ui-1.7.2.custom.min.js{/abs}"></script>
 	<script type="text/javascript">
 	{literal}
 		jQuery(document).ready(function(){
-			jQuery('head').append('<link rel="stylesheet" type="text/css" href="{/literal}{abs}{$ENV.DATAFACE_URL}/css/smoothness/jquery-ui-1.7.2.custom.css{/abs}{literal}" />');
+			jQuery('head').append('<link rel="stylesheet" type="text/css" href="{/literal}{abs}{$ENV.DATAFACE_URL|escape:javascript}/css/smoothness/jquery-ui-1.7.2.custom.css{/abs}{literal}" />');
 			jQuery('#Dataface-Form-Tab-Controller').tabs();
 			
 		});
@@ -168,13 +167,13 @@ jQuery(document).ready(function($){
 	<div id="Dataface-Form-Tab-Controller">
 		<ul>
 			{foreach from=$form_data.tabs key=tabname item=tab_data}
-				<li><a href="#tab-{$tabname}"><span>{$tab_data.label}</span></a></li>
+				<li><a href="#tab-{$tabname}"><span>{$tab_data.label|escape}</span></a></li>
 			{/foreach}
 		</ul>
 	
 	
 	{foreach from=$form_data.tabs key=tabname item=tab_data}
-	<div class="Dataface-Form-Tab Dataface-Form-Tab-{$tabname}" id="tab-{$tabname}">
+	<div class="Dataface-Form-Tab Dataface-Form-Tab-{$tabname|escape}" id="tab-{$tabname|escape}">
 		{include file=Dataface_Form_Section_Template.html elements=$tab_data.elements}
 		{foreach from=$tab_data.sections item=section}
 			{if $section.elements}
@@ -211,7 +210,7 @@ jQuery(document).ready(function($){
 {include file=Dataface_Form_Section_Template.html elements=$form_data.elements}
 {foreach from=$form_data.sections item=section}
 	{if $section.elements}
-	    <div class="xf-form-group-wrapper" data-form-group="{$section.field.name}">
+	    <div class="xf-form-group-wrapper" data-form-group="{$section.field.name|escape}">
 
 		{*
 			#02 - Scriptaculous collapsible sidebar

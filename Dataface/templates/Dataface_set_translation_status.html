@@ -23,19 +23,18 @@
 				Record
 				{/translate}</th>
 			{foreach from=$translations key="translation_key" item="translation_value"}
-				<th>{$translation_value}</th>{*<th></th>*}
+				<th>{$translation_value|escape}</th>{*<th></th>*}
 			{/foreach}
 			</tr>
 			</thead>
 			<tbody>
 			{foreach from=$records item=record}
-				<tr><td>{$record->getTitle()}</td>
+				<tr><td>{$record->getTitle()|escape}</td>
 				{foreach from=$translations item="translation_value" key="translation_key"}
 					
 					
-					<td>{$context->printTranslationStatus($record, $translation_key, $translationTool)}</td>
+					<td>{$context->printTranslationStatus($record, $translation_key, $translationTool)|escape}</td>
 				{/foreach}
-				{*<td>{$translationTool->printTranslationStatusAlert($record, $translation_key)}</td>*}
 				</tr>
 			{/foreach}
 			</tbody>

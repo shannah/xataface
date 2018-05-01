@@ -141,5 +141,9 @@ function init($site_path, $dataface_url){
 			)
 		);
 	}
+        if (preg_match('/[\'"<>]/', DATAFACE_SITE_URL)) {
+            
+            die("Request blocked. Illegal characters in URL");
+        }
 }
 

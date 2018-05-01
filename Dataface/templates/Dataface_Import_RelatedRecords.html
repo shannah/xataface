@@ -90,7 +90,7 @@
 				{block name="after_import_related_records_form"}
 		{else}
 		
-		<p><img src="{$ENV.DATAFACE_URL}/images/exclamation.gif"> {translate id="templates.Dataface_Import_Related_Records.MESSAGE_NO_IMPORT_FILTERS_DEFINED"}No import filters were defined for this table.{/translate}</p>
+		<p><img src="{$ENV.DATAFACE_URL|escape}/images/exclamation.gif"> {translate id="templates.Dataface_Import_Related_Records.MESSAGE_NO_IMPORT_FILTERS_DEFINED"}No import filters were defined for this table.{/translate}</p>
 		{/if}
 		
 	{/fill_slot}

@@ -31,7 +31,7 @@ News=1
 		<form action="{$ENV.DATAFACE_SITE_HREF}" method="post">
 		<label>Select tables to be indexed:<select size="20" name="--tables[]" multiple>
 		{foreach from=$tables item="table"}
-			<option value="{$table}">{$table}</option>
+			<option value="{$table|escape}">{$table}</option>
 		{/foreach}
 		</select></label>
 		<label>Clear then rebuild<input type="checkbox" name="--clear"/></label>

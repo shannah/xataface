@@ -2,7 +2,7 @@
 <ul class="Dataface_GlanceList">
 	{foreach from=$records item=recd}
 		{if_allowed permission=view record=$recd}
-		<li class="Dataface_GlanceList-item Dataface_GlanceList-item-{$recd->_table->tablename}">
+		<li class="Dataface_GlanceList-item Dataface_GlanceList-item-{$recd->_table->tablename|escape}">
 			
 			<span class="Dataface_GlanceList-item-content">
 				{block name="before_oneLineDescription" record=$recd}

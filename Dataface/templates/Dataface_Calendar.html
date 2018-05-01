@@ -4,12 +4,12 @@
 		{$filters}
 		<table class="calendar">
 		<tr><td class="calendar-left">
-		<div class="calendar-nav"><a href="{$nav.prev.url}">&lt; {$nav.prev.label}</a> 
-		<b>{$nav.current.label}</b> <a href="{$nav.next.url}">{$nav.next.label} &gt;</a>
+		<div class="calendar-nav"><a href="{$nav.prev.url}">&lt; {$nav.prev.label|escape}</a> 
+		<b>{$nav.current.label|escape}</b> <a href="{$nav.next.url}">{$nav.next.label|escape} &gt;</a>
 		</div>
 	
-		<script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL}/js/dfCalendar.js"></script>
-		<script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL}/js/ajaxgold.js"></script>
+		<script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/dfCalendar.js"></script>
+		<script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/ajaxgold.js"></script>
 		{literal}
 		<script language="javascript"><!--
 		

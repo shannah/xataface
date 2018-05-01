@@ -1,7 +1,7 @@
 
-<script language="javascript" src="{$ENV.DATAFACE_URL}/js/Dataface/RelatedList/search_form.js"></script>
+<script language="javascript" src="{$ENV.DATAFACE_URL|escape}/js/Dataface/RelatedList/search_form.js"></script>
 <form action="#" method="get" onsubmit="return Dataface.RelatedList.processSearchForm(this);">
 	<label for="related_find_query">{translate id="scripts.Dataface_ResultList.MESSAGE_FILTER_RESULTS"}Filter Results:{/translate}</label> 
-	<input type="text" name="related_find_query" value="{$ENV.APPLICATION_OBJECT->getQueryParam('related:search')}" />
+	<input type="text" name="related_find_query" value="{$ENV.APPLICATION_OBJECT->getQueryParam('related:search')|escape}" />
 	<input type="submit" name="filter" value="{translate id="scripts.Dataface_ResultList.MESSAGE_FILTER_RESULTS_SUBMIT"}Filter{/translate}" />
 </form>

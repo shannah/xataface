@@ -114,16 +114,16 @@
 	*}
 	{block name="findform_before_`$element.field.name`_row"}
 	{define_slot name="findform_`$element.field.name`_row"}
-	<tr id="{$element.field.name}_findform_row">
+	<tr id="{$element.field.name|escape}_findform_row">
 		<td valign="top" align="right" class="Dataface_QuickForm-label-cell Dataface_FindForm-label-cell">
-		<div class="field" id="findform_{$element.field.tablename}-{$element.field.name}-label-wrapper">
+		<div class="field" id="findform_{$element.field.tablename|escape}-{$element.field.name|escape}-label-wrapper">
 		
-			<label>{$element.field.widget.label}</label>
+			<label>{$element.field.widget.label|escape}</label>
 		
 		</div>
 		</td>
 		<td class="Dataface_QuickForm-widget-cell Dataface_FindForm-widget-cell">
-		<div class="field" id="{$element.field.tablename}-{$element.field.name}-wrapper">
+		<div class="field" id="{$element.field.tablename|escape}-{$element.field.name|escape}-wrapper">
 		
 		
 		
@@ -210,14 +210,14 @@
 				{define_slot name="findform_`$element.field.name`_row"}
 				<tr id="{$element.field.name}_findform_row">
 					<td valign="top" align="right" class="Dataface_QuickForm-label-cell Dataface_FindForm-label-cell">
-					<div class="field" id="findform_{$element.field.tablename}-{$element.field.name}-label-wrapper">
+					<div class="field" id="findform_{$element.field.tablename|escape}-{$element.field.name|escape}-label-wrapper">
 					
 						<label>{$element.field.widget.label}</label>
 					
 					</div>
 					</td>
 					<td class="Dataface_QuickForm-widget-cell Dataface_FindForm-widget-cell">
-					<div class="field" id="{$element.field.tablename}-{$element.field.name}-wrapper">
+					<div class="field" id="{$element.field.tablename|escape}-{$element.field.name|escape}-wrapper">
 					
 					
 					

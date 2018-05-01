@@ -35,12 +35,12 @@
                  {foreach from=$menus item="menu" key="name"}
 
                 <li>
-                    <a href="{$menu.url}"
-                       id="actions-menu-{$menu.id}"
-                       title="{$menu.description}">
-                      <img src="{$menu.icon}"
+                    <a href="{$menu.url|escape}"
+                       id="actions-menu-{$menu.id|escape}"
+                       title="{$menu.description|escape}">
+                      <img src="{$menu.icon|escape}"
                            alt="" width="16" height="16" />
-                      {$menu.label}
+                      {$menu.label|escape}
                     </a>
                 </li>
                 {/foreach}

@@ -18,10 +18,10 @@
  *-------------------------------------------------------------------------------
  *}
 <tr>
-	<th class="translation-label-cell"><label>{$field.widget.label}</label></th>
-	<td class="translation-source-cell"><div>{$properties.translation}</div></td>
+	<th class="translation-label-cell"><label>{$field.widget.label|escape}</label></th>
+	<td class="translation-source-cell"><div>{$properties.translation|escape}</div></td>
 	<td class="translation-destination-cell">
-		<div class="field {if $error}error{/if}" id="{$field.tablename}-{$field.name}-wrapper">
+		<div class="field {if $error}error{/if}" id="{$field.tablename|escape}-{$field.name|escape}-wrapper">
 	
 	{if $required}
 		<span style="color: #ff0000" class="fieldRequired" title="required">&nbsp;</span>
@@ -32,10 +32,10 @@
 	{/if}
 	
 	{if $properties.image_preview}
-	<img src="{$smarty.server.HOST_URI}{$properties.image_preview}" style="display: block; max-height: 200px" alt="{$field.name} preview image"/>
+	<img src="{$smarty.server.HOST_URI|escape}{$properties.image_preview|escape}" style="display: block; max-height: 200px" alt="{$field.name|escape} preview image"/>
 	{/if}
 	{if $properties.preview}
-	<a href="{$smarty.server.HOST_URI}{$properties.preview}" target="_blank">{translate id="scripts.GLOBAL.MESSAGE_VIEW_FIELD_CONTENT"}View Field Content in new Window{/translate}</a>
+	<a href="{$smarty.server.HOST_URI|escape}{$properties.preview|escape}" target="_blank">{translate id="scripts.GLOBAL.MESSAGE_VIEW_FIELD_CONTENT"}View Field Content in new Window{/translate}</a>
 	{/if}
 
 	<div>

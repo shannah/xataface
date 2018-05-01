@@ -47,7 +47,7 @@
 											{/foreach}
 										{else}
 											<div class="dataface-view-logo">
-											<img src="{$ENV.DATAFACE_URL}/images/missing_logo.gif" alt="Missing Logo"/>
+											<img src="{$ENV.DATAFACE_URL|escape}/images/missing_logo.gif" alt="Missing Logo"/>
 											</div>
 										{/if}
 										
@@ -62,7 +62,7 @@
 											{if !$ENV.prefs.hide_record_search}
 												<div id="record-search">
 													
-													<img src="{$ENV.DATAFACE_URL}/images/search_icon.gif" />
+													<img src="{$ENV.DATAFACE_URL|escape}/images/search_icon.gif" />
 													<input type="text" size="15" name="--subsearch" id="--subsearch" value="{$ENV.APPLICATION_OBJECT->getQueryParam('-subsearch')|escape}" onchange="doSubSearch();" />
 													{literal}
 													<script language="javascript">
@@ -119,7 +119,7 @@
 												<tbody>
 												{foreach from=$section.fields item=field key=fieldname}
 													{if $field.visibility.browse != 'hidden' and $record->htmlValue($field.name)}
-														<tr><th class="record-view-label">{$field.widget.label}</th><td class="record-view-value">{$record->htmlValue($field.name)}</td></tr>
+														<tr><th class="record-view-label">{$field.widget.label|escape}</th><td class="record-view-value">{$record->htmlValue($field.name)}</td></tr>
 													{/if}
 												{/foreach}
 												</tbody>
@@ -145,8 +145,8 @@
 									{define_slot name="record_view_main_section"}
 										{if $ENV.prefs.collapse_all_sections_enabled}
 										<div class="section-tools">
-											<a href="javascript:DatafaceSections.collapseAll()"><img src="{$ENV.DATAFACE_URL}/images/treeExpanded.gif">Collapse All Sections</a> &nbsp; &nbsp;
-										<a href="javascript:DatafaceSections.expandAll()"><img src="{$ENV.DATAFACE_URL}/images/treeCollapsed.gif">Expand All Sections</a>
+											<a href="javascript:DatafaceSections.collapseAll()"><img src="{$ENV.DATAFACE_URL|escape}/images/treeExpanded.gif">Collapse All Sections</a> &nbsp; &nbsp;
+										<a href="javascript:DatafaceSections.expandAll()"><img src="{$ENV.DATAFACE_URL|escape}/images/treeCollapsed.gif">Expand All Sections</a>
 										</div>
 										{/if}
 										
@@ -172,7 +172,7 @@
 															{if !empty($field_value)}
 																<tr><th class="record-view-label">
 																		{if $field.label_link}<a href="{$field.label_link|escape}" target="_blank" class="field-label-link no-link-icon">{/if}
-																			{$field.widget.label}
+																			{$field.widget.label|escape}
 																		{if $field.label_link}</a>{/if}
 																	</th>
 																	<td class="record-view-value">{$field_value}</td></tr>

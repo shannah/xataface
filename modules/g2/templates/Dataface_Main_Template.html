@@ -18,9 +18,9 @@
 			{block name="custom_stylesheets2"}
 			{define_slot name="dataface_javascripts"}
 				<script type="text/javascript" language="javascript">
-					DATAFACE_URL = '{$ENV.DATAFACE_URL}';
-					DATAFACE_SITE_URL = '{$ENV.DATAFACE_SITE_URL}';
-					DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF}';
+					DATAFACE_URL = '{$ENV.DATAFACE_URL|escape:"javascript"}';
+					DATAFACE_SITE_URL = '{$ENV.DATAFACE_SITE_URL|escape:"javascript"}';
+					DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF|escape:"javascript"}';
 				</script>
 				<script src="{$G2->getBaseURL()}/js/xataface-global.js"></script>
 			{/define_slot}
@@ -122,7 +122,7 @@
 										{block name="before_search"}
 										{define_slot name="search_form"}
 											<div class="search_form" id="top-search-form">
-												<form method="GET" action="{$smarty.server.HOST_URI}{$ENV.DATAFACE_SITE_HREF}">
+												<form method="GET" action="{$smarty.server.HOST_URI|escape}{$ENV.DATAFACE_SITE_HREF|escape}">
 													{form_context exclude="-action,-skip,-submit,-mode"}
 													
 													<input class="xf-search-field" type="text" name="-search" value="{$ENV.search|escape}"/>
@@ -176,7 +176,7 @@
 		
 								{if $back and !$ENV.APPLICATION.hide_back}
 									<div class="browser_nav_bar">
-										<a href="{$back.link}" title="{translate id="scripts.GLOBAL.LABEL_BACK"}Back{/translate}">&lt;&lt; {translate id="scripts.GLOBAL.LABEL_GO_BACK"}Go Back{/translate}</a>
+										<a href="{$back.link|escape}" title="{translate id="scripts.GLOBAL.LABEL_BACK"}Back{/translate}">&lt;&lt; {translate id="scripts.GLOBAL.LABEL_GO_BACK"}Go Back{/translate}</a>
 									</div>
 								{/if}
 			

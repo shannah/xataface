@@ -24,7 +24,7 @@
 {/if}
 <tr>
 <td {if $isText}colspan="2" class="Dataface_QuickForm-textarea-label-cell"{/if} valign="top" {if !$isText}align="right" class="Dataface_QuickForm-label-cell"{/if}>
-<div class="field {if $error}error{/if}" id="{$field.tablename}-{$field.name}-wrapper">
+<div class="field {if $error}error{/if}" id="{$field.tablename|escape}-{$field.name|escape}-wrapper">
 
 	<label>{$field.widget.label}</label>
 

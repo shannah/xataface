@@ -27,7 +27,7 @@
 				   refreshed.  However if you make changes to the source files on the file system
 				   (e.g. the fields.ini files or delegate classes), you will need to empty the
 				   cache manually using this option{/translate}:</p>
-				<p><form action="{$smarty.server.PHP_SELF}" method="post">
+				<p><form action="{$smarty.server.PHP_SELF|escape}" method="post">
 					<input type="hidden" name="-action" value="manage_output_cache"/>
 					<input type="hidden" name="--clear-cache" value="1"/>
 					<input type="submit" name="Clear" value="{translate id="Clear Cache Now"}Clear Cache Now{/translate}"/>

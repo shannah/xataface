@@ -1,12 +1,11 @@
 {use_macro file="Dataface_Record_Template.html"}
 	{fill_slot name="record_content"}
 		{if !$error}
-	    <script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL}/js/ajax.js"></script>
+	    <script language="javascript" type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/ajax.js"></script>
 
 		<script language="javascript"><!--
 		
-			var currentTable = '{$ENV.table}';
-			//var DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF}';
+			var currentTable = '{$ENV.table|escape:javascript}';
 			{literal}
 			function HistoryToolClient(){
 				
@@ -66,7 +65,7 @@
 				var row = document.getElementById('history-'+id+'-row');
 				var cell = document.getElementById('history-'+id+'-details-content');
 				
-				var url = '?{/literal}{$current_record_qstr}{literal}&-action=view_history_record_details&-table='+currentTable+'&history__id='+id;
+				var url = '?{/literal}{$current_record_qstr|escape:javascript}{literal}&-action=view_history_record_details&-table='+currentTable+'&history__id='+id;
 				if ( changes ) url += '&-show_changes=1';
 				if ( fromcurrent ) url += '&-fromcurrent=1';
 				//alert(url);
@@ -178,7 +177,7 @@
 		//--></script>
 		{/literal}
 		{load_record var="source_record"}
-		<form id="history-restore-form" action="{$ENV.DATAFACE_SITE_HREF}" method="POST">
+		<form id="history-restore-form" action="{$ENV.DATAFACE_SITE_HREF|escape}" method="POST">
 			<input type="hidden" name="-table" value="{$ENV.table|escape}"/>
 			<input type="hidden" name="-action" value="history_restore_record"/>
 			<input type="hidden" name="history__id"/>

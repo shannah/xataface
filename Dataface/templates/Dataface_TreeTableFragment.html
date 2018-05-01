@@ -3,7 +3,7 @@
  * @see actions_ajax_load_tree_table_rows
  *}
 {foreach from=$rows item=row key=rowid}
-<tr id="{$rowid}">
+<tr id="{$rowid|escape}">
 	<td>{$row->getTitle()}</td>
 	{foreach from=$columns item=col}
 	<td>{if $row->_table->hasField($col) }
