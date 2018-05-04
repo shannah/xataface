@@ -21,7 +21,7 @@
 	{use_macro file="Dataface_Record_Template.html"}
 	
 		{fill_slot name="record_content"}
-			<script type="text/javascript" src="{$ENV.DATAFACE_URL}/js/jquery.packed.js"></script>
+			<script type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/jquery.packed.js"></script>
 			<script type="text/javascript" src="http://www.google.com/jsapi">
 			</script>
 			<script type="text/javascript">
