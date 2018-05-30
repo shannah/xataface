@@ -15,7 +15,7 @@ function expandImportData(){
 function collapseImportData(){
 	var a = document.getElementById('preview-import-data-a');
 	var imgs = a.getElementsByTagName('img');
-{/literal}	imgs[0].src = '{$ENV.DATAFACE_URL|escape:"javascript""}/images/treeCollapsed.gif';{literal}
+{/literal}	imgs[0].src = '{$ENV.DATAFACE_URL|escape:"javascript"}/images/treeCollapsed.gif';{literal}
 	a.onclick = expandImportData;
 	var spans = a.getElementsByTagName('span');
 	spans[0].innerHTML = 'Preview Import Data';
