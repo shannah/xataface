@@ -875,6 +875,14 @@ END;
 
 		// From this point on we can assume we're in the first iteration
 		$stack =& $smarty->get_template_vars('__macro_stack__');
+                if (!is_array($stack)) {
+                    $vars =& $smarty->get_template_vars();
+                    if ( !isset($vars['__macro_stack__']) || !is_array($vars['__macro_stack__']) ){
+                            $stack = array();
+
+                            $vars['__macro_stack__'] =& $stack;
+                    }
+                }
 		$local_vars =& $stack[count($stack)-1];
 		foreach ( array_reverse(array_keys($stack) ) as $macroIndex) {
 			$local_vars =& $stack[$macroIndex];
