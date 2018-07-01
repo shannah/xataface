@@ -161,13 +161,18 @@ class Dataface_ConfigTool {
 			
 			if ( $tablename !== '__global__' ){
 			    $paths[] = DATAFACE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
-				$lpaths[] = DATAFACE_SITE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
-				if ( !class_exists('Dataface_Table') ) import('Dataface/Table.php');
-				$lpaths[] = Dataface_Table::getBasePath($tablename).'/tables/'.basename($tablename).'/lang/'.basename($app->_conf['lang']).'.ini';
-				
+                            $paths[] = DATAFACE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini.php';
+                            $lpaths[] = DATAFACE_SITE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
+                            $lpaths[] = DATAFACE_SITE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini.php';
+                            if ( !class_exists('Dataface_Table') ) import('Dataface/Table.php');
+                            $lpaths[] = Dataface_Table::getBasePath($tablename).'/tables/'.basename($tablename).'/lang/'.basename($app->_conf['lang']).'.ini';
+                            $lpaths[] = Dataface_Table::getBasePath($tablename).'/tables/'.basename($tablename).'/lang/'.basename($app->_conf['lang']).'.ini.php';
+
 			} else {
 				$paths[] = DATAFACE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
+                                $paths[] = DATAFACE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini.php';
 				$lpaths[] = DATAFACE_SITE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini';
+                                $lpaths[] = DATAFACE_SITE_PATH.'/lang/'.basename($app->_conf['lang']).'.ini.php';
 			}
 		
 		} else if ( $tablename !== '__global__' ){
@@ -176,13 +181,18 @@ class Dataface_ConfigTool {
 			// the valuelist each time... and there may be opportunities to 
 			// share between tables
 			if ( $type != 'valuelists' ) $paths[] = DATAFACE_PATH.'/'.basename($type).'.ini';
+                        if ( $type != 'valuelists' ) $paths[] = DATAFACE_PATH.'/'.basename($type).'.ini.php';
 			if ( $type != 'valuelists' ) $lpaths[] = DATAFACE_SITE_PATH.'/'.basename($type).'.ini';
+                        if ( $type != 'valuelists' ) $lpaths[] = DATAFACE_SITE_PATH.'/'.basename($type).'.ini.php';
 			$lpaths[] = Dataface_Table::getBasePath($tablename).'/tables/'.basename($tablename).'/'.basename($type).'.ini';
+                        $lpaths[] = Dataface_Table::getBasePath($tablename).'/tables/'.basename($tablename).'/'.basename($type).'.ini.php';
 			
 		} else {
 			
 			$paths[] = DATAFACE_PATH.'/'.basename($type).'.ini';
+                        $paths[] = DATAFACE_PATH.'/'.basename($type).'.ini.php';
 			$lpaths[] = DATAFACE_SITE_PATH.'/'.basename($type).'.ini';
+                        $lpaths[] = DATAFACE_SITE_PATH.'/'.basename($type).'.ini.php';
 		}
 		
 		// Add the ability to override settings in a module.
@@ -194,10 +204,14 @@ class Dataface_ConfigTool {
 				$modname = implode('_', $modpath);
 				if ( $type == 'lang' ){
 					$paths[] = DATAFACE_SITE_PATH.'/modules/'.basename($modname).'/lang/'.basename($app->_conf['lang']).'.ini';
+                                        $paths[] = DATAFACE_SITE_PATH.'/modules/'.basename($modname).'/lang/'.basename($app->_conf['lang']).'.ini.php';
 					$paths[] = DATAFACE_PATH.'/modules/'.basename($modname).'/lang/'.basename($app->_conf['lang']).'.ini';
+                                        $paths[] = DATAFACE_PATH.'/modules/'.basename($modname).'/lang/'.basename($app->_conf['lang']).'.ini.php';
 				} else {
 					$paths[] = DATAFACE_SITE_PATH.'/modules/'.basename($modname).'/'.basename($type).'.ini';
+                                        $paths[] = DATAFACE_SITE_PATH.'/modules/'.basename($modname).'/'.basename($type).'.ini.php';
 					$paths[] = DATAFACE_PATH.'/modules/'.basename($modname).'/'.basename($type).'.ini';
+                                        $paths[] = DATAFACE_PATH.'/modules/'.basename($modname).'/'.basename($type).'.ini.php';
 				}
 			}
 		}
@@ -325,10 +339,13 @@ class Dataface_ConfigTool {
 		$upaths = array();
 		if ( $type == 'lang' ){
 			$upaths[] =  'lang/'.$app->_conf['lang'].'.ini';
+                        $upaths[] =  'lang/'.$app->_conf['lang'].'.ini.php';
 			$upaths[] = 'tables/'.$tablename.'/lang/'.$app->_conf['lang'].'.ini';
+                        $upaths[] = 'tables/'.$tablename.'/lang/'.$app->_conf['lang'].'.ini.php';
 		} else {
 			$upaths[] = $type.'.ini';
 			$upaths[] = 'tables/'.$tablename.'/'.$type.'.ini';
+                        $upaths[] = 'tables/'.$tablename.'/'.$type.'.ini.php';
 		}
 		foreach ( $upaths as $p ){
 			if ( isset($user_config->{$p}) ){

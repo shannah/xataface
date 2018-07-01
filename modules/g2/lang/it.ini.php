@@ -1,3 +1,4 @@
+;<?php exit;
 actions.new.label = "Nuovo {$tableObj->getSingularLabel()}"
 actions.new.description = "Inserire un nuovo {$tableObj->getSingularLabel()} in {$tableObj->getLabel()}"
 actions.import.label = "Importa {$tableObj->getLabel()}"

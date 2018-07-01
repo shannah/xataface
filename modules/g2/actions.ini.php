@@ -1,3 +1,4 @@
+;<?php exit;
 [logout > logout]
 	url="{$site_href}?-action=logout"
 	condition="df_is_logged_in()"

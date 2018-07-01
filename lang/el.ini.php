@@ -1,3 +1,4 @@
+;<?php exit;
 actions.edit.label = "Τροποποίηση"
 actions.summary_edit.label = "Τροποποίηση"
 templates.Dataface_RecordHistory.LABEL_CHANGES = "Αλλαγές"

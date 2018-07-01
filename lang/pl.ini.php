@@ -1,3 +1,4 @@
+;<?php exit;
 440 = "424"
 templates.Dataface_Fineprint.COPYRIGHT = "(c) $year Wszelkie prawa zastrzeżone."
 actions.related_records_list.label = "{$query['-relationship']}"

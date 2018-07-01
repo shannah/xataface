@@ -1,3 +1,4 @@
+;<?php exit;
 440 = "436"
 templates.Dataface_Fineprint.COPYRIGHT = "&copy; $year - Todos los derechos reservados"
 actions.edit.label = "Editar"

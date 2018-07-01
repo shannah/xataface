@@ -1,3 +1,4 @@
+;<?php exit;
 ;;First we will list the permissions and their associated labels.
 
 ;; view : Allowed to view an element

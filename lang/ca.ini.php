@@ -1,3 +1,4 @@
+;<?php exit;
 440 = "322"
 templates.Dataface_Fineprint.COPYRIGHT = "(c) $year Tots els drets reservats"
 actions.related_records_list.label = "{$query['-relationship']}"

@@ -1,3 +1,4 @@
+;<?php exit;
 [translation_state]
 Type="int(11)"
 multilingual=1

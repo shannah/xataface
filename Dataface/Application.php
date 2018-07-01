@@ -550,13 +550,20 @@ END;
 		}
 		$this->_baseUrl  = $_SERVER['PHP_SELF'];
 		if ( !is_array($conf) ) $conf = array();
-		if ( is_readable(DATAFACE_SITE_PATH.'/conf.ini') ){
-			$conf = array_merge(parse_ini_file(DATAFACE_SITE_PATH.'/conf.ini', true), $conf);
+                $configPath = DATAFACE_SITE_PATH.'/conf.ini.php';
+                if (!is_readable($configPath)) {
+                    $configPath = DATAFACE_SITE_PATH.'/conf.ini';
+                }
+		if ( is_readable($configPath) ){
+			$conf = array_merge(parse_ini_file($configPath, true), $conf);
 			if ( @$conf['__include__'] ){
 				$includes = array_map('trim',explode(',', $conf['__include__']));
 				foreach ($includes as $i){
+                                        
 					if ( is_readable($i) ){
 						$conf = array_merge($conf, parse_ini_file($i, true));
+					} else if ( is_readable($i.'.php') ){
+						$conf = array_merge($conf, parse_ini_file($i.'.php', true));
 					}
 				}
 			}

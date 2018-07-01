@@ -1,3 +1,4 @@
+;<?php exit;
 actions.new.label = "Nowy rekord"
 actions.new.description = "Wstawienie nowego rekordu do {$tableObj->getLabel()}"
 actions.import.label = "Importuj rekordy"
