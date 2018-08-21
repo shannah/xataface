@@ -58,21 +58,31 @@ function init($site_path, $dataface_url){
             $host = $_SERVER['HTTP_HOST'];
             if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
                 $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
+                if (strpos($host, ',') !== false) {
+                	$host = trim(substr($host, 0, strpos($host, ',')));
+                }
             }
             $port = $_SERVER['SERVER_PORT'];
-            if (isset($_SERVER['HTTP_X_FORWARDED_PORT'])) {
-                $port = intval($_SERVER['HTTP_X_FORWARDED_PORT']);
+            if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+            	if (isset($_SERVER['HTTP_X_FORWARDED_PORT'])) {
+                	$port = $_SERVER['HTTP_X_FORWARDED_PORT'];
+                	if (strpos($port, ',') !== false) {
+                		$port = trim(substr($port, 0, strpos($port, ',')));
+                	} 
+                	$port = intval($port);
+            	} else {
+            		$port = 80;
+            	}
             }
-            $protocol = $_SERVER['SERVER_PROTOCOL'];
+            $protocol = 'http';
             
-            if ( strtolower($protocol) == 'included' ){
-                    $protocol = 'HTTP/1.0';
-            }
-            $protocol = substr( $protocol, 0, strpos($protocol, '/'));
             $protocol = ((@$_SERVER['HTTPS']  == 'on' || "$port" == "443") ? $protocol.'s' : $protocol );
-            $protocol = strtolower($protocol);
+
             if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
                 $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+                if (strpos($protocol, ',') !== false) {
+                	$protocol = trim(substr($protocol, strpos($protocol, ',')));
+                }
                 if ($protocol == 'https' and "$port" == "80") {
                     $port = 443;
                 } else if ($protocol == 'http' and "$port" == "443") {
@@ -81,11 +91,16 @@ function init($site_path, $dataface_url){
             }
 
             if (isset($_SERVER['HTTP_X_FORWARDED_PATH'])) {
-                $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_FORWARDED_PATH'];
+            	$path = $_SERVER['HTTP_X_FORWARDED_PATH'];
+            	if (strpos($path, ',') !== false) {
+            		$path = trim(substr($path, 0, strpos($path, ',')));
+            	}
+            	
+                $_SERVER['REQUEST_URI'] = $path;
                 if (strpos($_SERVER['REQUEST_URI'], '?') === false and @$_SERVER['QUERY_STRING']) {
                     $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
                 }
-                $_SERVER['PHP_SELF'] = $_SERVER['HTTP_X_FORWARDED_PATH'];
+                $_SERVER['PHP_SELF'] = $path;
                 if (strpos($dataface_url, 'http:') === 0 or strpos($dataface_url, 'https:') === 0) {
                     // We leave dataface_url alone
                 } else {
@@ -126,6 +141,8 @@ function init($site_path, $dataface_url){
 	define('DATAFACE_URL', str_replace('\\','/',$dataface_url));
 	
 	require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.inc.php');
+	
+	//print_r($_SERVER);exit;
 	if ( @$_GET['-action'] == 'js' ){
 		include dirname(__FILE__).DIRECTORY_SEPARATOR.'js.php';
 	}
