@@ -565,6 +565,13 @@
 	label="Clear __sql__ Views"
 	description="Clears all of the cached views of the form dataface_view__xxx in the database.  This is necessary if you have added or removed columns from tables that also specify a custom __sql__ directive in the fields.ini file."
 	
+[clear_templates_c]
+	permission=clear views
+	category=management_actions
+	url="{$app->url('-action=clear_templates_c')}"
+	label="Clear templates_c"
+	description="Clears all of the cached templates.  May be necessary if you have updated Xataface"
+	
 	
 [manage_output_cache]
 	permission=manage_output_cache
