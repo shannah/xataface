@@ -58,6 +58,11 @@ class Dataface_converters_date {
 	 */
 	static function parseDate($value){
 		if ( !isset($value) || !$value ) return null;
+		if (is_int($value)) {
+		    $value = date('H:i:s Y-m-d', $value);
+		} else if (is_string($value) and preg_match('/^\d+$/', $value)) {
+		    $value = date('H:i:s Y-m-d', $value);
+		}
 		if ( $value == '0000-00-00' || $value == '0000-00-00 00:00:00' ) return null;
 		if ( is_array($value) and (isset( $value['year']) or isset($value['hours'])) ) return $value;
 			// if it is already in the correct format, we don't need to parse it.
@@ -80,6 +85,14 @@ class Dataface_converters_date {
 				unset($out['minute']);
 				$out['seconds'] = $out['second'];
 				unset($out['second']);
+				$out['unixtime'] = mktime(
+					    $out['hours'], 
+					    $out['minutes'], 
+					    $out['seconds'], 
+					    $out['month'], 
+					    $out['day'], 
+					    $out['year']
+					);
 				return $out;
 			} else if ( Dataface_converters_date::inRange($value) ){
 				// strtotime cannot seem to calculate the time properly on this
@@ -92,6 +105,14 @@ class Dataface_converters_date {
 					$date['hours'] = @$matches[7];
 					$date['minutes'] = @$matches[8];
 					$date['seconds'] = @$matches[10];
+					$date['unixtime'] = mktime(
+					    $date['hours'], 
+					    $date['minutes'], 
+					    $date['seconds'], 
+					    $date['month'], 
+					    $date['day'], 
+					    $date['year']
+					);
 					return $date;
 				}
 				
@@ -99,9 +120,10 @@ class Dataface_converters_date {
 			$isNull = true;
 			$units = explode(' ','Y m M F d h a A i s');
 			$date = array();
+			$strtotime = $value ? strtotime($value) : null;
 			foreach ($units as $unit){
 				if ( $value ){
-					$date[$unit] = date($unit, strtotime($value));
+					$date[$unit] = date($unit, $strtotime);
 					$isNull = false;
 				} else {
 					$date[$unit] = null; //date($unit);
@@ -132,7 +154,14 @@ class Dataface_converters_date {
 		foreach ( array_keys($params) as $param){
 			$params[$param] = intval($params[$param]);
 		}
-	
+	    $params['unixtime'] = mktime(
+					    $params['hours'], 
+					    $params['minutes'], 
+					    $params['seconds'], 
+					    $params['month'], 
+					    $params['day'], 
+					    $params['year']
+					);
 		
 		return $params;
 	

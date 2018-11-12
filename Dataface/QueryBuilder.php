@@ -490,7 +490,7 @@ class Dataface_QueryBuilder {
 		$quotes = true;
 		if ( $serialize ) $value = $this->_serializer->serialize($fieldname, $value);
 		if ( in_array( strtolower($this->_table->getType($fieldname)), array('timestamp','datetime')) ){
-			$value = "ifnull(convert_tz('".addslashes($value)."','".addslashes(df_tz_or_offset())."','SYSTEM'),'".addslashes($value)."')";
+			$value = "ifnull(convert_tz('".addslashes($value)."','".addslashes(df_utc_offset())."','SYSTEM'),'".addslashes($value)."')";
 			$quotes = false;
 		}
 		if ( $quotes ) $value = "'".addslashes($value)."'";
@@ -995,7 +995,7 @@ class Dataface_QueryBuilder {
 			if ( $preview and $this->_table->isText($field['name']) and !@$field['struct'] and !$this->_table->isXML($field['name']))
 				$select .= "SUBSTRING(`{$this->_tablename}`.`$key`, 1, ".$previewLen.") as `$key`,";
 			else if ( in_array(strtolower($this->_table->getType($key)),array('datetime','timestamp')) )
-				$select .= "ifnull(convert_tz(`".$this->_tablename."`.`".$key."`, 'SYSTEM', '".df_tz_or_offset()."'), `".$this->_tablename."`.`".$key."`) as `$key`,";
+				$select .= "ifnull(convert_tz(`".$this->_tablename."`.`".$key."`, 'SYSTEM', '".df_utc_offset()."'), `".$this->_tablename."`.`".$key."`) as `$key`,";
 			else
 				$select .= "`{$this->_tablename}`.`$key`,";
 			$colcount++;
