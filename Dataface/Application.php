@@ -1023,7 +1023,7 @@ END;
 
 
 		if ( isset( $query['--msg'] ) ) {
-			$query['--msg'] = preg_replace('#<[^>]*>#','', $query['--msg']);
+			$query['--msg'] = strip_tags($query['--msg']);
 			if ( preg_match('/^@@$/', $query['--msg']) ){
 
 				if ( @$_SESSION['--msg'] ){
