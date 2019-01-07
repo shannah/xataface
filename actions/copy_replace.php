@@ -60,6 +60,7 @@ class dataface_actions_copy_replace {
 		
 		$field_options = array(0=>df_translate('actions.copy_replace.options.select_field_to_change','Select field to change...'));
 		foreach ($fields as $field){
+		    if ( $field['widget']['type'] == 'hidden' ) continue;
 			$field_options[$field['name']] = $field['widget']['label'];
 		}
 		
@@ -190,11 +191,9 @@ END
 	}	
 	
 	function addFields(&$form, &$fields){
-	
 		$app=& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 		$this->renderer =& $form->defaultRenderer();
-		
 		foreach (array_keys($fields) as $fieldname){
 			if ( $fields[$fieldname]['widget']['type'] == 'hidden' ) continue;
 			$builder =& $this->getTableForm($fields[$fieldname]['tablename']);
