@@ -1023,7 +1023,7 @@ END;
 
 
 		if ( isset( $query['--msg'] ) ) {
-			$query['--msg'] = preg_replace('#<[^>]*>#','', $query['--msg']);
+			$query['--msg'] = htmlspecialchars($query['--msg']);
 			if ( preg_match('/^@@$/', $query['--msg']) ){
 
 				if ( @$_SESSION['--msg'] ){
@@ -1040,7 +1040,7 @@ END;
 
 
 		if ( isset($query['--error']) and trim($query['--error']) ){
-			$query['--error'] = preg_replace('#<[^>]*>#','', $query['--error']);
+			$query['--error'] = htmlspecialchars($query['--error']);
 			$this->addError(PEAR::raiseError($query['--error']));
 		}
 
