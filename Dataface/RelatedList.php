@@ -505,7 +505,18 @@ class Dataface_RelatedList {
                         $field = & $fields_index[$key]; //$s->getField($fullpath);
                         $srcRecord = & $rrec->toRecord($field['tablename']);
                         if ( !@$app->_conf['legacy_compatibility_mode'] ){
-                        	$link = $this->_record->getURL('-action=view_related_record&-related-record-id=' . urlencode($rrecid));
+                            if (@$rowPerms['link']) {
+                            	$link = $this->_record->getURL('-action=view_related_record&-related-record-id=' . urlencode($rrecid));
+                            } else {
+                                if ($srcRecord->table()->hasDelegateMethod('no_access_link')) {
+                                    $link = $srcRecord->table()->getDelegate()->no_access_link($srcRecord);
+                                    if (!$link) {
+                                        $link = $this->_record->getURL('-action=view_related_record&-related-record-id=' . urlencode($rrecid));
+                                    }
+                                } else {
+                                    $link = $this->_record->getURL('-action=view_related_record&-related-record-id=' . urlencode($rrecid));
+                                }
+                            }
                         } else {
                         	//$link = $srcRecord->getURL('-action=browse&-portal-context=' . urlencode($rrecid));
                         	$link = $rrec->getURL('-action=browse', $field['tablename']);

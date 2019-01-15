@@ -4154,7 +4154,10 @@ class Dataface_Table {
 
 
 
-
+    function hasDelegateMethod($methodName) {
+        $del = $this->getDelegate();
+        return isset($del) and method_exists($del, $methodName);
+    }
 
 
 
