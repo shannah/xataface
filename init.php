@@ -83,11 +83,11 @@ function init($site_path, $dataface_url){
                 if (strpos($protocol, ',') !== false) {
                 	$protocol = trim(substr($protocol, strpos($protocol, ',')));
                 }
-                if ($protocol == 'https' and "$port" == "80") {
-                    $port = 443;
-                } else if ($protocol == 'http' and "$port" == "443") {
-                    $port = 80;
-                }
+            }
+            if ($protocol == 'https' and "$port" == "80") {
+                $port = 443;
+            } else if ($protocol == 'http' and "$port" == "443") {
+                $port = 80;
             }
 
             if (isset($_SERVER['HTTP_X_FORWARDED_PATH'])) {
@@ -115,6 +115,7 @@ function init($site_path, $dataface_url){
         if ( (strpos($host, ':') === false) and !($protocol == 'https' and "$port" == "443" ) and !($protocol == 'http' and "$port" == "80") ){
                 $_SERVER['HOST_URI'] .= ':'.$port;
         }
+        
     
 	if (defined('DATAFACE_SITE_PATH')){
 		trigger_error("Error in ".__FILE__."
