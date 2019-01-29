@@ -2500,7 +2500,7 @@ class Dataface_Table {
 								if ( !$attval || $attval == 'false' ) {
 									$validators[ $attpath[1] ] = 0;
 
-									continue;
+									break;
 								}
 								if ( !isset( $validators[ $attpath[1] ] ) ){
 									$validators[ $attpath[1] ] = array();
