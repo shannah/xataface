@@ -780,7 +780,7 @@ class Dataface_Table {
 
 			// handle case where this is an enumerated field
 			$matches = array();
-			if ( preg_match('/^(enum|set)\(([^\)]+)\)$/', $row['Type'], $matches )){
+			if ( preg_match('/^(enum|set)\((.*)\)$/', $row['Type'], $matches )){
                 $valuelists =& $this->valuelists();
 				$options = explode(',', $matches[2]);
 
