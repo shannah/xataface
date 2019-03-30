@@ -702,6 +702,12 @@ END;
 			@xf_db_query('START TRANSACTION', $this->_db);
 
 		}
+
+		if (@$this->_conf['_database']['sql_mode']) {
+			xf_db_query('SET sql_mode="'.addslashes($this->_conf['_database']['sql_mode']).'"', $this->_db);
+		} else {
+			xf_db_query('SET sql_mode=""', $this->_db);
+		}
 		if ( !isset($this->_conf['default_ie']) ) $this->_conf['default_ie'] = 'UTF-8';
 		if ( !isset($this->_conf['default_oe']) ) $this->_conf['default_oe'] = 'UTF-8';
 		if ( isset( $this->_conf['multilingual_content']) || isset($this->_conf['languages']) ){
