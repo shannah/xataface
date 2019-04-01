@@ -53,20 +53,32 @@ class dataface_actions_delete_file {
 			$fileName = $record->val($fieldDef['Field']);
 			if ( !$fileName ) return PEAR::raiseError("This record does not contain a file in the $fieldDef[Field] field.");
 			
-			// We need to delete the file from the file system.
-			$path = $fieldDef['savepath'];
-			$filePath = $path.'/'.basename($fileName);
-			@unlink($filePath);
-			
-			$record->setValue($fieldDef['Field'], null);
-			if ( @$fieldDef['mimetype'] ){
-				$mimeTypeField =& $record->_table->getField($fieldDef['mimetype']);
-				if ( !PEAR::isError($mimeTypeField) ){
-					$record->setValue($fieldDef['mimetype'], null);
+			$event = new StdClass;
+			$event->field = $fieldDef;
+			$event->record = $record;
+			$event->table = $record->_table;
+			$event->consumed = false;
+			$app->fireEvent('delete_file', $event);
+			if ($event->consumed) {
+
+			} else {
+				// We need to delete the file from the file system.
+				$path = $fieldDef['savepath'];
+				$filePath = $path.'/'.basename($fileName);
+				@unlink($filePath);
+				
+				$record->setValue($fieldDef['Field'], null);
+				if ( @$fieldDef['mimetype'] ){
+					$mimeTypeField =& $record->_table->getField($fieldDef['mimetype']);
+					if ( !PEAR::isError($mimeTypeField) ){
+						$record->setValue($fieldDef['mimetype'], null);
+					}
 				}
+				$res = $record->save();
+				if ( PEAR::isError($res) ) return $res;
 			}
-			$res = $record->save();
-			if ( PEAR::isError($res) ) return $res;
+
+			
 						
 		} else if ( $record->_table->isBlob($fieldDef['Field']) ){
 			$record->setValue($fieldDef['Field'], 'dummy');

@@ -168,6 +168,16 @@ class Dataface_HistoryTool {
 		$s = DIRECTORY_SEPARATOR;
 		switch(strtolower($field['Type'])){
 			case 'container':
+				$event = new StdClass;
+				$event->record = $record;
+				$event->field = $field;
+				$event->table = $record->_table;
+				$event->history_id = $history_id;
+				$event->consumed = false;
+				Dataface_Application::getInstance()->fireEvent('HistoryTool.logField', $event);
+				if ($event->consumed) {
+					return;
+				}
 				$savepath = $field['savepath'];
 				if ( $savepath{strlen($savepath)-1} != $s ) $savepath.=$s;
 				if ( !$record->val($fieldname) ) break; // there is no file currently stored in this field.
@@ -518,6 +528,15 @@ class Dataface_HistoryTool {
 		$field =& $record->_table->getField($fieldname);
 		switch (strtolower($field['Type'])){
 			case 'container': 
+				$event = new StdClass;
+				$event->record = $record;
+				$event->table = $record->_table;
+				$event->field = $field;
+				$event->consumed = false;
+				$app->fireEvent('HistoryTool.restoreField', $event);
+				if ($event->consumed) {
+					return true;
+				}
 				$savepath = $field['savepath'];
 				if ( $savepath{strlen($savepath)-1} != '/' ) $savepath .= '/';
 				

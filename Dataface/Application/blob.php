@@ -119,7 +119,6 @@ class Dataface_Application_blob {
 		}
 
 		if ( $table->isContainer($fieldname) ){
-
 			$savepath = $field['savepath'];
 
 
@@ -129,6 +128,18 @@ class Dataface_Application_blob {
 				exit;
 			}
 
+			$event = new StdClass;
+			$event->table = $table;
+			$event->field = $field;
+			$event->record = $rec;
+			$event->consumed = false;
+			$app->fireEvent('handleGetBlob', $event);
+			if ($event->consumed) {
+				echo "event was cosumed";
+				exit;
+			} else {
+				echo "Event was not consumed!!!";
+			}
 
 			header('Content-type: '.$rec->getMimetype($fieldname));
       if (!@$field['contentDisposition'] or $field['contentDisposition'] == 'attachment') {

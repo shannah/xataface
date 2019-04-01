@@ -4564,6 +4564,16 @@ class Dataface_Record {
 		}
 
 		if ( $this->_table->isContainer($fieldname) ){
+			$event = new StdClass;
+			$event->table = $this->_table;
+			$event->record = $this;
+			$event->field =& $field;
+			$event->consumed = false;
+			$event->out = '';
+			Dataface_Application::getInstance()->fireEvent('Dataface_Record.getMimetype', $event);
+			if ($event->consumed) {
+				return $event->out;
+			}
 			$filename = $this->strval($fieldname,$index,$where,$sort);
 			if ( strlen($filename) > 0 ){
 				$path = $field['savepath'].'/'.$filename;

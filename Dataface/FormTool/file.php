@@ -36,7 +36,25 @@ class Dataface_FormTool_file {
 
 
 			if ( $table->isContainer($field['name']) ){
+				$event = new StdClass;
+				$event->table = $table;
+				$event->field = $field;
+				$event->file_path = $val['tmp_name'];
+				$event->file_name = basename($val['name']);
+				$event->mimetype = $val['type'];
+				$event->record = $record;
+				$event->out = null;
+				$event->consumed = false;
+				$app->fireEvent('fileUpload', $event);
+				if ($event->consumed) {
+					$out = $event->out;
+					//echo "out=$out";exit;
+					$element->last_pushed_value = $out;
+					//@unlink($val['tmp_name']);
+					return $out;
+				}
 				$src = $record->getContainerSource($field['name']);
+				
 				if ( strlen($record->strval($field['name']) ) > 0  // if there is already a valud specified in this field.
 					and file_exists($src)	// if the old file exists
 					and is_file($src)  // make sure that it is only a file we are deleting
