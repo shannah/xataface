@@ -84,7 +84,7 @@ class SQL_Compiler {
 			} else if ( $func_arg['type'] == 'function'){
 				$out .= $this->compileFunction($func_arg['value'], false).', ';
 			} else if ( $func_arg['type'] == 'text_val' ){
-				$out .= "'".$func_arg['value']."', ";
+				$out .= "'".addslashes($func_arg['value'])."', ";
 			} else if ( $func_arg['type'] == 'expression' ){
 			
 				$out .= $this->compileExpression($func_arg['type'], $func_arg['value']).", ";
@@ -138,7 +138,7 @@ class SQL_Compiler {
                 $value = $arg['value'];
                 break;
             case 'text_val':
-                $value = '\''.$arg['value'].'\'';
+                $value = '\''.addslashes($arg['value']).'\'';
                 break;
             case 'subclause':
                 $value = '('.$this->compileSearchClause($arg['value']).')';
@@ -209,7 +209,7 @@ class SQL_Compiler {
 						$value[] = $arg['value'][$i];
 						break;
 					case 'text_val':
-						$value[] = '\''.$arg['value'][$i].'\'';
+						$value[] = '\''.addslashes($arg['value'][$i]).'\'';
 						break;
 					case 'function':
 						$val = $this->compileFunction($arg['value'][$i]);
@@ -415,7 +415,7 @@ class SQL_Compiler {
 						break;
 						
 					case 'text_val':
-						$column = '\''.$this->tree['columns'][$i]['value'].'\'';
+						$column = '\''.addslashes($this->tree['columns'][$i]['value']).'\'';
 						
 						
 						if ( $this->tree['columns'][$i]['alias'] ){
@@ -638,7 +638,7 @@ class SQL_Compiler {
     		case 'null':
     			return $val;
     		case 'text_val';
-    			return "'".$val."'";
+    			return "'".addslashes($val)."'";
     		case 'ident':
     			return $this->compileIdent($val);
     		case 'function':
@@ -673,7 +673,7 @@ class SQL_Compiler {
                 $out .= $val;
                 break;
             case 'text_val':
-                $out .= "'".$val."'";
+                $out .= "'".addslashes($val)."'";
                 break;
             default:
                 throw new Exception("Failed to compile interval.  Wrong expression type ".$val['expression_type']);    
