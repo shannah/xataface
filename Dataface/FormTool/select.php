@@ -145,7 +145,7 @@ class Dataface_FormTool_select {
 
 			$val = $element->getValue();
 
-			if ( count($val)>0 ){
+			if ( @count($val)>0 ){
 				return $val[0];
 
 			} else {
