@@ -2105,6 +2105,14 @@ class Dataface_Record {
 		return $values;
 	}
 
+	function getNonKeyValues($fields = null, $index = 0, $where=0, $sort=0) {
+		$vals = $this->getValues($fields, $index, $where, $sort);
+		foreach ($this->table()->keys() as $k=>$v) {
+			unset($vals[$k]);
+		}
+		return $vals;
+	}
+
 	/**
 	 * @brief Alias for getValues()
 	 *
@@ -2558,15 +2566,19 @@ class Dataface_Record {
 
 		$field =& $this->_table->getField($fieldname);
 		if ( $this->_table->isBlob($fieldname) or ($this->_table->isContainer($fieldname) and @$field['secure'])  ){
-
-			unset($table);
-			$table =& Dataface_Table::loadTable($field['tablename']);
-			$keys = array_keys($table->keys());
-			$qstr = '';
-			foreach ($keys as $key){
-				$qstr .= "&$key"."=".$this->strval($key,$index,$where,$sort);
+			if ($this->val($fieldname)) {
+				unset($table);
+				$table =& Dataface_Table::loadTable($field['tablename']);
+				$keys = array_keys($table->keys());
+				$qstr = '';
+				foreach ($keys as $key){
+					$qstr .= "&$key"."=".$this->strval($key,$index,$where,$sort);
+				}
+				$out = DATAFACE_SITE_HREF."?-action=getBlob&-table=".$field['tablename']."&-field=$fieldname&-index=$index$qstr";
+			} else {
+				$out = '';
 			}
-			$out = DATAFACE_SITE_HREF."?-action=getBlob&-table=".$field['tablename']."&-field=$fieldname&-index=$index$qstr";
+			
 			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 			return $out;
 		}

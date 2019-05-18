@@ -551,9 +551,13 @@ class Dataface_Table {
         if (strpos($this->tablename, '_tmp_') === 0) {
             // This is just a temporary table.
             $iniPath = realpath(DATAFACE_SITE_PATH.'/tables/'.basename($this->tablename).'/fields.ini');
-            $delegateClass = realpath(DATAFACE_SITE_PATH.'/tables/'.basename($this->tablename).'/'.basename($this->tablename).'.php');
+			if (!$iniPath) {
+				$iniPath = realpath(DATAFACE_SITE_PATH.'/tables/'.basename($this->tablename).'/fields.ini.php');
+			}
+			$delegateClass = realpath(DATAFACE_SITE_PATH.'/tables/'.basename($this->tablename).'/'.basename($this->tablename).'.php');
 
-            $sqlQuery = null;
+			$sqlQuery = null;
+			//echo "ini path $iniPath ".$this->tablename;
             if (file_exists($iniPath)) {
                 $conf = parse_ini_file($iniPath, true);
                 if (isset($conf['__sql__'])) {
@@ -573,10 +577,19 @@ class Dataface_Table {
                     $sqlQuery = $delObj->__sql__();
                 }
             }
-
+			//echo "here $sqlQuery";exit;
             if (!isset($sqlQuery)) {
                 throw new Exception("No SQL query found for temp table ".$this->tablename);
-            }
+			}
+			if (Dataface_AuthenticationTool::getInstance()->isLoggedIn()) {
+				$authTool = Dataface_AuthenticationTool::getInstance();
+
+				$user = $authTool->getLoggedInUser();
+				$usersTable = Dataface_Table::loadTable($authTool->usersTable);
+				$idField = array_keys($usersTable->keys())[0];
+				$sqlQuery = str_replace('{{USER_ID}}', $user->val($idField), $sqlQuery);
+			}
+			
             $createQuery = "CREATE TEMPORARY TABLE `".basename($this->tablename)."` ".$sqlQuery."";
             //echo $createQuery;
             df_q($createQuery);
@@ -1780,6 +1793,7 @@ class Dataface_Table {
 
 	}
 
+	private $processedSQL = false;
 	/**
 	 * @brief Returns the SQL query used to fetch records of this table, if defined.
 	 *
@@ -1791,14 +1805,47 @@ class Dataface_Table {
 	 * @see DelegateClass::__sql__()
 	 */
 	function sql(){
-		$del =& $this->getDelegate();
-		if ( isset($del) and method_exists($del,'__sql__') ){
-			return $del->__sql__();
-		} else if ( isset($this->_sql) ){
-			return $this->_sql;
-		} else {
+		if (substr($this->tablename, 0, 5) == '_tmp_') {
+			// Temp tables already have the __sql__ applied
+			// and a temporary table has been created
 			return null;
 		}
+		$del =& $this->getDelegate();
+		$shouldProcess = false;
+		$userId = '0';
+		if (!$this->processedSQL) {
+			$this->processedSQL = true;
+			$shouldProcess = true;
+			$app = Dataface_Application::getInstance();
+			if (@$app->_conf['_auth'] and @$app->_conf['_auth']['users_table']) {
+				if ($this->tablename != $app->_conf['_auth']['users_table']) {
+					if (Dataface_AuthenticationTool::getInstance()->isLoggedIn()) {
+						$authTool = Dataface_AuthenticationTool::getInstance();
+			
+						$user = $authTool->getLoggedInUser();
+						$usersTable = Dataface_Table::loadTable($authTool->usersTable);
+						$idField = array_keys($usersTable->keys())[0];
+						$userId = $user->val($idField);
+					}
+				}
+			}
+			
+		}
+		
+		
+		if ( isset($del) and method_exists($del,'__sql__') ){
+			$out = $del->__sql__();
+		} else if ( isset($this->_sql) ){
+			$out = $this->_sql;
+		} else {
+			$out = null;
+		}
+
+		if ($shouldProcess and isset($out)) {
+			$out = str_replace('{{USER_ID}}', $userId, $out);
+			$this->_sql = $out;
+		}
+		return $out;
 
 	}
 

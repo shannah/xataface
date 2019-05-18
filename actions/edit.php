@@ -128,17 +128,38 @@ class dataface_actions_edit {
 				 */
 				$app->clearMessages();
 				$formTool->handleTabSubmit($currentRecord, $form, @$query['--tab']);
-				if ( !isset($query['--tab']) ){
-					// If we aren't using tabs we just do it the old way.
-					// (If it ain't broke don't fix it
-					
-					$result = $form->process( array( &$form, 'save') );
-				} else {
-					// If we are using tabs, we will use the formtool's 
-					// session aware saving function
-					
-					$result = $formTool->saveSession($currentRecord);
+				try {
+					if ( !isset($query['--tab']) ){
+						// If we aren't using tabs we just do it the old way.
+						// (If it ain't broke don't fix it
+						
+						$result = $form->process( array( &$form, 'save') );
+					} else {
+						// If we are using tabs, we will use the formtool's 
+						// session aware saving function
+						
+						$result = $formTool->saveSession($currentRecord);
+					}
+				} catch (xf\core\XFException $ex) {
+					if (@$query['-response'] === 'json') {
+						throw $ex;
+					} else {
+						$result = PEAR::raiseError($ex->getMessage(), $ex->getCode());
+					}
+				
+				} catch (Exception $ex) {
+					if (@$query['-response'] === 'json') {
+						throw $ex;
+					} else {
+						if (Dataface_Error::isNotice($ex)) {
+							$result = PEAR::raiseError($ex->getMessage(), $ex->getCode());
+						} else {
+							throw $ex;
+						}
+					}
 				}
+	
+				
 				$success = true;
 				$response =& Dataface_Application::getResponse();
 				
@@ -161,6 +182,10 @@ class dataface_actions_edit {
 
 					//$response['--msg'] = @$response['--msg'] ."\n".$result->getMessage();
 					$success = false;
+					if (@$query['-response'] == 'json') {
+						import('xf/core/XFException.php');
+						throw new xf\core\XFException('Failed to insert record', $result->getCode(), new Exception($result->getMessage(), $result->getCode()));
+					}
 				}
 				
 				

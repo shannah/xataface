@@ -120,6 +120,27 @@ class Database {
         return $out;
     }
 
+    public function getScalars($sql, $vars = null) {
+        $out = array();
+        $res = $this->query($sql, $vars);
+        while ($row = xf_db_fetch_row($res)) {
+            $out[] = $row[0];
+        }
+        @xf_db_free_result($res);
+        return $out;
+    }
+
+    public function getScalar($sql, $vars = null) {
+        $out = null;
+        $res = $this->query($sql, $vars);
+        while ($row = xf_db_fetch_row($res)) {
+            $out = $row[0];
+            break;
+        }
+        @xf_db_free_result($res);
+        return $out;
+    }
+
     public function getAssocs($sql, $vars = null) {
         $out = array();
         $res = $this->query($sql, $vars);

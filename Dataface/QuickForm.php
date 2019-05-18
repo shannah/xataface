@@ -802,7 +802,22 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 		    $fieldDef =& $this->_table->getField($field);
 	 		    $formTool->pushField($rec, $fieldDef, $this, $field, $this->_new);
 	 		    unset($fieldDef);
-	 		}
+			}
+			
+			$tableDelegate = $rec->_table->getDelegate();
+
+			if ($tableDelegate) {
+				$methodName = 'prevalidate';
+				if (method_exists($tableDelegate, $methodName)) {
+					$res = $tableDelegate->$methodName($this->_record, $rec, $this->_new);
+					if (Dataface_Error::isNotice($res)) {
+						$this->_errors[] = $res->getMessage();
+					} else if (PEAR::isError($res)) {
+						throw new Exception($res->getMessage(), $res->getCode());
+					}
+				}
+			}
+			
 		    foreach ($this->_fieldnames as $field){
 	 		    /*
 	 			 *
@@ -814,9 +829,12 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 			if ( PEAR::isError($el) ){
 	 				unset($el);
 	 				continue;
-	 			}
-
-
+				}
+				if (!$el->getValue() and $rec->val($field)) {
+					$this->_submitValues[$field] = $rec->strval($field);
+					$el->setValue($rec->strval($field));
+					$rec->setFlag($field);
+				}
 	 			$params = array('message'=>df_translate('scripts.GLOBAL.MESSAGE.PERMISSION_DENIED',"Permission Denied"));
 	 				// default error message to be displayed beside the field.
 

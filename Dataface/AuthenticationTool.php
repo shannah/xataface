@@ -367,12 +367,17 @@ class Dataface_AuthenticationTool {
 				
 			Dataface_Utilities::fireEvent('after_action_login', array('UserName'=>$_SESSION['UserName']));
 			$msg = df_translate('You are now logged in','You are now logged in');
-			if ( isset( $_REQUEST['-redirect'] ) and !empty($_REQUEST['-redirect']) ){
+			if ( isset( $_REQUEST['-redirect'] ) and 
+					!empty($_REQUEST['-redirect']) and 
+					strpos($_REQUEST['-redirect'], '-action=login_prompt&') === false
+				){
 				
 				$redirect = df_append_query($_REQUEST['-redirect'], array('--msg'=>$msg));
 				//$app->redirect($redirect);
 
-			} else if ( isset($_SESSION['-redirect']) ){
+			} else if ( isset($_SESSION['-redirect']) and !empty($_SESSION['-redirect']) and
+					strpos($_SESSION['-redirect'], '-action=login_prompt&') === false
+			){
 				$redirect = $_SESSION['-redirect'];
 				unset($_SESSION['-redirect']);
 				$redirect = df_append_query($redirect, array('--msg'=>$msg));
@@ -380,7 +385,7 @@ class Dataface_AuthenticationTool {
 
 			} else {
 			// Now we forward to the homepage:
-				$redirect = $_SERVER['HOST_URI'].DATAFACE_SITE_HREF;
+				$redirect = df_append_query($_SERVER['HOST_URI'].DATAFACE_SITE_HREF, array('--msg'=>$msg));
 			}
 			
 			$redirect = preg_replace('/-action=login_prompt/', '', $redirect);

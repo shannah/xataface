@@ -114,26 +114,43 @@ class dataface_actions_new {
 		 */
 
 		if ( $formTool->validateRecordForm($currentRecord, $form, true, @$query['--tab']) ){
-
 			/*
 			 *
 			 * The form was submitted and it validated ok.  We now process it (ie: save its contents).
 			 *
 			 */
 			$formTool->handleTabSubmit($currentRecord, $form, @$query['--tab']);
-			if ( !isset($query['--tab']) ){
-				// If we aren't using tabs we just do it the old way.
-				// (If it ain't broke don't fix it
-				$result = $form->process( array( &$form, 'save') );
-			} else {
-				// If we are using tabs, we will use the formtool's
-				// session aware saving function
-				$result = $formTool->saveSession($currentRecord, true);
+			try {
+				if ( !isset($query['--tab']) ){
+					// If we aren't using tabs we just do it the old way.
+					// (If it ain't broke don't fix it
+					$result = $form->process( array( &$form, 'save') );
+				} else {
+					// If we are using tabs, we will use the formtool's
+					// session aware saving function
+					$result = $formTool->saveSession($currentRecord, true);
+				}
+			} catch (xf\core\XFException $ex) {
+				if (@$query['-response'] === 'json') {
+					throw $ex;
+				} else {
+					$result = PEAR::raiseError($ex->getMessage(), $ex->getCode());
+				}
+			
+			} catch (Exception $ex) {
+				if (@$query['-response'] === 'json') {
+					throw $ex;
+				} else {
+					if (Dataface_Error::isNotice($ex)) {
+						$result = PEAR::raiseError($ex->getMessage(), $ex->getCode());
+					} else {
+						throw $ex;
+					}
+				}
 			}
 
 			$success = true;
 			$response =& Dataface_Application::getResponse();
-
 			if ( !$result ){
 				throw new Exception("Error occurred in save: ".xf_db_error( $app->db()), E_USER_ERROR);
 			} else if ( PEAR::isError($result) && !Dataface_Error::isNotice($result) ){
@@ -141,6 +158,10 @@ class dataface_actions_new {
 				if ( Dataface_Error::isDuplicateEntry($result) ){
 					$success = false;
 					$form->_errors[] = $result->getMessage();
+					if (@$query['-response'] == 'json') {
+						import('xf/core/XFException.php');
+						throw new xf\core\XFException('Failed to insert record.  Duplicate record.', $result->getCode(), new Exception($result->getMessage(), $result->getCode()));
+					}
 
 				} else {
 					//echo "not dup entry"; exit;
@@ -154,6 +175,10 @@ class dataface_actions_new {
 
 				$app->addError($result);
 				$success = false;
+				if (@$query['-response'] == 'json') {
+					import('xf/core/XFException.php');
+					throw new xf\core\XFException('Failed to insert record', $result->getCode(), new Exception($result->getMessage(), $result->getCode()));
+				}
 			}
 
 			if ( $success){
@@ -185,23 +210,23 @@ class dataface_actions_new {
 				} else {
 					$nextAction = 'view';
 				}
-                                $urlParams = array('-action'=>$nextAction);
+				$urlParams = array('-action'=>$nextAction);
 
-                                // Some parameters we'll want to pass to our edit action
-                                // so that the edit form is consistent with the display
-                                // of the new form.  E.g. if the form was headless or
-                                // has only particular fields, then the edit form should
-                                // include the same fields and also be headless.
-                                $passedParams = array('-fields', '-headless','-xf-hide-fields');
-                                foreach ( $passedParams as $passedParam ){
-                                    if (@$query[$passedParam]){
-                                        $urlParams[$passedParam] = $query[$passedParam];
-                                    }
-                                }
+				// Some parameters we'll want to pass to our edit action
+				// so that the edit form is consistent with the display
+				// of the new form.  E.g. if the form was headless or
+				// has only particular fields, then the edit form should
+				// include the same fields and also be headless.
+				$passedParams = array('-fields', '-headless','-xf-hide-fields');
+				foreach ( $passedParams as $passedParam ){
+					if (@$query[$passedParam]){
+						$urlParams[$passedParam] = $query[$passedParam];
+					}
+				}
 				$url = $currentRecord->getURL($urlParams);
-                                if ( @$query['--lang'] ){
-                                    $url .= '&--lang='.$query['--lang'];
-                                }
+				if ( @$query['--lang'] ){
+					$url .= '&--lang='.$query['--lang'];
+				}
 				//echo $url;exit;
 
 				$msg = implode("\n", $app->getMessages());//@$response['--msg'];
@@ -218,8 +243,8 @@ class dataface_actions_new {
 				$app->redirect("$link");
 
 			} else {
-                            $app->addHeadContent('<meta id="quickform-error" name="quickform-error" value="Save failed"/>');
-                        }
+				$app->addHeadContent('<meta id="quickform-error" name="quickform-error" value="Save failed"/>');
+			}
 
 		}
 
@@ -236,6 +261,11 @@ class dataface_actions_new {
 		if ( count($form->_errors) > 0 ){
 			//$app->clearMessages();
 			//$app->addError(PEAR::raiseError("Some errors occurred while processing this form: <ul><li>".implode('</li><li>', $form->_errors)."</li></ul>"));
+			if (@$query['-response'] == 'json') {
+				import('xf/core/XFException.php');
+				$messages = implode('. ', $form->_errors);
+				throw new xf\core\XFException('Failed to insert record.'.$messages, DATAFACE_E_VALIDATION_CONSTRAINT_FAILED, new Exception($messages, DATAFACE_E_VALIDATION_CONSTRAINT_FAILED));
+			}
 		}
 		if (@$query['-format'] == 'xml') {
 			header('Content-type: application/xml; charset="'.$app->_conf['oe'].'"');

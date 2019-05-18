@@ -3,14 +3,14 @@ namespace xf\actions;
 
 class BaseAction {
     public function handle($params) {
-        $app = Dataface_Application::getInstance();
+        $app = \Dataface_Application::getInstance();
         $res = null;
         try {
             $res = $this->handleImpl($params);
 
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             if ($ex->getCode() === 401) {
-                return Dataface_Error::permissionDenied('Permission is denied');
+                return \Dataface_Error::permissionDenied('Permission is denied');
             }
 
             $res = array(

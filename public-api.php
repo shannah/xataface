@@ -67,6 +67,43 @@ function df_init($site_path, $dataface_url, $conf=null){
 }
 /* @} */
 
+function df_error_log($arg) {
+	$app = Dataface_Application::getInstance();
+	$del = $app->getDelegate();
+	$uuid = df_uuid();
+	if ($del and method_exists($del, 'error_log')) {
+		$del->error_log($arg, $uuid);
+	} else {
+		
+		error_log($uuid.">");
+		error_log($arg);
+		error_log("<".$uuid);
+	}
+	return $uuid;
+}
+
+function df_uuid() {
+    return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        // 32 bits for "time_low"
+        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+
+        // 16 bits for "time_mid"
+        mt_rand( 0, 0xffff ),
+
+        // 16 bits for "time_hi_and_version",
+        // four most significant bits holds version number 4
+        mt_rand( 0, 0x0fff ) | 0x4000,
+
+        // 16 bits, 8 bits for "clk_seq_hi_res",
+        // 8 bits for "clk_seq_low",
+        // two most significant bits holds zero and one for variant DCE1.1
+        mt_rand( 0, 0x3fff ) | 0x8000,
+
+        // 48 bits for "node"
+        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+    );
+}
+
 function df_secure(&$records, $secure=true){
 	foreach ($records as $record){
 		$record->secureDisplay = $secure;
@@ -928,6 +965,8 @@ function df_tz_or_offset(){
                 return json_decode($result, true);
             }
             return $result;
-        }
+		}
+		
+		
         
 } // end if ( !defined( DATAFACE_PUBLIC_API_LOADED ) ){

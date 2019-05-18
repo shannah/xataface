@@ -29,6 +29,7 @@ define('DATAFACE_E_PERMMISSIONS', 210);
 define('DATAFACE_E_PERMISSION_DENIED', 211);
 define('DATAFACE_E_LOGIN_FAILURE', 212);
 define('DATAFACE_E_VERSION_MISMATCH', 213);
+define('DATAFACE_E_VALIDATION_CONSTRAINT_FAILED', 214);
 define('DATAFACE_E_NO_RESULTS', 250);
 
 define('DATAFACE_E_WARNING', 100);
@@ -80,7 +81,7 @@ class Dataface_Error extends PEAR_Error {
 	}
 	
 	public static function isPermissionDenied($obj){
-		if ( PEAR::isError($obj) and $obj->getCode() == DATAFACE_E_PERMISSION_DENIED ) return true;
+		if ( (PEAR::isError($obj) || ($obj instanceof Exception)) and $obj->getCode() == DATAFACE_E_PERMISSION_DENIED ) return true;
 		return false;
 	}
 	
@@ -92,7 +93,7 @@ class Dataface_Error extends PEAR_Error {
 	}
 	
 	public static function isNoImportFiltersFound($obj){
-		if ( PEAR::isError($obj) and $obj->getCode() == DATAFACE_E_NO_IMPORT_FILTERS_FOUND ) return true;
+		if ( (PEAR::isError($obj) or ($obj instanceof Exception)) and $obj->getCode() == DATAFACE_E_NO_IMPORT_FILTERS_FOUND ) return true;
 		return false;
 	
 	}
@@ -104,22 +105,22 @@ class Dataface_Error extends PEAR_Error {
 	}
 	
 	public static function isDuplicateEntry($obj){
-		if ( PEAR::isError($obj) and $obj->getCode() == DATAFACE_E_DUPLICATE_ENTRY ) return true;
+		if ( (PEAR::isError($obj) or ($obj instanceof Exception)) and $obj->getCode() == DATAFACE_E_DUPLICATE_ENTRY ) return true;
 		return false;
 	}
 	
 	public static function isError($obj){
-		if ( !PEAR::isError($obj) ) return false;
+		if ( !PEAR::isError($obj) and !($obj instanceof Exception_) ) return false;
 		return ($obj->getCode() >= DATAFACE_E_ERROR);
 	}
 	
 	public static function isWarning($obj){
-		if ( !PEAR::isError($obj) ) return false;
+		if ( !PEAR::isError($obj) and !(obj instanceof Exception)) return false;
 		return ( $obj->getCode() >= DATAFACE_E_WARNING && $obj->getCode() < DATAFACE_E_NOTICE);
 	}
 	
 	public static function isNotice(&$obj){
-		if ( !PEAR::isError($obj) ) return false;
+		if ( !PEAR::isError($obj) and !($obj instanceof Exception) ) return false;
 		return ( $obj->getCode() >= DATAFACE_E_NOTICE and $obj->getCode() < DATAFACE_E_ERROR);
 		
 	}

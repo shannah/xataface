@@ -101,9 +101,14 @@ class Dataface_Application_blob {
 		$lastTableUpdate = strtotime($lastTableUpdate);
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
-		$rec =& df_get_record($table->tablename, $query);
-		if ( !$rec ) throw new Exception("No record found to match the request.", E_USER_ERROR);
-
+		//echo $table->tablename;
+		//print_r($query);exit;
+		$rec = df_get_record($table->tablename, $query);
+		if ( !$rec ){
+				//print_r($rec);
+				//echo "FUCK!!";exit;
+				throw new Exception("No record found to match the request.", E_USER_ERROR);
+		}
 		$field =& $table->getField($fieldname);
 		if ( PEAR::isError($field) ){
 			header('HTTP/1.0 500 Internal Server Error');

@@ -541,10 +541,17 @@ END;
 	 */
 	var $_conf;
 
-	/**
+    /**
 	 * @brief Constructor.  Do not use this.  getInstance() instead.
 	 */
 	function Dataface_Application($conf = null){
+		self::__construct($conf);
+	}
+
+	/**
+	 * @brief Constructor.  Do not use this.  getInstance() instead.
+	 */
+	function __construct($conf = null) {
 		if ( !isset($this->sessionCookieKey) ){
 		    $this->sessionCookieKey = md5(DATAFACE_SITE_URL.'#'.__FILE__);
 		}
@@ -923,10 +930,12 @@ END;
 			import('Dataface/WorkflowTool.php');
 		}
 
-
-
-
-		// ------- Set up the current query ---------------------------------
+		if (@$_GET['--url']) {
+			import('actions/request_public_url.php');
+			// This allows the use of a public URL for setting
+			// both the query and the logged in user.
+			dataface_actions_request_public_url::apply_url($this);
+		}
 
 		if ( isset($_REQUEST['__keys__']) and is_array($_REQUEST['__keys__']) ){
 			$query = $_REQUEST['__keys__'];
@@ -1727,6 +1736,9 @@ END
 				if ( @$conf['session_name'] ) session_name($conf['session_name']);
 				//echo "Starting session with ".session_name();
 				session_start();	// start the session
+				if (defined('REQUEST_PUBLIC_URL_USERNAME')) {
+					$_SESSION['UserName'] = REQUEST_PUBLIC_URL_USERNAME;
+				}
 				header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
 
 				// This updates the session timeout on page load
@@ -2483,15 +2495,44 @@ END
 			$this->_display($main_content_only, $disableCache);
 
 	 	} catch ( Exception $ex){
-	 		echo '<p>Uncaught exception was thrown while processing this request.  Troubleshooting steps:</p>
-	 		    <ol>
-	 			<li><a href="'.htmlspecialchars($this->url('').'&--refresh-apc=1').'">Refresh the APC Cache.</a> - This may help in cases where you have changed a table column definition and your server has the APC opcode cache installed.</li>
-	 			<li><a href="'.htmlspecialchars($this->url('-action=clear_views')).'">Clear Cache Views</a> - This may also help in cases where you have changed a table column definition and some tables include __sql__ definitions.</li>
-	 			<li>Check your PHP error log for a description of the error and go from there.  See <a href="http://xataface.com/wiki/Troubleshooting">this page</a> for troubleshooting tips.</li>
-	 			</ol>';
+			$query = $this->getQuery();
+			if (@$query['-response'] === 'json') {
+				$uuid = df_error_log($ex);
+				header('Content-type: application/json; charset="'.$this->_conf['oe'].'"');
+				$resp = array(
+					array(
+						'code' => '500', 
+						'message' => 'Internal server error.  Check error log for details',
+						'uuid' => $uuid
+					)
+				);
+				$errorMessage = 'Check error log for details.';
+				$errorCode = $ex->getCode();
+				if ($ex instanceof \xf\core\XFException) {
+					$errorMessage = $ex->getClientErrorMessage();
+					$errorCode = $ex->getClientErrorCode();
+				}
+				$resp['errorMessage'] = $errorMessage;
+				$resp['errorCode'] = $errorCode;
+				echo json_encode($resp);
+				exit;
+			}
+			$uuid = df_error_log($ex);
+			header('HTTP/1.0 500 Internal Server Error', true);
 
-			throw $ex;
+			echo "<!doctype html>
+				<html>
+					<head><title>Internal Error</title></head>
+				<body>
+					<h1>Internal Server Error</h1>
+					<p>Check your error log for details.</p>
+					<p>$uuid</p>
+					<p><a href='".htmlspecialchars(DATAFACE_SITE_HREF)."'>Home</a></p>
 
+				</body>
+				</html>
+			";
+	 		
 	 	}
 	 }
 

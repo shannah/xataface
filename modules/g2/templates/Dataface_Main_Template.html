@@ -123,7 +123,7 @@
 										{define_slot name="search_form"}
 											<div class="search_form" id="top-search-form">
 												<form method="GET" action="{$smarty.server.HOST_URI|escape}{$ENV.DATAFACE_SITE_HREF|escape}">
-													{form_context exclude="-action,-skip,-submit,-mode"}
+													{form_context exclude="-action,-skip,-submit,-mode,-search"}
 													
 													<input class="xf-search-field" type="text" name="-search" value="{$ENV.search|escape}"/>
 													{actions category="find_actions" var="find_actions"}
