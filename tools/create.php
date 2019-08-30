@@ -34,6 +34,11 @@ class XFProject {
         return $this->basedir . DIRECTORY_SEPARATOR . 'www';
     }
 
+    function templates_c_dir() {
+
+        return $this->www_dir() . DIRECTORY_SEPARATOR . 'templates_c';
+    }
+
     function data_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'data';
     }
@@ -100,7 +105,21 @@ class XFProject {
         return $this->xataface_dir() . DIRECTORY_SEPARATOR . 'tools';
     }
 
-   
+    function create_deny_all_htaccess($path) {
+        $out = <<<END
+# Apache 2.2
+<IfModule !authz_core_module>
+	Order Deny,Allow
+	Deny from all
+</IfModule>
+
+# Apache 2.4+
+<IfModule authz_core_module>
+    Require all denied
+</IfModule>
+END;
+        file_put_contents($path, $out);
+    }
 
 
     function create_scaffold() {
@@ -118,9 +137,13 @@ class XFProject {
             fwrite(STDERR, "Failed.\n");
             exit(1);
         }
-        echo "Done";
+        echo "Done\n";
 
         $this->create_local_xataface();
+        mkdir($this->templates_c_dir());
+        chmod($this->templates_c_dir(), 0777);
+        $this->create_deny_all_htaccess($this->templates_c_dir() . '/.htaccess');
+
         $this->init_db();
 
         
@@ -195,6 +218,7 @@ END
             exit(1);
         }    
         
+        echo "Done\n";
     }
         
     
@@ -203,7 +227,7 @@ END
     function randomPassword() {
         $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
         for ($i = 0; $i < 8; $i++) {
-            $n = rand(0, count($alphabet)-1);
+            $n = rand(0, strlen($alphabet)-1);
             $pass[$i] = $alphabet[$n];
         }
         return implode('', $pass);
