@@ -67,6 +67,10 @@ class XFProject {
         return $this->basedir . DIRECTORY_SEPARATOR . 'bin';
     }
 
+    function lib_dir() {
+        return $this->basedir . DIRECTORY_SEPARATOR . 'lib';
+    }
+
     function etc_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'etc';
     }
@@ -138,7 +142,9 @@ END;
             exit(1);
         }
         echo "Done\n";
-
+        $this->install_composer();
+        $this->install_yarn();
+        $this->install_php_my_admin();
         $this->create_local_xataface();
         mkdir($this->templates_c_dir());
         chmod($this->templates_c_dir(), 0777);
@@ -150,6 +156,130 @@ END;
         
     }
 
+    function install_yarn() {
+        echo "Installing Yarn (required for PhpMyAdmin javascript dependencies)...";
+        $tmpPath = $this->lib_dir() . DIRECTORY_SEPARATOR . 'yarn.tgz';
+        $yarnUrl = 'https://yarnpkg.com/latest.tar.gz';
+
+        if (!file_put_contents($tmpPath, fopen($yarnUrl, 'rb'))) {
+            fwrite(STDERR, "Failed\n");
+            fwrite(STDERR, "Failed to download yarn from ".$yarnUrl);
+            exit(1);
+        }
+        echo "Done\n";
+        echo 'Extracting yarn...';
+        try {
+            $zip = new PharData($tmpPath);
+            $res = $zip->extractTo($this->lib_dir());
+            if ($res !== TRUE) {
+                fwrite(STDERR, "Failed to open yarn zip archive from ". $tmpPath . "\n");
+                exit(1);
+            }
+        } catch (Exception $ex) {
+            fwrite(STDERR, "Failed\n");
+            fwrite(STDERR, $ex->getMessage()."\n");
+            exit(1);
+        }
+        foreach (glob($this->lib_dir() . DIRECTORY_SEPARATOR . 'yarn-*') as $yarnDir) {
+            if (!rename($yarnDir, $this->lib_dir() . DIRECTORY_SEPARATOR . 'yarn')) {
+                fwrite(STDERR, "Failed\nFailed to rename yarn\n");
+                exit(1);
+            }
+            break;
+        }
+        unlink($tmpPath);
+        echo "Done\n";
+    }
+
+    function install_php_my_admin() {
+        mkdir($this->lib_dir());
+        $phpMyAdmin = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin';
+        $tmpPath = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin.zip';
+        //$phpMyAdminUrl = 'https://github.com/shannah/phpmyadmin/archive/master.zip';
+        $phpMyAdminUrl = 'https://github.com/phpmyadmin/phpmyadmin/archive/master.zip';
+        echo 'Downloading phpMyAdmin from '.$phpMyAdminUrl.'...';
+        $res = file_put_contents($tmpPath, fopen($phpMyAdminUrl, 'rb'));
+        if (!$res) {
+            fwrite(STDERR, "Failed to download phpmyadmin from ".$phpMyAdminUrl);
+            exit(1);
+        }
+        echo "Done\n";
+        echo 'Extracting phpmyadmin...';
+        $zip = new ZipArchive;
+        $res = $zip->open($tmpPath);
+        if ($res !== TRUE) {
+            fwrite(STDERR, "Failed to open phpmyadmin zip archive from ". $tmpPath . "\n");
+            exit(1);
+        }
+        $zip->extractTo($this->lib_dir());
+        $zip->close();
+        unlink($tmpPath);
+        if (!rename($phpMyAdmin.'-master', $phpMyAdmin)) {
+            fwrite(STDERR, "Failed.\n");
+            exit(1);
+        }
+        echo "Done\n";
+
+        echo 'Installing phpMyAdmin using composer...';
+        $quotedComposer = escapeshellarg(realpath($this->lib_dir() . DIRECTORY_SEPARATOR . 'composer.phar'));
+        $quotedPhpMyAdmin = escapeshellarg(realpath($phpMyAdmin));
+        exec('cd '.$quotedPhpMyAdmin.' && php '.$quotedComposer.' update --no-dev', $buf, $res);
+        if ($res !== 0) {
+            fwrite(STDERR, "Failed\n");
+            //fwrite(STDERR, $buf);
+            print_r($buf);
+            exit(1);
+        }
+        exec('cd '.$quotedPhpMyAdmin.' && ../yarn/bin/yarn install', $buf, $res);
+        if ($res !== 0) {
+            fwrite(STDERR, "Failed\nYarn install failure\n");
+            print_r($buf);
+            exit(1);
+        }
+        $configSample = $phpMyAdmin . DIRECTORY_SEPARATOR . 'config.sample.inc.php';
+        $config = $phpMyAdmin .DIRECTORY_SEPARATOR . 'config.inc.php';
+        if (!rename($configSample, $config)) {
+            fwrite(STDERR, "Failed\n");
+            fwrite(STDERR, "Failed to rename config sample to config.");
+            exit(1);
+        }
+        $contents = file_get_contents($config);
+        $contents = str_replace(
+            '$cfg[\'Servers\'][$i][\'auth_type\'] = \'cookie\';', 
+            '$cfg[\'Servers\'][$i][\'auth_type\'] = \'config\';', 
+            $contents
+        );
+        $contents = str_replace('$cfg[\'Servers\'][$i][\'AllowNoPassword\'] = false;',
+            '$cfg[\'Servers\'][$i][\'AllowNoPassword\'] = true;',
+            $contents
+        );
+        if (!file_put_contents($config, $contents)) {
+            fwrite(STDERR, "Failed\n");
+            fwrite(STDERR, "Failed to write config contents.");
+            exit(1);
+
+        }
+
+        echo "Done\n";
+
+        
+
+
+    }
+
+    function install_composer() {
+        mkdir($this->lib_dir());
+        $composerPhar = $this->lib_dir() . DIRECTORY_SEPARATOR . 'composer.phar';
+        $composerUrl = 'https://github.com/composer/composer/releases/download/1.6.5/composer.phar';
+        echo "Installing composer to ".$composerPhar." ...";
+        
+        $res = file_put_contents($composerPhar, fopen($composerUrl, 'rb'));
+        if (!$res) {
+            fwrite(STDERR, "Failed");
+            exit(1);
+        }
+        echo "Done\n";
+    }
     function init_db() {
         $conf_db_ini_path = $this->www_dir() . DIRECTORY_SEPARATOR . 'conf.db.ini.php';
         if (!file_exists($conf_db_ini_path)) {
@@ -212,6 +342,9 @@ END
             }
             exit(1);
         }
+
+
+
         exec('sh '.escapeshellarg($mysql_server).' stop', $buf, $res);
         if ($res !== 0) {
             fwrite(STDERR, "Failed to stop mysql server.\n");
