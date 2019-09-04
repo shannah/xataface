@@ -1,4 +1,5 @@
 #!/bin/sh
+export PATH=/Applications/XAMPP/xamppfiles/bin:$PATH
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 scaffolddir="$SCRIPTPATH/..";
 ACMD="$1"

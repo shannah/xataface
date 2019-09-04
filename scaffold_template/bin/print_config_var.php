@@ -32,6 +32,23 @@ if (strpos($key, '.') !== false) {
         case 'XFServerPort':
             echo '9090';
             exit;
+        case 'XFShortVersionString':
+            $version_path = dirname(__FILE__) 
+            . DIRECTORY_SEPARATOR . '..' 
+            . DIRECTORY_SEPARATOR . 'www' 
+            . DIRECTORY_SEPARATOR . 'version.txt';
+            if (file_exists($version_path)) {
+                $version = file_get_contents($version_path);
+                if (strpos($version, ' ') !== false) {
+                    echo trim(substr($version, strpos($version, ' ')));
+                } else {
+                    echo trim($version);
+                }
+            } else {
+                echo '1.0';
+            }
+            exit;
+            
 
     }
     echo $conf[$key];
