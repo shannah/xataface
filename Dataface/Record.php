@@ -4548,6 +4548,22 @@ class Dataface_Record {
 	}
 
 
+	function getPrimaryKeyValue() {
+		$keys = array_keys($this->_table->keys());
+		$params=array();
+		$out = '';
+		$first = true;
+		foreach ($keys as $key){
+			if ($first) {
+				$first = false;
+			} else {
+				$out .= ', ';
+			}
+			$out .= $this->strval($key);
+		}
+		return $out;
+	}
+
 	// @}
 	// END Record Metadata
 	//--------------------------------------------------------------------------------------

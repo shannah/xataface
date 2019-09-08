@@ -122,6 +122,7 @@ class Dataface_Relationship {
 	}
 		function Dataface_Relationship($tablename, $relationshipName, &$values) { self::__construct($tablename, $relationshipName, $values); }
 	
+	
 	function &getFieldDefOverride($field_name, $default=array()){
 		if ( strpos($field_name,'.') !== false	){
 			list($rname,$field_name) = explode('.', $field_name);
@@ -1206,6 +1207,10 @@ class Dataface_Relationship {
 	
 	}
 	
+	function isDomainTable($table) {
+		return $table == $this->getDomainTable();
+	}
+
 	/**
 	 * Returns the name of the "domain table" for this relationship.  The domain table is the main
 	 * table that comprises the data of a related record.  I.e., it is the destination table that is
@@ -1224,6 +1229,37 @@ class Dataface_Relationship {
 		return $this->domainTable;
 	}
 	
+	function isForeignKey($table, $field, $excludeConstrained=false) {
+		$fkvals = $this->getForeignKeyValues();
+		
+		if (!@$fkvals[$table]) {
+			return false;
+		}
+		if (!@$fkvals[$table][$field]) {
+			return false;
+		}
+		
+		if ($excludeConstrained and strpos($fkvals[$table][$field], '$') === 0) {
+			return false;
+		}
+		return true;
+	}
+
+	function isConstrainedForeignKey($table, $field) {
+		$fkvals = $this->getForeignKeyValues();
+		
+		if (!@$fkvals[$table]) {
+			return false;
+		}
+		if (!@$fkvals[$table][$field]) {
+			return false;
+		}
+		
+		if (strpos($fkvals[$table][$field], '$') === 0) {
+			return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * Gets the values of the foreign keys of a particular relationship.  This returns an associative

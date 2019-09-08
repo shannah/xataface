@@ -1,6 +1,7 @@
 {use_macro file="Dataface_Main_Template.html"}
 
 	{fill_slot name="main_column"}
+		<div class="responsive-content">
 		<h2>{translate id="Manage output cache"}Manage output cache{/translate}</h2>
 		<p>{translate id="manage_output_cache.description_paragraph"}The Dataface output cache stores copies of the pages of this application as they
 		are presented to the user.  Each time a page is requested, Dataface first checks the 
@@ -36,5 +37,6 @@
 			</li>
 		</ul>
 		{/if}
+	</div>
 	{/fill_slot}
 {/use_macro}

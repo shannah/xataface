@@ -149,6 +149,13 @@ class Dataface_ActionTool {
 		
 	}
 	
+	function countActions($params=array(), $actions=null) {
+		if (is_string($params)) {
+			$params = array('category' => $params);
+		}
+		return count($this->getActions($params, $actions));
+	}
+
 	/**
 	 * Returns an array of all actions as specified by $params.
 	 * $params must be an array.  It may contain the following options:

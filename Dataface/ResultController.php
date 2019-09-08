@@ -385,7 +385,7 @@ class Dataface_ResultController {
 
             $pages2[df_translate('scripts.GLOBAL.LABEL_NEXT', 'Next')] = $pages[$curr_page + 1];
         }
-        $out = array('<ul class="resultController">');
+        $out = array('<div class="resultControllerWrapper"><ul class="resultController">');
         $out[] = '<li class="rs-description">' . df_translate('scripts.GLOBAL.MESSAGE_FOUND', 'Found ' . $found . ' records', array('found' => $found)) . ' </li>';
         foreach ($pages2 as $pageno => $link) {
             if ($pageno == $curr_page)
@@ -399,7 +399,7 @@ class Dataface_ResultController {
         $appurl = preg_replace('/[&\?]' . preg_quote('-' . $prefix . 'skip=') . '[^&]*/', '', $appurl);
         $urlprefix = ( $this->_baseUrl ? $this->_baseUrl . '?' . substr($appurl, strpos($appurl, '?') + 1) : $appurl);
         $out[] = '<li class="results-per-page"> ' . df_translate('scripts.GLOBAL.LABEL_SHOWING', 'Showing') . ' <input type="text" value="' . $limit . '" onchange="window.location = \'' . $urlprefix . '&-' . $prefix . 'limit=\'+this.value" size="3"/>' . df_translate('scripts.GLOBAL.MESSAGE_RESULTS_PER_PAGE', 'Results per page');
-        $out[] = '</ul>';
+        $out[] = '</ul><div style="clear:both;height:0; padding:0; margin:0"></div></div>';
 
         return implode("\n", $out);
     }

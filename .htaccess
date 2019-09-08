@@ -1,3 +1,3 @@
 RewriteEngine On
 RewriteRule (installer\.php|index\.php|install_form.js.php)$ - [L]
-RewriteRule !.+\.(png|jpg|gif|GIF|PNG|JPG|jpeg|JPEG|ICO|js|css|html|xml|htm)$ 403.html [L]
+RewriteRule !.+\.(png|jpg|gif|GIF|PNG|JPG|jpeg|JPEG|ICO|js|css|html|xml|htm|woff|eot|woff2|ttf)$ 403.html [L]

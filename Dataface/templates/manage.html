@@ -1,5 +1,6 @@
 {use_macro file="Dataface_Main_Template.html"}
 	{fill_slot name="main_column"}
+	<div class="responsive-content">
 		<h2>Administration Control Panel</h2>
 		<p>This page allows you to manage various aspects of this application.  Select one of the options below.</p>
 		
@@ -10,5 +11,6 @@
 			<dd>{$action.description|escape}</dd>
 		{/foreach}
 		</dl>
+	</div>
 	{/fill_slot}
 {/use_macro}

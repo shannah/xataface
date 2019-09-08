@@ -973,8 +973,12 @@ class Dataface_FormTool {
 		$renderer = new HTML_QuickForm_Renderer_ArrayDataface(true);
 		$form->accept($renderer);
 		$form_data = $renderer->toArray();
+		$mainSectionLabel = df_translate('scripts.Dataface_FormTool.LABEL_EDIT_DETAILS', 'Edit Details');
+		if (isset($template) and (stripos($template, 'search') !== false or stripos($template, 'find') !== false )) {
+			$mainSectionLabel = 'Advanced Search';
+		}
 		if ( !@$form_data['sections'] ){
-			$form_data['sections'] = array('__global__'=>array('header'=>df_translate('scripts.Dataface_FormTool.LABEL_EDIT_DETAILS', 'Edit Details'), 'name'=>'Edit','elements'=>&$form_data['elements']));
+			$form_data['sections'] = array('__global__'=>array('header'=>$mainSectionLabel, 'name'=>'Edit','elements'=>&$form_data['elements']));
 			unset($form_data['elements']);
 		}
 		//throw new Exception("here");

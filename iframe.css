@@ -18,3 +18,23 @@ body.hide-button-bars .xf-button-bar {
 body.no-main-border div.mainArea {
 	border: none;
 }
+
+body.edit-in-iframe div.edit-record-wrapper {
+	position:fixed;
+	top:0;
+	right:0;
+	left:0;
+	bottom:0;
+	overflow:scroll;
+	background-color: white;
+	z-index:1000;
+}
+
+body.edit-in-frame div.portalMessage {
+	position: fixed;
+	top:0;
+	right:0;
+	left:0;
+	height: 2em;
+	z-index:1001;
+}

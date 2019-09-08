@@ -301,7 +301,8 @@ END;
 		'show_record_tabs' => 1,		// View, Edit, Translate, History, etc...
 		'show_record_tree' => 1,		// Tree to navigate the relationships of this record.
 		'list_view_scroll_horizontal'=>1, // Whether to scroll list horizontal if it exceeds page width
-		'list_view_scroll_vertical'=>1	// Whether to scroll list vertical if it exceeds page height.
+		'list_view_scroll_vertical'=>1,	// Whether to scroll list vertical if it exceeds page height.
+		'disable_master_detail' => 1
 
 	);
 
@@ -609,7 +610,9 @@ END;
 
 			}
 			if ( !isset($dbinfo['driver']) ){
-				$dbinfo['driver'] = 'mysql';
+				// It's time to move to mysqli as the default database driver.
+				// this might break old apps.
+				$dbinfo['driver'] = 'mysqli';
 			}
 			require_once 'xf/db/drivers/'.basename($dbinfo['driver']).'.php';
 			//if ( @$dbinfo['persistent'] ){
@@ -683,9 +686,13 @@ END;
 
 		// Include XataJax module always.
 		$mods = array('modules_XataJax'=>'modules/XataJax/XataJax.php');
-		if ( !@$this->_conf['disable_g2'] ){
-			$mods['modules_g2'] = 'modules/g2/g2.php';
-		}
+
+		// We used to make g2 the default, but
+		// starting with version 3.0, we will be going back to the default
+		// look - which is improved.
+		//if ( !@$this->_conf['disable_g2'] ){
+		//	$mods['modules_g2'] = 'modules/g2/g2.php';
+		//}
 		foreach ($this->_conf['_modules'] as $k=>$v){
 			$mods[$k] = $v;
 		}
@@ -2781,6 +2788,7 @@ END
 		$site_href = DATAFACE_SITE_HREF;
 		$dataface_url = DATAFACE_URL;
 		$table = $this->_currentTable;
+		$authTool = Dataface_AuthenticationTool::getInstance();
 		$tableObj = Dataface_Table::loadTable($table);
 		if ( PEAR::isError($tableObj) ){
 			throw new Exception($tableObj->getMessage(), $tableObj->getCode());

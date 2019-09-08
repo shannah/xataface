@@ -32,6 +32,7 @@
 	</style>
 	{/fill_slot}
 	{fill_slot name="main_section"}
+		<div id="login-window">
 		{if $ENV.user}
 		<div id="xf-already-logged-in-msg" style="display:none">{translate id="You are already logged in"}You are already logged in{/translate}</div>
 		<script>
@@ -89,5 +90,6 @@
 		</ul>
 		{/define_slot}
 		{block name="after_login_form"}
+	</div>
 	{/fill_slot}
 {/use_macro}

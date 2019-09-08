@@ -187,7 +187,7 @@
 	 	so that we have that cool animation effect it the user wants to
 	 	hide a section.
 	*}
-	
+	<div class="xf-form-group-wrapper">
 	{collapsible_sidebar heading=$section.header}
 	{block name="before_findform_table"}
 		<table width="100%" class="Dataface_QuickForm-table-wrapper Dataface_FindForm-table-wrapper">
@@ -272,6 +272,7 @@
 		</table>
 		{block name="after_findform_table"}
 	{/collapsible_sidebar}
+	</div>
 {/foreach}
 
 </form>

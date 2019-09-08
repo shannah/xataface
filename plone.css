@@ -27,8 +27,25 @@
 /*  (not this either :) */
 
 /* The basic elements: */
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: local('Material Icons'),
+      local('MaterialIcons-Regular'),
+      url(fonts/MaterialIcons-Regular.woff2) format('woff2'),
+      url(fonts/MaterialIcons-Regular.woff) format('woff'),
+      url(fonts/MaterialIcons-Regular.ttf) format('truetype');
+  }
+  
+:root {
+    --main-bg-color: rgb(231, 234, 237);
+    --light-bg-color:#f6f8fa;
+}
+
 body {
-    font: 69% "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+    font: 100% Arial,"Helvetica Neue",Helvetica,sans-serif;
     background-color: White;
     color: Black;
     margin: 0;
@@ -41,7 +58,7 @@ table {
 
 a {
     text-decoration: none;
-    color: #436976;
+    color: #0366d6;
     background-color: transparent;
 }
 img {
@@ -83,7 +100,6 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
     margin: 0;
     padding-top: 0.5em;
-    border-bottom: 1px solid #8cacbb;
 }
 
 h1 a,
@@ -193,13 +209,26 @@ textarea {
     width: 100%;
 }
 input {
-    font-family: "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
-    visibility: visible;
-    border: 1px solid #8cacbb;  
-    color: Black;
-    background-color: white;
-    vertical-align: middle;
+    
+        padding: 6px 8px;
+        font-size: 100%;
+        line-height: 20px;
+        color: #24292e;
+        vertical-align: middle;
+        background-color: #fff;
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        border: 1px solid #d1d5da;
+        border-radius: 3px;
+        outline: none;
+        box-shadow: inset 0 1px 2px rgba(27,31,35,.075);
+    
 }
+td.Dataface_QuickForm-label-cell {
+    padding: 8px;
+    line-height: 34px;
+}
+
 select {
     border: 1px solid #8cacbb;  
     color: Black;
@@ -333,7 +362,7 @@ del {
     padding: 0.2em;
     margin-right: 0.2em;
     text-decoration: none;
-    text-transform: lowercase;
+    
 }
 #portal-siteactions li.selected a {
     background-color: #dee7ec;
@@ -356,7 +385,7 @@ del {
     margin: 1.5em 0 0 0;
     padding: 0 2em 0 0;
     text-align: right;
-    text-transform: lowercase;
+    
     white-space: nowrap;
     z-index: 2;
 }
@@ -384,7 +413,7 @@ del {
     margin-right: 0.5em;
     padding: 0em 1.5em;
     text-decoration: none;
-    text-transform: lowercase;
+    
 }
 #portal-globalnav li.selected a {
     /* The selected tab. There's only one of this */
@@ -413,7 +442,7 @@ del {
     padding: 0em 3em 0em 3em;
     margin: 0;
     text-align: right;
-    text-transform: lowercase;
+    
     list-style: none;
 }
 #portal-personaltools .portalUser {
@@ -442,15 +471,7 @@ del {
 .visualCaseSensitive {
     text-transform: none;
 }
-#portal-breadcrumbs {
-    /* The path bar, including breadcrumbs and add to favorites */
-    border-bottom-color: #8cacbb;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    padding-left: 2em;
-    padding-right: 2em;
-    text-transform: lowercase;
-}
+
 .addFavorite {
     vertical-align: bottom;
 }
@@ -461,7 +482,6 @@ del {
     /*margin-top: 2.1em;*/
     margin-left: 0;
     list-style: none;
-    border: 1px solid #74ae0b;
     border-top-width: 0px;
     border-left-width: 0px;
     border-right-width: 0px;
@@ -472,7 +492,6 @@ del {
 }
 .contentViews li a {
     background-color: transparent;
-    border: 1px solid #74ae0b;
     border-style: solid;
     color: #578308;
     height: auto;
@@ -480,35 +499,28 @@ del {
     padding: 0em 1.5em;
     line-height: normal;
     text-decoration: none;
-    text-transform: lowercase;
+    
     z-index: 1;
 }
-.contentViews .selected a {
-    background-color: #cde2a7;
-    border-bottom: #cde2a7 1px solid;
-    color: #578308;
-}
-.contentViews li a:hover {
-    background-color: #cde2a7;
-    color: #578308;
-}
+
 
 /*
 ** begin ECMAScript Content Action Menus
 */
 
 .contentActions {
-    background-color: #cde2a7;
-    border-left: 1px solid #74ae0b;
-    border-right: 1px solid #74ae0b;
-    color: #578308;
+    background-color: transparent;
+    color: #666666;
     text-align: left;
-    text-transform: lowercase;
+    
     padding: 0 0 0 1em;
     z-index: 2;
     height: 1.4em;
     line-height: 1.3em;
+    clear:left;
+
 }
+
 
 .contentActions ul,
 .contentActions li {
@@ -529,13 +541,22 @@ del {
 }
 .contentActions li {
     float: left;
-    /*background-image: url(images/arrowDownAlternative.gif);*/
-    background-repeat: no-repeat;
-    background-position: center right;
+    
     z-index: 4;
-    border-right: 1px solid #74ae0b;
     padding: 0 0 0 1em;
     margin: 0 1em 0 0;
+}
+
+.contentActions li a {
+    background-color: transparent;
+    color: #999;
+    padding: 3px 10px;
+    line-height: 20px;
+    font-size: 12px;
+    white-space: nowrap;
+    background-position: -1px -1px;
+    background-size: 110% 110%;
+
 }
 
 .menuPosition {
@@ -671,7 +692,7 @@ del {
 
 .documentContent {
     font-size: 110%;
-    padding: 0em 1em 2em 1em !important;
+    
     background: White;
 }
 
@@ -806,7 +827,7 @@ del {
     font-size: 85%;
     margin-bottom: 1em;
     padding: 1px 1px 1px 15px;
-    text-transform: lowercase;
+    
 }
 .context,
 .documentEditable * .context {
@@ -815,7 +836,7 @@ del {
     font-size: 85%;
     margin-bottom: 1em;
     padding: 1px 1px 1px 15px;
-    text-transform: lowercase;
+    
 }
 .destructive,
 .documentEditable * .destructive {
@@ -825,7 +846,7 @@ del {
     font-size: 85%;
     margin-bottom: 1em;
     padding: 1px 1px 1px 15px;
-    text-transform: lowercase;
+    
 }
 input.searchButton {
     font-size: 100%;
@@ -833,7 +854,7 @@ input.searchButton {
     background: White url(images/search_icon.gif) 2px 1px no-repeat;
     cursor: pointer;
     padding: 1px 1px 1px 15px;
-    text-transform: lowercase;
+    
 
 }
 .noborder,
@@ -944,31 +965,53 @@ input.searchButton {
 .stx table {
     /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
     border-collapse: collapse;
-    border-left: 1px solid #8cacbb;
-    border-bottom: 1px solid #8cacbb;
+    border: 1px solid rgb(236, 239, 241);
     font-size: 100%;
     margin: 0.5em 0em 0.5em 0em;
 }
 .listing th,
 .stx table th {
-    background: #dee7ec;
-    border-top: 1px solid #8cacbb;
-    border-bottom: 1px solid #8cacbb;
-    border-right: 1px solid #8cacbb;
+    background-color:var(--light-bg-color);
+    
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
     font-weight: normal;
-    padding: 0em 1em 0em 1em;
+    height: 1.5em;
+    white-space:nowrap;
     /*text-transform: lowercase;*/
 }
 
 
+.listing th > a > i {
+    font-size: 80%;
+}
+
+.listing tr.table-headings > th.searchable-column   {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.listing tr.table-headings > th.searchable-column > a.sort-link {
+    font-size: 100%;
+    float: left;
+    margin-left: -25px;
+}
+
+
+
 .listing tr.table-headings th.searchable-column {
-	padding-right: 24px;
+	
 	background-image: url(images/search_icon.gif);
 	background-repeat: no-repeat;
 	background-position: right;
 	cursor: pointer;
 
 }
+
+
 .listing .top {
     border-left: 1px solid White;
     border-top: 1px solid White ! important;
@@ -980,15 +1023,21 @@ input.searchButton {
     /*every second line should be shaded */
     background-color: transparent;
 }
-.listing .even {
-    background-color: #edf3fe;
+.listing .even,
+.listing > tbody > tr.even > td{
+    background-color:var(--light-bg-color);
 }
 .listing .listingCheckbox {
     text-align: center;
 }
+
+.listing tbody tr {
+    border: 1px solid rgb(236, 239, 241);
+}
+
 .listing td,
 .stx table td {
-    border-right: 1px solid #8cacbb;
+    border-right: 1px solid rgb(236, 239, 241);
     padding: 0em 1em;
     text-align: left;
 }
@@ -1064,62 +1113,35 @@ ol.visualNoMarker {
     border-bottom: 1px solid #8cacbb;
 }
 
-.portlet {
-    border: none;
-    margin-bottom: 1em;
-    padding: 0;
-}
 
-/* Compensation when rendering portlets in the content area */
-#region-content .portlet {
-    font-size: 94%;
-}
 
 .portlet h4 { /* The new base portlet header, h5 and h6 will be for use inside
                  the portlet in the upcoming versions. */
     background-color: #dee7ec;
     border: 1px solid #8cacbb;
     padding: 0em 0.3em 0em 1em;
-    text-transform: lowercase;
+    
     display: block;
     font-size: 1em;
     font-weight: normal;
 }
-.portlet h5 { 
-    background-color: #dee7ec;
-    border: 1px solid #8cacbb;
-    padding: 0em 1em 0em 1em;
-    text-transform: lowercase;
-    display: inline;
-    font-size: 1em;
-    font-weight: normal;
-    white-space: nowrap;
-    position: relative;
-    top: -1px;
-}
+
 .portlet h6 { 
     background-color: #dee7ec;
     border: 1px solid #8cacbb;
     padding: 0em 0.3em 0em 1em;
-    text-transform: lowercase;
+    
     display: block;
     font-size: 1em;
     font-weight: normal;
 }
 
-.portletBody {
-    position: relative;
-    top: -1px;
-    background: transparent;
-    border: 1px solid #8cacbb;
-}
+
 .portletDetails {
     text-align: right;
 }
 
-.portletContent {
-    padding: 1em;
-}
+
 .portletAction {
     float: right;
     width: 0.8em;
@@ -1131,7 +1153,7 @@ ol.visualNoMarker {
 }
 
 .portlet .even {
-    background-color: #edf3fe;
+    background-color: var(--light-bg-color);
 }
 .portlet .odd {
     background-color: transparent;
@@ -1328,7 +1350,7 @@ ol.visualNoMarker {
     
 }
 .even {
-    background-color: #edf3fe;
+    background-color: var(--light-bg-color);
 }
 .odd {
     background-color: transparent;
@@ -1350,7 +1372,7 @@ ol.visualNoMarker {
     border-width: 1px;
     padding: 0em 1em;
     text-align: center;
-    text-transform: lowercase;
+    
     vertical-align: top;
     margin: 1em 0em;
     font-size: 94%;
@@ -1685,12 +1707,10 @@ div#recentlyViewed select {
 }
 
 div.fineprint {
-	font-size: 100%;
+	font-size: 69%;
 	text-align: center;
-	font-color: #8cacbb;
-	background-color: #dee7ec;
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #ccc;
+	color: #999;
+	
 	padding: 1em;
 	
 }
@@ -1736,31 +1756,38 @@ ul#relatedActions li#import {
 }
 
 tr.even, td.even {
-	background-color: #ccc;
+	background-color: var(--light-bg-color);
 }
 
 .status-bar {
-	background: #dee7ec;
+	background: var('--main-bg-color');
     border: 1px solid #8cacbb;
 
     font-weight: normal;
 
 
 	/*background-color: #333;*/
-	font-size: 80%;
+	/*font-size: 80%;*/
 	font-family: sans-serif;
 
 	margin-left: -1em;
 	margin-right: -1em;
-	font-weight: bold;
+    font-weight: bold;
+    
 }
 .bread-crumbs {
-    border-bottom: 1px solid #8cacbb;
+    border-bottom:none;
     padding-left: 1em;
     color: #333;
     text-align: left;
-}
+    vertical-align:middle;
 
+}
+.bread-crumbs > * {
+    display:inline-block;
+    vertical-align:middle;
+    line-height: 40px
+}
 
 .groupFieldLabelWrapper {
 	display: block;
@@ -1809,13 +1836,15 @@ tr.even, td.even {
 #status-bar, .resultlist-controller {
 	/*background-image: url(images/blue-gradient.jpg);
 	background-repeat: repeat-x;*/
-	background: #dee7ec;
-    border-top: 1px solid #8cacbb;
-   	border-bottom: 1px solid #8cacbb;
-	height: 25px;
+	background-color: var(--light-bg-color);
+    border-top: 1px solid rgb(236, 239, 241);
+   	border-bottom: none;
+ 
+    
 	white-space: nowrap;
 
-	clear: both;
+    clear: both;
+    padding: 2px;
 }
 
 .resultlist-controller {
@@ -1826,13 +1855,13 @@ tr.even, td.even {
 	display: inline;
 	float: left;
 	 color: black;
-	font-size: 9px;
+	font-size: 80%;
 	/*border-bottom: 1px dotted #8cacbb;*/
 	border-right: 1px dotted #8cacbb;
 	/*border-left: 1px dotted #8cacbb;*/
 	padding-left: 0.5em;
 	padding-right: 0.5em;
-	height: 23px;
+    
 	white-space: nowrap;
 }
 
@@ -1845,7 +1874,21 @@ tr.even, td.even {
 	padding: 1em;
 }
 
+#main_table {
+    padding:0;
+    margin:0;
+    border-spacing:0;
+    border-collapse: collapse;
+}
+
+#main_table > tbody > tr > td {
+    padding:0;
+    margin:0;
+}
+
 #main_table #main_column {
+    padding:0;
+    margin:0;
 }
 
 #paging-buttons {
@@ -1865,59 +1908,6 @@ tr.even, td.even {
 	padding-right: 0.5em;
 }
 
-#user-status a {
-	color: #8cacbb;
-	text-decoration: underline;
-
-}
-
-
-
-/* Site-wide action menu - font size, contact, index, sitemap etc */
-#table_selection_tabs {
-    background-color: transparent;
-    white-space: nowrap;
-    list-style: none;
-    height: auto;
-    line-height: normal;
-
-    padding: 1px 5em 0 0;
-    clear: both;
-}
-#table_selection_tabs li {
-    display: inline;
-    	background-color: white;
-    color: #8cacbb;
-    margin-left: 3px;
-    margin-right: 3px;
-    padding-left: 5px;
-    padding-right: 3px;
-    border: 1px solid #8cacbb;
-    border-bottom: none;
-
-
-}
-#table_selection_tabs li a {
-    background-color: transparent;
-
-    height: auto;
-    padding: 0.2em;
-    margin-right: 0.2em;
-    text-decoration: none;
-
-}
-#table_selection_tabs li.selected {
-	    background-color: #dee7ec;
-
-	    border-bottom: 1px solid #dee7ec;
-}
-
-#table_selection_tabs li.selected a {
-
-
-    
-
-}
 
 #personal-tools {
 	float: right;
@@ -1958,22 +1948,27 @@ tr.even, td.even {
 	white-space: nowrap;
 }
 
+
 .resultlist-controller, #details-controller {
 
-    background: #dee7ec;
-    border: 1px solid #8cacbb;
+    background-color: var(--light-bg-color);
+    
     font-weight: normal;
-    padding: 0em 1em 0em 1em;
+    font-size: 80%;
 
-	height: 25px;
+    height: 2em;
+    border: 1px solid #ddd;
+    margin: 5px;
+    border-radius: 3px;
+    padding: 5px;
+    margin-top: 10px;
 
 	/*clear: both;*/
 	white-space: nowrap;
 }
 
 #details-controller {
-	margin-left: -1em;
-	margin-right: -1em;
+
 }
 .page-index {
 	margin: 0;
@@ -2052,7 +2047,7 @@ h1.page-header {
 .level4 { padding-left: 3em; }
 
 table.treetable tr, table.treetable td {
-	background-color: #eaeaea;
+	background-color: var(--light-bg-color);
 	border-bottom: 1px solid #fff;
 	border-top: 1px solid #ccc;
 	
@@ -2064,7 +2059,7 @@ table.treetable thead tr {
 
 table.treetable {
 	 border: 1px solid #8cacbb;
-	 background-color: #eaeaea;
+	 background-color: var(--light-bg-color);
 	 border-spacing: 0;
 }
 
@@ -2455,7 +2450,7 @@ div.Dataface_Summary_List-item-actions a:hover {
 h3.Dataface_collapsible_sidebar {
 	font-size: 11px;
 	font-weight: bold;
-	background-color: #e9e9e9;
+	background-color: var(--light-bg-color);
 	padding-left: 15px;
 	padding-right: 3px;
 	/*background-image: url(images/treeExpanded.gif);*/
@@ -2480,9 +2475,9 @@ h3.Dataface_collapsible_sidebar a:hover {
 li.Dataface_GlanceList-item {
 	list-style-type: none;
 	list-style-image: none;
-	font-size: 10px;
+	font-size: 100%;
 	color: #666;
-	border-bottom: 1px dotted #ddd;
+	
 }
 
 span.Dataface_GlanceList-item-actions ul li {
@@ -2507,20 +2502,23 @@ table.record-view-table th {
 	text-align: left;
 	width: 100px;
 	color: #666;
-	font-size: 10px;
+	font-size: 90%;
 	background-color: transparent;
 	font-weight: normal;
-	vertical-align: top;
+    vertical-align: top;
+    white-space:nowrap;
+    padding: 5px;
 }
 
 table.record-view-table td {
 	color: black;
 	font-weight: normal;
-	font-size: 10px;
+    font-size: 90%;
+    padding:5px;
 }
 
 table.record-view-table {
-	margin: 5px;
+	margin: 15px;
 }
 
 div.dataface-sections-left {
@@ -2549,7 +2547,7 @@ td#dataface-sections-main-column {
 	padding-left: 15px;
 }
 div.dataface-sections-main h3.Dataface_collapsible_sidebar, .dataface-sections-left h3.Dataface_collapsible_sidebar {
-	background-color:  #dee7ec;
+	background-color:  var(--light-bg-color);
 	border-top: 1px solid #8cacbb;
 	/*margin-top: 5px;*/
 }
@@ -2559,7 +2557,7 @@ div.dataface-sections-main h3.Dataface_collapsible_sidebar, .dataface-sections-l
 div.dataface-sections-top{
 	/*padding: 10px 2em 10px 247px;
 	margin: 0 -12px 5px -12px;*/
-	background-color: #f7f7f7;
+	background-color: var(--light-bg-color);
 	border-bottom: 1px solid #ccc;
 	font-size: 11px;
 	padding: 1em;
@@ -2574,10 +2572,10 @@ div.dataface-sections-top{
 
 .dataface-view-record-actions ul { padding: 0; margin: 0}
 .dataface-view-record-actions ul li { list-style-type: none; list-style-image: none; padding: 1px; margin: 0;}
-.dataface-view-record-actions ul li a { border-bottom: 1px solid #e9e9e9; font-size: 10px; text-decoration: none;  height: 20px; display: block; width: 225px;}
+.dataface-view-record-actions ul li a { border-bottom: 1px solid #e9e9e9;  text-decoration: none;  height: 20px; display: block; width: 225px;}
 .dataface-view-record-actions ul li a:hover { color: white; background-color: #8cacbb;}
 
-.dataface-view-section { font-size: 10px; padding: 10px;}
+.dataface-view-section { padding: 10px;}
 
 
 
@@ -2673,10 +2671,32 @@ div.section_tools a { padding-right: 1em;}
 	background-color: #eaeaea;
 	text-decoration: none;
 }
+div.resultlist-filters ul {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 16px;
+}
 
-div.resultlist-filters ul li { display: inline; list-style-type: none; list-style-image:none}
-div.resultlist-filters h3 { display: inline; font-size: 12px; color: #444}
-div.resultlist-filters ul { display: inline}
+div.resultlist-filters-buttons {
+    text-align: right;
+    background-color: var(--light-bg-color);
+}
+
+div.resultlist-filters-buttons button {
+    font-size: 100%;
+    margin: 8px;
+}
+
+div.resultlist-filters ul li {
+    white-space:nowrap;
+    font-size: 100%;
+    list-style-type: none;
+    list-style-image: none;
+}
+div.resultlist-filters ul li select {
+    font-size: 100%;
+}
+
 
 th span.column-legend {
 	display: block;
@@ -2761,3 +2781,411 @@ table.xf-grid-table td {
     height: 14px;
     
 }
+
+/*Dropdown navigation menus*/
+div.xf-button-bar-actions a,
+nav.tables a,
+nav.personal-tools-menu a {
+    text-decoration: none;
+  }
+  div.xf-button-bar-actions ul,
+  nav.tables ul,
+  nav.personal-tools-menu  ul {
+    background: rgb(245, 245, 245);
+      list-style: none;
+      margin: 0;
+      padding-left: 0;
+  }
+  div.xf-button-bar-actions li,
+  nav.tables li,
+  nav.personal-tools-menu  li {
+      color: #fff;
+    background: white;
+      border: 1px solid rgb(218, 220, 224);
+      border-radius: 4px;
+      display: block;
+      float: right;
+      padding: 0.25em;
+        padding-left: 10px;
+        padding-right: 10px;
+      position: relative;
+      text-decoration: none;
+    transition-duration: 0.5s;
+        margin-bottom: 0;
+  }
+  nav.tables li {
+      float:left;
+  }
+
+nav.tables li {
+    border: none;
+    border-top: 4px solid #eaeaea;
+    border-radius: 0;
+}
+
+na.tables li > a {
+    color: #999999;
+}
+nav.tables li.selected  {
+    border-top: 4px solid darkorange;
+}
+
+nav.tables li.selected > a {
+    color:black;
+}
+div.xf-button-bar-actions > ul > li.featured-action,
+  nav.personal-tools-menu > ul > li.featured-action {
+    color: #fff;
+    background-color: #28a745;
+    background-image: linear-gradient(-180deg,#34d058,#28a745 90%);
+  }
+  div.xf-button-bar-actions > ul > li.featured-action > a,
+  nav.personal-tools-menu > ul > li.featured-action > a {
+    color: #fff;
+    
+  }
+  div.xf-button-bar-actions li ul,
+  nav.tables li ul,
+  nav.personal-tools-menu li ul {
+      z-index: 1000;
+  }
+  div.xf-button-bar-actions > ul > li,
+  .tabs_wrapper nav.personal-tools-menu > ul > li {
+    border: none;
+    background-color: transparent;
+  }
+  div.xf-button-bar-actions li a,
+  nav.tables li a, 
+  nav.personal-tools-menu li a {
+    color: rgb(118, 118, 118);
+    white-space: nowrap;
+    
+  }
+  div.xf-button-bar-actions li a span,
+  nav.tables li a span,
+  nav.personal-tools-menu li a span {
+      white-space: nowrap;
+  }
+  div.xf-button-bar-actions li i,
+  nav.tables li i,
+  nav.personal-tools-menu li i {
+      font-size: 100%;
+  }
+  div.xf-button-bar-actions li:hover,
+  nav.tables li:hover,
+  nav.tables li:focus-within,
+  nav.personal-tools-menu  li:hover,
+  nav.personal-tools-menu li:focus-within {
+      background: rgb(244, 246, 250);
+      border: 1px solid rgb(205, 221, 244);
+      cursor: pointer;
+  }
+  nav.tables li:hover,
+  nav.tables li:focus-within {
+      border: none;
+      border-top: 4px solid purple;
+  }
+  div.xf-button-bar-actions a,
+  nav.tables li:focus-within a ,
+  nav.personal-tools-menu li:focus-within a {
+    outline: none;
+  }
+  div.xf-button-bar-actions li ul,
+  nav.tables ul li ul,
+  nav.personal-tools-menu ul li ul {
+      background: orange;
+      visibility: hidden;
+    opacity: 0;
+    min-width: 5rem;
+      position: absolute;
+    transition: all 0.5s ease;
+    margin-top: 0.25em;
+      right: 0;
+    display: none;
+    float:none;
+  }
+  nav.tables ul li ul {
+      left: 0;
+      right:auto;
+  }
+  div.xf-button-bar-actions ul li:hover > ul,
+  nav.tables ul li:hover > ul,
+  nav.tables ul li:focus-within > ul,
+  nav.tables ul li ul:hover,
+  nav.tables ul li ul:focus,
+  nav.personal-tools-menu ul li:hover > ul,
+  nav.personal-tools-menu ul li:focus-within > ul,
+  nav.personal-tools-menu ul li ul:hover,
+  nav.personal-tools-menu ul li ul:focus {
+    visibility: visible;
+    opacity: 1;
+    display: block
+  }
+  div.xf-button-bar-actions ul li ul li,
+  nav.tables ul li ul li,
+  nav.personal-tools-menu ul li ul li {
+      clear: both;
+    width: 100%;
+    border-radius: 0;
+    margin-top: 0;
+    margin-bottom:0;
+    border-top: none;
+    padding:0.5em;;
+  }
+
+
+
+/*table tabs*/
+
+.tabs_wrapper {
+    
+    margin:0;
+    padding:0;
+    border-bottom: 1px solid rgb(225, 228, 232);
+    background-color: var(--light-bg-color);
+    padding-left: 25px;
+    
+}
+
+nav.table_tabs {
+
+    display: block;
+    
+}
+
+nav.table_tabs a {
+    text-decoration: none;
+    background:none;
+    color: #999;
+    border:none;
+  }
+
+  .Dataface_GlanceList-item-actions nav.personal-tools-menu > ul > li  {
+    border: none;
+  }
+
+  nav.table_tabs i {
+      color: #ccc;
+      font-size: 90%;
+  }
+
+  nav.table_tabs li.selected > a > i {
+      color: black;
+  }
+
+  nav.table_tabs li.selected > a {
+      background:none;
+      background-color:transparent;
+      border:none;
+  }
+
+  nav.table_tabs span {
+      background:none;
+      color:#999;
+      background:none;
+      background-color:transparent;
+      font-size: 95%;
+  }
+
+  nav.table_tabs li.selected > a > span {
+      color: black;
+  }
+  
+  
+  nav.table_tabs  ul {
+    background: white;
+      list-style: none;
+      margin: 0;
+      padding-left: 0;
+  }
+  
+  nav.table_tabs  li {
+      color: #fff;
+    background: transparent;
+      display: block;
+      float: left;
+      padding: 0.5em;
+      position: relative;
+      text-decoration: none;
+    transition-duration: 0.5s;
+    border-top: 4px solid transparent;
+    border-bottom: 1px solid rgb(222, 224, 229);
+    margin-bottom: -1px;;
+
+  }
+
+
+  nav.table_tabs li.selected {
+      border-top: 4px solid darkorange;
+      border-bottom: 1px solid white;
+      border-left: 1px solid rgb(222, 224, 229);
+      border-right: 1px solid rgb(222, 224, 229);
+  }
+    
+  nav.table_tabs li a {
+    color: #fff;
+  }
+  
+  nav.table_tabs  li:hover,
+  nav.table_tabs li:focus-within {
+      background: #eaeaea;
+      cursor: pointer;
+  }
+  
+  nav.table_tabs li:focus-within a {
+    outline: none;
+  }
+  
+  nav.table_tabs ul li ul {
+      background: #eaeaea;
+      visibility: hidden;
+    opacity: 0;
+    min-width: 5rem;
+      position: absolute;
+    transition: all 0.5s ease;
+    margin-top: 1rem;
+      left: 0;
+    display: none;
+  }
+  
+  nav.table_tabs ul li:hover > ul,
+  nav.table_tabs ul li:focus-within > ul,
+  nav.table_tabs ul li ul:hover,
+  nav.table_tabs ul li ul:focus {
+    visibility: visible;
+    opacity: 1;
+    display: block
+  }
+  
+  nav.table_tabs ul li ul li {
+      clear: both;
+    width: 100%;
+  }
+
+  .material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size:100%;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+  
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+  
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+  }
+
+  #login-window {
+      position: fixed;
+      top:0;
+      left:0;
+      bottom:0;
+      right:0;
+      overflow: scroll;
+      background-color:white;
+  }
+
+  .dataface-current-record-prelabel {
+      display:none;
+  }
+
+  h2.dataface-record-title {
+      margin-bottom: 20px;
+  }
+
+  .dataface-record-title .id-field {
+      color: #666;
+      font-size: 75%;
+      
+  }
+body.two-col #main_table,
+body.two-col #status-bar .responsive-content,
+  body.one-col .responsive-content {
+      margin:0;
+      padding:0;
+      width: 1000px;
+      margin: 0 auto;
+  }
+
+  #dataface-sections-main-column {
+      padding:0 !important;
+  }
+
+  .sidebox > h3.Dataface_collapsible_sidebar,
+  .portlet > div > h5,
+  .resultlist-filters > h3.resultlist-filters-heading,
+  .xf-form-group-wrapper > h3.Dataface_collapsible_sidebar,
+  .movable > h3.movable-handle {
+    font-size: 90%;
+    font-weight: normal;
+    padding:8px;
+    padding-right: 16px;
+    padding-left: 16px !important;
+    color: #586069;
+    width: auto !important;
+    background-color: var(--light-bg-color) !important;
+    border: 1px solid #d1d5da !important;
+    border-top-left-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    margin-left: -1px !important;
+    margin-right: -1px !important;
+    margin-top: -1px;
+  }
+  .sidebox,
+ .portlet > div,
+ .resultlist-filters,
+  .xf-form-group-wrapper,
+  .movable {
+    border: 1px solid #d1d5da;
+    border-radius: 3px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .xf-form-group-wrapper.button-section {
+      border: none !important;
+  }
+
+  .advanced-search-heading, .edit-record-heading {
+      display:none;
+  }
+
+  .resultControllerWrapper {
+    font-size: 90%;
+    font-weight: normal;
+    padding: 0px;
+    padding-right: 16px;
+    padding-left: 16px !important;
+    color: #586069;
+    width: auto !important;
+    background-color: var(--light-bg-color) !important;
+    border: 1px solid #d1d5da !important;
+    border-top-left-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  #record-search {
+      white-space: nowrap;
+      padding: 5px;
+  }
+
+  #record-search input {
+      width: 65%;
+
+  }
+
+  .view-related-records-actions-wrapper {
+      margin-top: -3em;
+  }

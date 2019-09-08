@@ -94,7 +94,7 @@
 		{define_slot name="search_form"}
 		<div class="search_form" style="float: right; white-space: nowrap" id="top-search-form">
 			<form method="GET" action="{$smarty.server.HOST_URI|escape}{$ENV.DATAFACE_SITE_HREF|escape}">
-			<label>{translate id="scripts.GLOBAL.LABEL_SEARCH"}Search{/translate}:</label>
+			<label><i class='material-icons'>search</i></label>
 			<input type="hidden" name="-table" value="{$ENV.APPLICATION_OBJECT->_currentTable|escape}"/>
 			<input type="text" name="-search" value="{$ENV.search|escape}"/>
 			{actions category="find_actions" var="find_actions"}
@@ -123,7 +123,7 @@
 			{/foreach}
 				
 			{/if}
-			<input type="submit" name="-submit" value="{translate id="scripts.GLOBAL.LABEL_SUBMIT"}Search{/translate}" id="search_submit_button" />
+			<input type="submit" name="-submit" value="{translate id="scripts.GLOBAL.LABEL_SEARCH"}Search{/translate}" id="search_submit_button" />
 			{block name="after_search_form_submit"}
 			</form>
 		
@@ -140,42 +140,46 @@
 		{/if}
 
 		<div id="status-bar">
-		{if !$ENV.prefs.hide_language_selector}
-		{block name="before_language_selector"}
-		{define_slot name="language_selector"}<div id="language_selector">{language_selector autosubmit="true" type="ul" use_flags=false}</div>{/define_slot}
-		{block name="after_language_selector"}
-		{/if}
+			<div class="responsive-content">
+				{if !$ENV.prefs.hide_language_selector}
+				{block name="before_language_selector"}
+				{define_slot name="language_selector"}<div id="language_selector">{language_selector autosubmit="true" type="ul" use_flags=false}</div>{/define_slot}
+				{block name="after_language_selector"}
+				{/if}
+				
+				{if !$ENV.prefs.hide_user_status}
+				<div id="user-status">
+						{if !$ENV.prefs.hide_personal_tools}
+						{if $ENV.user}
+							{block name="before_personal_tools"}
+							{define_slot name="personal_tools"}
+								<nav role="navigation" class="personal-tools-menu">
+								{actions_menu category="status_bar_right"}
+									</nav>
+								<!--<div id="personal-tools"><a href="{$ENV.user->getURL()}">My Profile</a></div>-->
+							{/define_slot}
+							{block name="after_personal_tools"}
+						{else}
+						
+							<nav role="navigation" class="personal-tools-menu">
+								{actions_menu category="status_bar_right"}
+									</nav>
+						{/if}
+						{/if}
+						
+				</div>
+				{/if}
+				{if $ENV.prefs.show_bread_crumbs}
+					{block name="before_bread_crumbs"}
+					{define_slot name="bread_crumbs"}<div class="bread-crumbs">{bread_crumbs}</div>{/define_slot}
+					{block name="after_bread_crumbs"}
+				{/if}
+			</div>
+			<div style="clear:both; height: 1px; padding:0; margin:0"></div>
+		</div>
 		
-		{if !$ENV.prefs.hide_user_status}
-		<div id="user-status">
-		{if $ENV.username}
-			{block name="before_user_status_logged_in"}
-			{define_slot name="user_status_logged_in"}{assign var='username' value=$ENV.username}{translate id="Logged in as user" username=$username}Logged in as {$username|escape}{/translate} (<a href="{$APP->url('-action=logout')|escape}" title="{translate id="scripts.GLOBAL.LABEL_LOGOUT}Logout{/translate}">{translate id="scripts.GLOBAL.LABEL_LOGOUT}Logout{/translate}</a>){/define_slot}
-			{block name="after_user_status_logged_in"}
-		{elseif $APP->getAuthenticationTool()}
-			{block name="before_user_status_not_logged_in"}
-			{define_slot name="user_status_not_logged_in"}<a href="{$APP->url('-action=login')|escape}" title="Login">{translate id="scripts.GLOBAL.LABEL_LOGIN"}Login{/translate}</a>{/define_slot}
-			{block name="after_user_status_not_logged_in"}
-		{/if}
-		</div>
-		{/if}
-
-		</div>
-		{if !$ENV.prefs.hide_personal_tools}
-		{if $ENV.user}
-			{block name="before_personal_tools"}
-			{define_slot name="personal_tools"}
-				{actions_menu id="personal-tools" category="personal_tools" id_prefix="personal_tools_"}
-				<!--<div id="personal-tools"><a href="{$ENV.user->getURL()}">My Profile</a></div>-->
-			{/define_slot}
-			{block name="after_personal_tools"}
-		{/if}
-		{/if}
-		{if $ENV.prefs.show_bread_crumbs}
-			{block name="before_bread_crumbs"}
-			{define_slot name="bread_crumbs"}<div class="bread-crumbs">{bread_crumbs}</div>{/define_slot}
-			{block name="after_bread_crumbs"}
-		{/if}
+		
+		
 		
 	
 	</div>
@@ -186,12 +190,7 @@
 	<td valign="top" id="left_column">
 	{block name="before_left_column"}
 	{define_slot name="left_column"}
-		{if $ENV.prefs.show_record_tree}
-			{block name="before_record_tree"}
-			{load_record var="record"}
-			{include file="RecordNavMenu.html" record=$record}
-			{block name="after_record_tree"}
-		{/if}
+		
 		{if !$ENV.prefs.horizontal_tables_menu and $ENV.prefs.show_tables_menu}
 		{block name="before_nav_menu"}
 		{include file="Dataface_NavMenu.html"}
@@ -203,46 +202,69 @@
 		
 	{/define_slot}
 	{block name="after_left_column"}
-
+	
 	</td>
 	<td valign="top" id="main_column">
+			<script>
+					{literal}
+					var leftCol = document.getElementById('left_column');
+					var leftColumnContent = leftCol.textContent;
+					console.log(leftColumnContent);
+					console.log('len='+leftColumnContent.trim().length);
+					if (leftColumnContent.trim().length == 0) {
+						leftCol.style.width="0";
+						leftCol.style.padding="0";
+						leftCol.style.margin="0";
+						leftCol.style.display="none";
+						document.querySelector('body').classList.add('one-col');
+					} else {
+						document.querySelector('body').classList.add('two-col');
+					}
+
+					{/literal}
+				</script>
+	<div
 	{block name="before_main_column"}
 	{define_slot name="main_column"}
 	
 		{if $back and !$ENV.APPLICATION.hide_back}
-		<div class="browser_nav_bar">
-			<a href="{$back.link}" title="{translate id="scripts.GLOBAL.LABEL_BACK"}Back{/translate}">&lt;&lt; {translate id="scripts.GLOBAL.LABEL_GO_BACK"}Go Back{/translate}</a>
+		<div class="responsive-content">
+			<div class="browser_nav_bar">
+				<a href="{$back.link}" title="{translate id="scripts.GLOBAL.LABEL_BACK"}Back{/translate}">&lt;&lt; {translate id="scripts.GLOBAL.LABEL_GO_BACK"}Go Back{/translate}</a>
+			</div>
 		</div>
 		{/if}
 		
 
-		<div class="horizontalDivider">&nbsp;</div>
 		
-
 		
 		{if $ENV.APPLICATION_OBJECT->numMessages() > 0 }
 			{block name="before_message"}
-			<div class="portalMessage">
-				<ul>
-				{block name="message"}
-				{foreach from=$ENV.APPLICATION_OBJECT->getMessages() item="msg"}
-					<li>{$msg|nl2br}</li>
-				{/foreach}
-				</ul>
+			<div class="responsive-content">
+				<div class="portalMessage">
+					<ul>
+					{block name="message"}
+					{foreach from=$ENV.APPLICATION_OBJECT->getMessages() item="msg"}
+						<li>{$msg|nl2br}</li>
+					{/foreach}
+					</ul>
+				</div>
 			</div>
 			{block name="after_message"}
 		{/if}
 		
 		{if $ENV.APPLICATION_OBJECT->numErrors() > 0 }
 			{block name="before_errors"}
-			<div class="portalMessage">
-				<h5>{translate id="scripts.GLOBAL.HEADING_ERRORS"}Errors{/translate}</h5>
-				<ul>
-					{block name="error"}
-					{foreach from=$ENV.APPLICATION_OBJECT->getErrors() item="error"}
-						<li>{$error->getMessage()|nl2br}</li>
-					{/foreach}
-				</ul>
+			<div class="responsive-content">
+				<div class="portalMessage">
+					<h5>{translate id="scripts.GLOBAL.HEADING_ERRORS"}Errors{/translate}</h5>
+					<ul>
+						{block name="error"}
+						{foreach from=$ENV.APPLICATION_OBJECT->getErrors() item="error"}
+							<li>{$error->getMessage()|nl2br}</li>
+						{/foreach}
+					</ul>
+				</div>
 			</div>
 			{block name="after_errors"}
 		{/if}
@@ -250,17 +272,28 @@
 		{if $ENV.prefs.show_table_tabs} 
 	   		{block name="before_table_tabs"}
 			{define_slot name="table_tabs"}
-				{actions_menu id="table_tabs" id_prefix="table-tabs-" class="contentViews" category="table_tabs" selected_action=$ENV.mode}
+				<div class="tabs_wrapper" id="table_tabs_wrapper">
+					<div class="responsive-content">
+						<nav role="navigation" class="table_tabs">
+							{actions_menu  class="contentViews" category="table_tabs" selected_action=$ENV.mode}
+
+						</nav>
+						{block name="before_menus"}
+						
+						{define_slot name="menus"}{include file="Dataface_TableView_menus.html"}{/define_slot}
+						{block name="after_menus"}
+					</div>
+					<div style="height:0px;padding:0;margin:0;clear:both"></div>
+				</div>
+				
 			{/define_slot}
-			{block name="before_menus"}
-			{define_slot name="menus"}{include file="Dataface_TableView_menus.html"}{/define_slot}
-			{block name="after_menus"}
+			
 		{/if}
 		
 		{if $ENV.prefs.show_table_tabs} 
-		<div class="documentContent" id="region-content" style="border: 1px solid gray">
+		<div class="documentContent" id="region-content" >
 		{/if}
-	
+			<div class="responsive-content">
 		{block name="before_main_section"}
 		{define_slot name="main_section"}
 			{if $history and !$ENV.APPLICATION.hide_history}
@@ -284,6 +317,7 @@
 			</div>
 		{/define_slot}
 		{block name="after_main_section"}
+		</div>
 
 		{if $ENV.prefs.show_table_tabs}
 		</div>

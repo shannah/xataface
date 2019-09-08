@@ -352,7 +352,7 @@ import('Dataface/QueryTool.php');
 						
 						if ( !$label ) $label = $this->_table->getFieldProperty('widget:label',$key);
 						$searchColumn = $this->_table->getDisplayField($key);
-						echo "<th data-column=\"$key\" data-search-column=\"$searchColumn\" class=\"$class\"><a href=\"$link\">".df_escape($label)."</a> $legend</th>";
+						echo "<th data-column=\"$key\" data-search-column=\"$searchColumn\" class=\"$class\"><a class='sort-link' href=\"$link\"><i class='material-icons'>sort</i></a><span class='th-label'>".df_escape($label)."</span> $legend</th>";
 					}
 				}
 			}
@@ -606,11 +606,21 @@ END;
  		$query =& $app->getQuery();
 
 		echo '<div class="resultlist-filters">
-		<h3>'.df_translate('scripts.Dataface_ResultList.MESSAGE_FILTER_RESULTS', 'Filter Results').':</h3>
+		<h3 class="resultlist-filters-heading">'.df_translate('scripts.Dataface_ResultList.MESSAGE_FILTER_RESULTS', 'Filter Results').':</h3>
 		<script language="javascript"><!--
 		
-		function resultlist__updateFilters(col,select){
+	    function resultlist__updateAllFilters() {
 			var currentURL = "'.$app->url('').'";
+			var selects = document.querySelectorAll(\'.resultlist-filters select\');
+			selects.forEach(function(select) {
+				currentURL = resultlist__updateFilters(select.getAttribute(\'data-col\'), select, currentURL);
+			});
+			window.location = currentURL;
+		}
+
+		function resultlist__updateFilters(col,select, currentURL){
+			var autoRedirect = currentURL ? false : true;
+			currentURL = currentURL || "'.$app->url('').'";
 			var currentParts = currentURL.split("?");
 			var currentQuery = "?"+currentParts[1];
 			var value = select.options[select.selectedIndex].value;
@@ -626,12 +636,20 @@ END;
 				currentQuery += \'&\'+col+\'==\'+encodeURIComponent(value);
 			}
 			currentQuery = currentQuery.replace(/([&\?])-skip=[^&]+/, "$1");
-			window.location=currentParts[0]+currentQuery;
+			if (autoRedirect) {
+				window.location=currentParts[0]+currentQuery;
+			} else {
+				return currentParts[0]+currentQuery;
+			}
 		}
 		//--></script>
 		<ul>';
 
 		$qb = new Dataface_QueryBuilder($this->_table->tablename, $query);
+		$autoUpdateFilters = true;
+		if (isset($app->prefs['auto_update_filters']) and !$app->prefs['auto_update_filters']) {
+			$autoUpdateFilters = false;
+		}
 		foreach ( $this->_filterCols as $col ){
 			$field =& $this->_table->getField($col);
 			
@@ -643,8 +661,11 @@ END;
 				$vocab=null;
 				
 			}
-			
-			echo '<li> '.df_escape($field['widget']['label']).' <select onchange="resultlist__updateFilters(\''.addslashes($col).'\', this);"><option value="">'.df_translate('scripts.GLOBAL.LABEL_ALL', 'All').'</option>';
+			$onchange = 'onchange="resultlist__updateFilters(\''.addslashes($col).'\', this);"';
+			if (!$autoUpdateFilters) {
+				$onchange = '';
+			}
+			echo '<li> '.df_escape($field['widget']['label']).' <select data-col="'.htmlspecialchars($col).'" '.$onchange.'><option value="">'.df_translate('scripts.GLOBAL.LABEL_ALL', 'All').'</option>';
 			
 			$res = df_query("select `$col`, count(*) as `num` ".$qb->_from()." ".$qb->_secure( $qb->_where(array($col=>null)) )." group by `$col` order by `$col`", null, true);
 			if ( !$res and !is_array($res)) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
@@ -668,7 +689,12 @@ END;
 			//@xf_db_free_result($res);
 			echo '</select></li>';
 		}
-		echo '</ul></div>';
+		
+		echo '</ul>';
+		if (!$autoUpdateFilters) {
+			echo '<div class="resultlist-filters-buttons"><button onclick="resultlist__updateAllFilters();"><i class="material-icons">update</i> Update</button></div>';
+		}
+		echo '</div>';
 		$out = ob_get_contents();
 		ob_end_clean();
 		return $out;

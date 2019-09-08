@@ -693,7 +693,8 @@ class Dataface_SkinTool extends Smarty{
 		if ( isset($params['maxcount']) and intval($params['maxcount']) < count($context['actions']) ){
 			$more = array(
 				'name'=>'more',
-				'label'=> df_translate('actions_menu.more.label', 'More'),
+				'label'=> "",
+				'materialIcon' => 'more_vert',
 				'subactions' => array(),
 				'description' => df_translate('actions_menu.more.description','More actions...'),
 				'url'=>'#'
@@ -1052,7 +1053,7 @@ END;
 			$base = '';
 			if ( $record ){
 				foreach ( $record->getBreadCrumbs() as $label=>$url){
-					$base .= ' :: <a href="'.$url.'" id="bread-crumbs-'.str_replace(' ','_', $label).'">'.$label.'</a>';
+					$base .= ' :: <a href="'.htmlspecialchars($url).'" id="bread-crumbs-'.htmlspecialchars(str_replace(' ','_', $label)).'">'.htmlspecialchars($label).'</a>';
 				}
 			}
 			$base = substr($base, 4);
@@ -1066,7 +1067,7 @@ END;
 				$base = '';
 
 				foreach ( $bc as $label=>$url){
-					$base .= ' :: <a href="'.$url.'" id="bread-crumbs-'.str_replace(' ','_', $label).'">'.$label.'</a>';
+					$base .= ' :: <a href="'.htmlspecialchars($url).'" id="bread-crumbs-'.htmlspecialchars(str_replace(' ','_', $label)).'">'.htmlspecialchars($label).'</a>';
 				}
 			}
 		}
@@ -1084,7 +1085,7 @@ END;
 		$base .= ' :: '.Dataface_LanguageTool::translate(
 			$action['label_i18n'],
 			$action['label']);
-		return "<b>".df_translate('scripts.Dataface_SkinTool.LABEL_BREADCRUMB', "You are here").":</b> ".$base;
+		return "<b><i class='material-icons' style='font-size:100%'>bookmark</i></b> ".$base;
 	}
 
 	function search_form($params, &$smarty){

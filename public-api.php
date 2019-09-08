@@ -967,6 +967,9 @@ function df_tz_or_offset(){
             return $result;
 		}
 		
-		
+	function df_count_actions($params=array(), $actions=null) {
+		import('Dataface/ActionTool.php');
+		return Dataface_ActionTool::getInstance()->countActions($params, $actions);
+	}
         
 } // end if ( !defined( DATAFACE_PUBLIC_API_LOADED ) ){

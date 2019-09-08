@@ -17,60 +17,67 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  *}
-{if $ENV.prefs.horizontal_tables_menu}
-
-<ul id="table_selection_tabs">
-	{block name="tables_menu_head"}
-	{define_slot name="tables_menu_options"}
-	{foreach from=$ENV.APPLICATION._tables item=label key=table}
-		{assign var=nav value=$ENV.APPLICATION_OBJECT->getNavItem($table, $label)}
-		{if $nav}
-	<li {if $nav.selected}class="selected"{/if}><a href="{$nav.href|escape}"
-                           accesskey="accesskeys-navigation"
-                           class="table-selection-tab {if $nav.selected}selected{/if}"
-                           title="{$nav.label|escape}"
-                           id="TableLink_{$table|escape}">
-                            
-                            
-                                  {$nav.label|escape}
-                            
-                        </a></li>
-          {/if}
- 	{/foreach}
- 	{/define_slot}
- 	{block name="tables_menu_tail"}
- </ul>
-
-{else}
-<div class="portlet" id="portlet-navigation-tree">
-    <div>
-        <h5>Navigation</h5>
-        <div class="portletBody">
+ {if df_count_actions('_tables') > 0}
+    <nav class="tables" role="navigation">
+        {actions_menu category=_tables}
+    </nav>
+ {else }
+    {if $ENV.prefs.horizontal_tables_menu}
+    <nav class="tables" role="navigation">
+    <ul id="table_selection_tabs">
         {block name="tables_menu_head"}
         {define_slot name="tables_menu_options"}
+
         {foreach from=$ENV.APPLICATION._tables item=label key=table}
-        	{assign var=nav value=$ENV.APPLICATION_OBJECT->getNavItem($table, $label)}
-        	{if $nav}
-        	
-            <div class="portletContent">
-             <a href="{$nav.href|escape}"
-                           accesskey="accesskeys-navigation"
-                           class="navItem {if $nav.selected}currentNavItem{/if}"
-                           title="{$nav.label|escape}"
-                           id="TableLink_{$table|escape}">
-                            <img
-    src="{$ENV.DATAFACE_URL}/images/folder_icon.gif" alt="" class="navIconRoot" title="{$nav.label|escape}" />
-                            <span class="navItemText">
-                                  {$nav.label|escape}
-                            </span>
-                        </a>
-           </div>
-           {/if}
-           
-       {/foreach}
-       {/define_slot}
-       {block name="tables_menu_tail"}
-       </div>
-   </div>
-</div>
+            {assign var=nav value=$ENV.APPLICATION_OBJECT->getNavItem($table, $label)}
+            {if $nav}
+        <li {if $nav.selected}class="selected"{/if}><a href="{$nav.href|escape}"
+                            accesskey="accesskeys-navigation"
+                            class="table-selection-tab {if $nav.selected}selected{/if}"
+                            title="{$nav.label|escape}"
+                            id="TableLink_{$table|escape}">
+                                
+                                
+                                    {$nav.label|escape}
+                                
+                            </a></li>
+            {/if}
+        {/foreach}
+        {/define_slot}
+        {block name="tables_menu_tail"}
+    </ul>
+    </nav>
+    {else}
+    <div class="portlet" id="portlet-navigation-tree">
+        <div>
+            <h5>Navigation</h5>
+            <div class="portletBody">
+            {block name="tables_menu_head"}
+            {define_slot name="tables_menu_options"}
+            {foreach from=$ENV.APPLICATION._tables item=label key=table}
+                {assign var=nav value=$ENV.APPLICATION_OBJECT->getNavItem($table, $label)}
+                {if $nav}
+                
+                <div class="portletContent">
+                <a href="{$nav.href|escape}"
+                            accesskey="accesskeys-navigation"
+                            class="navItem {if $nav.selected}currentNavItem{/if}"
+                            title="{$nav.label|escape}"
+                            id="TableLink_{$table|escape}">
+                                <img
+        src="{$ENV.DATAFACE_URL}/images/folder_icon.gif" alt="" class="navIconRoot" title="{$nav.label|escape}" />
+                                <span class="navItemText">
+                                    {$nav.label|escape}
+                                </span>
+                            </a>
+            </div>
+            {/if}
+            
+        {/foreach}
+        {/define_slot}
+        {block name="tables_menu_tail"}
+        </div>
+    </div>
+    </div>
+    {/if}
 {/if}

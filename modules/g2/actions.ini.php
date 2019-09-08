@@ -1,12 +1,5 @@
 ;<?php exit;
-[logout > logout]
-	url="{$site_href}?-action=logout"
-	condition="df_is_logged_in()"
-	label="Log Out"
-	description="Log out of the system"
-	category=personal_tools
-	order=100
-	
+
 [login > login]
 	url="{$site_href}?-action=login"
 	condition="!df_is_logged_in() and @$this->_conf['_auth']"
@@ -214,6 +207,7 @@
 	description="Insert a new {$tableObj->getSingularLabel()} into {$tableObj->getLabel()}"
 	description_condition="$tableObj"
 	condition="!$tableObj or !$tableObj->isSingleton()"
+	category=table_actions
 	
 [import > import]
 	label="Import {$tableObj->getLabel()}"

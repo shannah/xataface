@@ -36,7 +36,7 @@ class Dataface_GlanceList {
 
 		if ( is_a($origRecord, 'Dataface_RelatedRecord') ){
 			$origDel = $origRecord->_record->table()->getDelegate();
-			$method = 'rel_'.$origRecord->_relationshipName.'__'.oneLineDescription;
+			$method = 'rel_'.$origRecord->_relationshipName.'__oneLineDescription';
 			if ( isset($origDel) and method_exists($origDel, $method) ){
 				return $del->$method($origRecord);
 			}
@@ -52,7 +52,7 @@ class Dataface_GlanceList {
 		}
 		$out = '<span class="Dataface_GlanceList-oneLineDescription">
 			<span class="Dataface_GlanceList-oneLineDescription-title"><a href="'.df_escape($record->getURL('-action=view')).'" title="View this record">'.df_escape($origRecord->getTitle()).'</a></span> ';
-		if ( $creator = $record->getCreator()  ){
+		if ( $creator = $record->getCreator() and !is_numeric($creator) ){
 			$show = true;
 			if ( isset($app->prefs['hide_posted_by']) and $app->prefs['hide_posted_by'] ) $show = false;
 			if ( isset($record->_table->_atts['__prefs__']['hide_posted_by']) and $record->_table->_atts['__prefs__']['hide_posted_by'] ) $show = false;

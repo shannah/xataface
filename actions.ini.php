@@ -15,6 +15,7 @@
 	mode = browse
 	permission = view
 	order=0
+	materialIcon="details"
 
 ;; Show a list of the records in the current found set
 [list]
@@ -26,6 +27,7 @@
 	template = Dataface_List_View.html
 	permission = list
 	order=0.5
+	materialIcon=view_list
 
 ;; Show a "Find Record Form"
 [find]
@@ -37,6 +39,7 @@
 	permission = find
 	template = Dataface_Find_View.html
 	order=0.75
+	materialIcon=search
 	
 [calendar]
 	label = Calendar
@@ -65,12 +68,13 @@
 	label = New Record
 	description = Create a new record
 	url = "{$this->url('-action=new', false)}"
-	icon = "{$dataface_url}/images/add_icon.gif"
-	category = table_actions
+	materialIcon="add"
+	category = table_actions_menu
 	accessKey = n
 	mode = browse
 	permission = new
 	order=1
+	class="featured-action"
 	
 ;; Post a record update using HTTP POST
 [post]
@@ -146,7 +150,12 @@
 	url = "{$this->url('-action=export_json')}"
 	permission=export_json
 	
-	
+[record_actions]
+	label=""
+	materialIcon="more_vert"
+	subcategory=record_actions
+	category="record_actions_menu"
+
 [view_xml]
 	label = Export XML
 	description = "Export an XML representation of this record"
@@ -163,7 +172,7 @@
 	label=RSS
 	description=RSS Feed of this found set.
 	url="{$this->url('-action=feed&-mode=list')}&--format=RSS2.0"
-	icon="{$dataface_url}/images/feed-icon-14x14.png"
+	materialIcon="rss_feed"
 	permission=rss
 	category=result_list_actions
 	
@@ -198,12 +207,18 @@
 	permission=export_csv
 	category=related_list_actions
 
+[table_actons]
+	label=""
+	materialIcon="more_vert"
+	subcategory=table_actions
+	category=table_actions_menu
+
 ;; Delete the current record
 [delete]
 	label = Delete
 	description = Delete current record
 	url = "{$this->url('-action=delete&-delete-one=1')}"
-	icon = "{$dataface_url}/images/recycle.gif"
+	materialIcon="delete"
 	category = table_actions
 	accessKey = d
 	mode = browse
@@ -531,12 +546,22 @@
 	url="{$app->url('-action=my_profile')}"
 	label="My Profile"
 	category=personal_tools
+	materialIcon="account_circle"
 	
 [change_password]
 	condition="(df_is_logged_in())"
 	url="{$app->url('-action=change_password')}"
 	label="Change Password"
 	category=personal_tools
+	materialIcon="security"
+
+[personal_tools_logout]
+	condition="(df_is_logged_in())"
+	url="{$app->url('-action=logout')}"
+	label="Log out"
+	category=personal_tools
+	materialIcon="exit_to_app"
+	order=999
 
 ;;------------------------------------------------------------------------------
 ;; Management actions
@@ -549,6 +574,7 @@
 	label="Control Panel"
 	url="{$app->url('-action=manage')}"
 	template=manage.html
+	materialIcon="settings"
 	
 [manage_migrate]
 	permission=manage_migrate
@@ -652,9 +678,10 @@
 [entry_page]
 
 [open_record_in_table]
-	category=view_related_record_footer_actions
-	label="Open this record in the {$record->_table->getLabel()} table"
-	class="open-record-in-table"
+	category=view_related_record_actions
+	description="Open this record in the {$record->_table->getLabel()} table"
+	materialIcon="open_in_new"
+	label=Open
 	permission=view
 	condition="$record"
 	url="{$record->getURL('-action=view')}"
@@ -662,7 +689,8 @@
 	
 [edit_related_record]
 	category=view_related_record_actions
-	label="Edit {$record->getTitle()}"
+	materialIcon=edit
+	label="Edit"
 	label_condition="$record"
 	url="#"
 	class="edit-btn"
@@ -672,6 +700,7 @@
 [cancel_edit_related_record]
 	category=edit_related_record_actions
 	label="Cancel"
+	materialIcon=cancel
 	url="#"
 	class="cancel-btn"
 	permission=edit
@@ -698,3 +727,17 @@
 	icon="{$dataface_url}/images/insert_columns.png"
 	description="Show or Hide columns from this list"
 	
+[personal_tools]
+	category=status_bar_right
+	subcategory=personal_tools
+	label="{$authTool->getLoggedInUsername()}"
+	materialIcon="person"
+	condition="(df_is_logged_in())"
+	url_condition="(df_is_logged_in())"
+
+[login_menu_item]
+	category=status_bar_right
+	label="Login"
+	condition="(!df_is_logged_in())"
+	materialIcon="security"
+	url="?-action=login"

@@ -32,11 +32,13 @@
               	  {foreach from=$action.atts item=actionAttValue key=actionAttName}{$actionAttName|escape}="{$actionAttValue|escape}" {/foreach}
               	  >
                 
-                <a class="{if $action.subactions}trigger{/if}" id="{$id_prefix}{$action.id|escape}-link" href="{$action.url|escape}"{if $action.onclick} onclick="{$action.onclick|escape}"{/if}{if $action.target} target="{$action.target|escape}"{/if}
+                <a {if $action.subactions}onclick="return false;" {/if}class="{if $action.subactions}trigger{/if}" id="{$id_prefix}{$action.id|escape}-link" href="{$action.url|escape}"{if $action.onclick} onclick="{$action.onclick|escape}"{/if}{if $action.target} target="{$action.target|escape}"{/if}
                    accesskey="{$action.accessKey|escape}" title="{$action.description|escape}" data-xf-permission="{$action.permission|escape}"
                    {if $action.confirm}data-xf-confirm-message="{$action.confirm|escape}"{/if}
                    >
-                   {if $action.icon}<img id="{$id_prefix}{$action.id}-icon" src="{$action.icon|escape}" alt="{$action.label|escape}"/>{/if}
+				   {if $action.icon}<img id="{$id_prefix}{$action.id}-icon" src="{$action.icon|escape}" alt="{$action.label|escape}"/>{/if}
+				   {if $action.materialIcon}<i class="material-icons {$action.materialIconStyle|escape}">{$action.materialIcon|escape}</i>{/if}
+				   {if !$action.icon and !$action.materialIcon and $action.subactions}<i class="material-icons {$action.materialIconStyle|escape}">arrow_drop_down</i>{/if}
                    <span class="action-label">{$action.label|escape}</span>
                   
                 </a>
@@ -50,11 +52,12 @@
 							  {if $subaction.subactions}xf-dropdown{/if}"
 							  {foreach from=$subaction.atts item=subactionAttValue key=subactionAttName}{$subactionAttName|escape}="{$subactionAttValue|escape}" {/foreach}
 							  >
-								<a class="{if $subaction.subactions}trigger horizontal-trigger{/if}" id="{$id_prefix}{$subaction.id|escape}-link" href="{$subaction.url|escape}"{if $subaction.onclick} onclick="{$subaction.onclick|escape}"{/if}{if $subaction.target} target="{$subaction.target|escape}"{/if}
+								<a {if $subaction.subactions}onclick="return false;" {/if}class="{if $subaction.subactions}trigger horizontal-trigger{/if}" id="{$id_prefix}{$subaction.id|escape}-link" href="{$subaction.url|escape}"{if $subaction.onclick} onclick="{$subaction.onclick|escape}"{/if}{if $subaction.target} target="{$subaction.target|escape}"{/if}
 								   accesskey="{$subaction.accessKey|escape}" title="{$subaction.description|escape}" data-xf-permission="{$subaction.permission|escape}"
 								   {if $subaction.confirm}data-xf-confirm-message="{$subaction.confirm|escape}"{/if}
 								   >
 								   {if $subaction.icon}<img id="{$id_prefix}{$subaction.id}-icon" src="{$subaction.icon|escape}" alt="{$subaction.label|escape}"/>{/if}
+								   {if $subaction.materialIcon}<i class="material-icons {$subaction.materialIconStyle|escape}">{$subaction.materialIcon|escape}</i>{/if}  
 								   <span class="action-label">{$subaction.label|escape}</span>
 								   
 								</a>
@@ -69,8 +72,11 @@
 												<a id="{$id_prefix}{$subsubaction.id|escape}-link" href="{$subsubaction.url|escape}"{if $subsubaction.onclick} onclick="{$subsubaction.onclick|escape}"{/if}{if $subsubaction.target} target="{$subsubaction.target|escape}"{/if}
 												   accesskey="{$subsubaction.accessKey|escape}" title="{$subsubaction.description|escape}" data-xf-permission="{$subsubaction.permission|escape}"
 												   {if $subsubaction.confirm}data-xf-confirm-message="{$subsubaction.confirm|escape}"{/if}
+												   
 												   >
 												   {if $subsubaction.icon}<img id="{$id_prefix}{$subsubaction.id}-icon" src="{$subsubaction.icon|escape}" alt="{$subsubaction.label|escape}"/>{/if}
+												   {if $subsubaction.materialIcon}<i class="material-icons {$subsubaction.materialIconStyle|escape}">{$subsubaction.materialIcon|escape}</i>{/if}  
+												   
 												   <span class="action-label">{$subsubaction.label|escape}</span>
 												   
 												</a>

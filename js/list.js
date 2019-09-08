@@ -82,8 +82,8 @@
 		$('th', headingRow).each(function(){
 			$('th[data-search-column="'+$(this).attr('data-search-column')+'"]', searchRow).each(function(){
 				$(this)
-						.css('padding', 0)
-						.css('margin', 0)
+						//.css('padding', 0)
+						//.css('margin', 0)
 						;
 						
 					$('div', this).css({

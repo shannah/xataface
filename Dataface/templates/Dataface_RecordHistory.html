@@ -200,7 +200,8 @@
 			</thead>
 			<tbody>
 			{foreach from=$log item="logitem"}
-				<tr>
+				{cycle values="odd,even assign=evenodd}
+				<tr class='{$evenodd}'>
 					<td><!-- Actions -->
 					{actions var="actions" category="history_record_actions" history__id=$logitem.history__id}
 					<ul class="row-item-actions-menu">
@@ -216,7 +217,7 @@
 					<td>{$logitem.history__user|escape}</td>
 					<td>{$logitem.history__comments|escape}</td>
 				</tr>
-				<tr style="display: none" id="history-{$logitem.history__id|escape}-row">
+				<tr style="display: none" class="{$evenodd}" id="history-{$logitem.history__id|escape}-row">
 					<td></td>
 					<td></td>
 					<td colspan="4" class="history_details_cell" id="history-{$logitem.history__id|escape}-cell">

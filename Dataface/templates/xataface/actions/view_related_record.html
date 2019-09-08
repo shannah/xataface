@@ -7,14 +7,19 @@
             <div class="subrecord-tabs">
             	<ul>
                 {assign var="rrecords" value=$related_record->toRecords()}
+                {assign var="fkvals" value=$related_record->getForeignKeyValues()}
+                {assign var="domainTable" value=$related_record->_relationship->getDomainTable()}
                 {foreach from=$rrecords key=k item=subrecord}
-                    {if $rrecords|@count <= 1 or $related_record->_relationship->hasUniqueFields($subrecord->_table->tablename)}
-                	    <li><a href="#tabs-{$k}">{$subrecord->getTitle()|escape}</a></li>
+                    {if $rrecords|@count <= 1 or ($related_record->_relationship->hasUniqueFields($subrecord->_table->tablename) and !$related_record->_relationship->isDomainTable($subrecord->_table->tablename))}
+                	    <li><a href="#tabs-{$k}">
+                            {$related_record->_relationship->getLabel()|escape} &raquo; {$related_record->getTitle()|escape}
+                        </a></li>
                 	{/if}
                 {/foreach}
                 </ul>
                 {foreach from=$related_record->toRecords(true) key=k item=subrecord}
-                    {if $rrecords|@count <= 1 or $related_record->_relationship->hasUniqueFields($subrecord->_table->tablename)}
+                    {if $rrecords|@count <= 1 or ($related_record->_relationship->hasUniqueFields($subrecord->_table->tablename) and !$related_record->_relationship->isDomainTable($subrecord->_table->tablename))}
+                        {assign var=isDomainTable value=$related_record->_relationship->isDomainTable($subrecord->_table->tablename)}
                         {record_view var=subrv record=$subrecord}
                         <div class="view-tab-content view-mode" id="tabs-{$k}" data-iframe-url="{$subrecord->getURL('-action=edit')|escape}" data-portal-id="{$related_record->getId()|escape}">
                             <div class="xf-button-bar-actions edit-related-record-actions-wrapper">
@@ -22,14 +27,15 @@
                             </div>
                             <div style="clear:both; height: 1px;"></div>
                             <div class="record-view-wrapper">
+                                
                                 <div class="xf-button-bar-actions view-related-records-actions-wrapper">
-                                    {actions_menu record=$subrecord category=view_related_record_actions maxcount=7}
+                                    {actions_menu record=$subrecord category=view_related_record_actions maxcount=0}
                                 </div>
                                 <div style="clear:both; height: 1px;"></div>
                                 <table class="view-record-columns" width="100%">
                                     <tr>
-                                        <td id="dataface-sections-left-column" valign="top">
-                                            <div class="dataface-sections-count-{$subrv->sections|@count} dataface-sections-left{if $subrv->showLogo} dataface-sections-left-with-logo{/if}" id="dataface-sections-left">
+                                        <td id="rel-dataface-sections-left-column" valign="top">
+                                            <div class="dataface-sections-count-{$subrv->sections|@count} dataface-sections-left{if $subrv->showLogo} dataface-sections-left-with-logo{/if}" id="rel-dataface-sections-left">
                                                 {if $subrv->showLogo}
                                                     {if $subrv->logos|@count>0}
                                                         {foreach from=$subrv->logos item=logo}
@@ -62,8 +68,11 @@
                                                             <table class="record-view-table">
                                                             <tbody>
                                                             {foreach from=$section.fields item=field key=fieldname}
-                                                                {if $field.visibility.browse != 'hidden' and $record->htmlValue($field.name)}
-                                                                    <tr><th class="record-view-label">{$field.widget.label|escape}</th><td class="record-view-value">{$record->htmlValue($field.name)}</td></tr>
+                                                                {if $isDomainTable or !$related_record->_relationship->isConstrainedForeignKey($subrecord->_table->tablename, $field.name)}
+                                                                    {assign var=fieldval value=$record->htmlValue($field.name)}
+                                                                    {if $field.visibility.browse != 'hidden' and $fieldval}
+                                                                        <tr><th class="record-view-label">{$field.widget.label|escape}</th><td class="record-view-value">{$fieldval}</td></tr>
+                                                                    {/if}
                                                                 {/if}
                                                             {/foreach}
                                                             </tbody>
@@ -79,8 +88,8 @@
 
                                             </div>
                                         </td>
-                                        <td id="dataface-sections-main-column" valign="top">
-                                            <div class="dataface-sections-main dataface-sections-count-{$subrv->sections|@count}" id="dataface-sections-main">
+                                        <td id="rel-dataface-sections-main-column" valign="top">
+                                            <div class="dataface-sections-main dataface-sections-count-{$subrv->sections|@count}" id="rel-dataface-sections-main">
                                                 {define_slot table=$subrecord->_table->tablename name="record_view_main_section"}
                                                     {if $ENV.prefs.collapse_all_sections_enabled}
                                                     <div class="section-tools">
@@ -101,7 +110,8 @@
                                                                 <table class="record-view-table">
                                                                 <tbody>
                                                                 {foreach from=$section.fields item=field key=fieldname}
-                                                                    {if $field.visibility.browse != 'hidden'}
+                                                                    {if $field.visibility.browse != 'hidden' and ($isDomainTable or !$related_record->_relationship->isConstrainedForeignKey($subrecord->_table->tablename, $field.name))}
+                                                                        
                                                                         {if $section.record}
                                                                             {assign var="field_value" value=$section.record->htmlValue($field.name)}
                                                                         {else}
@@ -114,7 +124,23 @@
                                                                                         {$field.widget.label|escape}
                                                                                     {if $field.label_link}</a>{/if}
                                                                                 </th>
-                                                                                <td class="record-view-value">{$field_value}</td></tr>
+                                                                                <td class="record-view-value">
+                                                                                    {if !$isDomainTable and $related_record->_relationship->isForeignKey($subrecord->_table->tablename, $field.name)}
+                                                                                        {assign var=domainRecord value=$related_record->toRecord($domainTable)}
+                                                                                        {if $domainRecord->checkPermission('link') and $domainRecord->checkPermission('view')} 
+                                                                                            <a href="{$related_record->getURL('', $domainTable)|escape}" title="Open {$domainRecord->getTitle()|escape}">
+                                                                                                {$domainRecord->getTitle()|escape}
+                                                                                                <i class="material-icons">open_in_new</i>
+                                                                                            </a>
+                                                                                        {elseif $domainRecord->checkPermission('view')}
+                                                                                            {$domainRecord->getTitle()|escape}
+                                                                                        {else}
+                                                                                            {$field_value}
+                                                                                        {/if}
+                                                                                    {else}
+                                                                                        {$field_value}
+                                                                                    {/if}
+                                                                                </td></tr>
                                                                         {/if}
                                                                     {/if}
                                                                 {/foreach}
@@ -222,7 +248,7 @@
                                             // ]]>
                                              </script>
                                              {/literal}
-                                            <div id="terminal"/>
+                                            <div id="rel-terminal"/>
                                         </td>
                                     </tr>
                                 </table>

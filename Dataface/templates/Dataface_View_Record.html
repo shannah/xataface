@@ -36,8 +36,15 @@
 				<td colspan="2" id="dataface-sections-top-column">
 					
 					<div class="dataface-sections-top {if $ENV.prefs.hide_record_view_logo}dataface-sections-top-no-logo{/if}">
-						<h3>{$record->getTitle()|escape}</h3>
-						<div class="dataface-view-description">{$rv->description}</div>
+						<h3 class="dataface-record-view-title">{$record->getTitle()|escape}</h3>
+						<script>{literal}
+							if (document.querySelector('.dataface-record-title') !== null) {
+								document.querySelector('.dataface-record-view-title').style.display = 'none';
+							}
+						{/literal}</script>
+						{if $record->getTitle() != $rv->description}
+							<div class="dataface-view-description">{$rv->description}</div>
+						{/if}
 						<div class="dataface-view-status">{$rv->status|escape}</div>
 					</div>
 				</td>
@@ -60,20 +67,29 @@
 							{/if}
 							
 						{/if}
-						{block name="before_record_actions"}
-						{define_slot name="record_actions"}
-						<div class="dataface-view-record-actions">
-							{record_actions record=$record}
-						</div>
-						{/define_slot}
-						{block name="after_record_actions"}
+						{if $ENV.prefs.show_record_actions_inside_content}
+							{block name="before_record_actions"}
+							{define_slot name="record_actions"}
+							<div class="dataface-view-record-actions">
+								{record_actions record=$record}
+							</div>
+							{/define_slot}
+							{block name="after_record_actions"}
+						{/if}
+						{if $ENV.prefs.show_record_tree}
+							{block name="before_record_tree"}
+							{load_record var="record"}
+							{include file="RecordNavMenu.html" record=$record}
+							{block name="after_record_tree"}
+						{/if}
 						{if $record->_table->relationships()|@count>0}
 							{define_slot name="record_search"}
 							{if !$ENV.prefs.hide_record_search}
+							<div class="sidebox">
+							{collapsible_sidebar heading="Find in Record" }
 							<div id="record-search">
 								
-								<img src="{$ENV.DATAFACE_URL|escape}/images/search_icon.gif" />
-								<input type="text" size="15" name="--subsearch" id="--subsearch" value="{$ENV.APPLICATION_OBJECT->getQueryParam('-subsearch')|escape}" onchange="doSubSearch();" />
+								<input type="text" name="--subsearch" id="--subsearch" value="{$ENV.APPLICATION_OBJECT->getQueryParam('-subsearch')|escape}" onchange="doSubSearch();" />
 								{literal}
 								<script language="javascript">
 								<!--
@@ -103,9 +119,11 @@
 								
 								//--></script>
 								{/literal}
-								<input type="button" value="Search" onclick="doSubSearch();"/>
+								<button onclick="doSubSearch();"><i class="material-icons">search</i></button>
 							
 							</div>
+							{/collapsible_sidebar}
+						</div>
 							{/if}
 							{/define_slot}
 						{/if}
@@ -138,9 +156,29 @@
 						{/foreach}
 						
 					</div>
+					
 				</td>
 				<td id="dataface-sections-main-column" valign="top">
-					
+						<script>
+								{literal}
+								var leftCol = document.getElementById('dataface-sections-left-column');
+								var body = document.querySelector('body');
+								var isTwoCol = body.classList.contains('two-col');
+								if (isTwoCol) {
+									console.log('two cols');
+									var outerLeft = document.getElementById('left_column');
+									var children = leftCol.childNodes;
+									while (leftCol.hasChildNodes()) outerLeft.appendChild(leftCol.firstChild);
+								}
+								var leftColumnContent = leftCol.textContent;
+								if (leftColumnContent.trim().length == 0) {
+									leftCol.style.width="0";
+									leftCol.style.padding="0";
+									leftCol.style.margin="0";
+									leftCol.style.display="none"
+								}
+								{/literal}
+						</script>
 		
 		
 		
