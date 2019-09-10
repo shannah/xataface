@@ -725,6 +725,12 @@ del {
     text-decoration: none;
 }
 
+.portalMessageWrapper {
+    margin:0;
+    padding:1em;
+    background-color: var(--light-bg-color);
+}
+
 .portalMessage,
 .system-message,  /* These two last ones are reST error indicators */
 #error-handling {
@@ -733,7 +739,7 @@ del {
     color: Black;
     font-size: 85%;
     font-weight: bold;
-    margin: 1em 0em 0em 0em;
+    margin: 0em 0em 0em 0em;
     margin-right: 2em;
     padding: 0.5em 1em 0.5em 3em;
     vertical-align: middle;
@@ -741,6 +747,11 @@ del {
     background-repeat: no-repeat;
     background-position: 5px 50%;
 
+}
+
+.portalMessage {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .portalMessage ul li, 

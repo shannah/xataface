@@ -185,7 +185,7 @@
 	</div>
 	{block name="before_main_table"}
 	{define_slot name="main_table"}
-	<table width="100%" border="0" cellpadding="5" id="main_table">
+	<table width="100%"  id="main_table">
 	<tr>
 	<td valign="top" id="left_column">
 	{block name="before_left_column"}
@@ -223,7 +223,7 @@
 
 					{/literal}
 				</script>
-	<div
+	
 	{block name="before_main_column"}
 	{define_slot name="main_column"}
 	
@@ -239,7 +239,10 @@
 		
 		
 		{if $ENV.APPLICATION_OBJECT->numMessages() > 0 }
+
+		<div class="portalMessageWrapper">
 			{block name="before_message"}
+
 			<div class="responsive-content">
 				<div class="portalMessage">
 					<ul>
@@ -250,7 +253,9 @@
 					</ul>
 				</div>
 			</div>
+
 			{block name="after_message"}
+		</div>
 		{/if}
 		
 		{if $ENV.APPLICATION_OBJECT->numErrors() > 0 }
