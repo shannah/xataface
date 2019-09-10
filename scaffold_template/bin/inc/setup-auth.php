@@ -139,7 +139,7 @@ if ($updated) {
         exit(1);
     }
     echo "Done\n";
-    echo "A default implementation of getPermissions() has been added to the application delegate class at $applicationDelegate\n";
+    echo "A default implementation of getPermissions() has been added to the application delegate class at $appDelegate\n";
 }
 
 echo "Adding default admin user...";

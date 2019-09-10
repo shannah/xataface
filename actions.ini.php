@@ -738,6 +738,6 @@
 [login_menu_item]
 	category=status_bar_right
 	label="Login"
-	condition="(!df_is_logged_in())"
+	condition="($app->_conf[_auth] and !df_is_logged_in())"
 	materialIcon="security"
 	url="?-action=login"
