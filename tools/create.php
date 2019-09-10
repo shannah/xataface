@@ -142,8 +142,11 @@ END;
             exit(1);
         }
         echo "Done\n";
-        $this->install_composer();
-        $this->install_yarn();
+        // We don't need to install composer anymore because we are hosting phpmyadmin 
+        // fully built
+        //$this->install_composer();
+        // Don't need yarn anymore for the same reason
+        //$this->install_yarn();
         $this->install_php_my_admin();
         $this->create_local_xataface();
         mkdir($this->templates_c_dir());
@@ -157,6 +160,7 @@ END;
     }
 
     function install_yarn() {
+
         echo "Installing Yarn (required for PhpMyAdmin javascript dependencies)...";
         $tmpPath = $this->lib_dir() . DIRECTORY_SEPARATOR . 'yarn.tgz';
         $yarnUrl = 'https://yarnpkg.com/latest.tar.gz';
@@ -195,8 +199,8 @@ END;
         mkdir($this->lib_dir());
         $phpMyAdmin = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin';
         $tmpPath = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin.zip';
-        //$phpMyAdminUrl = 'https://github.com/shannah/phpmyadmin/archive/master.zip';
-        $phpMyAdminUrl = 'https://github.com/phpmyadmin/phpmyadmin/archive/master.zip';
+        $phpMyAdminUrl = 'https://github.com/shannah/phpmyadmin/archive/master.zip';
+        //$phpMyAdminUrl = 'https://github.com/phpmyadmin/phpmyadmin/archive/master.zip';
         echo 'Downloading phpMyAdmin from '.$phpMyAdminUrl.'...';
         $res = file_put_contents($tmpPath, fopen($phpMyAdminUrl, 'rb'));
         if (!$res) {
@@ -220,6 +224,9 @@ END;
         }
         echo "Done\n";
 
+        /*
+         * This part isn't necessary because we are hosting a prebuilt phpmyadmin
+         
         echo 'Installing phpMyAdmin using composer...';
         $quotedComposer = escapeshellarg(realpath($this->lib_dir() . DIRECTORY_SEPARATOR . 'composer.phar'));
         $quotedPhpMyAdmin = escapeshellarg(realpath($phpMyAdmin));
@@ -259,9 +266,9 @@ END;
             exit(1);
 
         }
-
+        
         echo "Done\n";
-
+        */
         
 
 
