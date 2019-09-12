@@ -511,11 +511,12 @@ class Dataface_RelatedList {
                         	$link = $rrec->getURL('-action=browse', $field['tablename']);
                         }
                         $srcRecordId = $srcRecord->getId();
-
+                        $disableFullTextExpansion = false;
                         //$val = $this->_record->preview($fullpath, $i,255, $this->_where, $sort_columns_str);
                         if (  $srcRecord->table()->isContainer($field['name']) or $srcRecord->table()->isBlob($field['name']) ){
                             $val =  $rrec->htmlValue($key, array('class'=>'blob-preview'));
                                     //$rrec->htmlValue($key);
+                            $disableFullTextExpansion = true;
                         } else {
                             $val = strip_tags($rrec->display($key));
                         }
@@ -534,15 +535,15 @@ class Dataface_RelatedList {
                             }
 
                             $maxcols = 50;
-                        		if ( @$field['list'] and @$field['list']['maxcols'] ){
-                        		    $maxcols = intval($field['list']['maxcols']);
-                        		}
-                         		$fulltext = "";
-                         		if ( strlen($val) > $maxcols ){
-                         		    $fulltext = $val;
-                         		    $val = substr($val, 0, $maxcols).'...';
-                         		}
-                         		if ( $fulltext ){
+                            if ( @$field['list'] and @$field['list']['maxcols'] ){
+                                $maxcols = intval($field['list']['maxcols']);
+                            }
+                            $fulltext = "";
+                            if ( !$disableFullTextExpansion and strlen($val) > $maxcols ){
+                                $fulltext = $val;
+                                $val = substr($val, 0, $maxcols).'...';
+                            }
+                            if ( !$disableFullTextExpansion and $fulltext ){
                                 $fulltext = 'data-fulltext="'.df_escape($fulltext).'"';
                             }
 
