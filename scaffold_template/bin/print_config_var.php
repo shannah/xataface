@@ -9,7 +9,7 @@ $conf = array();
 foreach ($files as $file) {
     $file_path = dirname(__FILE__) 
         . DIRECTORY_SEPARATOR . '..' 
-        . DIRECTORY_SEPARATOR . 'www' 
+        . DIRECTORY_SEPARATOR . 'app' 
         . DIRECTORY_SEPARATOR . $file;
     if (file_exists($file_path)) {
         $conf = array_merge_recursive($conf, parse_ini_file($file_path, true));
@@ -35,7 +35,7 @@ if (strpos($key, '.') !== false) {
         case 'XFShortVersionString':
             $version_path = dirname(__FILE__) 
             . DIRECTORY_SEPARATOR . '..' 
-            . DIRECTORY_SEPARATOR . 'www' 
+            . DIRECTORY_SEPARATOR . 'app' 
             . DIRECTORY_SEPARATOR . 'version.txt';
             if (file_exists($version_path)) {
                 $version = file_get_contents($version_path);

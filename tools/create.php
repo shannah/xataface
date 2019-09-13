@@ -13,25 +13,63 @@ function help() {
 
 class XFProject {
     private $basedir;
+    var $dbName;
 
     function __construct($basedir) {
         $this->basedir = $basedir;
     }
 
+    function user_home_dir() {
+        return realpath($_SERVER['HOME']);
+    }
+
+    function user_xataface_dir() {
+        return $this->user_home_dir() . DIRECTORY_SEPARATOR . '.xataface';
+    }
+
+    /**
+     * Cache directory where we can cach copies of phpmyadmin
+     */
+    function xataface_cache_dir() {
+        return $this->user_xataface_dir() . DIRECTORY_SEPARATOR . 'cache';
+    }
+
+    /**
+     * Path to the centeral xataface directory
+     */
     function xataface_dir() {
         return realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR  . '..');
     }
 
+    /**
+     * Path to the project's xataface directory
+     */
     function local_xataface_dir() {
         return $this->www_dir() . DIRECTORY_SEPARATOR . 'xataface';
     }
 
+    /**
+     * Path to the site_skeleton directory of xataface.
+     */
     function site_skeleton_dir() {
         return $this->xataface_dir() . DIRECTORY_SEPARATOR . 'site_skeleton';
     }
 
+    /**
+     * Path to the www directory (the doc root) of the project.
+     */
     function www_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'www';
+    }
+
+    /**
+     * The path to the xataface app directory.  By default this will by a 
+     * symlink to the www directory, but in cases where the xataface app
+     * is in a subdirectory of the docroot, then this may be a symlink 
+     * to that subdirectory.
+     */
+    function app_dir() {
+        return $this->basedir . DIRECTORY_SEPARATOR . 'app';
     }
 
     function templates_c_dir() {
@@ -39,42 +77,72 @@ class XFProject {
         return $this->www_dir() . DIRECTORY_SEPARATOR . 'templates_c';
     }
 
+    /**
+     * Path to the project's mysql data directory.
+     */
     function data_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'data';
     }
 
+    /**
+     * Path to the project's log directory.
+     */
     function log_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'log';
     }
 
+    /**
+     * Path to project's mysql error log file.
+     */
     function error_log_path() {
         return $this->log_dir() . DIRECTORY_SEPARATOR . 'mysql-errors.log';
     }
 
+    /**
+     * Path to project's tmp directory.
+     */
     function tmp_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'tmp';
     }
 
+    /**
+     * Path to the mysql pid file.
+     */
     function pid_file_path() {
         return $this->tmp_dir() . DIRECTORY_SEPARATOR . 'mysql.pid';
     }
 
+    /**
+     * Path to the mysql socket file.
+     */
     function socket_path() {
         return $this->tmp_dir() . DIRECTORY_SEPARATOR . 'mysql.sock';
     }
 
+    /**
+     * Path to the project's bin directory.
+     */
     function bin_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'bin';
     }
 
+    /**
+     * Path to the project's lib directory.
+     */
     function lib_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'lib';
     }
 
+    /**
+     * Path to the project's etc directory.
+     */
     function etc_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'etc';
     }
 
+    /**
+     * Create the project's xataface directory.
+     */
     function create_local_xataface() {
         if (file_exists($this->local_xataface_dir())) {
             echo $this->local_xataface_dir() . " exists.  Skipping.\n";
@@ -105,10 +173,18 @@ class XFProject {
         }
     }
 
+    /**
+     * Path to the tools directory in the central xataface install.
+     */
     private function tools_dir() {
         return $this->xataface_dir() . DIRECTORY_SEPARATOR . 'tools';
     }
 
+    /**
+     * Creates an htaccess file at the given path which denies all
+     * access.
+     * @param string $path The path where the .htaccess file should be created.  E.g. /www/.htaccess
+     */
     function create_deny_all_htaccess($path) {
         $out = <<<END
 # Apache 2.2
@@ -126,6 +202,12 @@ END;
     }
 
 
+    /**
+     * Creates the scaffold for the project.  The scaffold is a directory
+     * structure with bin, lib, etc, log, tmp, and www directories.  And 
+     * a symlink app pointing to the root of the Xataface app.  Usually this
+     * just points to the www directory.
+     */
     function create_scaffold() {
         if (file_exists($this->basedir)) {
             fwrite(STDERR, "Base directory {$this->basedir} already exists.\n");
@@ -147,6 +229,14 @@ END;
         //$this->install_composer();
         // Don't need yarn anymore for the same reason
         //$this->install_yarn();
+        $folderTmp = getcwd();
+        chdir(realpath($this->basedir));
+        if (!symlink('www', 'app')) {
+            fwrite(STDERR, "Failed to create symlink from www to app\n");
+            exit(1);
+        }
+        chdir($folderTmp);
+        
         $this->install_php_my_admin();
         $this->create_local_xataface();
         mkdir($this->templates_c_dir());
@@ -159,6 +249,10 @@ END;
         
     }
 
+    /**
+     * Not used right now... was used before because we needed yarn to build
+     * php myadmin, but we are prebuilding phpmyadmin now.
+     */
     function install_yarn() {
 
         echo "Installing Yarn (required for PhpMyAdmin javascript dependencies)...";
@@ -195,34 +289,55 @@ END;
         echo "Done\n";
     }
 
+    /**
+     * Install php myadmin
+     */
     function install_php_my_admin() {
-        mkdir($this->lib_dir());
-        $phpMyAdmin = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin';
-        $tmpPath = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin.zip';
-        $phpMyAdminUrl = 'https://github.com/shannah/phpmyadmin/archive/master.zip';
-        //$phpMyAdminUrl = 'https://github.com/phpmyadmin/phpmyadmin/archive/master.zip';
-        echo 'Downloading phpMyAdmin from '.$phpMyAdminUrl.'...';
-        $res = file_put_contents($tmpPath, fopen($phpMyAdminUrl, 'rb'));
-        if (!$res) {
-            fwrite(STDERR, "Failed to download phpmyadmin from ".$phpMyAdminUrl);
+        @mkdir($this->lib_dir());
+        @mkdir($this->user_xataface_dir());
+
+        
+        echo "Checking for PHPMyAdmin installation...";
+        $phpMyAdmin = $this->user_xataface_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin';
+        if (!file_exists($phpMyAdmin)) {
+            echo "Not found\n";
+
+            $tmpPath = $this->user_xataface_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin.zip';
+            $phpMyAdminUrl = 'https://github.com/shannah/phpmyadmin/archive/master.zip';
+            //$phpMyAdminUrl = 'https://github.com/phpmyadmin/phpmyadmin/archive/master.zip';
+            echo 'Downloading phpMyAdmin from '.$phpMyAdminUrl.'...';
+            $res = file_put_contents($tmpPath, fopen($phpMyAdminUrl, 'rb'));
+            if (!$res) {
+                fwrite(STDERR, "Failed to download phpmyadmin from ".$phpMyAdminUrl);
+                exit(1);
+            }
+            echo "Done\n";
+            echo 'Extracting phpmyadmin...';
+            $zip = new ZipArchive;
+            $res = $zip->open($tmpPath);
+            if ($res !== TRUE) {
+                fwrite(STDERR, "Failed to open phpmyadmin zip archive from ". $tmpPath . "\n");
+                exit(1);
+            }
+            $zip->extractTo($this->user_xataface_dir());
+            $zip->close();
+            unlink($tmpPath);
+            if (!rename($phpMyAdmin.'-master', $phpMyAdmin)) {
+                fwrite(STDERR, "Failed.\n");
+                exit(1);
+            }
+            echo "Done\n";
+        } else {
+            echo "Found.\n";
+
+        }
+        $phpMyAdminLink = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin';
+        echo "Linking $phpMyAdmin to $phpMyAdminLink ...";
+        if (!symlink($phpMyAdmin, $phpMyAdminLink)) {
+            fwrite(STDERR, "Failed to create link.\n");
             exit(1);
         }
-        echo "Done\n";
-        echo 'Extracting phpmyadmin...';
-        $zip = new ZipArchive;
-        $res = $zip->open($tmpPath);
-        if ($res !== TRUE) {
-            fwrite(STDERR, "Failed to open phpmyadmin zip archive from ". $tmpPath . "\n");
-            exit(1);
-        }
-        $zip->extractTo($this->lib_dir());
-        $zip->close();
-        unlink($tmpPath);
-        if (!rename($phpMyAdmin.'-master', $phpMyAdmin)) {
-            fwrite(STDERR, "Failed.\n");
-            exit(1);
-        }
-        echo "Done\n";
+        echo "Done.\n";
 
         /*
          * This part isn't necessary because we are hosting a prebuilt phpmyadmin
@@ -298,6 +413,9 @@ END;
         $contents = file_get_contents($conf_db_ini_path);
         if ($conf['_database']['name'] == '{__DATABASE_NAME__}') {
             $name = basename($this->basedir);
+            if ($this->dbName) {
+                $name = $this->dbName;
+            }
             if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_-]+$/', $name)) {
                 fwrite(STDERR, "Failed. Illegal database name $name.\n");
                 exit(1);
@@ -392,6 +510,30 @@ END
         }
     }
 }
+function extract_flags($args) {
+    $out = array();
+    foreach ($args as $arg) {
+        if ($arg and $arg{0} == '-') {
+            if (($pos = strpos($arg, '=')) !== false) {
+                $out[substr($arg, 1, $pos)] = substr($arg, $pos+1);
+            } else {
+                $out[substr($arg, 1)] = substr($arg, 1);
+            }
+        }
+    }
+    return $out;
+}
+function strip_flags($args) {
+    $out = array();
+    foreach ($args as $arg) {
+        if ($arg and $arg{0} != '-') {
+            $out[] = $arg;
+        }
+    }
+    return $out;
+}
+$flags = extract_flags($argv);
+$argv = strip_flags($argv);
 if (count(@$argv) < 2) {
     help();
     exit(1);
@@ -399,4 +541,8 @@ if (count(@$argv) < 2) {
 $p = $argv[1];
 echo "Create project at {$p}\n";
 $proj = new XFPRoject($p);
+if (@$flags['db.name']) {
+    $proj->dbName = $flags['db.name'];
+}
+
 $proj->create_scaffold();
