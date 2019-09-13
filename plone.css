@@ -2706,6 +2706,7 @@ div.resultlist-filters ul li {
 }
 div.resultlist-filters ul li select {
     font-size: 100%;
+    max-width: 200px;
 }
 
 

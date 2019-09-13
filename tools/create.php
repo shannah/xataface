@@ -329,7 +329,6 @@ END;
             echo "Done\n";
         } else {
             echo "Found.\n";
-
         }
         $phpMyAdminLink = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin';
         echo "Linking $phpMyAdmin to $phpMyAdminLink ...";
