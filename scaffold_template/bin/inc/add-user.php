@@ -1,7 +1,7 @@
 <?php
-chdir(dirname(__FILE__).'/../../www');
+chdir(dirname(__FILE__).'/../../app');
 require_once 'xataface/public-api.php';
-df_init(dirname(__FILE__).'/../../www/index.php', 'xataface');
+df_init(dirname(__FILE__).'/../../app/index.php', 'xataface');
 import('Dataface/Table.php');
 
 

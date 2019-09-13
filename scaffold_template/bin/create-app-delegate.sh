@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-TABLES_DIR=$SCRIPTPATH/../www/tables
+TABLES_DIR=$SCRIPTPATH/../app/tables
 [ -d "$TABLES_DIR" ] || mkdir "$TABLES_DIR"
 
 status=`bash $SCRIPTPATH/mysql.server.sh status`

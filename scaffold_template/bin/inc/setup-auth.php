@@ -1,7 +1,7 @@
 <?php
-chdir(dirname(__FILE__).'/../../www');
+chdir(dirname(__FILE__).'/../../app');
 require_once 'xataface/public-api.php';
-df_init(dirname(__FILE__).'/../../www/index.php', 'xataface');
+df_init(dirname(__FILE__).'/../../app/index.php', 'xataface');
 $app = Dataface_Application::getInstance();
 $conf = $app->conf();
 if (@$conf['_auth']) {
@@ -109,7 +109,7 @@ if (!file_exists($appDelegate)) {
         exit(1);
     }
     echo "Done\n";
-    chdir("../www");
+    chdir("../app");
 }
 $appDelegateContents = file_get_contents($appDelegate);
 $updated = false;
@@ -152,7 +152,7 @@ if ($res !== 0) {
 }
 echo "Done.  User 'admin' created with password 'password'\n";
 echo "You should change this user's password after logging in.";
-chdir("../www");
+chdir("../app");
 
 
 

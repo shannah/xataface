@@ -13,6 +13,7 @@ function help() {
 
 class XFProject {
     private $basedir;
+    var $dbName;
 
     function __construct($basedir) {
         $this->basedir = $basedir;
@@ -32,6 +33,10 @@ class XFProject {
 
     function www_dir() {
         return $this->basedir . DIRECTORY_SEPARATOR . 'www';
+    }
+
+    function app_dir() {
+        return $this->basedir . DIRECTORY_SEPARATOR . 'app';
     }
 
     function templates_c_dir() {
@@ -147,6 +152,14 @@ END;
         //$this->install_composer();
         // Don't need yarn anymore for the same reason
         //$this->install_yarn();
+        $folderTmp = getcwd();
+        chdir(realpath($this->basedir));
+        if (!symlink('www', 'app')) {
+            fwrite(STDERR, "Failed to create symlink from www to app\n");
+            exit(1);
+        }
+        chdir($folderTmp);
+        
         $this->install_php_my_admin();
         $this->create_local_xataface();
         mkdir($this->templates_c_dir());
@@ -197,7 +210,11 @@ END;
 
     function install_php_my_admin() {
         mkdir($this->lib_dir());
+
         $phpMyAdmin = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin';
+
+        
+
         $tmpPath = $this->lib_dir() . DIRECTORY_SEPARATOR . 'phpmyadmin.zip';
         $phpMyAdminUrl = 'https://github.com/shannah/phpmyadmin/archive/master.zip';
         //$phpMyAdminUrl = 'https://github.com/phpmyadmin/phpmyadmin/archive/master.zip';
@@ -298,6 +315,9 @@ END;
         $contents = file_get_contents($conf_db_ini_path);
         if ($conf['_database']['name'] == '{__DATABASE_NAME__}') {
             $name = basename($this->basedir);
+            if ($this->dbName) {
+                $name = $this->dbName;
+            }
             if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_-]+$/', $name)) {
                 fwrite(STDERR, "Failed. Illegal database name $name.\n");
                 exit(1);
@@ -392,6 +412,30 @@ END
         }
     }
 }
+function extract_flags($args) {
+    $out = array();
+    foreach ($args as $arg) {
+        if ($arg and $arg{0} == '-') {
+            if (($pos = strpos($arg, '=')) !== false) {
+                $out[substr($arg, 1, $pos)] = substr($arg, $pos+1);
+            } else {
+                $out[substr($arg, 1)] = substr($arg, 1);
+            }
+        }
+    }
+    return $out;
+}
+function strip_flags($args) {
+    $out = array();
+    foreach ($args as $arg) {
+        if ($arg and $arg{0} != '-') {
+            $out[] = $arg;
+        }
+    }
+    return $out;
+}
+$flags = extract_flags($argv);
+$argv = strip_flags($argv);
 if (count(@$argv) < 2) {
     help();
     exit(1);
@@ -399,4 +443,8 @@ if (count(@$argv) < 2) {
 $p = $argv[1];
 echo "Create project at {$p}\n";
 $proj = new XFPRoject($p);
+if (@$flags['db.name']) {
+    $proj->dbName = $flags['db.name'];
+}
+
 $proj->create_scaffold();
