@@ -52,9 +52,8 @@ datadir="$scaffolddir"/data
 # Negative numbers mean to wait indefinitely
 service_startup_timeout=30
 
-# Lock directory for RedHat / SuSE.
-lockdir='/var/lock/subsys'
-lock_file_path="$lockdir/mysql"
+
+lock_file_path="$scaffolddir/tmp/mysql"
 
 # The following variables are only set for letting mysql.server find things.
 
@@ -239,11 +238,7 @@ case "$mode" in
       #$bindir/mysqld_safe --datadir="$datadir" --pid-file="$mysqld_pid_file_path" "$@" &
       wait_for_ready; return_value=$?
 
-      # Make lock for RedHat / SuSE
-      if test -w "$lockdir"
-      then
-        touch "$lock_file_path"
-      fi
+      touch "$lock_file_path"
 
       exit $return_value
     else
