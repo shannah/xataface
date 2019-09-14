@@ -47,6 +47,10 @@ class Dataface_ConfigTool {
 		$this->userConfig = new StdClass;
 	}
 	
+	function __construct() {
+	    $this->Dataface_ConfigTool();
+	}
+	
 	/**
 	 * Array to lookup the name of an entity based on its ID.
 	 */
