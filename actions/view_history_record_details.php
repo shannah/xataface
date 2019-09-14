@@ -10,7 +10,7 @@ class dataface_actions_view_history_record_details {
 		$table = $query['-table'];
 		$r = $app->getRecord();
 		
-		import('Dataface/HistoryTool.php');
+		import(XFROOT.'Dataface/HistoryTool.php');
 		$ht = new Dataface_HistoryTool();
 		if ( @$_GET['-fromcurrent'] ){
 			$record = $ht->getDiffs($table, $historyid);

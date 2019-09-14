@@ -26,7 +26,7 @@
  * @created February 9, 2007
  *
  */
-import('Dataface/QuickForm.php');
+import(XFROOT.'Dataface/QuickForm.php');
 class dataface_actions_copy_replace {
 	var $message = "";
 	var $renderer = null;
@@ -261,7 +261,7 @@ END
 	
 	function process($values){
 		$app =& Dataface_Application::getInstance();
-		import('Dataface/CopyTool.php');
+		import(XFROOT.'Dataface/CopyTool.php');
 		$copyTool =& Dataface_CopyTool::getInstance();
 		$query =& $app->getQuery();
 		//if ( @$values['-copy_replace:copy'] ){

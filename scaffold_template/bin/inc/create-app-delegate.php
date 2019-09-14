@@ -2,7 +2,7 @@
 chdir(dirname(__FILE__).'/../../app');
 require_once 'xataface/public-api.php';
 df_init(dirname(__FILE__).'/../../app/index.php', 'xataface');
-import('Dataface/Table.php');
+import(XFROOT.'Dataface/Table.php');
 
 
 

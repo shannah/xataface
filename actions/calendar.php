@@ -10,7 +10,7 @@ class dataface_actions_calendar {
 			'current'=>array('label'=>null)
 			);
 		
-		import('Dataface/Ontology.php');
+		import(XFROOT.'Dataface/Ontology.php');
 		
 		Dataface_Ontology::registerType('Event', 'Dataface/Ontology/Event.php', 'Dataface_Ontology_Event');
 		$ontology =& Dataface_Ontology::newOntology('Event', $query['-table']);
@@ -54,11 +54,11 @@ class dataface_actions_calendar {
 			unset($record);
 		}
 		
-		import('Services/JSON.php');
+		import(XFLIB.'Services/JSON.php');
 		$json = new Services_JSON();
 		$event_data = 'var events = '.$json->encode($events);
 		
-		import('Dataface/ResultList.php');
+		import(XFROOT.'Dataface/ResultList.php');
 		$rs = new Dataface_ResultList($query['-table']);
 		
 		

@@ -35,17 +35,17 @@ if ( !defined('DATAFACE_EXTENSION_LOADED_APC') ){
 
 }
 
-import( 'PEAR.php');
-import( 'Dataface/Error.php');
-import( 'Dataface/Globals.php');
-import( 'Dataface/Relationship.php');
-import( 'Dataface/converters/date.php');
-import( 'Dataface/Application.php');
+import( XFROOT.'PEAR.php');
+import( XFROOT.'Dataface/Error.php');
+import( XFROOT.'Dataface/Globals.php');
+import( XFROOT.'Dataface/Relationship.php');
+import( XFROOT.'Dataface/converters/date.php');
+import( XFROOT.'Dataface/Application.php');
 //require_once dirname(__FILE__).'/../config.inc.php';
-import( 'SQL/Parser.php');
-import( 'SQL/Parser/wrapper.php');
-import( 'Dataface/Serializer.php');
-import( 'Dataface/ConfigTool.php');
+import( XFLIB.'SQL/Parser.php');
+import( XFROOT.'SQL/Parser/wrapper.php');
+import( XFROOT.'Dataface/Serializer.php');
+import( XFROOT.'Dataface/ConfigTool.php');
 
 define('Dataface_Table_UseCache', false);
 
@@ -531,7 +531,7 @@ class Dataface_Table {
 			throw new Exception("Invalid character found in table '$tablename'.", E_USER_ERROR);
 
 		}
-		import('Dataface/Record.php');
+		import(XFROOT.'Dataface/Record.php');
 		$this->app =& Dataface_Application::getInstance();
 		// register this table name with the application object so we can keep
 		// track of which tables are used on each request.  This helps with
@@ -1649,7 +1649,7 @@ class Dataface_Table {
 			if (isset($tsql)){
 
 				$this->_grafted_fields = array();
-				import('SQL/Parser.php');
+				import(XFLIB.'SQL/Parser.php');
 				$parser = new SQL_Parser(null,'MySQL');
 				$data = $parser->parse($tsql);
 				foreach ( $data['columns'] as $col ){
@@ -2307,7 +2307,7 @@ class Dataface_Table {
 	public static function &getGlobalFieldsConfig(){
 		if ( !isset(self::$globalFieldsConfig) ){
 			//self::$globalFieldsConfig = array();
-			import( 'Dataface/ConfigTool.php');
+			import( XFROOT.'Dataface/ConfigTool.php');
 			$configTool =& Dataface_ConfigTool::getInstance();
 			self::$globalFieldsConfig =& $configTool->loadConfig('fields', null);
 
@@ -2325,7 +2325,7 @@ class Dataface_Table {
 	function _loadFieldsIniFile(){
 
 
-		import( 'Dataface/ConfigTool.php');
+		import( XFROOT.'Dataface/ConfigTool.php');
 		$configTool =& Dataface_ConfigTool::getInstance();
 		$conf =& $configTool->loadConfig('fields', $this->tablename); //$temp['root'];
 		$gConf =& self::getGlobalFieldsConfig();
@@ -3337,7 +3337,7 @@ class Dataface_Table {
 		if ( $backup_times === 0 or $refresh ){
 			$res = xf_db_query("select * from dataface__mtimes", df_db());
 			if ( !$res ){
-				import('Dataface/IO.php');
+				import(XFROOT.'Dataface/IO.php');
 				Dataface_IO::createModificationTimesTable();
 				$res = xf_db_query("select * from dataface__mtimes", df_db());
 				if ( !$res ) throw new Exception(xf_db_error(df_db()));
@@ -3399,7 +3399,7 @@ class Dataface_Table {
 						$mod_times[$row['Name']] = $backup_times[$row['Name']];
 					} else {
 						$mod_times[$row['Name']] = time();
-						import('Dataface/IO.php');
+						import(XFROOT.'Dataface/IO.php');
 						Dataface_IO::touchTable($row['Name']);
 
 					}
@@ -3517,7 +3517,7 @@ class Dataface_Table {
 	 */
 	private function &_loadValuelistsIniFile(){
 		if ( !isset($this->_valuelistsConfig) ){
-			import( 'Dataface/ConfigTool.php');
+			import( XFROOT.'Dataface/ConfigTool.php');
 			$configTool =& Dataface_ConfigTool::getInstance();
 			$this->_valuelistsConfig =& $configTool->loadConfig('valuelists', $this->tablename);
 		}
@@ -3609,7 +3609,7 @@ class Dataface_Table {
 		}
 		$valuelists =& $this->_valuelists;
 
-		import( 'Dataface/ConfigTool.php');
+		import( XFROOT.'Dataface/ConfigTool.php');
 		$configTool =& Dataface_ConfigTool::getInstance();
 		$conf =& $configTool->loadConfig('valuelists', $this->tablename);
 
@@ -3732,7 +3732,7 @@ class Dataface_Table {
 
 			}
 
-			import( 'Dataface/ValuelistTool.php');
+			import( XFROOT.'Dataface/ValuelistTool.php');
 			if ( !isset($this->_cookedValuelists[$name]) and Dataface_ValuelistTool::getInstance()->hasValuelist($name) ){
 
 				$this->_cookedValuelists[$name] = Dataface_ValuelistTool::getInstance()->getValuelist($name);
@@ -3785,7 +3785,7 @@ class Dataface_Table {
 				$valuelists[] = substr($method, 11);
 			}
 		}
-		import( 'Dataface/ValuelistTool.php');
+		import( XFROOT.'Dataface/ValuelistTool.php');
 
 		$valuelists = array_merge($valuelists, array_keys(Dataface_ValuelistTool::getInstance()->valuelists()));
 		return $valuelists;
@@ -3862,7 +3862,7 @@ class Dataface_Table {
 	function _loadRelationshipsIniFile(){
 
 
-		import( 'Dataface/ConfigTool.php');
+		import( XFROOT.'Dataface/ConfigTool.php');
 		$configTool =& Dataface_ConfigTool::getInstance();
 		$conf =& $configTool->loadConfig('relationships', $this->tablename);
 
@@ -4096,7 +4096,7 @@ class Dataface_Table {
 			 $this->_cache['getRelationshipsAsActions'] = $actions;
 		 }
 
-		 import('Dataface/ActionTool.php');
+		 import(XFROOT.'Dataface/ActionTool.php');
 		 $actionsTool =& Dataface_ActionTool::getInstance();
 		 $out = $actionsTool->getActions($params, $actions);
 		 if ( isset($relationshipName) ) {
@@ -4568,7 +4568,7 @@ class Dataface_Table {
 	 */
 
 	function &getImportFilters(){
-		import( 'Dataface/ImportFilter.php');
+		import( XFROOT.'Dataface/ImportFilter.php');
 		if ( $this->_importFilters === null ){
 			$this->_importFilters = array();
 			/*
@@ -4657,7 +4657,7 @@ class Dataface_Table {
 	 *
 	 */
 	function createImportTable(){
-		import('Dataface/QueryBuilder.php');
+		import(XFROOT.'Dataface/QueryBuilder.php');
 		/*
 		 * It is a good idea to clean the import tables before we create them.
 		 * That way they don't get cluttered
@@ -5350,7 +5350,7 @@ class Dataface_Table {
 			//error_log("\nAbout to parse $fieldname for value $value",3,'log.txt');
 			//if ( is_string($value) and strlen($value)> 10){
 				//error_log('About to serialize '.$fieldname, 3, 'log.txt');
-				import( 'XML/Unserializer.php');
+				import( XFLIB.'XML/Unserializer.php');
 				$unserializer = new XML_Unserializer();
 				$parsed = $unserializer->unserialize($value);
 
@@ -5796,11 +5796,11 @@ class Dataface_Table {
 	 *
 	 */
 	function getActions(&$params,$noreturn=false){
-		import( 'Dataface/ActionTool.php');
+		import( XFROOT.'Dataface/ActionTool.php');
 		$actionsTool =& Dataface_ActionTool::getInstance();
 		if ( !$this->_actionsLoaded  ){
 			$this->_actionsLoaded = true;
-			import( 'Dataface/ConfigTool.php');
+			import( XFROOT.'Dataface/ConfigTool.php');
 			$configTool =& Dataface_ConfigTool::getInstance();
 			$actions =& $configTool->loadConfig('actions',$this->tablename);
 			//print_r($actions);

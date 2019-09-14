@@ -1,8 +1,8 @@
 <?php
-import('Dataface/XMLTool.php');
+import(XFROOT.'Dataface/XMLTool.php');
 class dataface_actions_export_xml {
 	function handle(&$params){
-		import('Dataface/XMLTool/default.php');
+		import(XFROOT.'Dataface/XMLTool/default.php');
 		$xml = new Dataface_XMLTool_default();
 		$xml->expanded = true;
 		

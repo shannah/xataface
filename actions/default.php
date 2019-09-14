@@ -31,7 +31,7 @@
  */
 class dataface_actions_default {
 	function handle(&$params){
-		import('dataface-public-api.php');
+		import(XFROOT.'dataface-public-api.php');
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 		$action =& $params['action'];

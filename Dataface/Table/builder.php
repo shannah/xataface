@@ -1,5 +1,5 @@
 <?php
-import('Dataface/Table.php');
+import(XFROOT.'Dataface/Table.php');
 
 /**
  * Handles the building of database tables and their associated configuration

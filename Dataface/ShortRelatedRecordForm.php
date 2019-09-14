@@ -30,8 +30,8 @@
  * A form that allows users to add new records to a relationship.
  *
  */
-import('HTML/QuickForm.php');
-import('Dataface/QuickForm.php');
+import(XFLIB.'HTML/QuickForm.php');
+import(XFROOT.'Dataface/QuickForm.php');
 /**
  * @ingroup formsAPI
  */

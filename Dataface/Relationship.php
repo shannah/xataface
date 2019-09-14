@@ -593,8 +593,8 @@ class Dataface_Relationship {
 	 */
 	function getSQL($getBlobs=false, $where=0, $sort=0, $preview=1){
 		$start = microtime_float();
-		import('SQL/Compiler.php');
-		import( 'SQL/Parser/wrapper.php');
+		import(XFLIB.'SQL/Compiler.php');
+		import( XFROOT.'SQL/Parser/wrapper.php');
 		$loadParserTime = microtime_float() - $start;
 		if ( isset($this->_sql_generated[$where][$sort][$preview]) and $this->_sql_generated[$where][$sort][$preview] ){
 			/*
@@ -623,7 +623,7 @@ class Dataface_Relationship {
 				$cache_key_blobs = 'tables/'.$this->_sourceTable->tablename.'/relationships/'.$this->_name.'/sql/withblobs';
 				$cache_key_noblobs = 'tables/'.$this->_sourceTable->tablename.'/relationships/'.$this->_name.'/sql/withoutblobs';
 				// we are using the APC cache
-				import( 'Dataface/Cache.php');
+				import( XFROOT.'Dataface/Cache.php');
 				$cache =& Dataface_Cache::getInstance();
 				$this->_schema['sql_with_blobs'] = $cache->get($cache_key_blobs);
 				$this->_schema['sql_without_blobs'] = $cache->get($cache_key_noblobs);
@@ -1099,9 +1099,9 @@ class Dataface_Relationship {
 		// in the ini file using the __domain__ attribute of a relationship, or it can be parsed
 		// from the existiing 'sql' attribute.
 		if ( !isset( $relationship['domain_sql'] ) ){
-			import( 'SQL/Compiler.php');
+			import( XFLIB.'SQL/Compiler.php');
 				// compiles SQL tree structure into query strings
-			import( 'SQL/Parser/wrapper.php');
+			import( XFROOT.'SQL/Parser/wrapper.php');
 				// utility methods for dealing with SQL structures
 			$compiler = new SQL_Compiler();
 				// the compiler we will use to generate the eventual SQL

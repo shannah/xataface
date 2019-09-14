@@ -1,7 +1,7 @@
 <?php
 class dataface_actions_load_grid {
 	function handle(&$params){
-		import('Dataface/dhtmlxGrid/activegrid.php');
+		import(XFROOT.'Dataface/dhtmlxGrid/activegrid.php');
 		$app =& Dataface_Application::getInstance();
 		$grid =& Dataface_dhtmlxGrid_activegrid::getGrid($_REQUEST['-gridid']);
 		if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ) {

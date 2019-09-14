@@ -84,7 +84,7 @@ class Dataface_Index {
 			$this->indexRecord($record, $app->_conf['lang']);
 			
 			if ( is_array($app->_conf['languages']) ){
-				import('Dataface/IO.php');
+				import(XFROOT.'Dataface/IO.php');
 				$io = new Dataface_IO($record->_table->tablename);
 				foreach ( array_keys($app->_conf['languages']) as $lang){
 					if ( $lang == $app->_conf['lang'] ){

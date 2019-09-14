@@ -281,7 +281,7 @@ class Dataface_SearchForm extends HTML_QuickForm {
 		);
 		
 		//parent::display();
-		import('Dataface/FormTool.php');
+		import(XFROOT.'Dataface/FormTool.php');
 		$ft =& Dataface_FormTool::getInstance();
 		$ft->display($this, 'Dataface_FindForm.html');
 		//echo '</div>';

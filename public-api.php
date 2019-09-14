@@ -32,7 +32,8 @@
 
 if ( !defined( 'DATAFACE_PUBLIC_API_LOADED' ) ){
 define('DATAFACE_PUBLIC_API_LOADED', true);
-
+define('XFROOT', dirname(__FILE__).DIRECTORY_SEPARATOR);
+define('XFLIB', XFROOT.'lib'.DIRECTORY_SEPARATOR);
 /**
  * 
  * Initializes the dataface framework.
@@ -48,11 +49,12 @@ define('DATAFACE_PUBLIC_API_LOADED', true);
  *
  */
 function df_init($site_path, $dataface_url, $conf=null){
+	define('XFAPPROOT', dirname($site_path).DIRECTORY_SEPARATOR);
 	require_once dirname(__FILE__).'/init.php';
 	init($site_path, $dataface_url);
 
-	import( 'PEAR.php');
-	import( 'Dataface/Application.php'); 
+	import( XFROOT.'PEAR.php');
+	import( XFROOT.'Dataface/Application.php'); 
 			
 	
 	$app = Dataface_Application::getInstance($conf);
@@ -117,7 +119,7 @@ if ( !function_exists('xmlentities') ){
 }
 
 function df_update(){
-	import('actions/install.php');
+	import(XFROOT.'actions/install.php');
 	$action = new dataface_actions_install;
 	$params = array();
 	$res = $action->handle($params);
@@ -130,20 +132,20 @@ function df_update(){
 
 
 function &df_create_new_record_form($table, $fields=null){
-	import( 'Dataface/QuickForm.php');
+	import( XFROOT.'Dataface/QuickForm.php');
 	$form = Dataface_QuickForm::createNewRecordForm($table, $fields);
 	return $form;
 }
 
 function &df_create_edit_record_form(&$table, $fields=null){
-	import('Dataface/QuickForm.php');
+	import(XFROOT.'Dataface/QuickForm.php');
 	$form = Dataface_QuickForm::createEditRecordForm($table, $fields);
 	return $form;
 
 }
 
 function &df_create_new_related_record_form(&$record, $relationshipName, $fieldNames=null){
-	import( 'Dataface/ShortRelatedRecordForm.php');
+	import( XFROOT.'Dataface/ShortRelatedRecordForm.php');
 	$form = new Dataface_ShortRelatedRecordForm($record,$relationshipName,'', $fieldNames);
 	return $form;
 
@@ -151,7 +153,7 @@ function &df_create_new_related_record_form(&$record, $relationshipName, $fieldN
 
 
 function &df_create_existing_related_record_form(&$record, $relationshpName){
-	import( 'Dataface/ExistingRelatedRecordForm.php');
+	import( XFROOT.'Dataface/ExistingRelatedRecordForm.php');
 	$form = new Dataface_ExistingRelatedRecordForm($record, $relationshipName);
 	return $form;
 }
@@ -160,14 +162,14 @@ function &df_create_existing_related_record_form(&$record, $relationshpName){
 
 
 function &df_create_import_form(&$table, $relationshipName=null){
-	import( 'Dataface/ImportForm.php');
+	import( XFROOT.'Dataface/ImportForm.php');
 	$form = new Dataface_ExistingRelatedRecordForm($record, $relationshipName);
 	return $form;
 
 }
 
 function &df_create_search_form($tablename, $query=array(), $fields=null){
-	import( 'Dataface/SearchForm.php');
+	import( XFROOT.'Dataface/SearchForm.php');
 	$app = Dataface_Application::getInstance();
 	$form = new Dataface_SearchForm($tablename, $app->db(), $query, $fields);
 	return $form;
@@ -176,7 +178,7 @@ function &df_create_search_form($tablename, $query=array(), $fields=null){
 
 
 function &df_get_records($table, $query=null, $start=null, $limit=null, $preview=true){
-	import( 'Dataface/QueryTool.php');
+	import( XFROOT.'Dataface/QueryTool.php');
 	$app = Dataface_Application::getInstance();
 	if ( $query === null and $start === null and $limit === null ){
 		$queryTool = Dataface_QueryTool::loadResult($table);
@@ -316,14 +318,14 @@ function df_clear_cache(){
 
 
 function &df_get_table_info($tablename){
-	import( 'Dataface/Table.php');
+	import( XFROOT.'Dataface/Table.php');
 	$table = Dataface_Table::loadTable($tablename);
 	return $table;
 }
 
 function &df_get_record($table, $query, $io=null){
-	import( 'Dataface/Record.php');
-	import( 'Dataface/IO.php');
+	import( XFROOT.'Dataface/Record.php');
+	import( XFROOT.'Dataface/IO.php');
 	
 	$record = new Dataface_Record($table, array());
 	if ( !isset($io) ){
@@ -346,7 +348,7 @@ function &df_get_record($table, $query, $io=null){
 }
 
 function &df_get_record_by_id($id){
-	import('Dataface/IO.php');
+	import(XFROOT.'Dataface/IO.php');
 	@list($id,$fieldname) = explode('#', $id);
 	$record = Dataface_IO::getByID($id);
 	return $record;
@@ -500,8 +502,8 @@ function df_get_selected_records($query){
 }
 
 function df_save_record(&$record, $keys=null, $lang=null, $secure=false){
-	import( 'Dataface/Record.php');
-	import( 'Dataface/IO.php');
+	import( XFROOT.'Dataface/Record.php');
+	import( XFROOT.'Dataface/IO.php');
 	
 	$io = new Dataface_IO($record->_table->tablename);
 	if ( isset($lang) ) $io->lang = $lang;
@@ -528,14 +530,14 @@ function &df_get_relationship_info($tablename, $relationshipname){
 
 
 function df_register_skin($name, $template_dir){
-	import( 'Dataface/SkinTool.php');
+	import( XFROOT.'Dataface/SkinTool.php');
 	$st = Dataface_SkinTool::getInstance();
 	$st->register_skin($name, $template_dir);
 
 }
 
 function df_display($context, $template_name){
-	import( 'Dataface/SkinTool.php');
+	import( XFROOT.'Dataface/SkinTool.php');
 	$st = Dataface_SkinTool::getInstance();
 	$app = Dataface_Application::getInstance();
 	$query =& $app->getQuery();
@@ -577,13 +579,13 @@ function df_db(){
 }
 
 function df_query($sql, $lang=null, $as_array=false, $enumerated=false){
-	import('Dataface/DB.php');
+	import(XFROOT.'Dataface/DB.php');
 	$db = Dataface_DB::getInstance();
 	return $db->query($sql,null,$lang,$as_array, $enumerated);
 }
 
 function df_insert_id(){
-	import('Dataface/DB.php');
+	import(XFROOT.'Dataface/DB.php');
 	$db = Dataface_DB::getInstance();
 	return $db->insert_id();
 }
@@ -628,7 +630,7 @@ function df_block($params){
 
 
 function df_translation_warning(&$record, $language=null){
-	import('Dataface/TranslationTool.php');
+	import(XFROOT.'Dataface/TranslationTool.php');
 	$tt = new Dataface_TranslationTool();
 	$tt->printTranslationStatusAlert($record, $language);
 }
@@ -968,7 +970,7 @@ function df_tz_or_offset(){
 		}
 		
 	function df_count_actions($params=array(), $actions=null) {
-		import('Dataface/ActionTool.php');
+		import(XFROOT.'Dataface/ActionTool.php');
 		return Dataface_ActionTool::getInstance()->countActions($params, $actions);
 	}
         

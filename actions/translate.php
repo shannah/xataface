@@ -3,7 +3,7 @@
 class dataface_actions_translate {
 
 	function handle(&$params){
-		import('Dataface/TranslationForm.php');
+		import(XFROOT.'Dataface/TranslationForm.php');
 				
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();

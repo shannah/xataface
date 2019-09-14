@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  */
-import('Dataface/LanguageTool.php');
+import(XFROOT.'Dataface/LanguageTool.php');
  
 /**
  * A tool to manage actions within the application.
@@ -44,7 +44,7 @@ class Dataface_ActionTool {
 	
 	function _loadActionsINIFile(/*$path*/){
 		
-		import('Dataface/ConfigTool.php');
+		import(XFROOT.'Dataface/ConfigTool.php');
 		$configTool =& Dataface_ConfigTool::getInstance();
 		$actions =& $configTool->loadConfig('actions', null);
 		foreach ( array_keys($actions) as $key){
@@ -73,7 +73,7 @@ class Dataface_ActionTool {
 	}
 	
 	function _loadTableActions($tablename){
-		import('Dataface/Table.php');
+		import(XFROOT.'Dataface/Table.php');
 		// Some actions are loaded from the table's actions.ini file and must be loaded before we return the actions.
 
 		$table =& Dataface_Table::loadTable($tablename);

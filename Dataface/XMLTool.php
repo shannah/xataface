@@ -19,7 +19,7 @@ class Dataface_XMLTool {
 	public static function &getOutputCache(){
 		static $cache =0;
 		if ( !is_object($cache) ){
-			import('Dataface/OutputCache.php');
+			import(XFROOT.'Dataface/OutputCache.php');
 			$cache = new Dataface_OutputCache();
 		}
 		return $cache;

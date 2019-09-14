@@ -149,7 +149,7 @@ class Dataface_FormTool_file {
 							}
 						}
 
-						import('xf/image/crop.php');
+						import(XFROOT.'xf/image/crop.php');
 						$crop = new \xf\image\Crop;
 
 						list($dimensions) = array_map('trim', explode(' ', $arg));

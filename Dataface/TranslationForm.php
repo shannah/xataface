@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  */
-import('Dataface/QuickForm.php');
+import(XFROOT.'Dataface/QuickForm.php');
 /**
  * @ingroup formsAPI
  */
@@ -163,7 +163,7 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 	function getFormTemplate(){
 		$atts = $this->_table->attributes();
 		
-		import('Dataface/TranslationTool.php');
+		import(XFROOT.'Dataface/TranslationTool.php');
 		$tt = new Dataface_TranslationTool();
 		
 		$status_selector_html = $tt->getHTMLStatusSelector($this->_record, $this->destinationLanguage,'__translation__[status]');
@@ -239,7 +239,7 @@ class Dataface_TranslationForm extends Dataface_QuickForm {
 	function save($values){
 		$res = parent::save($values);
 		
-		import('Dataface/TranslationTool.php');
+		import(XFROOT.'Dataface/TranslationTool.php');
 		$tt = new Dataface_TranslationTool();
 		$tt->setTranslationStatus($this->_record, $this->destinationLanguage, $_POST['__translation__']['status']);
 		return $res;

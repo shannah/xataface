@@ -26,7 +26,7 @@ class Dataface_FormTool_checkbox {
 				if ( !@$widget['suffix'] ) $widget['suffix'] = '';
 				$dtable = & Dataface_Table::loadTable($relationship->getDomainTable());
 				if ( !PEAR::isError($dtable) and $record->checkPermission('add new related record', array('relationship'=>$relationship->getName()) )){
-				import('Dataface/JavascriptTool.php');
+				import(XFROOT.'Dataface/JavascriptTool.php');
                                 $jt = Dataface_JavascriptTool::getInstance();
                                 $jt->import('xataface/widgets/checkbox.js');
 

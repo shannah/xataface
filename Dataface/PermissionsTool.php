@@ -323,7 +323,7 @@ class Dataface_PermissionsTool_Instance {
 	function __construct($conf = null){
 	
 		if ( $conf === null ){
-			import('Dataface/ConfigTool.php');
+			import(XFROOT.'Dataface/ConfigTool.php');
 			$configTool =& Dataface_ConfigTool::getInstance();
 			$conf = $configTool->loadConfig('permissions');
 		

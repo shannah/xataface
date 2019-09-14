@@ -968,7 +968,7 @@ class Dataface_FormTool {
 	function display(&$form, $template=null, $singleField=false, $useTabs=false){
 
 
-		import('HTML/QuickForm/Renderer/ArrayDataface.php');
+		import(XFROOT.'HTML/QuickForm/Renderer/ArrayDataface.php');
 		//$skinTool =& Dataface_SkinTool::getInstance();
 		$renderer = new HTML_QuickForm_Renderer_ArrayDataface(true);
 		$form->accept($renderer);
@@ -1577,7 +1577,7 @@ class Dataface_FormTool {
 
 }
 
-import('HTML/QuickForm.php');
+import(XFLIB.'HTML/QuickForm.php');
 /**
  * @brief An HTML_QuickForm class that can be used to build widgets that will eventually
  * be added to other forms.  It is the same as any other quickform except that it

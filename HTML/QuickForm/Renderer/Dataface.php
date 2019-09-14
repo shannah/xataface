@@ -10,11 +10,11 @@
  * renderer with ability to include field descriptions and labels on grouped elements.
  */
  
-require_once 'Dataface/SkinTool.php';
+require_once XFROOT.'Dataface/SkinTool.php';
 //require_once 'Dataface/Table.php';
 //require_once 'Dataface/TableTool.php';
 //require_once 'Dataface/Record.php';
-require_once 'HTML/QuickForm/Renderer/Default.php';
+require_once XFLIB.'HTML/QuickForm/Renderer/Default.php';
 
 define('DATAFACE_RENDERER_FIELD_NOT_FOUND',2005);
 

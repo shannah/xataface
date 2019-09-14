@@ -11,7 +11,7 @@ class dataface_actions_history_restore_record {
 		$record =& $app->getRecord();
 		if ( !$record ) return PEAR::raiseError("No record was specified", DATAFACE_E_ERROR);
 		
-		import("Dataface/HistoryTool.php");
+		import(XFROOT."Dataface/HistoryTool.php");
 		$ht = new Dataface_HistoryTool();
 		$hrecord = $ht->getRecordById($record->_table->tablename, $historyid);
 		

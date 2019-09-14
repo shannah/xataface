@@ -164,7 +164,7 @@ class dataface_actions_export_json {
 			if (@$query['--includeOntologyData']) {
 				$includeOntologyData = true;
 			}
-			import('Dataface/Ontology.php');
+			import(XFROOT.'Dataface/Ontology.php');
 
 			$ontologies = array_map('basename', array_map('trim', explode(',', $query['--ontologies'])));
 			foreach ($ontologies as $k=>$o) {

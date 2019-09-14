@@ -52,7 +52,7 @@ class Dataface_ValuelistTool {
 	 */
 	private function &_loadValuelistsIniFile(){
 		if ( !isset($this->_valuelistsConfig) ){
-			import( 'Dataface/ConfigTool.php');
+			import( XFROOT.'Dataface/ConfigTool.php');
 			$configTool =& Dataface_ConfigTool::getInstance();
 			$this->_valuelistsConfig =& $configTool->loadConfig('valuelists');
 		}
@@ -229,7 +229,7 @@ class Dataface_ValuelistTool {
 	 */
 	function addValueToValuelist(&$table, $valuelistName,  $value, $key=null, $checkPerms=false){
 
-		import( 'Dataface/ConfigTool.php');
+		import( XFROOT.'Dataface/ConfigTool.php');
 		$configTool =& Dataface_ConfigTool::getInstance();
 		$conf = $configTool->loadConfig('valuelists', $table->tablename);
 		
@@ -259,7 +259,7 @@ class Dataface_ValuelistTool {
 			}
 			$rrecord->setValue($keyfield, $key);
 		}
-		import('Dataface/IO.php');
+		import(XFROOT.'Dataface/IO.php');
 		$io = new Dataface_IO($table->tablename);
 		$res = $io->addRelatedRecord($rrecord);
 		if ( PEAR::isError($res) ) return $res;
@@ -277,7 +277,7 @@ class Dataface_ValuelistTool {
 	 * @return PEAR_Error If there is a problem generating the relationship.
 	 */
 	function &asRelationship(&$table, $valuelistName){
-		import( 'Dataface/ConfigTool.php');
+		import( XFROOT.'Dataface/ConfigTool.php');
 		$configTool =& Dataface_ConfigTool::getInstance();
 		$conf = $configTool->loadConfig('valuelists', $table->tablename);
 		if (!@$conf[$valuelistName] or !@$conf[$valuelistName]['__sql__'] ){

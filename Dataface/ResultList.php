@@ -28,10 +28,10 @@
  * 	
  *****************************************************************************/
  
- import( 'Dataface/Table.php');
-import('Dataface/QueryBuilder.php');
-import('Dataface/Record.php');
-import('Dataface/QueryTool.php');
+ import( XFROOT.'Dataface/Table.php');
+import(XFROOT.'Dataface/QueryBuilder.php');
+import(XFROOT.'Dataface/Record.php');
+import(XFROOT.'Dataface/QueryTool.php');
 /**
  *  Handles the creation and display of a result list from the Database.
  **/
@@ -530,7 +530,7 @@ import('Dataface/QueryTool.php');
 				echo '</form>';
 			
 	
-				import('Dataface/ActionTool.php');
+				import(XFROOT.'Dataface/ActionTool.php');
 				$at =& Dataface_ActionTool::getInstance();
 				$actions = $at->getActions(array('category'=>'selected_result_actions'));
 				if ( count($actions) > 0){

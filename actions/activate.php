@@ -131,7 +131,7 @@ class dataface_actions_activate {
 			$_SESSION['UserName'] = $record->strval($app->_conf['_auth']['username_column']);
 			
 			
-			import('Dataface/Utilities.php');
+			import(XFROOT.'Dataface/Utilities.php');
 				
 			Dataface_Utilities::fireEvent('after_action_activate', array('record'=>$record));
 

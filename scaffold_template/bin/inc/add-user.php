@@ -2,7 +2,7 @@
 chdir(dirname(__FILE__).'/../../app');
 require_once 'xataface/public-api.php';
 df_init(dirname(__FILE__).'/../../app/index.php', 'xataface');
-import('Dataface/Table.php');
+import(XFROOT.'Dataface/Table.php');
 
 
 if (count($argv) < 3) {
@@ -37,7 +37,7 @@ if (!Dataface_Table::tableExists($usersTable)) {
     fwrite(STDERR, "Failed.  Users table doesn't exist");
     exit(1);
 }
-import('Dataface/Record.php');
+import(XFROOT.'Dataface/Record.php');
 $newUser = new Dataface_Record($usersTable, array());
 $newUser->setValue($conf['_auth']['username_column'], $username);
 $newUser->setValue($conf['_auth']['email_column'], $email);

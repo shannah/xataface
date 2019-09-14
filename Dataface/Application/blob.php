@@ -33,7 +33,7 @@ class Dataface_Application_blob {
 
 	static function _parseRelatedBlobRequest($request){
 		$app = Dataface_Application::getInstance();
-		import('dataface-public-api.php');
+		import(XFROOT.'dataface-public-api.php');
 		if ( !isset( $request['-field'] ) ) die("Could not complete request.  No field name specified.");
 		if ( !isset( $request['-table'] ) ) die("Could not complete request.  No table specified.");
 
@@ -81,8 +81,8 @@ class Dataface_Application_blob {
 	 */
 	static function _handleGetBlob($request){
 		$app = Dataface_Application::getInstance();
-		import( 'Dataface/Table.php');
-		import('Dataface/QueryTool.php');
+		import( XFROOT.'Dataface/Table.php');
+		import(XFROOT.'Dataface/QueryTool.php');
 
 		if ( strpos(@$request['-field'], '.') !== false ){
 			$request = self::_parseRelatedBlobRequest($request);

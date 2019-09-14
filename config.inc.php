@@ -214,7 +214,7 @@ if ( !defined('DATAFACE_EXTENSION_LOADED_MEMCACHE' ) ){
 
 
 function import($file){
-	
+  
 	static $imports = 0;
 	if ( !$imports ){
 		$imports = array();
@@ -224,7 +224,10 @@ function import($file){
 	//$class = substr($class, 0, strpos($class,'.'));
 	if ( !isset($imports[$file]) ){
 		$imports[$file] = true;
-		//error_log("importing ".$file);
+    //error_log("importing ".$file);
+    //if (!file_exists($file)) {
+    //  throw new Exception("File not found $file in ".ini_get('include_path'));
+    //}
 		require_once $file;
 	}
 }

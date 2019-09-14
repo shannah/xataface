@@ -22,7 +22,7 @@ class dataface_actions_invalidate_translations {
 			return PEAR::raiseError("Attempt to invalidate translations on null record.  No record could be found to match the query parameters.");
 		}
 		
-		import('Dataface/TranslationTool.php');
+		import(XFROOT.'Dataface/TranslationTool.php');
 		$tt = new Dataface_TranslationTool();
 		$res = $tt->markNewCanonicalVersion($record, basename($app->_conf['default_language']));
 		if ( PEAR::isError($res) ){

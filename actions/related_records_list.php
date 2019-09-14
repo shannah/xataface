@@ -1,5 +1,5 @@
 <?php
-import('Dataface/Table.php');
+import(XFROOT.'Dataface/Table.php');
 class dataface_actions_related_records_list {
 	function handle($params){
 		$app =& Dataface_Application::getInstance();

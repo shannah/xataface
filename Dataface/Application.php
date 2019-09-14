@@ -61,8 +61,8 @@ if ( !function_exists('sys_get_temp_dir') )
 }
 
 require_once dirname(__FILE__)."/../config.inc.php";
-import('Dataface/PermissionsTool.php');
-import('Dataface/LanguageTool.php');
+import(XFROOT.'Dataface/PermissionsTool.php');
+import(XFROOT.'Dataface/LanguageTool.php');
 define('DATAFACE_STRICT_PERMISSIONS', 100);
 	// the minimum security level that is deemed as strict permissions.
 	// strict permissions mean that permissions must be explicitly granted to a
@@ -700,7 +700,7 @@ END;
 
 
 		if ( isset($this->_conf['_modules'])  and count($this->_conf['_modules'])>0 ){
-			import('Dataface/ModuleTool.php');
+			import(XFROOT.'Dataface/ModuleTool.php');
 		}
 
 		if ( isset($this->_conf['languages']) ){
@@ -895,7 +895,7 @@ END;
 		} else if (isset( $_COOKIE[$prefix.'lang']) ){
 			$this->_conf['lang'] = $_COOKIE[$prefix.'lang'];
 		} else {
-			import('I18Nv2/I18Nv2.php');
+			import(XFLIB.'I18Nv2/I18Nv2.php');
 			$negotiator = I18Nv2::createNegotiator($this->_conf['default_language'], 'UTF-8');
 			$this->_conf['lang'] = $this->getLanguageCode(
 				$negotiator->getLocaleMatch(
@@ -934,11 +934,11 @@ END;
 		define('DATAFACE_USAGE_MODE', $this->_conf['usage_mode']);
 
 		if ( @$this->_conf['enable_workflow'] ){
-			import('Dataface/WorkflowTool.php');
+			import(XFROOT.'Dataface/WorkflowTool.php');
 		}
 
 		if (@$_GET['--url']) {
-			import('actions/request_public_url.php');
+			import(XFROOT.'actions/request_public_url.php');
 			// This allows the use of a public URL for setting
 			// both the query and the logged in user.
 			dataface_actions_request_public_url::apply_url($this);
@@ -1313,7 +1313,7 @@ END
 				// Do whatever we need to do before the request is handled.
 				$applicationDelegate->beforeLoadResultSet();
 			}
-			import('Dataface/QueryTool.php');
+			import(XFROOT.'Dataface/QueryTool.php');
 			$this->queryTool = Dataface_QueryTool::loadResult($this->_query['-table'], $this->db(), $this->_query);
 		}
 		return $this->queryTool;
@@ -1491,7 +1491,7 @@ END
 	 * @return array Action parameters (or null if action doesn't exist).
 	 */
 	function &getAction(){
-		import('Dataface/ActionTool.php');
+		import(XFROOT.'Dataface/ActionTool.php');
 		$actionTool = Dataface_ActionTool::getInstance();
 		return $actionTool->getAction(array('name'=>$this->_query['-action']));
 	}
@@ -1814,7 +1814,7 @@ END
 		if ( !isset($this->authenticationTool) ){
 
 			if ( isset($this->_conf['_auth']) ){
-				import('Dataface/AuthenticationTool.php');
+				import(XFROOT.'Dataface/AuthenticationTool.php');
 				$this->authenticationTool = Dataface_AuthenticationTool::getInstance($this->_conf['_auth']);
 			} else {
 				return $null;
@@ -2173,14 +2173,14 @@ END
 
 
 		if ( !$disableCache and (@$_GET['-action'] != 'getBlob') and isset( $this->_conf['_output_cache'] ) and @$this->_conf['_output_cache']['enabled'] and count($_POST) == 0){
-			import('Dataface/OutputCache.php');
+			import(XFROOT.'Dataface/OutputCache.php');
 			$oc = new Dataface_OutputCache($this->_conf['_output_cache']);
 			$oc->ob_start();
 
 		}
-		import('Dataface/ActionTool.php');
-		import('Dataface/PermissionsTool.php');
-		import('Dataface/Table.php');
+		import(XFROOT.'Dataface/ActionTool.php');
+		import(XFROOT.'Dataface/PermissionsTool.php');
+		import(XFROOT.'Dataface/Table.php');
 
 		if ( isset($this->_conf['_modules']) and count($this->_conf['_modules']) > 0 ){
 			$mt = Dataface_ModuleTool::getInstance();
@@ -2687,7 +2687,7 @@ END
 	 * @private
 	 */
 	function _handleGetBlob($request){
-		import('Dataface/Application/blob.php');
+		import(XFROOT.'Dataface/Application/blob.php');
 		return Dataface_Application_blob::_handleGetBlob($request);
 	}
 
@@ -2973,7 +2973,7 @@ END
 	 *
 	 */
 	function url($query, $useContext=true, $forceContext=false){
-		import('Dataface/LinkTool.php');
+		import(XFROOT.'Dataface/LinkTool.php');
 		return Dataface_LinkTool::buildLInk($query, $useContext, $forceContext);
 
 	}
@@ -3227,7 +3227,7 @@ END
 	 * @return array
 	 */
 	function _parseRelatedBlobRequest($request){
-		import('Dataface/Application/blob.php');
+		import(XFROOT.'Dataface/Application/blob.php');
 		return Dataface_Application_blob::_parseRelatedBlobRequest($request);
 	}
 

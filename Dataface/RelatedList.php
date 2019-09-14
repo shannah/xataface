@@ -29,9 +29,9 @@
  *
  * *************************************************************************** */
 
-import('Dataface/Table.php');
-import('Dataface/QueryBuilder.php');
-import('Dataface/LinkTool.php');
+import(XFROOT.'Dataface/Table.php');
+import(XFROOT.'Dataface/QueryBuilder.php');
+import(XFROOT.'Dataface/LinkTool.php');
 
 class Dataface_RelatedList {
 
@@ -317,7 +317,7 @@ class Dataface_RelatedList {
                 'next_link' => $this->_forwardButtonHtml()
             );
 
-            import('Dataface/ActionTool.php');
+            import(XFROOT.'Dataface/ActionTool.php');
             $at = & Dataface_ActionTool::getInstance();
             $actions = $at->getActions(array(
                 'category' => 'related_list_actions'
@@ -330,13 +330,13 @@ class Dataface_RelatedList {
         }
 
 
-        import('Dataface/ActionTool.php');
+        import(XFROOT.'Dataface/ActionTool.php');
         $at = & Dataface_ActionTool::getInstance();
         $selected_actions = $at->getActions(array('category' => 'selected_related_result_actions'));
         $context['selected_actions'] = $selected_actions;
 
         if ($this->_relationship->_schema['list']['type'] == 'treetable') {
-            import('Dataface/TreeTable.php');
+            import(XFROOT.'Dataface/TreeTable.php');
             $treetable = new Dataface_TreeTable($this->_record, $this->_relationship->getName());
             $context['treetable'] = $treetable->toHtml();
         } else {

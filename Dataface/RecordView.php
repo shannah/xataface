@@ -1,5 +1,5 @@
 <?php
-import('Dataface/GlanceList.php');
+import(XFROOT.'Dataface/GlanceList.php');
 class Dataface_RecordView {
 	var $record;
 	
@@ -44,7 +44,7 @@ class Dataface_RecordView {
 			$this->status = '';
 		}
 		
-		import('Dataface/PreferencesTool.php');
+		import(XFROOT.'Dataface/PreferencesTool.php');
 		$pt =& Dataface_PreferencesTool::getInstance();
 
 		$prefs =& $pt->getPreferences($record->getId());

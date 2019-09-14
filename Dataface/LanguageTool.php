@@ -177,7 +177,7 @@ class Dataface_LanguageTool_Instance {
 		$oldLang = $app->_conf['lang'];
 		if ( isset($this->lang) ) $app->_conf['lang'] = $this->lang;
 		$query =& $app->getQuery();
-		import('Dataface/ConfigTool.php');
+		import(XFROOT.'Dataface/ConfigTool.php');
 		$configTool =& Dataface_ConfigTool::getInstance();
 		$dictionary = $configTool->loadConfig('lang', null);
 		if ( isset($query['-table']) ) {
@@ -253,7 +253,7 @@ class Dataface_LanguageTool_Instance {
                 $languages = $this->app->_conf['languages'];
             
 		if ( !isset($params['use_flags']) ) $params['use_flags'] = true;
-		import('I18Nv2/Language.php');
+		import(XFLIB.'I18Nv2/Language.php');
                 $langcode = ( isset($params['lang']) ? $params['lang'] : $this->app->_conf['lang']);
 		$languageCodes = new I18Nv2_Language($langcode);
 		$currentLanguage = @$languages[$langCode] ? $languages[$langCode] : $languageCodes->getName( $this->app->_conf['lang']);
@@ -335,7 +335,7 @@ class Dataface_LanguageTool_Instance {
 	}
 	
 	function getLanguageLabel($code){
-		import('I18Nv2/Language.php');
+		import(XFLIB.'I18Nv2/Language.php');
 		
 		$langcode = $this->app->_conf['lang'];
 		$languageCodes = new I18Nv2_Language($langcode);

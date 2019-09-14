@@ -248,7 +248,7 @@ class Dataface_FeedTool {
 	}
 	
 	function createFeed($query=null){
-		import('feedcreator.class.php');
+		import(XFLIB.'feedcreator.class.php');
 		$app =& Dataface_Application::getInstance();
 		if ( !isset($query) ){
 			$query = $app->getQuery();

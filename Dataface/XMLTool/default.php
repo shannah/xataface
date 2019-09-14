@@ -1,5 +1,5 @@
 <?php
-import('Dataface/XMLTool.php');
+import(XFROOT.'Dataface/XMLTool.php');
 class Dataface_XMLTool_default extends Dataface_XMLTool {
 	var $expanded = false;
 	function toXML(&$arg){

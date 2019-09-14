@@ -53,7 +53,7 @@ class dataface_actions_install {
             }
             
             if ( file_exists('conf/Installer.php') ){
-                import('conf/Installer.php');
+                import(XFAPPROOT.'conf/Installer.php');
                 $installer = new conf_Installer;
                 
                 $methods = get_class_methods('conf_Installer');

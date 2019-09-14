@@ -27,9 +27,9 @@
  * 	
  * **************************************************************************** */
 
-import('Dataface/QueryBuilder.php');
-import('Dataface/Table.php');
-import('Dataface/LinkTool.php');
+import(XFROOT.'Dataface/QueryBuilder.php');
+import(XFROOT.'Dataface/Table.php');
+import(XFROOT.'Dataface/LinkTool.php');
 
 $GLOBALS['Dataface_ResultController_limit'] = 20;
 $GLOBALS['Dataface_ResultController_skip'] = 0;

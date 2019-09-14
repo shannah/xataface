@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  */
-import( 'Dataface/Table.php');
-import( 'Dataface/Error.php');
+import( XFROOT.'Dataface/Table.php');
+import( XFROOT.'Dataface/Error.php');
 class Dataface_Serializer {
 
 
@@ -170,7 +170,7 @@ class Dataface_Serializer {
 		
 		if ( is_array( $value ) ){
 			if ( $widget['type'] == 'table' or $widget['type'] == 'group'){
-				import( 'XML/Serializer.php');
+				import( XFLIB.'XML/Serializer.php');
 				$serializer = new XML_Serializer(array('typeHints'=>true));
 				$ser_res =& $serializer->serialize($value);
 				if (!PEAR::isError($ser_res) ){

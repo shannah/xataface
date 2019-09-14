@@ -1,5 +1,5 @@
 <?php
-import('Dataface/TranslationTool.php');
+import(XFROOT.'Dataface/TranslationTool.php');
 class dataface_actions_submit_translation {
 
 	function handle(&$params){

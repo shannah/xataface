@@ -71,7 +71,7 @@ class Dataface_OutputCache {
 	 * of pages from the database.
 	 */
 	function _buildPageSelect($params=array()){
-		import('Dataface/AuthenticationTool.php');
+		import(XFROOT.'Dataface/AuthenticationTool.php');
 		$query =& $this->app->getQuery();
 		
 		

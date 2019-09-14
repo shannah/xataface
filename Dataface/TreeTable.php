@@ -1,5 +1,5 @@
 <?php
-import('Dataface/ResultList.php');
+import(XFROOT.'Dataface/ResultList.php');
 /**
  * A tree table for displaying records in a heirarchical view.
  *
@@ -264,7 +264,7 @@ class Dataface_TreeTable {
 		echo $this->getSubrowsAsHTML('',$depth,$treetableid);
 		
 		echo "</tbody></table>";
-		import('Dataface/ActionTool.php');
+		import(XFROOT.'Dataface/ActionTool.php');
 		$actionsTool =& Dataface_ActionTool::getInstance();
 		$actions = $actionsTool->getActions(array('category'=>'selected_records_actions'));
 		if (count($actions)>0 ){
@@ -286,7 +286,7 @@ class Dataface_TreeTable {
 			echo "<input type=\"submit\" value=\"Submit\"/>";
 		}
 		
-		import('Dataface/Utilities.php');
+		import(XFROOT.'Dataface/Utilities.php');
 		
 		// We need to build a query.
 		$q = array('-table'=>$this->record->_table->tablename);

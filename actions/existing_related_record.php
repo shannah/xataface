@@ -1,8 +1,8 @@
 <?php
-import('Dataface/LinkTool.php');
+import(XFROOT.'Dataface/LinkTool.php');
 class dataface_actions_existing_related_record {
 	function handle(&$params){
-		import( 'Dataface/ExistingRelatedRecordForm.php');
+		import( XFROOT.'Dataface/ExistingRelatedRecordForm.php');
 		
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
@@ -91,7 +91,7 @@ class dataface_actions_existing_related_record {
 				$success = true;
 			}
 			if ( $success ){
-				import('Dataface/Utilities.php');
+				import(XFROOT.'Dataface/Utilities.php');
 				Dataface_Utilities::fireEvent('after_action_existing_related_record');
 				$fquery = array('-action'=>'browse');
 				$table = Dataface_Table::loadTable($query['-table']);

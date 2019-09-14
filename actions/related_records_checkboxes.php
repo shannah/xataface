@@ -21,7 +21,7 @@ class dataface_actions_related_records_checkboxes {
 		}
 		
 		ob_start();
-		import('Dataface/RelationshipCheckboxForm.php');
+		import(XFROOT.'Dataface/RelationshipCheckboxForm.php');
 		$form = new Dataface_RelationshipCheckboxForm($record, $query['-relationship']);
 		$out = ob_get_contents();
 		ob_end_clean();

@@ -1,5 +1,5 @@
 <?php
-import('Dataface/QueryTool.php');
+import(XFROOT.'Dataface/QueryTool.php');
 /**
  * 
  *
@@ -8,7 +8,7 @@ class dataface_actions_import {
 	function handle($params){
 		//ini_set('memory_limit', '256M');
 		set_time_limit(99999);
-		import( 'Dataface/ImportForm.php');
+		import( XFROOT.'Dataface/ImportForm.php');
 		$app =& Dataface_Application::getInstance();
 		$app->startSession();
 		$query =& $app->getQuery();

@@ -28,16 +28,16 @@
  *
  *******************************************************************************/
 
-import( 'HTML/QuickForm.php');
-import( 'Dataface/Table.php');
-import( 'Dataface/Vocabulary.php');
-import( 'Dataface/QueryBuilder.php');
-import( 'Dataface/QueryTool.php');
-import( 'Dataface/IO.php');
-import( 'Dataface/SkinTool.php');
-import('HTML/QuickForm/Renderer/Dataface.php');
-import( 'Dataface/PermissionsTool.php');
-import('Dataface/FormTool.php');
+import( XFLIB.'HTML/QuickForm.php');
+import( XFROOT.'Dataface/Table.php');
+import( XFROOT.'Dataface/Vocabulary.php');
+import( XFROOT.'Dataface/QueryBuilder.php');
+import( XFROOT.'Dataface/QueryTool.php');
+import( XFROOT.'Dataface/IO.php');
+import( XFROOT.'Dataface/SkinTool.php');
+import(XFROOT.'HTML/QuickForm/Renderer/Dataface.php');
+import(XFROOT. 'Dataface/PermissionsTool.php');
+import(XFROOT.'Dataface/FormTool.php');
 
 
 // Register our special types

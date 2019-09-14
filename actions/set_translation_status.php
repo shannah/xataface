@@ -1,7 +1,7 @@
 <?php
-import( 'HTML/QuickForm.php');
-import('Dataface/TranslationTool.php');
-import( 'I18Nv2/Language.php');
+import( XFLIB.'HTML/QuickForm.php');
+import(XFROOT.'Dataface/TranslationTool.php');
+import( XFLIB.'I18Nv2/Language.php');
 class dataface_actions_set_translation_status {
 
 	function handle(&$params){

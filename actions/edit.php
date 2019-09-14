@@ -31,8 +31,8 @@
  */
 class dataface_actions_edit {
 	function handle(&$params){
-		import( 'Dataface/FormTool.php');
-		import( 'Dataface/QuickForm.php');
+		import( XFROOT.'Dataface/FormTool.php');
+		import( XFROOT.'Dataface/QuickForm.php');
 		$formTool =& Dataface_FormTool::getInstance();
 		
 				
@@ -183,7 +183,7 @@ class dataface_actions_edit {
 					//$response['--msg'] = @$response['--msg'] ."\n".$result->getMessage();
 					$success = false;
 					if (@$query['-response'] == 'json') {
-						import('xf/core/XFException.php');
+						import(XFROOT.'xf/core/XFException.php');
 						throw new xf\core\XFException('Failed to insert record', $result->getCode(), new Exception($result->getMessage(), $result->getCode()));
 					}
 				}
@@ -204,7 +204,7 @@ class dataface_actions_edit {
 						return;
 					}
 					
-					import('Dataface/Utilities.php');
+					import(XFROOT.'Dataface/Utilities.php');
 					Dataface_Utilities::fireEvent('after_action_edit', array('record'=>$form->_record));
 					/*
 					 *

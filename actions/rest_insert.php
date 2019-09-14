@@ -56,7 +56,7 @@ define('REST_INSERT_VALIDATION_ERROR', 501);
 class dataface_actions_rest_insert {
 	function handle($params){
 		if ( !defined('DISABLE_reCAPTCHA') ) define('DISABLE_reCAPTCHA', 1);
-		import('Dataface/QuickForm.php');
+		import(XFROOT.'Dataface/QuickForm.php');
 		Dataface_QuickForm::$TRACK_SUBMIT = false;
 		$app = Dataface_Application::getInstance();
 		$query = $app->getQuery();

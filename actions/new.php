@@ -31,8 +31,8 @@
  */
 class dataface_actions_new {
 	function handle(){
-		import( 'Dataface/FormTool.php');
-		import( 'Dataface/QuickForm.php');
+		import( XFROOT.'Dataface/FormTool.php');
+		import( XFROOT.'Dataface/QuickForm.php');
 		$formTool =& Dataface_FormTool::getInstance();
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
@@ -159,7 +159,7 @@ class dataface_actions_new {
 					$success = false;
 					$form->_errors[] = $result->getMessage();
 					if (@$query['-response'] == 'json') {
-						import('xf/core/XFException.php');
+						import(XFROOT.'xf/core/XFException.php');
 						throw new xf\core\XFException('Failed to insert record.  Duplicate record.', $result->getCode(), new Exception($result->getMessage(), $result->getCode()));
 					}
 
@@ -176,7 +176,7 @@ class dataface_actions_new {
 				$app->addError($result);
 				$success = false;
 				if (@$query['-response'] == 'json') {
-					import('xf/core/XFException.php');
+					import(XFROOT.'xf/core/XFException.php');
 					throw new xf\core\XFException('Failed to insert record', $result->getCode(), new Exception($result->getMessage(), $result->getCode()));
 				}
 			}
@@ -191,7 +191,7 @@ class dataface_actions_new {
 					echo json_encode(array('response_code'=>200, 'record_data'=> $rvals, 'response_message'=>df_translate('Record Successfully Saved', 'Record Successfully Saved')));
 					return;
 				}
-				import('Dataface/Utilities.php');
+				import(XFROOT.'Dataface/Utilities.php');
 
 
 				Dataface_Utilities::fireEvent('after_action_new', array('record'=>$currentRecord));
@@ -262,7 +262,7 @@ class dataface_actions_new {
 			//$app->clearMessages();
 			//$app->addError(PEAR::raiseError("Some errors occurred while processing this form: <ul><li>".implode('</li><li>', $form->_errors)."</li></ul>"));
 			if (@$query['-response'] == 'json') {
-				import('xf/core/XFException.php');
+				import(XFROOT.'xf/core/XFException.php');
 				$messages = implode('. ', $form->_errors);
 				throw new xf\core\XFException('Failed to insert record.'.$messages, DATAFACE_E_VALIDATION_CONSTRAINT_FAILED, new Exception($messages, DATAFACE_E_VALIDATION_CONSTRAINT_FAILED));
 			}

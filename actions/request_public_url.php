@@ -4,7 +4,7 @@
  * that is user-specific, and you need to use it without a session.
  * 
  */
-import('xf/actions/BaseAction.php');
+import(XFROOT.'xf/actions/BaseAction.php');
 class dataface_actions_request_public_url extends xf\actions\BaseAction {
     private static function create_table() {
         df_q("create table if not exists xf_public_urls (

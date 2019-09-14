@@ -26,7 +26,7 @@
  * Description:
  *	Handles authentication for Dataface application.
  */
-import('Dataface/Table.php');
+import(XFROOT.'Dataface/Table.php');
 class Dataface_AuthenticationTool {
 
 	var $authType = 'basic';
@@ -217,7 +217,7 @@ class Dataface_AuthenticationTool {
 				//throw new Exception("Username or Password Not specified", E_USER_ERROR);
 				return false;
 			}
-			import('Dataface/Serializer.php');
+			import(XFROOT.'Dataface/Serializer.php');
 			$serializer = new Dataface_Serializer($this->usersTable);
 			//$res = xf_db_query(
 			$sql =	"SELECT `".$this->usernameColumn."` FROM `".$this->usersTable."`
@@ -304,7 +304,7 @@ class Dataface_AuthenticationTool {
 			    exit;
 			}
 			
-			import('Dataface/Utilities.php');
+			import(XFROOT.'Dataface/Utilities.php');
 				
 			Dataface_Utilities::fireEvent('after_action_logout', array('UserName'=>$username));
 			
@@ -363,7 +363,7 @@ class Dataface_AuthenticationTool {
 			// userid in the session.
 			$_SESSION['UserName'] = $creds['UserName'];
 			
-			import('Dataface/Utilities.php');
+			import(XFROOT.'Dataface/Utilities.php');
 				
 			Dataface_Utilities::fireEvent('after_action_login', array('UserName'=>$_SESSION['UserName']));
 			$msg = df_translate('You are now logged in','You are now logged in');
@@ -564,7 +564,7 @@ class Dataface_AuthenticationTool {
 	
 	function getEmailColumn(){
 		if ( !isset($this->emailColumn) ){
-			import('Dataface/Ontology.php');
+			import(XROOT.'Dataface/Ontology.php');
 			Dataface_Ontology::registerType('Person', 'Dataface/Ontology/Person.php', 'Dataface_Ontology_Person');
 			$ontology = Dataface_Ontology::newOntology('Person', $this->usersTable);
 			if ( isset($this->conf['email_column']) ) $this->emailColumn = $this->conf['email_column'];

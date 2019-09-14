@@ -87,7 +87,7 @@ class Dataface_RecordGrid {
 	}
 	
 	function toHTML(){
-		import('Dataface/SkinTool.php');
+		import(XFROOT.'Dataface/SkinTool.php');
 		$recKeys = array_keys($this->records);
 		$sampleRecord =& $this->records[$recKeys[0]];
 		if ( $this->columns === null ){

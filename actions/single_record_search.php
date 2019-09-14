@@ -41,8 +41,8 @@ class dataface_actions_single_record_search {
 		$app =& Dataface_Application::getInstance();
 		$record =& $app->getRecord();
 		$query =& $app->getQuery();
-		import('feedcreator.class.php');
-		import('Dataface/FeedTool.php');
+		import(XFLIB.'feedcreator.class.php');
+		import(XFROOT.'Dataface/FeedTool.php');
 		$ft = new Dataface_FeedTool();
 		$rss = new UniversalFeedCreator(); 
 		$rss->encoding = $app->_conf['oe'];

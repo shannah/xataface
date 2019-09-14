@@ -14,7 +14,7 @@ class dataface_actions_history {
 		if ( !Dataface_Table::tableExists($history_tablename) )
 			$context['error'] = PEAR::raiseError("This record has no history yet recorded.", DATAFACE_E_NOTICE);
 		else {
-			import('Dataface/HistoryTool.php');
+			import(XFROOT.'Dataface/HistoryTool.php');
 			$history_tool = new Dataface_HistoryTool();
 			$history_log = $history_tool->getHistoryLog($record);
 			$context['log'] =& $history_log;

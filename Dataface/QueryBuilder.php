@@ -28,11 +28,11 @@
  *
  ******************************************************************************/
 
-import( 'PEAR.php');
-import( 'Dataface/Table.php');
-import( 'Dataface/Error.php');
-import( 'Dataface/Serializer.php');
-import('Dataface/DB.php'); // for Blob registry.
+import( XFROOT.'PEAR.php');
+import( XFROOT.'Dataface/Table.php');
+import( XFROOT.'Dataface/Error.php');
+import( XFROOT.'Dataface/Serializer.php');
+import( XFROOT.'Dataface/DB.php'); // for Blob registry.
 
 define('QUERYBUILDER_ERROR_EMPTY_SELECT', 1);
 

@@ -1,5 +1,5 @@
 <?php
-import('Dataface/FormTool/table.php');
+import(XFROOT.'Dataface/FormTool/table.php');
 /**
  * @ingroup widgetsAPI
  */

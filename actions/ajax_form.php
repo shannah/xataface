@@ -42,7 +42,7 @@ class dataface_actions_ajax_form {
 				break;
 				
 			case 'composite':
-				import('Dataface/CompositeForm.php');
+				import(XFROOT.'Dataface/CompositeForm.php');
 				$form = new Dataface_CompositeForm($fields);
 				$form->build();
 				break;
@@ -101,7 +101,7 @@ class dataface_actions_ajax_form {
 			
 			
 			if ( $success ){
-				import('Dataface/Utilities.php');
+				import(XFROOT.'Dataface/Utilities.php');
 				Dataface_Utilities::fireEvent('after_action_ajax_form');
 				
 				$msg = implode("\n", $app->getMessages());
@@ -137,7 +137,7 @@ class dataface_actions_ajax_form {
 					
 					// Convert the values to JSON
 					$changed_values = $form->htmlValues($changed_fields);
-					import('Services/JSON.php');
+					import(XFLIB.'Services/JSON.php');
 					$json = new Services_JSON();
 					$changed_values_json = $json->encode($changed_values);
 					
@@ -166,7 +166,7 @@ END;
 			}
 		}
 		
-		import('Dataface/FormTool.php');
+		import(XFROOT.'Dataface/FormTool.php');
 		$formTool = new Dataface_FormTool();
 		ob_start();
 		if (is_array($fields) and (count($fields) == 1) and (strpos($fields[0], '#') !== false) ){

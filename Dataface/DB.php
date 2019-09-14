@@ -28,9 +28,9 @@
  * xf_db_query calls because it analyzes queries first to make sure that Blobs are
  * not loaded unnecessarily.  [To do] 
  */
-import( 'Dataface/Application.php'); 
-import('Dataface/Table.php');
-import('Dataface/AuthenticationTool.php');
+import( XFROOT.'Dataface/Application.php'); 
+import(XFROOT.'Dataface/Table.php');
+import(XFROOT.'Dataface/AuthenticationTool.php');
 
 class Dataface_DB {
 	var $_db;
@@ -123,7 +123,7 @@ class Dataface_DB {
 	function &_getParser(){
 		
 		if ( !isset($this->_parser)){
-			import('SQL/Parser.php');
+			import(XFLIB.'SQL/Parser.php');
 			$this->_parser = new SQL_Parser(null, 'MySQL');
 		}
 		return $this->_parser;
@@ -134,7 +134,7 @@ class Dataface_DB {
 	 */
 	function &_getCompiler(){
 		if ( !isset($this->_compiler) ){
-			import('SQL/Compiler.php');
+			import(XFLIB.'SQL/Compiler.php');
 			$this->_compiler = SQL_Compiler::newInstance('mysql');
 		}
 		return $this->_compiler;
@@ -285,7 +285,7 @@ class Dataface_DB {
 		}
 		
 		$query = $prepared_query[0];
-		import('Dataface/QueryTranslator.php');
+		import(XFROOT.'Dataface/QueryTranslator.php');
 		$translator = new Dataface_QueryTranslator($lang);
 		$output = $translator->translateQuery($prepared_query[0]);
 		if (PEAR::isError($output) ){
@@ -650,7 +650,7 @@ class Dataface_DB {
 		}
 		// We actually need to calculate the dependencies, so we will
 		// parse the SQL query.
-		import('SQL/Parser.php');
+		import(XFLIB.'SQL/Parser.php');
 		$parser = new SQL_Parser( null, 'MySQL');
 		$data = $parser->parse($sql);
 		if ( PEAR::isError($data) ){

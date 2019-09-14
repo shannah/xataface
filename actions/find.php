@@ -31,7 +31,7 @@
  */
 class dataface_actions_find {
 	function handle($params){
-		import( 'Dataface/SearchForm.php');
+		import(XFROOT. 'Dataface/SearchForm.php');
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 		

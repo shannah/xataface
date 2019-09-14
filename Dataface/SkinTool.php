@@ -19,8 +19,8 @@
  *-------------------------------------------------------------------------------
  */
 
-import( 'Smarty/Smarty.class.php');
-import( 'Dataface/LanguageTool.php');
+import( XFLIB.'Smarty/Smarty.class.php');
+import( XFROOT.'Dataface/LanguageTool.php');
 /**
  * Handles the display of content in Dataface using templates.  Abstracts all templating.
  *
@@ -248,7 +248,7 @@ class Dataface_SkinTool extends Smarty{
 	 */
 	function &getResultController(){
 		if ( !isset($this->resultController) ){
-			import('Dataface/ResultController.php');
+			import(XFROOT.'Dataface/ResultController.php');
 
 			$query =& $this->app->getQuery();
 
@@ -448,7 +448,7 @@ class Dataface_SkinTool extends Smarty{
 	 *
 	 */
 	function load_record($params, &$smarty){
-		import( 'dataface-public-api.php');
+		import( XFROOT.'dataface-public-api.php');
 		if ( empty($params['table']) ){
 			$params['table'] = $this->ENV['table'];
 		}
@@ -484,7 +484,7 @@ class Dataface_SkinTool extends Smarty{
 
 
 	function record_view($params, &$smarty){
-		import('Dataface/RecordView.php');
+		import(XFROOT.'Dataface/RecordView.php');
 
 		if ( empty($params['record']) ) $params['record'] =& $this->app->getRecord();
 		if ( empty($params['var']) ) $params['var'] = 'rv';
@@ -508,7 +508,7 @@ class Dataface_SkinTool extends Smarty{
 	 */
 	function group($params, &$smarty){
 
-		import( 'Dataface/Utilities.php');
+		import( XFROOT.'Dataface/Utilities.php');
 		if ( empty($params['from']) ){
 			throw new Exception('group: Please specify a from parameter.', E_USER_ERROR);
 		}
@@ -611,7 +611,7 @@ class Dataface_SkinTool extends Smarty{
 		if ( !isset($params['var']) ) throw new Exception('actions: var is a required parameter.', E_USER_ERROR);
 		$varname = $params['var'];
 		unset($params['var']);
-		import( 'Dataface/ActionTool.php');
+		import( XFROOT.'Dataface/ActionTool.php');
 		$actionTool =& Dataface_ActionTool::getInstance();
 		if ( !isset($params['record']) ){
 			$params['record'] =& $this->ENV['record'];
@@ -665,7 +665,7 @@ class Dataface_SkinTool extends Smarty{
 		//$params['var'] = 'actions';
 		//$this->actions($params, $smarty);
 		//print_r($
-		import( 'Dataface/ActionTool.php');
+		import( XFROOT.'Dataface/ActionTool.php');
 		$actionTool =& Dataface_ActionTool::getInstance();
 		$actions = $actionTool->getActions($params);
 		if ( $addon_actions !== null ){
@@ -743,19 +743,19 @@ class Dataface_SkinTool extends Smarty{
 
 
 	function summary_list($params, &$smarty){
-		import('Dataface/SummaryList.php');
+		import(XFROOT.'Dataface/SummaryList.php');
 		$sl = new Dataface_SummaryList($params['records']);
 		return $sl->toHtml();
 	}
 
 	function glance_list($params, &$smarty){
-		import('Dataface/GlanceList.php');
+		import(XFROOT.'Dataface/GlanceList.php');
 		$gl = new Dataface_GlanceList($params['records']);
 		return $gl->toHtml();
 	}
 
 	function sort_controller($params, &$smarty){
-		import('Dataface/SortControl.php');
+		import(XFROOT.'Dataface/SortControl.php');
 		if ( !isset($params['fields']) ){
 			if ( !isset($params['table']) ) $params['table'] = $this->ENV['QUERY']['-table'];
 			$params['fields'] = $params['table'];
@@ -937,7 +937,7 @@ END;
 	function result_controller($params,&$smarty){
 
 		if ( isset($params['table']) ){
-			import('Dataface/ResultController.php');
+			import(XFROOT.'Dataface/ResultController.php');
 			$base_url = ( isset($params['base_url']) ? $params['base_url'] : '');
 			$query = ( isset($params['query']) ? $params['query'] : array('-table'=>$params['table']));
 			$query['-table'] = $params['table'];
@@ -977,7 +977,7 @@ END;
 		echo $controller->getPageIndexHtml();
 	}
 	function result_list($params, &$smarty){
-		import( 'Dataface/ResultList.php');
+		import( XFROOT.'Dataface/ResultList.php');
 		$query =& $this->app->getQuery();
 
 		if ( isset($params['columns']) ){
@@ -992,7 +992,7 @@ END;
 
 
 	function filters($params, &$smarty){
-		import( 'Dataface/ResultList.php');
+		import( XFROOT.'Dataface/ResultList.php');
 		$query =& $this->app->getQuery();
 
 		if ( isset($params['columns']) ){
@@ -1025,7 +1025,7 @@ END;
 	}
 
 	function related_list($params, &$smarty){
-		import('Dataface/RelatedList.php');
+		import(XFROOT.'Dataface/RelatedList.php');
 		$query =& $this->app->getQuery();
 		if ( isset($params['record']) ) $record =& $params['record'];
 		else $record =& $this->ENV['resultSet']->loadCurrent();

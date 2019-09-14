@@ -3,8 +3,8 @@
  * This action manages the migration of data from older versions to newer versions.
  */
  
-import('Dataface/TranslationTool.php');
-import('Dataface/ModuleTool.php');
+import(XFROOT.'Dataface/TranslationTool.php');
+import(XFROOT.'Dataface/ModuleTool.php');
 
 class dataface_actions_manage_migrate {
 

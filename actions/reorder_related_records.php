@@ -1,5 +1,5 @@
 <?php
-import('Dataface/PermissionsTool.php');
+import(XFROOT.'Dataface/PermissionsTool.php');
 class dataface_actions_reorder_related_records {
 	function handle(&$params){
 		

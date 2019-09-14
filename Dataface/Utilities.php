@@ -36,7 +36,7 @@ class Dataface_Utilities {
 	 * @return Array( [Grouped Field value] -> Array(Records) )
 	 */
 	public static function groupBy($fieldname, $records, $order=array(), $titles=array()){
-		import( 'PEAR.php');
+		import( XFROOT.'PEAR.php');
 		if (!is_array($records) ){
 			return PEAR::raiseError("In Dataface_Utilities::groupBy() expected 2nd parameter to be an array, but received "+$records);
 		}

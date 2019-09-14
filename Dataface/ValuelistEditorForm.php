@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  */
-import('HTML/QuickForm.php');
+import(XFLIB.'HTML/QuickForm.php');
 class Dataface_ValuelistEditorForm extends HTML_QuickForm {
 	var $table;
 	var $valuelistName;

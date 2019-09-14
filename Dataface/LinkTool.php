@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  */
-import( 'Dataface/Application.php');
-import( 'Dataface/Table.php');
+import(XFROOT. 'Dataface/Application.php');
+import( XFROOT.'Dataface/Table.php');
 
 
 /**

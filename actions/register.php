@@ -52,7 +52,7 @@ class dataface_actions_register {
 		$auth =& Dataface_AuthenticationTool::getInstance();
 
 		
-		import('Dataface/Ontology.php');
+		import(XFROOT.'Dataface/Ontology.php');
 		Dataface_Ontology::registerType('Person', 'Dataface/Ontology/Person.php', 'Dataface_Ontology_Person');
 		$this->ontology =& Dataface_Ontology::newOntology('Person', $app->_conf['_auth']['users_table']);
 		

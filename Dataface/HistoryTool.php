@@ -1,5 +1,5 @@
 <?php
-import('Dataface/AuthenticationTool.php');
+import(XFROOT.'Dataface/AuthenticationTool.php');
 /**
  * <p>Manages the history of records.  This class will record the state of each record
  * in the database by copying it to a 'history' table.  A separate history table
@@ -344,8 +344,8 @@ class Dataface_HistoryTool {
 	 *			or a Dataface_Record object whose field values are formatted diffs.
 	 */
 	function getDiffs($tablename, $id1, $id2=null, $fieldname=null ){
-		import('Text/Diff.php');
-		import('Text/Diff/Renderer/inline.php');
+		import(XFLIB.'Text/Diff.php');
+		import(XFLIB.'Text/Diff/Renderer/inline.php');
 		$htablename = $tablename.'__history';
 		if ( !Dataface_Table::tableExists($htablename) )
 			return PEAR::raiseError(

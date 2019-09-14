@@ -49,7 +49,7 @@ class dataface_actions_ajax_get_event_details {
 		
 		$response = array('record_id'=>$record_id, 'details'=>$out);
 		
-		import('Services/JSON.php');
+		import(XFLIB.'Services/JSON.php');
 		$json = new Services_JSON;
 		echo $json->encode($response);
 		exit;

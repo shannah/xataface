@@ -2,7 +2,7 @@
 class dataface_actions_search_index {
 	
 	function handle(&$params){
-		import('Dataface/Index.php');
+		import(XFROOT.'Dataface/Index.php');
 		$app =& Dataface_Application::getInstance();
 		$q = $app->getQuery();
 		if ( @$q['table'] ) $q['-table'] = $q['table'];

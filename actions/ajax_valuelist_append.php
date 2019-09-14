@@ -1,6 +1,6 @@
 <?php
-import('Dataface/JSON.php');
-import('Dataface/ValuelistTool.php');
+import(XFLIB.'Dataface/JSON.php');
+import(XFROOT.'Dataface/ValuelistTool.php');
 
 class dataface_actions_ajax_valuelist_append {
 

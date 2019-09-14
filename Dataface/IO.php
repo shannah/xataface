@@ -38,8 +38,8 @@
  *		// update the changes to the database.
  */
 
-import( 'Dataface/QueryBuilder.php');
-import('Dataface/DB.php');
+import( XFROOT.'Dataface/QueryBuilder.php');
+import(XFROOT.'Dataface/DB.php');
 define('Dataface_IO_READ_ERROR', 1001);
 define('Dataface_IO_WRITE_ERROR', 1002);
 define('Dataface_IO_NOT_FOUND_ERROR', 1003);
@@ -730,7 +730,7 @@ class Dataface_IO {
 		if ( isset($app->_conf['history']) and ( @$app->_conf['history']['enabled'] || !isset($app->_conf['history']['enabled']))){
 
 			// History is enabled ... let's save this record in our history.
-			import('Dataface/HistoryTool.php');
+			import(XFROOT.'Dataface/HistoryTool.php');
 			$historyTool = new Dataface_HistoryTool();
 			$historyTool->logRecord($record, $this->getHistoryComments($record), $this->lang);
 		}
@@ -741,7 +741,7 @@ class Dataface_IO {
 			// searchable by natural language searching.
 			// The Dataface_Index class takes care of whether or not this
 			// record should be indexed.
-			import('Dataface/Index.php');
+			import(XFROOT.'Dataface/Index.php');
 			$index = new Dataface_Index();
 			$index->indexRecord($record);
 		}
