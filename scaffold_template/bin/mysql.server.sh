@@ -127,63 +127,6 @@ case `echo "testing\c"`,`echo -n testing` in
     *)       echo_n=   echo_c='\c' ;;
 esac
 
-parse_server_arguments() {
-  for arg do
-    val=`echo "$arg" | sed -e 's/^[^=]*=//'`
-    case "$arg" in
-      --basedir=*)  basedir="$val"
-                    bindir="$basedir/bin"
-		    #if test -z "$datadir_set"; then
-		    #  datadir="$basedir/data"
-		    #fi
-		    sbindir="$basedir/sbin"
-                    if test -f "$basedir/bin/mysqld"
-                    then
-                      libexecdir="$basedir/bin"
-                    else
-                      libexecdir="$basedir/libexec"
-                    fi
-		    libexecdir="$basedir/libexec"
-        ;;
-      #--datadir=*)  datadir="$val"
-	  #	    datadir_set=1
-	#;;
-      --log-basename=*|--hostname=*|--loose-log-basename=*)
-        mysqld_pid_file_path="$val.pid"
-	;;
-      --pid-file=*) mysqld_pid_file_path="$val" ;;
-      --service-startup-timeout=*) service_startup_timeout="$val" ;;
-      --user=*) user="$USER"; ;;
-    esac
-  done
-}
-
-# Get arguments from the my.cnf file,
-# the only group, which is read from now on is [mysqld]
-if test -x "$bindir/my_print_defaults";  then
-  print_defaults="$bindir/my_print_defaults"
-else
-  # Try to find basedir in /etc/my.cnf
-  conf=/etc/my.cnf
-  print_defaults=
-  if test -r $conf
-  then
-    subpat='^[^=]*basedir[^=]*=\(.*\)$'
-    dirs=`sed -e "/$subpat/!d" -e 's//\1/' $conf`
-    for d in $dirs
-    do
-      d=`echo $d | sed -e 's/[ 	]//g'`
-      if test -x "$d/bin/my_print_defaults"
-      then
-        print_defaults="$d/bin/my_print_defaults"
-        break
-      fi
-    done
-  fi
-
-  # Hope it's in the PATH ... but I doubt it
-  test -z "$print_defaults" && print_defaults="my_print_defaults"
-fi
 
 user=$USER
 
@@ -211,8 +154,6 @@ else
   fi
 fi
 
-parse_server_arguments `$print_defaults $extra_args --mysqld mysql.server`
-parse_server_arguments "$@"
 
 # wait for the pid file to disappear
 wait_for_gone () {
