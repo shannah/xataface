@@ -7,8 +7,8 @@ status=`bash $SCRIPTPATH/mysql.server.sh status`
 if [[ $status == *"ERROR!"* ]]; then
     sh $SCRIPTPATH/mysql.server.sh start || (echo "Failed to start mysql" && exit 1)
     function finish() {
-        sh $SCRIPTPATH/mysql.server stop
+        sh $SCRIPTPATH/mysql.server.sh stop
     }
     trap finish EXIT
 fi
-bash $SCRIPTPATH/php.sh $SCRIPTPATH/inc/add-user.php "$@"
+bash $SCRIPTPATH/php.sh $SCRIPTPATH/inc/install-module.php "$@"
