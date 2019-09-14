@@ -1,15 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
-SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-PROJECT_DIR=`pwd`
-cd ..
-mkdir tests
-cd tests
 set -e
-
+ERROR=
 function print_errors() {
-    echo "mysql-errors.log:\n"
-    cat $PROJECT_DIR/../tests/testapp/log/mysql-errors.log
+    exit_status=$?
+    if [ -z $exit_status ]
+    then
+        echo "Exit status $exit_status"
+        echo "mysql-errors.log:\n"
+        cat testapp/log/mysql-errors.log
+    else
+        echo "OK.  Exit status $exit_status\n"  
+    fi
 }
 trap print_errors EXIT
-php $PROJECT_DIR/tools/create.php testapp
+php $XATAFACE/tools/create.php testapp

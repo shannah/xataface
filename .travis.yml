@@ -3,4 +3,8 @@ php: 7.0
 before-install:
     - sudo apt-get install mariadb-server mariadb-client
 script:
+    - export XATAFACE=`pwd`
+    - cd ..
+    - mkdir tests
+    - cd tests
     - bash .travis/test_create.sh

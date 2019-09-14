@@ -60,7 +60,7 @@ lock_file_path="$lockdir/mysql"
 
 # Set some defaults
 mysqld_pid_file_path=
-if test -z "$basedir"
+if test -f "/Applications/XAMPP/xamppfiles"
 then
   basedir=/Applications/XAMPP/xamppfiles
   bindir=/Applications/XAMPP/xamppfiles/bin
@@ -71,12 +71,15 @@ then
   sbindir=/Applications/XAMPP/xamppfiles/sbin
   libexecdir=/Applications/XAMPP/xamppfiles/sbin
 else
-  bindir="$basedir/bin"
-  #if test -z "$datadir"
-  #then
-    #datadir="$basedir/data"
-  #fi
-  sbindir="$basedir/sbin"
+    MYSQL_PATH=`which mysql`
+    if [ -z "$MYSQL_PATH" ]
+    then
+        echo "Cannot find mysql"
+        exit 1
+    fi
+    bindir=$(dirname "$MYSQL_PATH")
+    basedir=$(dirname "$bindir")
+    sbindir="$basedir/sbin"
   if test -f "$basedir/bin/mysqld"
   then
     libexecdir="$basedir/bin"
