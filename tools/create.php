@@ -439,7 +439,7 @@ END;
         $mysql_server = $this->bin_dir() . DIRECTORY_SEPARATOR . 'mysql.server.sh';
         $mysql = $this->bin_dir() . DIRECTORY_SEPARATOR . 'mysql.sh';
         echo "Starting mysql server...";
-        passthru('bash '.escapeshellarg($mysql_server).' start', $res);
+        exec('bash '.escapeshellarg($mysql_server).' start', $buffer, $res);
         if ($res !== 0) {
             fwrite(STDERR, "Failed to start mysql server.\n");
             exit(1);
