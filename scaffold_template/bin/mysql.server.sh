@@ -50,7 +50,7 @@ datadir="$scaffolddir"/data
 # Value here is overridden by value in my.cnf.
 # 0 means don't wait at all
 # Negative numbers mean to wait indefinitely
-service_startup_timeout=900
+service_startup_timeout=30
 
 # Lock directory for RedHat / SuSE.
 lockdir='/var/lock/subsys'
@@ -201,11 +201,13 @@ wait_for_ready () {
 
   i=0
   while test $i -ne $service_startup_timeout ; do
-
+    echo "Waiting for ready"
     if $bindir/mysqladmin --socket="$scaffolddir/tmp/mysql.sock" ping >/dev/null 2>&1; then
+        echo "We are ready"
       log_success_msg
       return 0
     elif kill -0 $! ; then
+        echo "kill -0 says wait some more..."
       :  # mysqld_safe is still running
     else
       # mysqld_safe is no longer running, abort the wait loop
