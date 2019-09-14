@@ -237,9 +237,9 @@ case "$mode" in
       $bindir/mysqld_safe --skip-grant-tables --skip-networking --tmpdir="$scaffolddir/tmp" --datadir="$scaffolddir/data" --innodb_data_home_dir="$scaffolddir/data" --innodb_log_group_home_dir="$scaffolddir/data" --log-error="$scaffolddir/log/mysql-errors.log" --socket="$scaffolddir/tmp/mysql.sock" --user=`whoami` --pid-file="$mysqld_pid_file_path" "$@" &
       #$bindir/mysqld_safe --datadir="$datadir" --pid-file="$mysqld_pid_file_path" "$@" &
       wait_for_ready; return_value=$?
-
+      echo "About to touch lock file $lock_file_path"
       touch "$lock_file_path"
-
+      echo "Exiting with return value $return_value"
       exit $return_value
     else
       log_failure_msg "Couldn't find MariaDB server ($bindir/mysqld_safe)"
