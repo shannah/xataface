@@ -1,0 +1,6 @@
+language: php
+php: 7.0
+before-install:
+    - sudo apt-get install mariadb-server mariadb-client
+script:
+    - bash .travis/test_create.sh
