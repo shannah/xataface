@@ -7,4 +7,4 @@ script:
     - cd ..
     - mkdir tests
     - cd tests
-    - bash .travis/test_create.sh
+    - bash $XATAFACE/.travis/test_create.sh
