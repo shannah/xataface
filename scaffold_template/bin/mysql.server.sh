@@ -92,27 +92,16 @@ fi
 # *not* set inside of the --basedir= handler.)
 datadir_set=1
 
-#
-# Use LSB init script functions for printing messages, if possible
-#
-lsb_functions="/lib/lsb/init-functions"
-if test -f $lsb_functions ; then
-  . $lsb_functions
-else
-  # Include non-LSB RedHat init functions to make systemctl redirect work
-  init_functions="/etc/init.d/functions"
-  if test -f $init_functions; then
-    . $init_functions
-  fi
-  log_success_msg()
-  {
-    echo " SUCCESS! $@"
-  }
-  log_failure_msg()
-  {
-    echo " ERROR! $@"
-  }
-fi
+
+log_success_msg()
+{
+echo " SUCCESS! $@"
+}
+log_failure_msg()
+{
+echo " ERROR! $@"
+}
+
 
 PATH="/sbin:/usr/sbin:/bin:/usr/bin:$basedir/bin"
 export PATH
