@@ -64,18 +64,18 @@ if test -z "$basedir"
 then
   basedir=/Applications/XAMPP/xamppfiles
   bindir=/Applications/XAMPP/xamppfiles/bin
-  if test -z "$datadir"
-  then
-    datadir=/Applications/XAMPP/xamppfiles/var/mysql
-  fi
+  #if test -z "$datadir"
+  #then
+    #datadir=/Applications/XAMPP/xamppfiles/var/mysql
+  #fi
   sbindir=/Applications/XAMPP/xamppfiles/sbin
   libexecdir=/Applications/XAMPP/xamppfiles/sbin
 else
   bindir="$basedir/bin"
-  if test -z "$datadir"
-  then
-    datadir="$basedir/data"
-  fi
+  #if test -z "$datadir"
+  #then
+    #datadir="$basedir/data"
+  #fi
   sbindir="$basedir/sbin"
   if test -f "$basedir/bin/mysqld"
   then
@@ -87,7 +87,7 @@ fi
 
 # datadir_set is used to determine if datadir was set (and so should be
 # *not* set inside of the --basedir= handler.)
-datadir_set=
+datadir_set=1
 
 #
 # Use LSB init script functions for printing messages, if possible
@@ -130,9 +130,9 @@ parse_server_arguments() {
     case "$arg" in
       --basedir=*)  basedir="$val"
                     bindir="$basedir/bin"
-		    if test -z "$datadir_set"; then
-		      datadir="$basedir/data"
-		    fi
+		    #if test -z "$datadir_set"; then
+		    #  datadir="$basedir/data"
+		    #fi
 		    sbindir="$basedir/sbin"
                     if test -f "$basedir/bin/mysqld"
                     then
@@ -142,9 +142,9 @@ parse_server_arguments() {
                     fi
 		    libexecdir="$basedir/libexec"
         ;;
-      --datadir=*)  datadir="$val"
-		    datadir_set=1
-	;;
+      #--datadir=*)  datadir="$val"
+	  #	    datadir_set=1
+	#;;
       --log-basename=*|--hostname=*|--loose-log-basename=*)
         mysqld_pid_file_path="$val.pid"
 	;;
@@ -280,15 +280,7 @@ wait_for_ready () {
 #
 # Set pid file if not given
 #
-if test -z "$mysqld_pid_file_path"
-then
-  mysqld_pid_file_path=$datadir/`hostname`.pid
-else
-  case "$mysqld_pid_file_path" in
-    /* ) ;;
-    * )  mysqld_pid_file_path="$datadir/$mysqld_pid_file_path" ;;
-  esac
-fi
+mysqld_pid_file_path=$datadir/`hostname`.pid
 
 # source other config files
 [ -f /etc/default/mysql ] && . /etc/default/mysql
@@ -307,6 +299,7 @@ case "$mode" in
     then
       # Give extra arguments to mysqld with the my.cnf file. This script
       # may be overwritten at next upgrade.
+      echo "PID FILE $mysqld_pid_file_path\n"
       $bindir/mysqld_safe --skip-grant-tables --skip-networking --tmpdir="$scaffolddir/tmp" --datadir="$scaffolddir/data" --innodb_data_home_dir="$scaffolddir/data" --innodb_log_group_home_dir="$scaffolddir/data" --log-error="$scaffolddir/log/mysql-errors.log" --socket="$scaffolddir/tmp/mysql.sock" --user=`whoami` --pid-file="$mysqld_pid_file_path" "$@" &
       #$bindir/mysqld_safe --datadir="$datadir" --pid-file="$mysqld_pid_file_path" "$@" &
       wait_for_ready; return_value=$?
