@@ -15,3 +15,5 @@ function print_errors() {
 }
 trap print_errors EXIT
 php $XATAFACE/tools/create.php testapp
+cd testapp/bin
+bash install-module.sh calendar 1.0

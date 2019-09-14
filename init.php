@@ -55,14 +55,18 @@ function init($site_path, $dataface_url){
                     $_SERVER['QUERY_STRING'] = @$_ENV['QUERY_STRING'];	
             } 
             // define a HOST_URI variable to contain the host portion of all urls
-            $host = $_SERVER['HTTP_HOST'];
+            $host = @$_SERVER['HTTP_HOST'];
+            if (!$host) $host = 'localhost';
             if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
                 $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
                 if (strpos($host, ',') !== false) {
                 	$host = trim(substr($host, 0, strpos($host, ',')));
                 }
             }
-            $port = $_SERVER['SERVER_PORT'];
+            $port = @$_SERVER['SERVER_PORT'];
+            if (!$port) {
+                $port = 80;
+            }
             if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
             	if (isset($_SERVER['HTTP_X_FORWARDED_PORT'])) {
                 	$port = $_SERVER['HTTP_X_FORWARDED_PORT'];
