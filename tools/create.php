@@ -407,7 +407,7 @@ END;
             fwrite(STDERR, "$conf_db_ini_path not found.");
             exit(1);
         }
-        echo "Initializing database ... ";
+        echo "Initializing database ... \n";
         $conf = parse_ini_file($conf_db_ini_path, true);
         $contents = file_get_contents($conf_db_ini_path);
         if ($conf['_database']['name'] == '{__DATABASE_NAME__}') {
@@ -438,11 +438,14 @@ END;
         $conf = parse_ini_file($conf_db_ini_path, true);
         $mysql_server = $this->bin_dir() . DIRECTORY_SEPARATOR . 'mysql.server.sh';
         $mysql = $this->bin_dir() . DIRECTORY_SEPARATOR . 'mysql.sh';
+        echo "Starting mysql server...";
         exec('sh '.escapeshellarg($mysql_server).' start', $buf, $res);
         if ($res !== 0) {
-            fwrite(STDERR, "Failed to start mysql server.");
+            fwrite(STDERR, "Failed to start mysql server.\n");
             exit(1);
         }
+        echo "Started Successfully\n";
+        
         $install_sql_path = $this->basedir . DIRECTORY_SEPARATOR . 'install.sql';
 
         
@@ -456,24 +459,28 @@ CREATE TABLE IF NOT EXISTS `test` (
 );
 END
     );
-
+        echo "Bootstrapping database...";
         exec('sh '.escapeshellarg($mysql).' init < '.escapeshellarg($install_sql_path), $buf, $res);
         if ($res !== 0) {
             fwrite(STDERR, "Failed. Error attempting to create database.\n");
+            echo "Stopping mysql server...";
             exec('sh '.escapeshellarg($mysql_server).' stop', $buf, $res);
             if ($res !== 0) {
                 fwrite(STDERR, "Failed to stop mysql server.\n");
             }
+            echo "Stopped.\n";
             exit(1);
         }
 
+        echo "Done\n";
 
-
+        echo "Stopping mysql server...";
         exec('sh '.escapeshellarg($mysql_server).' stop', $buf, $res);
         if ($res !== 0) {
             fwrite(STDERR, "Failed to stop mysql server.\n");
             exit(1);
-        }    
+        }   
+        echo "Stopped\n"; 
         
         echo "Done\n";
     }
