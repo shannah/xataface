@@ -2,6 +2,10 @@
 
 A framework for building rich, data-driven applications in PHP and MySQL
 
+[![Build Status](https://travis-ci.org/shannah/xataface.svg?branch=master)](https://travis-ci.org/shannah/xataface)
+
+
+
 ## License
 
 GPL
