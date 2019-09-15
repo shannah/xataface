@@ -11,3 +11,5 @@ script:
     - mkdir tests
     - cd tests
     - bash $XATAFACE/.travis/test_create.sh
+    - rm -rf testapp
+    - bash $XATAFACE/tests/runtests.sh

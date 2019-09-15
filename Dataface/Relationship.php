@@ -309,10 +309,17 @@ class Dataface_Relationship {
 			
 			$select = '*';
 				// Default selection to all columns
-				
+			$customSelect = false;
+			$selectArr = null;
 			if ( array_key_exists( '__select__', $rel_values ) ){
 				// __select__ should be comma-delimited list of column names.
 				$select = $rel_values['__select__'];
+				$customSelect = true;
+				$selectArr = array_map('trim', explode(',', $select));
+				$len = count($selectArr);
+				for ($i=0; $i<$len; $i++) {
+					$selectArr[$i] = str_replace('`', '', $selectArr[$i]);
+				}
 			}
 			
 			$tables = array();
@@ -355,13 +362,16 @@ class Dataface_Relationship {
 				if ( !in_array( $p1[0], $tables ) && $p1[0] != $this->_sourceTable->tablename) $tables[] = $p1[0];
 				if ( !in_array( $p2[0], $tables ) && $p2[0] != $this->_sourceTable->tablename) $tables[] = $p2[0];
 				
+				$lhsConstant = true;
 				// Simplify references to current table to be replaced by variable value
 				if( $p1[0] == $this->_sourceTable->tablename ){
 					$lhs = "'\$$p1[1]'";
 				} else {
 					$lhs = "$p1[0].$p1[1]";
+					$lhsConstant = false;
 				}
 				
+				$rhsConstant = true;
 				if ( $p2[0] == $this->_sourceTable->tablename ){
 					if ( strpos($p2[1], '$')===0){
 						$var = '';
@@ -371,11 +381,26 @@ class Dataface_Relationship {
 					$rhs = "'".$var.$p2[1]."'";
 				} else {
 					$rhs = "$p2[0].$p2[1]";
+					$rhsConstant = false;
 				}
 				
 				// append condition to where clause
 				$where .= strlen($where) > 6 ? ' and ' : '';
 				$where .= "$lhs=$rhs";
+				if ($customSelect) {
+					// There was a custom __select__ directive
+					// so they may have omitted 
+					if (!$lhsConstant) {
+						if (!in_array($lhs, $selectArr) and !in_array($p1[1], $selectArr)) {
+							$select .= ", ".$lhs;
+						}
+					}
+					if (!$rhsConstant) {
+						if (!in_array($rhs, $selectArr) and !in_array($p2[1], $selectArr)) {
+							$select .= ", ".$rhs;
+						}
+					}
+				}
 			}
 			
 			

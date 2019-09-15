@@ -4936,7 +4936,7 @@ class Dataface_RelationshipIterator{
 	}
 
 	function __construct(&$record, $relationshipName, $start=null, $limit=null, $where=0, $sort=0) {
-		$this->Dataface_ReltionshipIterator($record, $relationshipName, $start, $limit, $where, $sort);
+		$this->Dataface_RelationshipIterator($record, $relationshipName, $start, $limit, $where, $sort);
 	}
 
 	function &next(){

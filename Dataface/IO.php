@@ -142,7 +142,7 @@ class Dataface_IO {
 	 * @return array Associative array of query parameters.
 	 * @since 0.6.1
 	 */
-	function recordid2query($recordid){
+	static function recordid2query($recordid){
 		$query = array();
 		list($base,$qstr) = explode('?', $recordid);
 		if ( strpos($base,'/') !== false ){
@@ -1693,7 +1693,7 @@ class Dataface_IO {
 					//echo $fkey;
 
 					if ( $domainRec2->val($fkey) ){
-						return PEAR::raiseError("Could not add existing related record '".$domainRec2->getTitle()."' because it can only belong to a single relationship and it already belongs to one.");
+						return PEAR::raiseError("Could not add existing related record '".$domainRec2->getTitle()."' because it can only belong to a single relationship and it already belongs to one.  FKEY($fkey=".$domainRec2->val($fkey).")");
 
 					} else {
 
