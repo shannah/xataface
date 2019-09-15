@@ -103,7 +103,7 @@ $appDelegate = 'conf/ApplicationDelegate.php';
 if (!file_exists($appDelegate)) {
     echo "Creating application delegate class...";
     chdir("../bin");
-    exec("sh create-app-delegate.sh", $buffer, $res);
+    exec("bash create-app-delegate.sh", $buffer, $res);
     if ($res !== 0) {
         fwrite(STDERR, "Failed\n");
         print_r($buffer);
