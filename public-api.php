@@ -875,8 +875,8 @@ function df_tz_or_offset(){
 		} else {
 			$res = xf_db_query($sql, df_db());
 			if ( !$res ){
-				error_log("Error executing SQL: $sql");
-				error_log(xf_db_error(df_db()));
+				//error_log("Error executing SQL: $sql");
+				//error_log(xf_db_error(df_db()));
 				throw new Exception(xf_db_error(df_db()));
 			}
 			return $res;

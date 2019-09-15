@@ -17,3 +17,4 @@ trap print_errors EXIT
 php $XATAFACE/tools/create.php testapp
 cd testapp/bin
 bash install-module.sh calendar 1.0
+bash setup-auth.sh

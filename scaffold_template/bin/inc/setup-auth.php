@@ -1,4 +1,5 @@
 <?php
+echo "Setting up authentication on app...\n";
 chdir(dirname(__FILE__).'/../../app');
 require_once 'xataface/public-api.php';
 df_init(dirname(__FILE__).'/../../app/index.php', 'xataface');
@@ -144,14 +145,14 @@ if ($updated) {
 
 echo "Adding default admin user...";
 chdir("../bin");
-exec("sh add-user.sh admin 'admin@example.com' ADMIN password", $buffer, $res);
+exec("bash add-user.sh admin 'admin@example.com' ADMIN password", $buffer, $res);
 if ($res !== 0) {
     fwrite(STDERR, "Failed\n");
     print_r($buffer);
     exit(1);
 }
-echo "Done.  User 'admin' created with password 'password'\n";
-echo "You should change this user's password after logging in.";
+echo "Done.\nUser 'admin' created with password 'password'\n";
+echo "You should change this user's password after logging in.\n";
 chdir("../app");
 
 

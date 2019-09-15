@@ -1,13 +1,19 @@
 #!/bin/bash
+echo "Setting up auth..."
+set -e
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 TABLES_DIR=$SCRIPTPATH/../app/tables
 [ -d "$TABLES_DIR" ] || mkdir "$TABLES_DIR"
-
-status=`bash $SCRIPTPATH/mysql.server.sh status`
-if [[ $status == *"ERROR!"* ]]; then
-    $SCRIPTPATH/mysql.server.sh start || (echo "Failed to start mysql" && exit 1)
+echo "Checking mysql server status..."
+set +e
+bash $SCRIPTPATH/mysql.server.sh status
+status=$?
+set -e
+echo "$status\n"
+if [[ $status != 0 ]]; then
+    bash $SCRIPTPATH/mysql.server.sh start || (echo "Failed to start mysql" && exit 1)
     function finish() {
-        $SCRIPTPATH/mysql.server stop
+        bash $SCRIPTPATH/mysql.server.sh stop
     }
     trap finish EXIT
 fi

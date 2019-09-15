@@ -890,7 +890,11 @@ END;
 			$_REQUEST['-lang'] = basename($_REQUEST['-lang']);
 			$this->_conf['lang'] = $_REQUEST['-lang'];
 			if ( @$_COOKIE[$prefix.'lang'] !== $_REQUEST['-lang'] ){
-				setcookie($prefix.'lang', $_REQUEST['-lang'], null, '/');
+				if (php_sapi_name() === 'cli') {
+					//fwrite(STDERR, "\nNOTICE: Running in CLI mode mode, so not setting language cookie\n");
+				} else {
+					setcookie($prefix.'lang', $_REQUEST['-lang'], null, '/');
+				}
 			}
 		} else if (isset( $_COOKIE[$prefix.'lang']) ){
 			$this->_conf['lang'] = $_COOKIE[$prefix.'lang'];
@@ -902,7 +906,11 @@ END;
 					$this->getAvailableLanguages()
 				)
 			);
-			setcookie($prefix.'lang', $this->_conf['lang'], null, '/');
+			if (php_sapi_name() === 'cli') {
+				//fwrite(STDERR, "\nNOTICE: Running in CLI mode so not setting the lang cookie.\n");
+			} else {
+				setcookie($prefix.'lang', $this->_conf['lang'], null, '/');
+			}
 		}
 
 		$this->_conf['lang'] = basename($this->_conf['lang']);
