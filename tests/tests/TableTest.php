@@ -35,6 +35,10 @@ class TableTest extends BaseTest {
 		//parent::BaseTest();
 		$this->BaseTest($name);
 	}
+
+	function __construct($name = 'TableTest') {
+		$this->TableTest($name);
+	}
 	
 	function test_enough_columns_loaded(){
 		

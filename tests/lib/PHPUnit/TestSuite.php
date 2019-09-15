@@ -86,6 +86,10 @@ class PHPUnit_TestSuite {
         }
     }
 
+    function __construct($test = FALSE) {
+        $this->PHPUnit_TestSuite($test);
+    }
+
     /**
      * Adds a test to the suite.
      *

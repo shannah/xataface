@@ -32,6 +32,10 @@ class IOTest extends BaseTest {
 	function IOTest($name = "IOTest"){
 		$this->BaseTest($name);
 	}
+
+	function __construct($name = "IOTest") {
+		$this->IOTest($name);
+	}
 	
 	
 	function test_read(){
@@ -231,7 +235,7 @@ class IOTest extends BaseTest {
 	}
 	
 	function test_import_data(){
-		$t = $this->_table1;
+		$t = $this->table1;
 		
 		/*
 		 * For our first test we will try to import data directly into a table.

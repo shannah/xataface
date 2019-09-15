@@ -112,6 +112,10 @@ class PHPUnit_TestCase extends PHPUnit_Assert {
         }
     }
 
+    function __construct($name = FALSE) {
+        $this->PHPUnit_TestCase($name = FALSE);
+    }
+
     /**
      * Counts the number of test cases executed by run(TestResult result).
      *

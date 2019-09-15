@@ -4787,7 +4787,7 @@ class Dataface_Table {
 			 * that works.
 			 */
 			foreach (array_keys($filters) as $filtername){
-				$parsed =& $filters[$filtername]->import($data, $defaultValues);
+				$parsed = $filters[$filtername]->import($data, $defaultValues);
 				if ( PEAR::isError($parsed) ){
 					/*
 					 * This filter encountered an error.

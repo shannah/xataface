@@ -2542,10 +2542,10 @@ class Dataface_IO {
 			}
 			if ( isset($uri_parts['field']) ) {
 				if ( isset($filter) and method_exists($related_records[0], $filter) ){
-					$val =& $related_records[0]->$filter($uri_parts['field']);
+					$val = $related_records[0]->$filter($uri_parts['field']);
 					return $val;
 				} else {
-					$val =& $related_records[0]->val($uri_parts['field']);
+					$val = $related_records[0]->val($uri_parts['field']);
 					return $val;
 				}
 			}

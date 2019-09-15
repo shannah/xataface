@@ -30,6 +30,10 @@ class BaseTest extends PHPUnit_TestCase {
 		endTimer("Connect to database");
 	}
 
+	function __construct($name = 'BaseTest') {
+		$this->BaseTest($name);
+	}
+
 	function setUp(){
 		// Set up the fake environment
 		//if ( !defined('DATAFACE_PATH') ){

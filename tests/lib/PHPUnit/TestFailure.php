@@ -57,6 +57,10 @@ class PHPUnit_TestFailure {
         $this->_thrownException = &$thrownException;
     }
 
+    function __construct(&$failedTest, &$thrownException) {
+        $this->PHPUnit_TestFailure($failedTest, $thrownException);
+    }
+
     /**
      * Gets the failed test.
      *
