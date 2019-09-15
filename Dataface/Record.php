@@ -359,6 +359,10 @@ class Dataface_Record {
 		}
 	}
 
+	function __construct($tablename, $values=null) {
+		$this->Dataface_Record($tablename, $values);
+	}
+
 	// @}
 	// END Initialization
 	//---------------------------------------------------------------------------------
@@ -4877,6 +4881,10 @@ class Dataface_RecordIterator {
 		$this->reset();
 	}
 
+	function __construct($tablename, &$records) {
+		$this->Dataface_RecordIterator($tablename, $records);
+	}
+
 	function &next(){
 		$out = new Dataface_Record($this->_tablename, $this->_records[current($this->_keys)]);
 		next($this->_keys);
@@ -4925,6 +4933,10 @@ class Dataface_RelationshipIterator{
 		} else {
 			$this->_keys = array();
 		}
+	}
+
+	function __construct(&$record, $relationshipName, $start=null, $limit=null, $where=0, $sort=0) {
+		$this->Dataface_ReltionshipIterator($record, $relationshipName, $start, $limit, $where, $sort);
 	}
 
 	function &next(){
