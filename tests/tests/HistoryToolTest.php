@@ -52,7 +52,7 @@ class HistoryToolTest extends BaseTest {
 			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
-		$savepath = dirname(__FILE__).'/tables/HistoryToolTest/container_field/';
+		$savepath = XFAPPROOT.'tables/HistoryToolTest/container_field/';
 		if ( file_exists($savepath) and $fh = opendir($savepath) ) {
 			while ( false !== ($file = readdir($fh)) ){
 				if ( $file{0} != '.' ) unlink($savepath.$file);

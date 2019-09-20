@@ -2,7 +2,8 @@
 ini_set('display_errors', 'on');
 $tests = array(
     'TableTest',
-    'IOTest'
+    'IOTest',
+    'HistoryToolTest'
 );
 $runTests = 0;
 foreach ($tests as $t) {
