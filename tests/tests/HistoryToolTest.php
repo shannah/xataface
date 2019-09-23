@@ -38,13 +38,15 @@ class HistoryToolTest extends BaseTest {
 			`name` varchar(32) not null default 'John',
 			`age` int(5) default 10,
 			`date_created` timestamp,
+			`a_datetime_field` datetime,
+			`a_date_field` date,
 			`container_field` varchar(32),
 			`container_field_mimetype` varchar(32),
 			PRIMARY KEY (`id`))";
 		$res = xf_db_query($sql, $app->db());
 		if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		$sql = array();
-		$sql[] = "insert into `HistoryToolTest` (`name`,`container_field`,`container_field_mimetype`) values ('Johnny','john.gif','image/gif')";
+		$sql[] = "insert into `HistoryToolTest` (`name`,`container_field`,`container_field_mimetype`, `a_datetime_field`, `a_date_field`) values ('Johnny','john.gif','image/gif', '2019-01-01 16:04:00', '2019-01-01')";
 		$sql[] = "insert into `HistoryToolTest` (`name`,`container_field`,`container_field_mimetype`) values ('Betty','betty.jpg','image/jpg')";
 		$sql[] = "insert into `HistoryToolTest` (`name`) values ('Joseph')";
 		foreach ($sql as $q){
@@ -98,6 +100,65 @@ class HistoryToolTest extends BaseTest {
 			);
 		//print_r($history->strvals());
 	
+	}
+	
+	function test_diff_on_date_fields() {
+		$app =& Dataface_Application::getInstance();
+		$record = df_get_record('HistoryToolTest', array('name'=>'Johnny'));
+		$ht = new Dataface_HistoryTool();
+		$ht->logRecord($record);
+		$record->setValue('a_date_field', '2019-01-02');
+		$record->setValue('name', 'Billy');
+		$record->save();
+		
+		
+		$diff = $ht->getDiffsAssoc('HistoryToolTest',1);
+		$this->assertEquals("<del>2019-01-01</del><ins>2019-01-02</ins>", trim($diff['a_date_field']));
+		$this->assertEquals("<del>Johnny</del><ins>Billy</ins>", trim($diff['name']));
+		
+		
+	}
+	
+	function test_get_previous_version() {
+		$app =& Dataface_Application::getInstance();
+		$record = df_get_record('HistoryToolTest', array('name'=>'Johnny'));
+		$ht = new Dataface_HistoryTool();
+		$ht->logRecord($record);
+		$log = $ht->getHistoryLog($record);
+		$logCount = count($log);
+		$lastSaveId = $log[0]['history__id'];
+		$this->assertTrue($lastSaveId > 0);
+		
+		$hId = $ht->getPreviousVersion($record, time()+1, null, null, true);
+		$this->assertEquals($lastSaveId, $hId);
+		sleep(2);
+
+		$record->setValue('a_date_field', '2019-01-02');
+		$record->setValue('name', 'Billy');
+		$record->save();
+		$t0 = time()-1;
+		$ht->logRecord($record);
+		
+		$prevId = $ht->getPreviousVersion($record, $t0, null, null, true);
+		$log = $ht->getHistoryLog($record);
+		$this->assertEquals($logCount+1, count($log));
+		$logCount = count($log);
+		
+		$this->assertEquals($hId, $prevId);
+		sleep(2);
+		$record->setValue('a_date_field', '2019-01-02');
+		$record->setValue('name', 'Billy2');
+		$record->save();
+		$ht->logRecord($record);
+		$log = $ht->getHistoryLog($record);
+		$this->assertEquals($logCount+1, count($log));
+		$logCount = count($log);
+		
+		$id3 = $ht->getPreviousVersion($record, time()-1, null, null, true);
+		$this->assertEquals($prevId+1, $id3);
+		
+		
+		
 	}
 	
 	function test_diff(){
@@ -161,10 +222,16 @@ He is also a <del>great</del><ins>greater</ins> fisherman
 		$profile->save();
 		$ht = new Dataface_HistoryTool();
 		$ht->logRecord($profile);
+		$date = '2005-12-10 12:23:00';
+		$dateEncoded = "ifnull(convert_tz('".addslashes($date)."','".addslashes(df_utc_offset())."','SYSTEM'),'".addslashes($date)."')";
+		$sql[] = "update `Profiles__history` set `history__modified`=$dateEncoded where `history__id`=1";
 		
-		$sql[] = "update `Profiles__history` set `history__modified`='2005-12-10 12:23:00' where `history__id`=1";
-		$sql[] = "update `Profiles__history` set `history__modified`='2006-05-04 12:22:00' where `history__id`=2";
-		$sql[] = "update `Profiles__history` set `history__modified`='2006-05-05 12:21:00' where `history__id`=3";
+		$date = '2006-05-04 12:22:00';
+		$dateEncoded = "ifnull(convert_tz('".addslashes($date)."','".addslashes(df_utc_offset())."','SYSTEM'),'".addslashes($date)."')";
+		$sql[] = "update `Profiles__history` set `history__modified`=$dateEncoded where `history__id`=2";
+		$date = '2006-05-05 12:21:00';
+		$dateEncoded = "ifnull(convert_tz('".addslashes($date)."','".addslashes(df_utc_offset())."','SYSTEM'),'".addslashes($date)."')";
+		$sql[] = "update `Profiles__history` set `history__modified`=$dateEncoded where `history__id`=3";
 		foreach ($sql as $query){
 			$res = xf_db_query($query, $app->db());
 			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
@@ -198,11 +265,13 @@ He is also a greater fisherman</ins>
 		//print_r($diff->strvals());
 	}
 	
+	
+	
 	function test_restore_field(){
 		$app =& Dataface_Application::getInstance();
 		$record = df_get_record('HistoryToolTest', array('name'=>'Johnny'));
 		$record->setValue('container_field', 'john2.gif');
-		$savepath = dirname(__FILE__).'/tables/HistoryToolTest/container_field/';
+		$savepath = XFAPPROOT.'tables/HistoryToolTest/container_field/';
 		unlink($savepath.'john.gif') or trigger_error("Failed to unlink john.gif", E_USER_ERROR);
 		$res = touch($savepath.'john2.gif') or trigger_error("Failed to touch john2.gif", E_USER_ERROR);
 	
@@ -215,7 +284,7 @@ He is also a greater fisherman</ins>
 		//echo "Checking for ".$historypath.$hid." on line ".__LINE__;
 		$this->assertTrue(file_exists($historypath.$hid));
 		
-		$original_record = new Dataface_Record('HIstoryToolTest', $record->getValues());
+		$original_record = new Dataface_Record('HistoryToolTest', $record->getValues());
 		$record->setValue('container_field', 'john3.gif');
 		unlink($savepath.'john2.gif');
 		touch($savepath.'john3.gif');

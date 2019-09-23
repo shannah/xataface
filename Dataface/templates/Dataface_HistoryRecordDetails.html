@@ -17,9 +17,11 @@
 		</td>
 		{if $table->isText($field.name)}</tr><tr>{/if}
 		<td {if $table->isText($field.name)}colspan="2" {/if}class="details_value_cell {if $table->isText($field.name)}max-10-rows{/if}">
-
-			{$history_record->htmlValue($field.name)}
-			
+			{if $show_changes}
+				{$history_assoc[$field.name]}
+			{else}
+				{$history_record->htmlValue($field.name)}
+			{/if}
 		</td>
 	</tr>
 	{/if}

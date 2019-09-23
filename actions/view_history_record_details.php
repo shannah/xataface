@@ -12,9 +12,11 @@ class dataface_actions_view_history_record_details {
 		
 		import(XFROOT.'Dataface/HistoryTool.php');
 		$ht = new Dataface_HistoryTool();
+		$assoc = null;
 		if ( @$_GET['-fromcurrent'] ){
 			$record = $ht->getDiffs($table, $historyid);
 			$record->escapeOutput = false;
+			$assoc = $ht->getDiffsAssoc($table, $historyid);
 		
 		} else if ( @$_GET['-show_changes'] ){
 			$thisVersion = $ht->getRecordById($table, $historyid);
@@ -33,6 +35,7 @@ class dataface_actions_view_history_record_details {
 				$record = new Dataface_Record($table.'__history', array());
 			} else {
 				$record = $ht->getDiffs($table, $prevVersionId, $historyid);
+				$assoc = $ht->getDiffsAssoc($table, $prevVersionId, $historyid);
 				
 			}
 			$record->escapeOutput = false;
@@ -45,6 +48,7 @@ class dataface_actions_view_history_record_details {
 		$record->secureDisplay = false;
 		$context = array('_history_record'=>&$record);
 		$historyRecord = new Dataface_Record($query['-table'], $record->vals());
+		$context['history_assoc'] = $assoc;
 		$context['history_record'] = $historyRecord;
 		$context['source_record'] = $app->getRecord();
 		
@@ -85,7 +89,14 @@ class dataface_actions_view_history_record_details {
 		}
 		
 		$context['first_field_second_col'] = $firstField;
-		$context['changes'] = @$_GET['-show_changes'];
+		$context['show_changes'] = false;
+		if (@$_GET['-show_changes']) {
+			$context['show_changes'] = true;
+		}
+		if (@$_GET['-fromcurrent']) {
+			$context['show_changes'] = true;
+		}
+
 		$context['table'] =& $t;
 		df_display($context, 'Dataface_HistoryRecordDetails.html');
 		
