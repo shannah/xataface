@@ -26,7 +26,7 @@ require_once 'Dataface/HistoryTool.php';
 
 class HistoryToolTest extends BaseTest {
 
-	function HistoryToolTest($name="HistoryToolTest"){
+	function __construct($name="HistoryToolTest"){
 		$this->BaseTest($name);
 	}
 	
