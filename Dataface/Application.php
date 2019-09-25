@@ -179,6 +179,114 @@ END;
 	private $pageTitle = null;
 
 	/**
+	 * Array of UI libraries that have been loaded.
+	 */
+	private $uiLibraries = array();
+	public $UI_LIBRARY_PATH = XFAPPROOT.'uilibs' . PATH_SEPARATOR .XFROOT.'uilibs';
+	
+	/**
+	 * Gets the UI library search path - the paths where it will
+	 * search for UI libraries.
+	 * @return string Paths separated by path separator char.
+	 */
+	public function getUILibraryPath() {
+		return $this->UI_LIBRARY_PATH;
+	}
+
+	/**
+	 * Sets the search paths to look for UI libraries.
+	 * @param string $path  A path in format like PATH or LD_LIBRARY_PATH.  Paths separated by PATH_SEPARATOR.  (e.g. semicolon on windows, and colon on unix).
+	 */
+	public function setUILibraryPath($path) {
+		$this->UI_LIBRARY_PATH = $path;
+	}
+
+	/**
+	 * Appends path to the UI library search paths.
+	 * @param string $path The path to add.
+	 * @return void.
+	 */
+	public  function appendUILibraryPath($path) {
+		$this->UI_LIBRARY_PATH .= PATH_SEPARATOR . $path;
+	}
+
+	/**
+	 * Prepends path to the UI library search paths.
+	 * @param string $path The path to add.
+	 * @return void
+	 */
+	public  function prependUILibraryPath($path) {
+		$this->UI_LIBRARY_PATH = $path . PATH_SEPARATOR . $this->UI_LIBRARY_PATH;
+	}
+
+	/**
+	 * Gets the search paths that will be searched to load
+	 * UI libraries, as an array.
+	 * 
+	 * @return array Array of paths to directories to search for uilibs.
+	 */
+	public  function getUILibraryPaths() {
+		return explode(PATH_SEPARATOR, $this->UI_LIBRARY_PATH);
+	}
+
+	/**
+	 * Loads a UI library.  A UI library consists of a file
+	 * located at uilibs/$name/$name.uilib.html.  This file will 
+	 * be included in the head of the document, so it should
+	 * contain an HTML snippet that loads the necessary CSS and javascript
+	 * files for the UI library to work.
+	 * 
+	 * The $name.uilib.html file should use the {{LIBROOT}} placeholder
+	 * as the URL to the uilib's directory so that it knows how to reference
+	 * its CSS and Javascript files.
+	 * 
+	 * @param string $name The name of the UI library to load.
+	 * @return boolean True if the library was loaded.  False otherwise.
+	 */
+	public function loadUILibrary($name) {
+		if (!isset($this->uiLibraries[$name])) {
+			$this->uiLibraries[$name] = $name;
+			
+			
+			foreach ($this->getUILibraryPaths() as $p) {
+				
+				if (strpos($p, XFAPPROOT) === 0) {
+					$baseUrl = DATAFACE_SITE_URL;
+					$basePath = XFAPPROOT;
+				} else if (strpos($p, XFROOT) === 0) {
+					$baseUrl = DATAFACE_URL;
+					$basePath = XFROOT;
+				} else {
+					continue;
+				}
+				if (strlen($baseUrl) == 0) {
+					$baseUrl = '/';
+				}
+				if (substr($baseUrl, -1) != "/") {
+					$baseUrl .= '/';
+				}
+
+				$filePath = $p.DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR.$name.'.uilib.html';
+				//echo "Filepath: $filePath;";
+				//echo "BaseUrl: $baseUrl;";
+				if (file_exists($filePath)) {
+
+					$fileUrl = $baseUrl .
+						substr($filePath, strlen($basePath));
+					$fileUrl = str_replace(DIRECTORY_SEPARATOR, '/', $fileUrl);
+					$libRoot = substr($fileUrl, 0, strrpos($fileUrl, '/'));
+					$content = file_get_contents($filePath);
+					$content = str_replace('{{LIBROOT}}', $libRoot, $content);
+					$this->addHeadContent($content);
+					return true;
+				}
+
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * @private
 	 */
 	var $sessionCookieKey;
@@ -1125,6 +1233,10 @@ END;
 	}
 
 
+	/**
+	 * Adds javascript strings for use in javascript internationalization.
+	 * @param array(string=>string) $strings
+	 */
 	public function addJSStrings($strings){
 	    $jsStrings = json_encode($strings);
 	    $this->addHeadContent(<<<END
@@ -1873,7 +1985,6 @@ END
 	function addHeadContent($content){
 		$this->headContent[] = $content;
 	}
-
 
 	/**
 	 * @brief Returns the nav item info for a key.  This is a wrapper around the nav items defined
