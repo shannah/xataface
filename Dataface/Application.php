@@ -182,7 +182,7 @@ END;
 	 * Array of UI libraries that have been loaded.
 	 */
 	private $uiLibraries = array();
-	public $UI_LIBRARY_PATH = XFAPPROOT.'uilibs' . PATH_SEPARATOR .XFROOT.'uilibs';
+	public $UI_LIBRARY_PATH = null;
 	
 	/**
 	 * Gets the UI library search path - the paths where it will
@@ -190,6 +190,9 @@ END;
 	 * @return string Paths separated by path separator char.
 	 */
 	public function getUILibraryPath() {
+	    if ($this->UI_LIBRARY_PATH === null) {
+	        $this->UI_LIBRARY_PATH = XFAPPROOT.'uilibs' . PATH_SEPARATOR .XFROOT.'uilibs';
+	    }
 		return $this->UI_LIBRARY_PATH;
 	}
 
@@ -207,7 +210,7 @@ END;
 	 * @return void.
 	 */
 	public  function appendUILibraryPath($path) {
-		$this->UI_LIBRARY_PATH .= PATH_SEPARATOR . $path;
+		$this->UI_LIBRARY_PATH = $this->getUILibraryPath() .PATH_SEPARATOR . $path;
 	}
 
 	/**
@@ -216,7 +219,7 @@ END;
 	 * @return void
 	 */
 	public  function prependUILibraryPath($path) {
-		$this->UI_LIBRARY_PATH = $path . PATH_SEPARATOR . $this->UI_LIBRARY_PATH;
+		$this->UI_LIBRARY_PATH = $path . PATH_SEPARATOR . $this->getUILibraryPath();
 	}
 
 	/**
@@ -226,7 +229,7 @@ END;
 	 * @return array Array of paths to directories to search for uilibs.
 	 */
 	public  function getUILibraryPaths() {
-		return explode(PATH_SEPARATOR, $this->UI_LIBRARY_PATH);
+		return explode(PATH_SEPARATOR, $this->getUILibraryPath());
 	}
 
 	/**
