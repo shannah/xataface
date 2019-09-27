@@ -558,10 +558,10 @@ END;
 		}
 		$this->_baseUrl  = $_SERVER['PHP_SELF'];
 		if ( !is_array($conf) ) $conf = array();
-                $configPath = DATAFACE_SITE_PATH.'/conf.ini.php';
-                if (!is_readable($configPath)) {
-                    $configPath = DATAFACE_SITE_PATH.'/conf.ini';
-                }
+        $configPath = DATAFACE_SITE_PATH.'/conf.ini.php';
+        if (!is_readable($configPath)) {
+            $configPath = DATAFACE_SITE_PATH.'/conf.ini';
+        }
 		if ( is_readable($configPath) ){
 			$conf = array_merge(parse_ini_file($configPath, true), $conf);
 			if ( @$conf['__include__'] ){

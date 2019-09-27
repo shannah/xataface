@@ -1,19 +1,52 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
 if (!@$argv) {
     fwrite(STDERR, "CLI ONLY");
     exit(1);
 }
+$XATAFACE_CONFIG_PATHS = array();
 
-$files = array('conf.ini', 'conf.ini.php', 'conf.db.ini', 'conf.db.ini.php');
+$cliConfPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'cli-conf.ini';
+
+if (is_readable($cliConfPath)) {
+	$cliConf = parse_ini_file($cliConfPath, true);
+	if (isset($cliConf['XATAFACE_CONFIG_PATHS'])) {
+		$paths = explode(":", $cliConf['XATAFACE_CONFIG_PATHS']);
+		foreach ($paths as $path) {
+			if (!trim($path)) {
+				continue;
+			}
+			$XATAFACE_CONFIG_PATHS[] = dirname($cliConfPath).DIRECTORY_SEPARATOR.$path;
+		}
+	}
+}
+$XATAFACE_CONFIG_PATHS[] = dirname(__FILE__). DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'app';
+$files = array('conf.ini.php', 'conf.ini');
 $conf = array();
 foreach ($files as $file) {
-    $file_path = dirname(__FILE__) 
-        . DIRECTORY_SEPARATOR . '..' 
-        . DIRECTORY_SEPARATOR . 'app' 
-        . DIRECTORY_SEPARATOR . $file;
-    if (file_exists($file_path)) {
-        $conf = array_merge_recursive($conf, parse_ini_file($file_path, true));
-    }
+	foreach ($XATAFACE_CONFIG_PATHS as $path) {
+	    $file_path = $path . DIRECTORY_SEPARATOR . $file;
+	    if (file_exists($file_path)) {
+			$tmp = parse_ini_file($file_path, true);
+			if ( @$tmp['__include__'] ){
+				$includes = array_map('trim',explode(',', $tmp['__include__']));
+				foreach ($includes as $i){
+					if (!trim($i)) {
+						continue;
+					}
+	                $p = dirname($file_path) . DIRECTORY_SEPARATOR . $i;             
+					if ( is_readable($p) ){
+						$tmp = array_merge($tmp, parse_ini_file($p, true));
+					} else if ( is_readable($p.'.php') ){
+						$tmp = array_merge($tmp, parse_ini_file($p.'.php', true));
+					}
+				}
+			}
+	        $conf = array_merge_recursive($tmp, $conf);
+	    }
+	}
+    
 }
 if (count($argv) < 2) {
     print_r($conf);
@@ -30,7 +63,12 @@ if (strpos($key, '.') !== false) {
             echo dirname(dirname(realpath(__FILE__)));
             exit;
         case 'XFServerPort':
-            echo '9090';
+			if (@$conf['XFServerPort']) {
+				echo $conf['XFServerPort'];
+			} else {
+				echo '9090';
+			}
+            
             exit;
         case 'XFShortVersionString':
             $version_path = dirname(__FILE__) 

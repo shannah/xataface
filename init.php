@@ -20,7 +20,7 @@
  */
  
 function init($site_path, $dataface_url){
-    
+	ini_set('pcre.jit', '0');
         $originalUrl = isset($_SERVER['HTTP_X_ORIGINAL_URL']) ? parse_url($_SERVER['HTTP_X_ORIGINAL_URL']) : null;
         if ($originalUrl) {
             $host = @$originalUrl["host"];
