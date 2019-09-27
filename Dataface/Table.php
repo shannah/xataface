@@ -550,12 +550,12 @@ class Dataface_Table {
 
         if (strpos($this->tablename, '_tmp_') === 0) {
             // This is just a temporary table.
-            $iniPath = realpath(DATAFACE_SITE_PATH.'/tables/'.basename($this->tablename).'/fields.ini');
+            $iniPath = realpath($this->basePath().'/tables/'.basename($this->tablename).'/fields.ini');
 			if (!$iniPath) {
-				$iniPath = realpath(DATAFACE_SITE_PATH.'/tables/'.basename($this->tablename).'/fields.ini.php');
+				$iniPath = realpath($this->basePath().'/tables/'.basename($this->tablename).'/fields.ini.php');
 			}
-			$delegateClass = realpath(DATAFACE_SITE_PATH.'/tables/'.basename($this->tablename).'/'.basename($this->tablename).'.php');
-
+			$delegateClass = $this->_delegateFilePath();
+			
 			$sqlQuery = null;
 			//echo "ini path $iniPath ".$this->tablename;
             if (file_exists($iniPath)) {
@@ -567,13 +567,15 @@ class Dataface_Table {
             if (file_exists($delegateClass)) {
                 import($delegateClass);
                 $delClassName = 'tables_'.basename($this->tablename);
-
+				
                 if (!class_exists($delClassName)) {
                     throw new Exception("Delegate class ".$delegateClass." file exists but no class is defined in it");
                 }
 
-                $delObj = new $delClassName;
+				$delObj = new $delClassName;
+				$this->_delegate = $delObj;
                 if (method_exists($delObj, '__sql__')) {
+					
                     $sqlQuery = $delObj->__sql__();
                 }
             }
