@@ -2570,7 +2570,7 @@ class Dataface_Record {
 
 		$field =& $this->_table->getField($fieldname);
 		if ( $this->_table->isBlob($fieldname) or ($this->_table->isContainer($fieldname) and @$field['secure'])  ){
-			if ($this->val($fieldname)) {
+			if ($this->getLength($fieldname) > 0) {
 				unset($table);
 				$table =& Dataface_Table::loadTable($field['tablename']);
 				$keys = array_keys($table->keys());
@@ -2760,7 +2760,7 @@ class Dataface_Record {
 			return $parent->htmlValue($fieldname, $index, $where, $sort, $params);
 		}
 		$val = $this->display($fieldname, $index, $where, $sort);
-                $strval = $this->strval($fieldname, $index, $where, $sort);
+        $strval = $this->strval($fieldname, $index, $where, $sort);
 		$field = $this->_table->getField($fieldname);
 		if ( !@$field['passthru'] and $this->escapeOutput) {
 		    if (@$field['allowable_tags']) {
