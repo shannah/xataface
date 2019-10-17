@@ -178,9 +178,9 @@ if ( !file_exists($site_path) ){
 
 
 $skel_path = dirname(__FILE__).DIRECTORY_SEPARATOR."site_skeleton";
-if ( !file_exists($site_path.DIRECTORY_SEPARATOR."conf.ini") ){
-	fwrite(STDOUT, "Copying conf.ini file to '$site_path"."/conf.ini'...");
-	$conf_file = file_get_contents($skel_path.DIRECTORY_SEPARATOR."conf.ini");
+if ( !file_exists($site_path.DIRECTORY_SEPARATOR."conf.ini.php") ){
+	fwrite(STDOUT, "Copying conf.ini.php file to '$site_path"."/conf.ini.php'...");
+	$conf_file = file_get_contents($skel_path.DIRECTORY_SEPARATOR."conf.ini.php");
 	
 	$conf_file = preg_replace('/\{__DATABASE_HOST__\}/', $database_host, $conf_file);
 	$conf_file = preg_replace('/\{__DATABASE_NAME__\}/', $database_name, $conf_file);
