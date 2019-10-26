@@ -1,5 +1,5 @@
 ;<?php exit;
-; File: 	conf.ini
+; File: 	conf.ini.php
 ; Description:
 ; ------------
 ; This file contains configuration information for the dataface framework.

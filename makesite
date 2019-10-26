@@ -168,6 +168,7 @@ $dir_created = false;
 $htaccess_created = false;
 $index_file_created = false;
 $tables_dir_created = false;
+$templates_c_dir_created = false;
 if ( !file_exists($site_path) ){
 	if ( !mkdir($site_path) ){
 		fwrite(STDERR, "Failed to create site because we could not create the directory '$site_path'.  Please check to make sure that you have permission to create the directory.\n");
@@ -178,9 +179,9 @@ if ( !file_exists($site_path) ){
 
 
 $skel_path = dirname(__FILE__).DIRECTORY_SEPARATOR."site_skeleton";
-if ( !file_exists($site_path.DIRECTORY_SEPARATOR."conf.ini") ){
-	fwrite(STDOUT, "Copying conf.ini file to '$site_path"."/conf.ini'...");
-	$conf_file = file_get_contents($skel_path.DIRECTORY_SEPARATOR."conf.ini");
+if ( !file_exists($site_path.DIRECTORY_SEPARATOR."conf.ini.php") ){
+	fwrite(STDOUT, "Copying conf.ini.php file to '$site_path"."/conf.ini.php'...");
+	$conf_file = file_get_contents($skel_path.DIRECTORY_SEPARATOR."conf.ini.php");
 	
 	$conf_file = preg_replace('/\{__DATABASE_HOST__\}/', $database_host, $conf_file);
 	$conf_file = preg_replace('/\{__DATABASE_NAME__\}/', $database_name, $conf_file);
@@ -294,6 +295,12 @@ if ( !file_exists($site_path.DIRECTORY_SEPARATOR."tables") ){
 	}
 }
 
+if ( !file_exists($site_path.DIRECTORY_SEPARATOR."templates_c") ){
+	fwrite(STDOUT, "Creating templates directory at '$site_path"."/templates_c'...\n");
+	if ( mkdir($site_path.DIRECTORY_SEPARATOR."templates_c") ){
+		$templates_c_dir_created = true;
+	}
+}
 if ( is_dir($site_path.DIRECTORY_SEPARATOR."tables") ){
 	foreach ( $tables as $table ){
 		if ( strpos($table, "/") !== false ){
