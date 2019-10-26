@@ -168,7 +168,7 @@ class PHPUnit_TestCase extends PHPUnit_Assert {
      * @access protected
      */
     function runTest() {
-        call_user_func(
+		call_user_func(
           array(
             &$this,
             $this->_name
