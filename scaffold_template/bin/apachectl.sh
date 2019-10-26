@@ -108,7 +108,7 @@ status)
 	
     #curl  -vs -H "Accept: text/plain" $STATUSURL 2>&1  | awk ' /process$/ { print; exit } { print } '
 	HTTP_STATUS=$(php $SCRIPTPATH/inc/http-response-code.php $STATUSURL)
-	if [ "$HTTP_STATUS" == "200" ]; then
+	if [ "$HTTP_STATUS" = "200" ]; then
 		$HTTPD -S -f "$SCRIPTPATH"/../etc/httpd.conf
 		curl -s $STATUSURL
 		exit 0

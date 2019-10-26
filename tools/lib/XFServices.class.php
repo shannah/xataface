@@ -1,4 +1,9 @@
 <?php
+/**
+ * Service manager class. Can be used to start/stop
+ * Apache and MySQL services associated with xataface
+ * apps.
+ */
 class XFServiceManager {
 	private $services;
 	private $serviceFilePath;
