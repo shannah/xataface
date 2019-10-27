@@ -10,45 +10,64 @@ if (!@$argv) {
 	die("CLI only");
 }
 
-if (!defined('XF_SERVICE_APP_PATH')) {
-	$argv = array(
-		$argv[0],
-		'list-all'
-	);
-}
 
-
-if (count($argv) < 2 or !in_array($argv[1], array('start', 'stop', 'status', 'list'))) {
-	fwrite(STDERR, "usage: php service.php start|stop|status|list|list-all [service-name service-port]\n");
+if (count($argv) < 2 or !in_array($argv[1], array('start', 'stop', 'status', 'list', 'list-all', 'add'))) {
+	fwrite(STDERR, "usage: php service.php add|start|stop|status|list|list-all [service-name service-port]\n");
 	exit(1);
 }
 
 $cmd = $argv[1];
 
-$appPath = dirname(dirname(dirname(__FILE__)));
-if (in_array($cmd, array('start', 'stop', 'status')) and count($argv) < 4) {
-	fwrite(STDERR, "Service name and port parameters are required.\ne.g. php service.php $cmd mysql 3306\n");
-	exit(1);
+$userHome = $_SERVER['HOME'];
+$xfDataDir = $userHome . DIRECTORY_SEPARATOR . '.xataface';
+if (!file_exists($xfDataDir)) {
+	mkdir($xfDataDir);
 }
-if (in_array($cmd, array('start', 'stop', 'status'))) {
-	$serviceName = $argv[2];
-	$servicePort = $argv[3];
-
-	$service = new XFService(array(
-		'appPath' => $appPath,
-		'name' => $serviceName,
-		'port' => $servicePort
-	));
-} else {
-	$service = new XFService(array(
-		'appPath' => $appPath,
-		'name' => '*',
-		'port' => 0
-	));
-}
-
+$servicesFile = $xfDataDir . DIRECTORY_SEPARATOR . '.xataface-services.json';
 
 $serviceManager = new XFServiceManager();
+$serviceManager->setServicesFilePath($servicesFile);
+
+if ($cmd == 'add') {
+	if (count($argv) >= 3) {
+		$appPath = $argv[2];
+	} else {
+		$appPath = realpath(getcwd());
+	}
+	
+	$mysql = new XFService(array(
+		'appPath' => $appPath,
+		'name' => 'mysql'
+	));
+	$httpd = new XFService(array(
+		'appPath' => $appPath,
+		'name' => 'httpd'
+	));
+
+	if (!$mysql->exists() or !$httpd->exists()) {
+		fwrite(STDERR, "Directory $appPath is not a Xataface project.\n");
+		exit(1);
+	}
+
+	$added = false;
+	if (!$serviceManager->contains($httpd)) {
+		$serviceManager->add($httpd);
+		$added = true;
+		echo "Adding mysql service @ $appPath\n";
+	}
+	if (!$serviceManager->contains($mysql)) {
+		$serviceManager->add($mysql);
+		$added = true;
+		echo "Adding http service @ $appPath\n";
+	}
+	if ($added) {
+		$serviceManager->save();
+	} else {
+		echo "No services added.\n";
+	}
+	exit(0);
+
+}
 if ($cmd == 'start') {
 	$serviceManager->add($service);
 	if (!$serviceManager->save()) {
@@ -76,11 +95,35 @@ if ($cmd == 'start') {
 		}
 	}
 } else if ($cmd == 'list-all') {
-	$mask = "|%5.5s |%-10.10s |%-30.30s\n";
-	printf($mask, 'Port', 'Service Name', 'App Path');
+	$rows = array();
+	$nameLen = 0;
 	foreach ($serviceManager->services() as $svc) {
-		if ($service->isSameApp($svc)) {
-			printf($mask, $svc->getPort(), $svc->getName(), $svc->getAppPath());
+		try {
+			$appPath = $svc->getAppPath();
+			if (!isset($rows[$appPath])) {
+				$rows[$appPath] = array();
+				$rows[$appPath]['port'] = '';
+			}
+			if ($svc->getName() == 'mysql') {
+				$rows[$appPath]['mysql'] = $svc->getStatus();
+			} else if ($svc->getName() == 'httpd') {
+				$rows[$appPath]['httpd'] = $svc->getStatus();
+				$rows[$appPath]['port'] = $svc->getPort();
+			} else {
+				continue;
+			}
+			$rows[$appPath]['appPath'] = $appPath;
+			$nameLen = max(strlen(basename($appPath)), $nameLen);
+		} catch (Exception $ex) {
+
 		}
+
+		
+	}
+	$mask = "%$nameLen.${nameLen}s | %8.8s | %8.8s | %6.6s | %-30.30s\n";
+	printf($mask,'name', 'mysql', 'httpd', 'port', 'path');
+	
+	foreach ($rows as $row) {
+		printf($mask, basename($row['appPath']), $row['mysql'], $row['httpd'], $row['port'], $row['appPath']);
 	}
 }

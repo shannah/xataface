@@ -126,6 +126,24 @@ class ServicesTest extends PHPUnit_TestCase {
 				throw new Exception("Failed to stop httpd.  Response code $res\n");
 			}
 			$this->assertEquals('STOPPED', $app1HttpdService->getStatus());
+
+			$this->assertEquals(null, $app1HttpdService->getRunningPort());
+			$this->assertEquals(9090, $app1HttpdService->getConfigPort());
+			$this->assertEquals(9090, $app1HttpdService->getPort());
+			$res = $app1HttpdService->start();
+			$this->assertTrue($res, "Failed to start http service with start()");
+			$this->assertEquals('RUNNING', $app1HttpdService->getStatus());
+			$this->assertEquals(9090, $app1HttpdService->getRunningPort());
+			$this->assertEquals(9090, $app1HttpdService->getConfigPort());
+			$this->assertEquals(9090, $app1HttpdService->getPort());
+			$this->assertTrue($app1HttpdService->stop(), "Failed to stop httpd service");
+			$this->assertEquals('STOPPED', $app1HttpdService->getStatus());
+			$this->assertEquals(null, $app1HttpdService->getRunningPort());
+			$this->assertEquals(9090, $app1HttpdService->getConfigPort());
+			$this->assertEquals(9090, $app1HttpdService->getPort());
+
+
+
 			
 		} finally {
 			// Cleanup app 1

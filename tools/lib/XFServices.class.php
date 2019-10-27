@@ -28,6 +28,15 @@ class XFServiceManager {
 		}
 		return $this->services;
 	}
+
+	public function contains(XFService $svc) {
+		foreach ($this->services() as $s) {
+			if ($svc->equals($s)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public function getRunningServices() {
 		$tmp = array();
@@ -39,9 +48,9 @@ class XFServiceManager {
 		return $tmp;
 	}
 	
-	
+
 	public function isRunning(XFService $service) {
-		return strcasecmp($service->getStatus(), 'RUNNING') === 0;
+		return $service->isRunning();
 	}
 	
 	public function add(XFService $service) {
@@ -98,6 +107,10 @@ class XFService {
 			'name' => $this->name
 		);
 	}
+
+	public function getAppPath() {
+		return $this->appPath;
+	}
 	
 	public function exists() {
 		return file_exists($this->appPath) and is_dir($this->appPath)
@@ -107,11 +120,33 @@ class XFService {
 	}
 	
 	public function start() {
-		
+		if (!$this->exists()) {
+			return false;
+		}
+		if ($this->name == 'mysql') {
+			exec("sh ".escapeshellarg($this->getMysqlServerScriptPath())." start", $buffer, $res);
+			return $res === 0;
+		}
+		if ($this->name == 'httpd') {
+			exec("sh ".escapeshellarg($this->getApacheCtlPath())." start", $buffer, $res);
+			return $res === 0;
+		}
+		return false;
 	}
 	
 	public function stop() {
-		
+		if (!$this->exists()) {
+			return false;
+		}
+		if ($this->name == 'mysql') {
+			exec("sh ".escapeshellarg($this->getMysqlServerScriptPath())." stop", $buffer, $res);
+			return $res === 0;
+		}
+		if ($this->name == 'httpd') {
+			exec("sh ".escapeshellarg($this->getApacheCtlPath())." stop", $buffer, $res);
+			return $res === 0;
+		}
+		return false;
 	}
 	
 	public function isSameApp(XFService $svc) {
@@ -133,6 +168,10 @@ class XFService {
 	private function getApachectlPath() {
 		return $this->appPath . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'apachectl.sh';
 	}
+
+	private function getPrintConfigVarPath() {
+		return $this->appPath . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'print_config_var.php';
+	}
 	
 	public function getStatus() {
 		if ($this->name == 'mysql') {
@@ -147,7 +186,55 @@ class XFService {
 		}
 		throw new Exception("No getStatus implementation yet or this service type ".$this->name);
 	}
+
+	public function getConfigPort() {
+		if ($this->name == 'httpd') {
+			exec("php ".escapeshellarg($this->getPrintConfigVarPath())." XFServerPort", $buffer, $res);
+			if ($res !== 0) {
+				throw new Exception("Could not find config port for httpd service");
+			}
+			if (count($buffer) < 1) {
+				throw new Exception("Invalid output to print_config_var");
+			}
+			return intval(trim($buffer[0]));
+		}
+		return null;
+
+	}
+
+	public function getRunningPort() {
+		if ($this->name == 'httpd') {
+			if ($this->isRunning()) {
+				exec("sh ".escapeshellarg($this->getApacheCtlPath())." status", $buffer, $res);
+				if ($res !== 0) {
+					return null;
+				}
+				//print_r($buffer);
+				$len = count($buffer);
+				for ($i=0; $i<$len; $i++) {
+					$line = $buffer[$i];
+					$line = trim($line);
+					if (preg_match('/^\*:(\d{2,8}) /', $line, $matches)) {
+						return intval($matches[1]);
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public function getPort() {
+		if ($this->isRunning()) {
+			return $this->getRunningPort();
+		} else {
+			return $this->getConfigPort();
+		}
+	}
 	
+	public function isRunning() {
+		return strcasecmp($this->getStatus(), 'RUNNING') === 0;
+	}
+
 	public function getName() {
 		return $this->name;
 	}
