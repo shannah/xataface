@@ -36,6 +36,10 @@
 # one is reported.  Run "apachectl help" for usage info
 #
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+if test -z ${XATAFACE}; then
+	XATAFACE=$HOME/xataface
+fi
+export XFServiceScript=$XATAFACE/tools/service.php
 export XFServerRoot=`php $SCRIPTPATH/print_config_var.php XFServerRoot`
 export XFServerPort=`php $SCRIPTPATH/print_config_var.php XFServerPort`
 export MysqlDefaultSocket="$SCRIPTPATH/../tmp/mysql.sock"
@@ -82,6 +86,13 @@ fi
 ERROR=0
 if [ "x$ARGV" = "x" ] ; then 
     ARGV="-h"
+fi
+
+# Add this instance to Xataface's services list so that
+# we can more easily monitor all of the Xataface projects
+# that are running
+if test -f "$XFServiceScript"; then
+	php "$XFServiceScript" add "$SCRIPTPATH/.."
 fi
 
 case $ACMD in

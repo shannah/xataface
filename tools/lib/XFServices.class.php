@@ -19,7 +19,7 @@ class XFServiceManager {
 				$tmp = json_decode(file_get_contents($this->servicesFilePath()), true);
 				foreach ($tmp as $row) {
 					$svc = new XFService($row);
-					if ($svc->exists()) {
+					if ($svc->exists() and !$this->contains($svc)) {
 						$this->services[] = new XFService($row);
 					}
 					
@@ -98,6 +98,9 @@ class XFService {
 	
 	public function __construct(array $service) {
 		$this->appPath = $service['appPath'];
+		if (file_exists($this->appPath)) {
+			$this->appPath = realpath($this->appPath);
+		}
 		$this->name = $service['name'];
 	}
 	

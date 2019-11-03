@@ -30,7 +30,7 @@ $serviceManager->setServicesFilePath($servicesFile);
 
 if ($cmd == 'add') {
 	if (count($argv) >= 3) {
-		$appPath = $argv[2];
+		$appPath = realpath($argv[2]);
 	} else {
 		$appPath = realpath(getcwd());
 	}
@@ -68,6 +68,46 @@ if ($cmd == 'add') {
 	exit(0);
 
 }
+if ($cmd == 'remove') {
+	if (count($argv) >= 3) {
+		$appPath = realpath($argv[2]);
+	} else {
+		$appPath = realpath(getcwd());
+	}
+	
+	$mysql = new XFService(array(
+		'appPath' => $appPath,
+		'name' => 'mysql'
+	));
+	$httpd = new XFService(array(
+		'appPath' => $appPath,
+		'name' => 'httpd'
+	));
+
+	if (!$mysql->exists() or !$httpd->exists()) {
+		fwrite(STDERR, "Directory $appPath is not a Xataface project.\n");
+		exit(1);
+	}
+
+	$removed = false;
+	if ($serviceManager->contains($httpd)) {
+		$serviceManager->remove($httpd);
+		$removed = true;
+		echo "Removing mysql service @ $appPath\n";
+	}
+	if ($serviceManager->contains($mysql)) {
+		$serviceManager->remove($mysql);
+		$removed = true;
+		echo "Removing http service @ $appPath\n";
+	}
+	if ($removed) {
+		$serviceManager->save();
+	} else {
+		echo "No services removed.\n";
+	}
+	exit(0);
+
+}
 if ($cmd == 'start') {
 	$serviceManager->add($service);
 	if (!$serviceManager->save()) {
@@ -87,14 +127,6 @@ if ($cmd == 'start') {
 		echo "Stopped\n";
 	}
 } else if ($cmd == 'list') {
-	$mask = "|%5.5s |%-30.30s\n";
-	printf($mask, 'Port', 'Service Name');
-	foreach ($serviceManager->services() as $svc) {
-		if ($service->isSameApp($svc)) {
-			printf($mask, $svc->getPort(), $svc->getName());
-		}
-	}
-} else if ($cmd == 'list-all') {
 	$rows = array();
 	$nameLen = 0;
 	foreach ($serviceManager->services() as $svc) {
@@ -120,10 +152,10 @@ if ($cmd == 'start') {
 
 		
 	}
-	$mask = "%$nameLen.${nameLen}s | %8.8s | %8.8s | %6.6s | %-30.30s\n";
-	printf($mask,'name', 'mysql', 'httpd', 'port', 'path');
+	$mask = "%8.8s | %8.8s | %6.6s | %-30.30s\n";
+	printf($mask, 'mysql', 'httpd', 'port', 'path');
 	
 	foreach ($rows as $row) {
-		printf($mask, basename($row['appPath']), $row['mysql'], $row['httpd'], $row['port'], $row['appPath']);
+		printf($mask, $row['mysql'], $row['httpd'], $row['port'], $row['appPath']);
 	}
 }

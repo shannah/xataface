@@ -39,6 +39,18 @@
 # If you want to affect other MariaDB variables, you should make your changes
 # in the /etc/my.cnf, ~/.my.cnf or other MariaDB configuration files.
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
+if test -z ${XATAFACE}; then
+	XATAFACE=$HOME/xataface
+fi
+export XFServiceScript=$XATAFACE/tools/service.php
+# Add this instance to Xataface's services list so that
+# we can more easily monitor all of the Xataface projects
+# that are running
+if test -f "$XFServiceScript"; then
+	php "$XFServiceScript" add "$SCRIPTPATH/.."
+fi
+
 # If you change base dir, you must also change datadir. These may get
 # overwritten by settings in the MariaDB configuration files.
 scaffolddir="$SCRIPTPATH"/..
