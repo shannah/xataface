@@ -53,7 +53,7 @@ class dataface_actions_copy_replace {
 		}
 		
 		if (count($records) == 0) {
-			throw new Exception("No records found", DATAFACE_E_NOTICE);
+			throw new Exception("You cannot copy or update an empty result set", DATAFACE_E_NOTICE);
 		}
 		
 		
