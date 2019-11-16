@@ -2646,6 +2646,10 @@ END
 				echo json_encode($resp);
 				exit;
 			}
+			if ($ex->getCode() == DATAFACE_E_NOTICE) {
+				df_display(array('body'=>'<div class="portalMessageWrapper"><div class="responsive-content"><div class="portalMessage"><ul><li>'.htmlspecialchars($ex->getMessage()).'</li></ul></div></div></div>'), 'Dataface_Main_Template.html');
+				return;
+			}
 			$uuid = df_error_log($ex);
 			header('HTTP/1.0 500 Internal Server Error', true);
 

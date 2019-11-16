@@ -52,6 +52,10 @@ class dataface_actions_copy_replace {
 			$records =& df_get_records_array($query['-table'], $q);
 		}
 		
+		if (count($records) == 0) {
+			throw new Exception("No records found", DATAFACE_E_NOTICE);
+		}
+		
 		
 		// Now we find out a few things, like whether we're doing a related record
 		// list or the real list
