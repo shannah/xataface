@@ -23,7 +23,11 @@ class CLICommand_Service extends CLICommand {
 	function exec() {
 		$scriptPath = dirname(__FILE__).'/service.php';
 		include $scriptPath;
-		xf_service_run(array_slice($this->argv, 1));
+		$args = array_slice($this->argv, 1);
+		if (count($args) == 1) {
+			$args[] = 'list';
+		}
+		xf_service_run($args);
 	}
 }
 
@@ -58,7 +62,37 @@ class CLICommand_Help extends CLICommand {
 	}
 }
 
+class CLICommand_Start extends CLICommand {
+	var $argv;
+	function __construct($argv) {
+		$this->argv = $argv;
+		$this->name = 'start';
+		$this->description = "Start the development server";
+	}
+	function exec() {
+		$scriptPath = dirname(__FILE__).'/appctl.php';
+		include $scriptPath;
+		$args = $this->argv;
+		$appctl = new XFProject_AppCtl($args);
+		$appctl->run();
+	}
+}
 
+class CLICommand_Stop extends CLICommand {
+	var $argv;
+	function __construct($argv) {
+		$this->argv = $argv;
+		$this->name = 'stop';
+		$this->description = "Stop the development server";
+	}
+	function exec() {
+		$scriptPath = dirname(__FILE__).'/appctl.php';
+		include $scriptPath;
+		$args = $this->argv;
+		$appctl = new XFProject_AppCtl($args);
+		$appctl->run();
+	}
+}
 
 class CLIController {
 	
@@ -68,6 +102,8 @@ class CLIController {
 		$this->commands[] = new CLICommand_Service($argv);
 		$this->commands[] = new CLICommand_Create($argv);
 		$this->commands[] = new CLICommand_Help($this);
+		$this->commands[] = new CLICommand_Start($argv);
+		$this->commands[] = new CLICommand_Stop($argv);
 	}
 	
 	function exec($cmdName) {
