@@ -13,7 +13,7 @@ class XFAppCommand {
 			fwrite(STDERR, "You are not in a Xataface application\n");
 			exit(1);
 		}
-		$appctl = $base_dir . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'appctl.sh';
+		$appctl = $base_dir . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . $this->commandName;
 		if (!file_exists($appctl)) {
 			fwrite(STDERR, "Cannot find $appctl");
 			exit(1);
