@@ -24,6 +24,7 @@ function randomPassword() {
 $username = $argv[1];
 $email = $argv[2];
 $role = count($argv) > 3 ? $argv[3] : 'USER';
+$useRandomPass = count($argv) <= 4;
 $password = count($argv) > 4 ? $argv[4] : randomPassword();
 
 $app = Dataface_Application::getInstance();
@@ -49,4 +50,5 @@ if (PEAR::isError($res)) {
     fwrite(STDERR, $res->getMessage());
     exit(1);
 }
-echo "Successfully created user $username\n";
+$withPass = $useRandomPass ? " with password '".$password."'" : '';
+echo "Successfully created user $username $withPass\n";

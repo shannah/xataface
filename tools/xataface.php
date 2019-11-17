@@ -104,8 +104,24 @@ class CLICommand_SetupAuth extends CLICommand {
 	function exec() {
 		$scriptPath = dirname(__FILE__).'/lib/XFAppCommand.class.php';
 		include $scriptPath;
-		$args = $this->argv;
+		$args = array_slice($this->argv, 1);
 		$appctl = new XFAppCommand('setup-auth.sh', $args);
+		$appctl->run();
+	}
+}
+
+class CLICommand_AddUser extends CLICommand {
+	var $argv;
+	function __construct($argv) {
+		$this->argv = $argv;
+		$this->name = 'add-user';
+		$this->description = "Add app user to database";
+	}
+	function exec() {
+		$scriptPath = dirname(__FILE__).'/lib/XFAppCommand.class.php';
+		include $scriptPath;
+		$args = array_slice($this->argv, 1);
+		$appctl = new XFAppCommand('add-user.sh', $args);
 		$appctl->run();
 	}
 }
@@ -121,6 +137,7 @@ class CLIController {
 		$this->commands[] = new CLICommand_Start($argv);
 		$this->commands[] = new CLICommand_Stop($argv);
 		$this->commands[] = new CLICommand_SetupAuth($argv);
+		$this->commands[] = new CLICommand_AddUser($argv);
 	}
 	
 	function exec($cmdName) {
