@@ -9,6 +9,7 @@ function modules_dir() {
 
 
 function installModuleFromZipUrl($moduleName, $moduleUrl, $version) {
+	echo "Installing module from ZIP at url $moduleUrl\n";
     $dest = tempnam(sys_get_temp_dir(), $moduleName);
     echo "Downloading $moduleUrl...";
     if (!file_put_contents($dest, fopen($moduleUrl, 'rb'))) {
@@ -23,11 +24,12 @@ function installModuleFromZipUrl($moduleName, $moduleUrl, $version) {
 }
 
 function installModuleFromGit($moduleName, $gitRepoUrl, $version) {
+	echo "Installing module from git repo: $gitRepoUrl\n";
     $moduleUrl = $gitRepoUrl.'/archive/master.zip';
     if ($version) {
         $moduleUrl = $gitRepoUrl.'/archive/'.$version.'.zip';
     }
-    return installModuleFromZipUrl($moduleName, $moduleUrl);
+    return installModuleFromZipUrl($moduleName, $moduleUrl, $version);
 }
 
 function extractVersionNumber($dir) {
@@ -45,6 +47,7 @@ function extractVersionNumber($dir) {
 }
 
 function installModuleFromZipFile($moduleName, $zipPath, $version) {
+	echo "Installing module from Zip at path $zipPath\n";
     $zip = new ZipArchive;
     echo "Extracting ZIP archive...";
     $res = $zip->open($zipPath);
@@ -203,9 +206,9 @@ if (!isset($moduleUrl)) {
     }
 }
 
-$isZip = isset($moduleUrl) and preg_match('/\.zip$/', $moduleUrl);
+$isZip = (isset($moduleUrl) and preg_match('/\.zip$/', $moduleUrl));
 
-
+echo "Is Zip? $isZip for $moduleUrl\n";
 
 
 if (strpos($moduleUrl, 'https://github.com/') === 0) {

@@ -142,6 +142,38 @@ class CLICommand_CreateDelegate extends CLICommand {
 	}
 }
 
+class CLICommand_CreateAppDelegate extends CLICommand {
+	var $argv;
+	function __construct($argv) {
+		$this->argv = $argv;
+		$this->name = 'create-app-delegate';
+		$this->description = "Create application delegate class";
+	}
+	function exec() {
+		$scriptPath = dirname(__FILE__).'/lib/XFAppCommand.class.php';
+		include $scriptPath;
+		$args = array_slice($this->argv, 1);
+		$appctl = new XFAppCommand('create-app-delegate.sh', $args);
+		$appctl->run();
+	}
+}
+
+class CLICommand_InstallModule extends CLICommand {
+	var $argv;
+	function __construct($argv) {
+		$this->argv = $argv;
+		$this->name = 'install-module';
+		$this->description = "Install a module in application";
+	}
+	function exec() {
+		$scriptPath = dirname(__FILE__).'/lib/XFAppCommand.class.php';
+		include $scriptPath;
+		$args = array_slice($this->argv, 1);
+		$appctl = new XFAppCommand('install-module.sh', $args);
+		$appctl->run();
+	}
+}
+
 class CLIController {
 	
 	var $commands = array();
@@ -155,6 +187,8 @@ class CLIController {
 		$this->commands[] = new CLICommand_SetupAuth($argv);
 		$this->commands[] = new CLICommand_AddUser($argv);
 		$this->commands[] = new CLICommand_CreateDelegate($argv);
+		$this->commands[] = new CLICommand_CreateAppDelegate($argv);
+		$this->commands[] = new CLICommand_InstallModule($argv);
 	}
 	
 	function exec($cmdName) {
