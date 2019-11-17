@@ -126,6 +126,22 @@ class CLICommand_AddUser extends CLICommand {
 	}
 }
 
+class CLICommand_CreateDelegate extends CLICommand {
+	var $argv;
+	function __construct($argv) {
+		$this->argv = $argv;
+		$this->name = 'create-delegate';
+		$this->description = "Create delegate class for table";
+	}
+	function exec() {
+		$scriptPath = dirname(__FILE__).'/lib/XFAppCommand.class.php';
+		include $scriptPath;
+		$args = array_slice($this->argv, 1);
+		$appctl = new XFAppCommand('create-delegate.sh', $args);
+		$appctl->run();
+	}
+}
+
 class CLIController {
 	
 	var $commands = array();
@@ -138,6 +154,7 @@ class CLIController {
 		$this->commands[] = new CLICommand_Stop($argv);
 		$this->commands[] = new CLICommand_SetupAuth($argv);
 		$this->commands[] = new CLICommand_AddUser($argv);
+		$this->commands[] = new CLICommand_CreateDelegate($argv);
 	}
 	
 	function exec($cmdName) {
