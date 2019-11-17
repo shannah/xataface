@@ -70,10 +70,10 @@ class CLICommand_Start extends CLICommand {
 		$this->description = "Start the development server";
 	}
 	function exec() {
-		$scriptPath = dirname(__FILE__).'/appctl.php';
+		$scriptPath = dirname(__FILE__).'/lib/XFAppCommand.class.php';
 		include $scriptPath;
 		$args = $this->argv;
-		$appctl = new XFProject_AppCtl($args);
+		$appctl = new XFAppCommand('appctl.sh', $args);
 		$appctl->run();
 	}
 }
@@ -86,10 +86,10 @@ class CLICommand_Stop extends CLICommand {
 		$this->description = "Stop the development server";
 	}
 	function exec() {
-		$scriptPath = dirname(__FILE__).'/appctl.php';
+		$scriptPath = dirname(__FILE__).'/lib/XFAppCommand.class.php';
 		include $scriptPath;
 		$args = $this->argv;
-		$appctl = new XFProject_AppCtl($args);
+		$appctl = new XFAppCommand('appctl.sh', $args);
 		$appctl->run();
 	}
 }

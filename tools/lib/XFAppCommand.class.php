@@ -1,16 +1,9 @@
 <?php
-ini_set('display_errors', 'on');
-error_reporting(E_ALL);
-
-if (php_sapi_name() != "cli") {
-    fwrite(STDERR, "CLI ONLY");
-    exit(1);
-}
-require_once dirname(__FILE__).'/lib/XFProject.class.php';
-
-class XFProject_AppCtl {
+class XFAppCommand {
 	var $argv;
-	function __construct($argv) {
+	var $commandName;
+	function __construct($commandName, $argv) {
+		$this->commandName = $commandName;
 		$this->argv = $argv;
 	}
 	
@@ -44,11 +37,11 @@ class XFProject_AppCtl {
 		if (!$start) {
 			$start = getcwd();
 		}
-		$appctl = $start . DIRECTORY_SEPARATOR . 'appctl.sh';
+		$appctl = $start . DIRECTORY_SEPARATOR . $this->commandName;
 		if (file_exists($appctl)) {
 			return dirname(dirname($appctl));
 		}
-		$appctl = $start . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'appctl.sh';
+		$appctl = $start . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . $this->commandName;
 		if (file_exists($appctl)) {
 			return $start;
 		}
@@ -63,9 +56,4 @@ class XFProject_AppCtl {
 	}
 	
 	
-}
-
-if (@$argv) {
-	$start = new XFProject_AppCtl($argv);
-	$start->run();
-}
+}	
