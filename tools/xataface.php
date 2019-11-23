@@ -190,6 +190,76 @@ class CLICommand_CreatePackage extends CLICommand {
 	}
 }
 
+class CLICommand_Test extends CLICommand {
+	var $argv;
+	function __construct($argv) {
+		$this->argv = $argv;
+		$this->name = 'test';
+		$this->description = "Run unit tests";
+	}
+	function exec() {
+		$xatafaceDir =  dirname(dirname(__FILE__));
+		$testsDir = $xatafaceDir . DIRECTORY_SEPARATOR . 'tests';
+		$runtests = $testsDir . DIRECTORY_SEPARATOR . 'runtests.sh';
+		
+		if (!file_exists($runtests)) {
+			fwrite(STDERR, "Cannot find $runtests\n");
+			exit(1);
+		}
+		
+		passthru("command -v mysql", $res);
+		if ($res !== 0) {
+			fwrite(STDERR, "No mysql found in your path.  Please add mysql to your PATH and try running tests again.\n");
+			exit(1);
+		}
+		
+
+		$home = $_SERVER['HOME'];
+		$xatafaceHome = $home . DIRECTORY_SEPARATOR . '.xataface';
+		if (!file_exists($xatafaceHome)) {
+			if (!mkdir($xatafaceHome)) {
+				fwrite(STDERR, "Failed to create directory $xatafaceHome\n");
+				exit(1);
+			}
+		}
+		$testSandboxRoot = $xatafaceHome . DIRECTORY_SEPARATOR . 'tmp';
+		if (!file_exists($testSandboxRoot)) {
+			if (!mkdir($testSandboxRoot)) {
+				fwrite(STDERR, "Failed to create directory $testSandboxRoot\n");
+				exit(1);
+			}
+		}
+		
+		$testDir = $testSandboxRoot . DIRECTORY_SEPARATOR . 'test';
+		$pidFile = $testDir . DIRECTORY_SEPARATOR . 'pid';
+		if (file_exists($pidFile)) {
+			$pid = trim(file_get_contents($pidFile));
+			if ($pid and posix_kill($pid, 0)) {
+				// There is already a test running
+				fwrite(STDERR, "Xataface unit tests running in another process. PID=$pid\n");
+				exit(1);
+			}
+		}
+		if (file_exists($testDir)) {
+			passthru("rm -rf ".escapeshellarg($testDir), $res);
+			if ($res !== 0) {
+				fwrite(STDERR, "Failed to delete old test directory.  Exit code $res\n");
+				exit(1);
+			}
+		}
+		mkdir($testDir);
+		chdir($testDir);
+		passthru('XATAFACE='.escapeshellarg($xatafaceDir).' bash '.escapeshellarg($runtests), $res);
+		if ($res !== 0) {
+			fwrite(STDERR, "Tests failed.  Exit code $res\n");
+			exit(1);
+		}
+		echo "Tests PASSED\n";
+
+		
+	}
+}
+
 class CLIController {
 	
 	var $commands = array();
@@ -206,6 +276,7 @@ class CLIController {
 		$this->commands[] = new CLICommand_CreateAppDelegate($argv);
 		$this->commands[] = new CLICommand_InstallModule($argv);
 		$this->commands[] = new CLICommand_CreatePackage($argv);
+		$this->commands[] = new CLICommand_Test($argv);
 	}
 	
 	function exec($cmdName) {

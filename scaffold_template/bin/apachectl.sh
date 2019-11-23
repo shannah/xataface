@@ -97,36 +97,30 @@ fi
 
 case $ACMD in
 start|stop|restart|graceful|graceful-stop)
-    $HTTPD -k $ARGV -f "$SCRIPTPATH"/../etc/httpd.conf
-    ERROR=$?
-    ;;
-startssl|sslstart|start-SSL)
-    echo The startssl option is no longer supported.
-    echo Please edit httpd.conf to include the SSL configuration settings
-    echo and then use "apachectl start".
-    ERROR=2
-    ;;
-configtest)
-    $HTTPD -t
+    $HTTPD -k $ARGV -f "$SCRIPTPATH"/../etc/httpd.conf -c"PidFile  $SCRIPTPATH/../tmp/httpd.pid"
     ERROR=$?
     ;;
 status)
-	pids=$(ps aux | grep httpd | grep -F "$SCRIPTPATH"/../etc/httpd.conf)
-	if [ -z "$pids" ]; then
+	if [ ! -f "$SCRIPTPATH/../tmp/httpd.pid" ]; then
 		echo "STOPPED"
 		exit 1
 	fi
-	
-    #curl  -vs -H "Accept: text/plain" $STATUSURL 2>&1  | awk ' /process$/ { print; exit } { print } '
-	HTTP_STATUS=$(php $SCRIPTPATH/inc/http-response-code.php $STATUSURL)
-	if [ "$HTTP_STATUS" = "200" ]; then
-		$HTTPD -S -f "$SCRIPTPATH"/../etc/httpd.conf
-		curl -s $STATUSURL
+	pid=$(cat "$SCRIPTPATH/../tmp/httpd.pid")
+	if [ -z "$pid" ]; then
+		echo "STOPPED"
+		exit 1
+	fi
+	if [ ! `kill -0 $pid` ]; then
+		echo "RUNNING"
+		HTTP_STATUS=$(php $SCRIPTPATH/inc/http-response-code.php $STATUSURL)
+		if [ "$HTTP_STATUS" = "200" ]; then
+			$HTTPD -S -f "$SCRIPTPATH"/../etc/httpd.conf
+			curl -s $STATUSURL
+		fi
 		exit 0
-	else
-		echo "STOPPED"
-		exit 1
 	fi
+	echo "STOPPED"
+	exit 1
     ;;
 fullstatus)
     $LYNX $STATUSURL

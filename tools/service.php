@@ -152,7 +152,7 @@ function xf_service_run($argv) {
 
 		
 		}
-		$mask = "%8.8s | %8.8s | %6.6s | %-30.30s\n";
+		$mask = "%8.8s | %8.8s | %6.6s | %-50.50s\n";
 		printf($mask, 'mysql', 'httpd', 'port', 'path');
 	
 		foreach ($rows as $row) {
