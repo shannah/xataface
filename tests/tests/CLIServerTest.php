@@ -37,7 +37,14 @@ class CLIServerTest extends PHPUnit_TestCase {
 			unlink($this->configFilePath);
 		}
 		
+		$httpdConf = 'server-httpd.conf';
+		if (file_exists($httpdConf)) {
+			unlink($httpdConf);
+		}
+		touch($httpdConf);
+		
 		$this->xfServers->setConfigFilePath($this->configFilePath);
+		
 		
 		$this->server = new XFServer($this->xfServers, 'default', array(
 			'startCommand' => 'sudo apachectl start',
@@ -46,7 +53,8 @@ class CLIServerTest extends PHPUnit_TestCase {
 			'statusCommand' => 'sudo apachectl status',
 			'mysqlCommand' => 'mysql',
 			'mysqlRootUser' => 'root',
-			'mysqlRootPassword' => ''
+			'mysqlRootPassword' => '',
+			'configPath' => $httpdConf
 		));
 		$this->serverRunning = $this->server->isRunning();
 		
@@ -95,6 +103,55 @@ class CLIServerTest extends PHPUnit_TestCase {
 		$result = $this->server->executeSQLFile("query.sql");
 		$this->assertTrue(count($result) >= 2, "There should be at least 2 databases in the mysql server");
 		$this->assertTrue(in_array('information_schema', $result), 'information_schema should one of the databases.');
+	}
+	
+	function testLoadVirtualHosts() {
+		$configPath = $this->server->getConfigPath();
+		file_put_contents($configPath, 
+<<<END
+<VirtualHost *:80>
+    DocumentRoot "/www/example2"
+    ServerName www.example.org
+
+    # Other directives here
+</VirtualHost>
+END
+		);
+		
+		$vhosts = $this->server->loadVirtualHosts();
+		$this->assertEquals(0, count($vhosts), "None of the virtual hosts have XATAFACE marker, so we shouldn't receive any when we load virtual hosts.");
+			
+		file_put_contents($configPath, 
+<<<END
+<VirtualHost *:80>
+    DocumentRoot "/www/example2"
+    ServerName www.example.org
+	#XATAFACE#
+    # Other directives here
+</VirtualHost>
+END
+		);
+			
+		$vhosts = $this->server->loadVirtualHosts();
+		$this->assertEquals(1, count($vhosts), "Didn't find virtual host");
+		$h1 = $vhosts[0];
+		
+		$this->assertEquals("/www/example2", $h1->getDocRoot());
+		$this->assertEquals("*", "{$h1->getAddress()}");
+		$this->assertEquals("80", "{$h1->getPort()}");
+		$this->assertEquals("www.example.org", $h1->getName());
+		$expectedRaw = 
+<<<END
+<VirtualHost *:80>
+    DocumentRoot "/www/example2"
+    ServerName www.example.org
+	#XATAFACE#
+    # Other directives here
+</VirtualHost>
+END;
+		$this->assertEquals($expectedRaw, $h1->getRaw());
+		$this->assertEquals(0, $h1->getStartLine());
+		$this->assertEquals(6, $h1->getEndLine());
 	}
 	
 	

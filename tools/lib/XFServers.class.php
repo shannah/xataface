@@ -180,7 +180,112 @@ class XFServer {
 		return $buffer;
 	}
 	
-	
+	public function loadVirtualHosts() {
+		if (!$this->getConfigPath()) {
+			throw new Exception("No config file specified for this server. Specify the config file by adding the configPath directive to the {$this->getName()} section of the {$this->servers->configFilePath()} config file.");
+		}
+		
+		$configPath = $this->getConfigPath();
+		if (!file_exists($configPath)) {
+			throw new Exception("Cannot find config file $configPath\n");
+		}
+		
+		$lines = file($configPath);
+		$status = 0;
+		$vhost = null;
+		$isVhostOurs = false;
+		$out = array();
+		$buffer = '';
+		foreach ($lines as $lineNum=>$line) {
+			$rawLine = $line;
+			$line = trim($line);
+			if ($status === 1) {
+
+				if ($line === '#XATAFACE#') {
+					$isVhostOurs = true;
+					$buffer .= $rawLine;
+					continue;
+				}
+			}
+			
+			$hashpos = strpos($line, '#');
+			if ($hashpos !== false) {
+				$line = substr($line, 0, $hashpos);
+				$line = trim($line);
+			}
+			
+			if ($status === 0) {
+				// Not currently inside a VirtualHost directive
+				if (preg_match('/<VirtualHost (.*)>/', $line, $matches)) {
+					$listen = $matches[1];
+					$colonPos = strpos($listen, ':');
+					$address = "*";
+					$port = "*";
+					if ($colonPos !== false) {
+						list($address, $port) = explode(':', $listen);
+					} else {
+						$address = $listen;
+						$port = "*";
+					}
+					$vhost = new XFVirtualHost($this);
+					$vhost->setAddress($address);
+					$vhost->setPort($port);
+					$vhost->setStartLine($lineNum);
+					$buffer = $rawLine;
+					$status = 1;
+					continue;
+				}
+			}
+			
+			if ($status === 1) {
+				// Currently inside a VirtualHost directive
+				$buffer .= $rawLine;
+				if (preg_match("#</VirtualHost>#", $line)) {
+					$vhost->setEndLine($lineNum+1);
+					$vhost->setRaw($buffer);
+					if ($isVhostOurs) {
+						$out[] = $vhost;
+					}
+					$vhost = null;
+					$isVhostOurs = false;
+					$buffer = '';
+					$status = 0;
+					continue;
+				}
+				
+				if (preg_match('/ServerName (.*)/', $line, $matches)) {
+					$name = $matches[1];
+					$names = preg_split('/\s+/', $name);
+					$vhost->setName(array_shift($names));
+					foreach ($names as $alias) {
+						$vhost->addAlias($alias);
+					}
+					continue;
+				}
+				if (preg_match('/ServerAlias (.*)/', $line, $matches)) {
+					$name = $matches[1];
+					$names = preg_split('/\s+/', $name);
+					foreach ($names as $alias) {
+						$vhost->addAlias($alias);
+					}
+					continue;
+				}
+				if (preg_match('/DocumentRoot (.*)/', $line, $matches)) {
+					$path = trim($matches[1]);
+					$path = str_replace("\"", '', $path);
+					$vhost->setDocRoot($path);
+					continue;
+				}
+				
+				
+				
+			}
+		}
+		
+		return $out;
+		
+		
+	}
 	
 	
 }
@@ -190,7 +295,66 @@ class XFVirtualHost {
 	private $name;
 	private $aliases;
 	private $docRoot;
-	private $listen;
+	private $port;
+	private $address;
+	private $startLine;
+	private $endLine;
+	private $raw;
+	
+	public function __construct(XFServer $server) {
+		$this->server = $server;
+	}
+	
+	function setAddress($address) {
+		$this->address = $address;
+		
+	}
+	function getAddress() {
+		return $this->address;
+	}
+	function setPort($port) {
+		$this->port = $port;
+	}
+	function getPort() {
+		return $this->port;
+	}
+	function setName($name) {
+		$this->name = $name;
+	}
+	function getName() {
+		return $this->name;
+	}
+	function setStartLine($lineNum) {
+		$this->startLine = $lineNum;
+	}
+	function getStartLine() {
+		return $this->startLine;
+	}
+	function setEndLine($lineNum) {
+		$this->endLine = $lineNum;
+	}
+	function getEndLine() {
+		return $this->endLine;
+	}
+	function setRaw($rawConfig) {
+		$this->raw = $rawConfig;
+	}
+	function getRaw() {
+		return $this->raw;
+	}
+	function setDocRoot($root) {
+		$this->docRoot = $root;
+	}
+	function getDocRoot() {
+		return $this->docRoot;
+	}
+	
+	function addAlias($alias) {
+		if (!isset($this->aliases)) {
+			$this->aliases = array();
+		}
+		$this->aliases[] = $alias;
+	}
 	
 	function hasNameOrAlias($name) {
 		if ($this->name == $name) {
@@ -264,7 +428,6 @@ class XFVirtualHost {
 				if (preg_match('/<VirtualHost /', $line)) {
 					$state = 1;
 					$vhost = new XFVirtualHost($server, $vhostServerName);
-		
 				} 
 				continue;
 			}
