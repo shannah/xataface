@@ -20,6 +20,11 @@ class XFServers {
 		return $this->servers;
 	}
 	
+	function setConfigFilePath($path) {
+		$this->configFilePath = $path;
+	}
+	
+	
 	function configFilePath() {
 		if ($this->configFilePath) {
 			return $this->configFilePath;
@@ -81,6 +86,37 @@ class XFServer {
 		return $this->config['mysqlRootPassword'];
 	}
 	
+	public function start() {
+		$cmd = $this->getStartCommand();
+		if (!$cmd) {
+			throw new Exception("In order to start the server, the server's start command must be defined.  To set this up, define the startCommand directive in the {$this->getName()} section of the {$this->servers->configFilePath()} config file.");
+		}
+		passthru($cmd, $res);
+		if ($res !== 0) {
+			throw new Exception("Failed to start server");
+		}
+	}
+	
+	public function stop() {
+		$cmd = $this->getStopCommand();
+		if (!$cmd) {
+			throw new Exception("In order to stop the server, the server's stop command must be defined.  To set this up, define the stopCommand directive in the {$this->getName()} section of the {$this->servers->configFilePath()} config file.");
+		}
+		passthru($cmd, $res);
+		if ($res !== 0) {
+			throw new Exception("Failed to stop server");
+		}
+	}
+	
+	public function isRunning() {
+		$cmd = $this->getStatusCommand();
+		if (!$cmd) {
+			throw new Exception("In order to check server status, the server's status command must be defined.  To set this up, define the statusCommand directive in the {$this->getName()} section of the {$this->servers->configFilePath()} config file.");
+		}
+		passthru($cmd, $res);
+		return $res === 0;
+	}
+	
 	public function restart() {
 		$cmd = $this->getRestartCommand();
 		if (!$cmd) {
@@ -106,7 +142,7 @@ class XFServer {
 		$cmd = $this->getMysqlCommand() or '';
 
 		if ($pass) {
-			$out . = 'MYSQL_PWD='.escapeshellarg($pass).' ';
+			$out .= 'MYSQL_PWD='.escapeshellarg($pass).' ';
 		}
 		$out .= $cmd;
 		if ($user) {
@@ -123,10 +159,11 @@ class XFServer {
 		if (!$cmd) {
 			throw new Exception("In order to execute SQL, the server's mysqlCommand property must be defined.  Set this up by adding a mysqlCommand directive to the {$this->getName()} section of the {$this->servers->configFilePath()} config file.");
 		}
-		passthru($cmd . ' < ' . escapeshellarg($path), $res);
+		exec($cmd . ' < ' . escapeshellarg($path), $buffer, $res);
 		if ($res !== 0) {
 			throw new Exception("Failed to execute SQL file.  Exit code $res.");
 		}
+		return $buffer;
 	}
 	
 	public function executeSQLQuery($sql, $user=null, $password=null) {
@@ -134,10 +171,13 @@ class XFServer {
 		if (!$cmd) {
 			throw new Exception("In order to execute SQL, the server's mysqlCommand property must be defined.  Set this up by adding a mysqlCommand directive to the {$this->getName()} section of the {$this->servers->configFilePath()} config file.");
 		}
-		passthru($cmd . ' -e ' . escapeshellarg($sql), $res);
+		$fullCmd = $cmd . ' -e ' . escapeshellarg($sql);
+		//echo "Executing $fullCmd";
+		exec($fullCmd, $buffer, $res);
 		if ($res !== 0) {
 			throw new Exception("Failed to execute SQL query.  Exit code $res.");
 		}
+		return $buffer;
 	}
 	
 	
@@ -238,7 +278,7 @@ class XFVirtualHost {
 					continue;
 				}
 				if (preg_match('/^(ServerName|ServerAlias) (.*)/', $line, $matches)) {
-					$serverNames = array_map('trim', explode(' ', $marches[1]);
+					$serverNames = array_map('trim', explode(' ', $marches[1]));
 					$vhost->aliases = $vhost->aliases or array();
 					if ($vhost->name and strpos($line, 'ServerName') === 0) {
 						$vhost->aliases[] = $vhost->name;

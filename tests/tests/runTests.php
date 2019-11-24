@@ -5,7 +5,8 @@ $tests = array(
     'TableTest',
     'IOTest',
     'HistoryToolTest',
-	'ServicesTest'
+	'ServicesTest',
+	'CLIServerTest'
 );
 if ('true' == getenv('TRAVIS')) {
 	// Some tests won't work on Travis because they need 

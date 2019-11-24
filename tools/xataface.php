@@ -247,9 +247,19 @@ class CLICommand_Test extends CLICommand {
 				exit(1);
 			}
 		}
+		
+		$tests = array();
+		for ($i=2; $i<count($this->argv); $i++) {
+			$tests[] = $this->argv[$i];
+		}
+		$XATAFACE_TESTS = '';
+		if ($tests) {
+			$XATAFACE_TESTS = ' XATAFACE_TESTS='.escapeshellarg(implode(' ', $tests));
+		}
+		
 		mkdir($testDir);
 		chdir($testDir);
-		passthru('XATAFACE='.escapeshellarg($xatafaceDir).' bash '.escapeshellarg($runtests), $res);
+		passthru('XATAFACE='.escapeshellarg($xatafaceDir).$XATAFACE_TESTS.' bash '.escapeshellarg($runtests), $res);
 		if ($res !== 0) {
 			fwrite(STDERR, "Tests failed.  Exit code $res\n");
 			exit(1);

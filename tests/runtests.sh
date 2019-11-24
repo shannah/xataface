@@ -20,6 +20,6 @@ cp -r $TESTS/tables/* testapp/app/tables/
 cp -r $TESTS/lib/* testapp/app/
 cp -r $TESTS/tests/* testapp/app/
 cd testapp/app
-ls .
+#ls .
 bash ../bin/php.sh runTests.php
 
