@@ -633,7 +633,9 @@ END;
 				}
 				currentQuery = currentQuery.replace(regex, \'$1\'+col+\'=\'+prefix+encodeURIComponent(value));
 			} else {
-				currentQuery += \'&\'+col+\'==\'+encodeURIComponent(value);
+                if ( value) {
+                    currentQuery += \'&\'+col+\'==\'+encodeURIComponent(value);
+                }
 			}
 			currentQuery = currentQuery.replace(/([&\?])-skip=[^&]+/, "$1");
 			if (autoRedirect) {
