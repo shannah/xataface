@@ -2,6 +2,72 @@
 class XFServers {
 	private $servers;
 	private $configFilePath;
+	private $preferencesPath;
+	private $preferences;
+	
+	function preferences() {
+		if (!$this->preferences) {
+			$file = $this->preferencesPath();
+			if (!file_exists($file)) {
+				$this->preferences = array();
+			} else {
+				$this->preferences = json_decode(file_get_contents($file), true);
+			}
+		}
+		return $this->preferences;
+	}
+	
+	function setPreferencesPath($path) {
+		$this->preferencesPath = $path;
+	}
+	
+	function preferencesPath() {
+		if (isset($this->preferencesPath)) {
+			return $this->preferencesPath;
+		}
+	    return $_SERVER['HOME'] . DIRECTORY_SEPARATOR . '.xataface' . DIRECTORY_SEPARATOR . 'server-prefs.json';
+	}
+	
+	function setCurrentServer($serverName) {
+		$this->preferences();
+		$this->preferences['server'] = $serverName;
+		$this->flushPrefs();
+	}
+	
+	
+	function flushPrefs() {
+		file_put_contents($this->preferencesPath(), json_encode($this->preferences()), LOCK_EX);
+	}
+	
+	function getCurrentServer() {
+		
+		$prefs = $this->preferences();
+		$server = @$prefs['server'] or '';
+		if (!$server) {
+			return null;
+		} else {
+			$servers = $this->servers();
+			foreach ($servers as $s) {
+				if ($s->getName() == $server) {
+					return $server;
+				}
+			}
+		}
+		return null;
+	}
+	
+
+	function getServerByName($name) {
+		$servers = $this->servers();
+		if (!$servers) {
+			return null;
+		}
+		foreach ($servers as $server) {
+			if ($server->getName() == $name) {
+				return $server;
+			}
+		}
+	}
 	
 	function servers() {
 		if (!isset($this->servers)) {
@@ -30,6 +96,56 @@ class XFServers {
 			return $this->configFilePath;
 		}
 		return $_SERVER['HOME'] . DIRECTORY_SEPARATOR . '.xataface' . DIRECTORY_SEPARATOR . 'server-config.ini';
+	}
+	
+	function setup() {
+		$servers = $this->servers();
+		if (count($servers) > 0) {
+			throw new Exception("Server environment is already set up.");
+		}
+		
+		if (file_exists('/opt/bitnami/ctlscript.sh')) {
+			return $this->setupBitnami();
+		}
+		if (file_exists('/Applications/XAMPP/xamppfiles/bin/apachectl')) {
+			return $this->setupXAMPP();
+		}
+		
+		throw new Exception("This type of server is not yet supported.  Please set up manually");
+		
+	}
+	
+	function setupXAMPP() {
+		$confFile = $_SERVER['HOME'] . DIRECTORY_SEPARATOR . '.xataface' . DIRECTORY_SEPARATOR . 'xataface.httpd.conf';
+		if (!file_exists($confFile)) {
+			touch($confFile);
+		}
+		
+		$globalConfig = "/Applications/XAMPP/xamppfiles/etc/httpd.conf";
+		$globalConfigContents = file_get_contents($globalConfig);
+		if (strpos($globalConfigContents, $confFile) === false) {
+			passthru("echo 'Include \"$confFile\"' >> " . escapeshellarg($globalConfig), $res);
+			if ($res !== 0) {
+				throw new Exception("Failed add xataface config file to the global config file '$globalConfig'");
+			}
+		}
+		
+		$base = "/Applications/XAMPP/xamppfiles/bin";
+		$config = 
+<<<END
+[xampp]
+startCommand=sudo $base/apachectl start
+stopCommand=sudo $base/apachectl stop
+restartCommand=sudo $base/apachectl restart
+statusCommand=sudo $base/apachectl status
+mysqlCommand=$base/mysql
+mysqlRootUser=root
+mysqlRootPassword=
+docRoot=/Applications/XAMPP/xamppfiles/apache2/htdocs
+END
+;			
+		file_put_contents($this->configFilePath(), $config);
+		return true;
 	}
 	
 	
@@ -135,12 +251,22 @@ class XFServer {
 		
 	}
 	
-	private function fullMysqlCommand($user=null, $password=null) {
+	private function fullMysqlCommand($user=null, $password=null, $database=null) {
 		$out = '';
-		$pass = $user === null ? ($this->getMysqlRootPassword() or '') : ($password or '');
-		$user = $user === null ? ($this->getMysqlRootUser() or '') : ($user or '');
-		$cmd = $this->getMysqlCommand() or '';
-
+		$pass = $password;
+		if (!$pass) {
+			$pass = $this->getMysqlRootPassword();
+			if (!$pass) {
+				$pass = '';
+			}
+		}
+		if (!$user) {
+			$user = $this->getMysqlRootUser();
+			if (!$user) {
+				$user = '';
+			}
+		}
+		$cmd = $this->getMysqlCommand();
 		if ($pass) {
 			$out .= 'MYSQL_PWD='.escapeshellarg($pass).' ';
 		}
@@ -148,14 +274,17 @@ class XFServer {
 		if ($user) {
 			$out .= ' -u '.escapeshellarg($user);
 		}
+		if ($database) {
+			$out .= ' ' . escapeshellarg($database);
+		}
 		return $out;
 	}
 	
-	public function executeSQLFile($path, $user=null, $password=null) {
+	public function executeSQLFile($path, $user=null, $password=null, $database=null) {
 		if (!file_exists($path)) {
 			throw new Exception("Attempt to execute SQL in file at path $path that doesn't exist");
 		}
-		$cmd = $this->fullMysqlCommand($user, $password);
+		$cmd = $this->fullMysqlCommand($user, $password, $database);
 		if (!$cmd) {
 			throw new Exception("In order to execute SQL, the server's mysqlCommand property must be defined.  Set this up by adding a mysqlCommand directive to the {$this->getName()} section of the {$this->servers->configFilePath()} config file.");
 		}
@@ -166,8 +295,9 @@ class XFServer {
 		return $buffer;
 	}
 	
-	public function executeSQLQuery($sql, $user=null, $password=null) {
-		$cmd = $this->fullMysqlCommand($user, $password);
+	public function executeSQLQuery($sql, $user=null, $password=null, $database=null) {
+		$cmd = $this->fullMysqlCommand($user, $password, $database);
+		echo "CMD=$cmd\n";
 		if (!$cmd) {
 			throw new Exception("In order to execute SQL, the server's mysqlCommand property must be defined.  Set this up by adding a mysqlCommand directive to the {$this->getName()} section of the {$this->servers->configFilePath()} config file.");
 		}
@@ -175,9 +305,42 @@ class XFServer {
 		//echo "Executing $fullCmd";
 		exec($fullCmd, $buffer, $res);
 		if ($res !== 0) {
-			throw new Exception("Failed to execute SQL query.  Exit code $res.");
+			throw new Exception("Failed to execute SQL query. $sql. Exit code $res.");
 		}
+		
 		return $buffer;
+	}
+	
+	public function queryResultToArray(array $buffer) {
+		$out = array();
+		$len = count($buffer);
+		for ($i=0; $i<$len; $i++) {
+			$out[$i] = str_getcsv($buffer[$i], "\t");
+			
+			
+		}
+		return $out;
+	}
+	
+	public function createDatabaseUser($dbUser, $dbPass) {
+		$sql = "CREATE USER '".addslashes($dbUser)."'@'localhost' identified by '".addslashes($dbPass)."'; FLUSH PRIVILEGES;";
+		$this->executeSQLQuery($sql);
+	}
+	
+	public function dropDatabaseUser($dbUser) {
+		$this->executeSQLQuery("DROP USER '".addslashes($dbUser)."'@'localhost'; FLUSH PRIVILEGES;");
+	}
+	
+	public function databaseUserExists($dbUser) {
+		print_r($this->queryResultToArray($this->executeSQLQuery("select * from mysql.user")));
+	}
+	
+	public function grantDatabasePermissions($dbUser, $dbName) {
+		$this->executeSQLQuery("GRANT ALL PRIVILEGES ON `{$dbName}`.* TO '".addslashes($dbUser)."'@'localhost'; FLUSH PRIVILEGES;");
+	}
+	
+	public function revokeDatabasePermissions($dbUser, $dbName) {
+		$this->executeSQLQuery("REVOKE ALL PRIVILEGES ON `{$dbName}`.* FROM '".addslashes($dbUser)."'@'localhost'; FLUSH PRIVILEGES;");
 	}
 	
 	public function loadVirtualHosts() {
@@ -347,6 +510,61 @@ class XFVirtualHost {
 	}
 	function getDocRoot() {
 		return $this->docRoot;
+	}
+	
+	function getAliasesAsString() {
+		if (!$this->aliases) {
+			return '';
+		}
+		return implode(' ', $this->aliases);
+	}
+	
+	function toString() {
+		if (!isset($this->raw)) {
+			$serverAliases = $this->getAliasesAsString();
+			if ($serverAliases) {
+				$serverAliases = 'ServerAlias '.$serverAliases;
+			}
+			return preg_replace("/\n\n/", "\n", 
+<<<END
+<VirtualHost {$this->address}:{$this->port}>
+ServerName {$this->name}
+${serverAliases}
+DocumentRoot "{$this->docRoot}"
+<Directory {$this->docRoot}>
+	Options Indexes FollowSymLinks ExecCGI Includes
+	AllowOverride All
+</Directory>
+</VirtualHost>
+END
+);
+		} else {
+			$out = $this->raw;
+			$out = preg_replace('/ServerName (.*)/', 'ServerName '.$this->name, $out);
+			if (preg_match('/ServerAlias (.*)/', $out)) {
+				if ($this->aliases) {
+					$out = preg_replace('/ServerAlias .*/', 'ServerAlias '.$this->getAliasesAsString(), $out);
+				} else {
+					$out = preg_replace('/ServerAlias .*/', '', $out);
+				}
+			} else if ($this->getAliasesAsString()){
+				$lines = explode("\n", $out);
+				array_splice($lines, 1, 0, 'ServerAlias '.$this->getAliasesAsString());
+				$out = implode("\n", $lines);
+			}
+			$out = preg_replace("/DocumentRoot .*/", "DocumentRoot \"".$this->docRoot."\"", $out);
+			/*
+			if (!preg_match("/<Directory ".preg_quote($this->docRoot, '/').">/", $out)) {
+				$lines = explode("\n", $out);
+				
+				array_splice($lines, count($lines)-2, 0, '<Directory '.$this->docRoot.">\n.   Options Indexes FollowSymLinks ExecCGI Includes\n    AllowOverride All\n</Directory>");
+				$out = implode("\n", $lines);
+			}
+			*/
+			return $out;
+
+			
+		}
 	}
 	
 	function addAlias($alias) {

@@ -43,7 +43,7 @@ foreach ($files as $file) {
 					}
 				}
 			}
-	        $conf = array_merge_recursive($tmp, $conf);
+	        $conf = array_replace_recursive($tmp, $conf);
 	    }
 	}
     
@@ -55,6 +55,19 @@ if (count($argv) < 2) {
 $key = $argv[1];
 if (strpos($key, '.') !== false) {
     list($key1, $key2) = explode('.', $key);
+	if (is_array($key1)) {
+		throw new Exception("Key1 is array");
+	}
+	if (is_array($key2)) {
+		throw new Exception('Key 2 is array');
+	}
+	if (is_array($conf[$key1][$key2])) {
+		ob_start();
+		print_r($conf[$key1][$key2]);
+		$arr = ob_get_contents();
+		ob_end_clean();
+		throw new Exception('conf[key1][key2] is array '.$arr);
+	}
     echo @$conf[$key1][$key2];
 
 } else {

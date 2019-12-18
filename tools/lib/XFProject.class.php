@@ -324,51 +324,7 @@ END;
         }
         echo "Done.\n";
 
-        /*
-         * This part isn't necessary because we are hosting a prebuilt phpmyadmin
-         
-        echo 'Installing phpMyAdmin using composer...';
-        $quotedComposer = escapeshellarg(realpath($this->lib_dir() . DIRECTORY_SEPARATOR . 'composer.phar'));
-        $quotedPhpMyAdmin = escapeshellarg(realpath($phpMyAdmin));
-        exec('cd '.$quotedPhpMyAdmin.' && php '.$quotedComposer.' update --no-dev', $buf, $res);
-        if ($res !== 0) {
-            fwrite(STDERR, "Failed\n");
-            //fwrite(STDERR, $buf);
-            print_r($buf);
-            exit(1);
-        }
-        exec('cd '.$quotedPhpMyAdmin.' && ../yarn/bin/yarn install', $buf, $res);
-        if ($res !== 0) {
-            fwrite(STDERR, "Failed\nYarn install failure\n");
-            print_r($buf);
-            exit(1);
-        }
-        $configSample = $phpMyAdmin . DIRECTORY_SEPARATOR . 'config.sample.inc.php';
-        $config = $phpMyAdmin .DIRECTORY_SEPARATOR . 'config.inc.php';
-        if (!rename($configSample, $config)) {
-            fwrite(STDERR, "Failed\n");
-            fwrite(STDERR, "Failed to rename config sample to config.");
-            exit(1);
-        }
-        $contents = file_get_contents($config);
-        $contents = str_replace(
-            '$cfg[\'Servers\'][$i][\'auth_type\'] = \'cookie\';', 
-            '$cfg[\'Servers\'][$i][\'auth_type\'] = \'config\';', 
-            $contents
-        );
-        $contents = str_replace('$cfg[\'Servers\'][$i][\'AllowNoPassword\'] = false;',
-            '$cfg[\'Servers\'][$i][\'AllowNoPassword\'] = true;',
-            $contents
-        );
-        if (!file_put_contents($config, $contents)) {
-            fwrite(STDERR, "Failed\n");
-            fwrite(STDERR, "Failed to write config contents.");
-            exit(1);
-
-        }
-        
-        echo "Done\n";
-        */
+       
         
 
 
@@ -387,7 +343,197 @@ END;
         }
         echo "Done\n";
     }
+	
+	function currentServer() {
+		if (getenv('XATAFACE_SERVER') !== null) {
+			require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'XFServers.class.php';
+			$servers = new XFServers();
+			return $servers->getServerByName(getenv('XATAFACE_SERVER'));
+			
+		}
+		return null;
+	}
+	
+	/**
+	 * Installs the project in the given central server.  This may involve copying the 
+	 * database if it isn't already installed.
+	 */
+	function installOnServer(XFServer $server, $hostName=null) {
+		$dbs = $server->executeSQLQuery("show databases");
+		$dbName = $this->get_config_var('_database.name');
+		$configPath = $server->getConfigPath();
+		if (in_array($dbName, $dbs)) {
+			throw new Exception("MySQL server for {$server->getName()} already contains a database named {$dbName}");
+		}
+		if ($hostName !== null) {
+			$vhostConfFile = $this->tmp_dir() . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . basename($server->getName()) . '.httpd.conf';
+		
+			if (file_exists($vhostConfFile)) {
+				throw new Exception("vhost conf file already exists.");
+			}
+			
+			
+			if (!$configPath or !file_exists($configPath)) {
+				throw new Exception("Config file $configPath was not found.");
+			}
+		}
+		
+		$dumpFile = $this->tmp_dir() . DIRECTORY_SEPARATOR . basename($dbName). '-' . date('Y-m-d_His').'.sql';
+		$this->mysqldump($dumpFile);
+		
+		$dbUser = $this->get_config_var('_database.user');
+		$dbPass = $this->get_config_var('_database.password');
+		
+		try {
+			$server->executeSQLQuery('show databases', $dbUser, $dbPass);
+		} catch (Exception $ex) {
+			$sql = "CREATE USER '".addslashes($dbUser)."'@'localhost' identified by '".addslashes($dbPass)."'; FLUSH PRIVILEGES;";
+			$server->executeSQLQuery($sql);
+		}
+		
+		// Now verify that the user can login
+		$server->executeSQLQuery('show databases', $dbUser, $dbPass);
+		
+		// Now create the database
+		$server->executeSQLQuery('create database `'.$dbName.'`');
+		
+		// Now grant user all privileges on the database
+		$server->executeSQLQuery("GRANT ALL PRIVILEGES ON `{$dbName}` TO '".addslashes($dbUser)."'@'localhost'; FLUSH PRIVILEGES;");
+		
+		// Now import the SQL file
+		$server->executeSQLFile($dumpFile, $dbUser, $dbPass, $dbName);
+		
+		if ($hostName !== null) {
+			if (!file_exists(dirname($vhostConfFile))) {
+				mkdir(dirname($vhostConfFile));
+			}
+			touch($vhostConfFile);
+		
+			$vhost = new XFVirtualHost($server);
+			$vhost->setAddress('*');
+			$vhost->setPort('*');
+			$vhost->setDocRoot(realpath($this->www_dir()));
+			$vhost->setName($hostName);
+			file_put_contents($vhostConfFile, $vhost->toString());
+			$sudo = !is_writable($configPath);
+			if (!$sudo) {
+				$configContents = file_get_contents($configPath);
+				if (strpos($configContents, $vhost->getDocRoot()) === false) {
+					$configContents .= "\nInclude \"{$vhost->getDocRoot()}\"\n";
+					file_put_contents($configPath, $configContents);
+				}
+			} else {
+				exec("sudo cat ".escapeshellarg($configPath), $buffer, $res);
+				if ($res !== 0) {
+					throw new Exception("Failed to load contents of $configPath for appending Include statement");
+				}
+				if (strpos(implode('', $buffer), $vhost->getDocRoot()) === false) {
+					$buffer[] = "Include \"{$vhost->getDocRoot()}\"";
+					passthru("sudo ".escapeshellarg(implode('', $buffer))." > ".escapeshellarg($configPath), $res);
+					if ($res !== 0) {
+						throw new Exception("Failed to append Include into config file $configPath");
+					}
+				}
+				
+				
+			}
+			
+			
+		}
+		
+		
+		
+		
+		
+	}
+	
+	function mysqldump($destFile) {
+		$mysqldump = $this->bin_dir() . DIRECTORY_SEPARATOR . 'mysqldump.sh';
+		$cmd = $mysqldump . ' > ' . escapeshellarg($destFile);
+		exec($cmd, $buffer, $res);
+		if ($res !== 0) {
+			throw new Exception("mysqldump to $destFile failed. Error code $res");
+		}
+		
+		
+	}
+	
+	function get_config_var($name) {
+		$print_config_var = $this->bin_dir() . DIRECTORY_SEPARATOR . 'print_config_var.php';
+		$cmd = "php ".escapeshellarg($print_config_var).' '.escapeshellarg($name);
+		exec($cmd, $buffer, $res);
+		if ($res !== 0) {
+			throw new Exception("Failed to get config var $name.  Exit code $res");
+		}
+		if ($buffer and count($buffer) > 0) {
+			return trim($buffer[0]);
+		}
+		return null;
+	}
+	
+	function bootstrap_db_production(XFServer $server) {
+        $conf_db_ini_path = $this->www_dir() . DIRECTORY_SEPARATOR . 'conf.db.ini.php';
+        if (!file_exists($conf_db_ini_path)) {
+            fwrite(STDERR, "$conf_db_ini_path not found.");
+            exit(1);
+        }
+        echo "Initializing database ... \n";
+        $conf = parse_ini_file($conf_db_ini_path, true);
+        $contents = file_get_contents($conf_db_ini_path);
+        if ($conf['_database']['name'] == '{__DATABASE_NAME__}') {
+            $name = basename($this->basedir);
+            if ($this->dbName) {
+                $name = $this->dbName;
+            }
+            if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_-]+$/', $name)) {
+                fwrite(STDERR, "Failed. Illegal database name $name.\n");
+                exit(1);
+            }
+            $contents = str_replace('{__DATABASE_NAME__}', $name, $contents);
+        }
+        if ($conf['_database']['user'] == '{__DATABASE_USER__}') {
+            $name = basename($this->basedir);
+            if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_-]+$/', $name)) {
+                fwrite(STDERR, "Failed. Illegal user name $name.\n");
+                exit(1);
+            }
+            $contents = str_replace('{__DATABASE_USER__}', $name, $contents);
+        }
+        if ($conf['_database']['password'] == '{__DATABASE_PASSWORD__}') {
+            $password = $this->randomPassword();
+            $contents = str_replace('{__DATABASE_PASSWORD__}', $password, $contents);
+
+        }
+        file_put_contents($conf_db_ini_path, $contents);
+        $conf = parse_ini_file($conf_db_ini_path, true);
+		print_r($conf);
+		$user = $conf['_database']['user'];
+		$pass = $conf['_database']['password'];
+		$database = $conf['_database']['name'];
+		
+		echo "Creating database '$database'\n";
+		$server->executeSQLQuery("CREATE DATABASE `$database`");
+		echo "Creating mysql user '$user'\n";
+		$server->executeSQLQuery("CREATE USER '".addslashes($user)."'@'localhost' IDENTIFIED BY '".addslashes($pass)."'");
+		echo "Granting all privileges on database '$database' to user '$user'\n";
+		$server->executeSQLQuery("GRANT ALL PRIVILEGES ON `$database`.* TO '".addslashes($user)."'@'localhost'");
+		$server->executeSQLQuery("FLUSH PRIVILEGES");
+		
+		echo "Creating test table in '$database'\n";
+		$server->executeSQLQuery("USE `$database`; CREATE TABLE IF NOT EXISTS `test` (
+		    test_id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		    test_field VARCHAR(100) 
+		)", $user, $pass);
+		
+		
+		// Now to add the virtual host
+		
+
+        echo "Done\n";
+	}
+	
     function init_db() {
+		
         $conf_db_ini_path = $this->www_dir() . DIRECTORY_SEPARATOR . 'conf.db.ini.php';
         if (!file_exists($conf_db_ini_path)) {
             fwrite(STDERR, "$conf_db_ini_path not found.");
@@ -424,6 +570,7 @@ END;
         $conf = parse_ini_file($conf_db_ini_path, true);
         $mysql_server = $this->bin_dir() . DIRECTORY_SEPARATOR . 'mysql.server.sh';
         $mysql = $this->bin_dir() . DIRECTORY_SEPARATOR . 'mysql.sh';
+		
         echo "Starting mysql server...";
         exec('bash '.escapeshellarg($mysql_server).' start', $buffer, $res);
         if ($res !== 0) {
@@ -431,6 +578,10 @@ END;
             exit(1);
         }
         echo "Started Successfully\n";
+			
+			
+		
+       
         
         $install_sql_path = $this->basedir . DIRECTORY_SEPARATOR . 'install.sql';
 

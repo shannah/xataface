@@ -7,6 +7,7 @@ class CLIServerTest extends PHPUnit_TestCase {
 	private $xfServers;
 	private $server;
 	private $configFilePath = '.test-servers-config.ini';
+	private $prefsPath = '.test-servers-prefs.json';
 	private $xatafacePath;
 	private $serverRunning;
 	
@@ -36,6 +37,11 @@ class CLIServerTest extends PHPUnit_TestCase {
 		if (file_exists($this->configFilePath)) {
 			unlink($this->configFilePath);
 		}
+		$prefsPath = $this->prefsPath;
+		if (file_exists($prefsPath)) {
+			unlink($prefsPath);
+		}
+		$this->xfServers->setPreferencesPath($prefsPath);
 		
 		$httpdConf = 'server-httpd.conf';
 		if (file_exists($httpdConf)) {
@@ -56,9 +62,32 @@ class CLIServerTest extends PHPUnit_TestCase {
 			'mysqlRootPassword' => '',
 			'configPath' => $httpdConf
 		));
+		
 		$this->serverRunning = $this->server->isRunning();
 		
 		
+		$configFileContents = 
+<<<END
+[default]
+startCommand=sudo apachectl start
+stopCommand=sudo apachectl stop
+restartCommand=sudo apachectl restart
+statusCommand=sudo apachectl status
+mysqlCommand=mysql
+mysqlRootUser=root
+mysqlRootPassword=
+configPath={$httpdConf}
+
+END;
+		file_put_contents($this->configFilePath, $configFileContents);
+		
+	}
+	
+	function testPrefsPath() {
+		$this->xfServers->setPreferencesPath(null);
+		$this->assertEquals($_SERVER['HOME'] . DIRECTORY_SEPARATOR . '.xataface' . DIRECTORY_SEPARATOR . 'server-prefs.json', $this->xfServers->preferencesPath());
+		$this->xfServers->setPreferencesPath($this->prefsPath);
+		$this->assertEquals($this->prefsPath, $this->xfServers->preferencesPath());
 	}
 	
 	function testIsRunning() {
@@ -152,8 +181,32 @@ END;
 		$this->assertEquals($expectedRaw, $h1->getRaw());
 		$this->assertEquals(0, $h1->getStartLine());
 		$this->assertEquals(6, $h1->getEndLine());
+		$this->assertEquals(
+<<<END
+<VirtualHost *:80>
+    DocumentRoot "/www/example2"
+    ServerName www.example.org
+	#XATAFACE#
+    # Other directives here
+</VirtualHost>
+END,
+		$h1->toString()
+		);
+		
+
 	}
 	
+	function testSetServer() {
+		$this->assertEquals(null, $this->xfServers->getCurrentServer());
+		$this->xfServers->setCurrentServer('notexists');
+		$this->assertEquals(null, $this->xfServers->getCurrentServer());
+		$this->xfServers->setCurrentServer(null);
+		$this->assertEquals(null, $this->xfServers->getCurrentServer());
+		$this->xfServers->setCurrentServer('default');
+		$this->assertEquals('default', $this->xfServers->getCurrentServer());
+		$server = $this->xfServers->getServerByName($this->xfServers->getCurrentServer());
+		$this->assertEquals('default', $server->getName());
+	}
 	
 	function tearDown() {
 		if ($this->serverRunning and !$this->server->isRunning()) {

@@ -11,4 +11,4 @@ if [[ $status == *"ERROR!"* ]]; then
     }
     trap finish EXIT
 fi
-bash $SCRIPTPATH/php.sh $SCRIPTPATH/inc/create-delegate.php "$@"
+bash $SCRIPTPATH/php.sh $SCRIPTPATH/inc/create-fieldsini.php "$@"
