@@ -668,8 +668,11 @@ END;
 				$onchange = '';
 			}
 			echo '<li> '.df_escape($field['widget']['label']).' <select data-col="'.htmlspecialchars($col).'" '.$onchange.'><option value="">'.df_translate('scripts.GLOBAL.LABEL_ALL', 'All').'</option>';
-			
-			$res = df_query("select `$col`, count(*) as `num` ".$qb->_from()." ".$qb->_secure( $qb->_where(array($col=>null)) )." group by `$col` order by `$col`", null, true);
+			$orderBy = "`$col`";
+            if (@$field['filter.sort']) {
+                $orderBy = $field['filter.sort'];
+            }
+			$res = df_query("select `$col`, count(*) as `num` ".$qb->_from()." ".$qb->_secure( $qb->_where(array($col=>null)) )." group by `$col` order by $orderBy", null, true);
 			if ( !$res and !is_array($res)) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			if ( @$query[$col] and $query[$col]{0} == '=' ) $queryColVal = substr($query[$col],1);
 			
