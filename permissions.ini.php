@@ -139,6 +139,7 @@ clear views = "Clear Views"
 manage_migrate = "Manage Migrations"
 manage = "Manage Site"
 manage_build_index="Manage Build Search Index"
+manage_sync_bindings="Synchronize field bindings"
 install = "Install and update applications.  Administrator only"
 expandable = "Whether the record can be expanded in the left nav menu"
 
@@ -340,4 +341,5 @@ show hide columns = "Show and hide columns"
 	manage_migrate=1
 	manage_build_index=1
 	install = 1
+	manage_sync_bindings=1
 	
