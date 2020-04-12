@@ -592,14 +592,14 @@ END;
 	private function createBeforeInsertTrigger() {
 		$bvars = $this->parseBinding('NEW');
 		$field =& $this->table->getField($this->fieldName);
+		self::$triggerDeclarations[$this->table->tablename.'.before.insert'][] = "DECLARE tmp_{$this->fieldName} {$field['Type']};\n";
 		$sql = <<<END
-			DECLARE tmp_{$this->fieldName} {$field['Type']};
 			IF NEW.`{$this->fieldName}` <=> NULL THEN
 				SELECT `{$bvars['field']}` INTO tmp_{$this->fieldName} FROM `{$bvars['table']}` WHERE {$bvars['where']};
 				SET NEW.`{$this->fieldName}` = tmp_{$this->fieldName};
 			END IF;
 END;
-		self::$triggerDeclarations[$this->table->tablename.'.before.insert'][] = $sql;
+		self::$triggers[$this->table->tablename.'.before.insert'][] = $sql;
 	}
 	
 	private function createTrigger($type) {
