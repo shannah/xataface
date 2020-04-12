@@ -1,0 +1,17 @@
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="main_column"}
+		<h1>Install Bindings</h1>
+	
+		<p>If you have defined bindings on any of your fields using the 'binding' property
+		of the fields.ini file, you need to install the bindings into the database at least
+		once.  The bindings are installed as triggers inside the database to keep fields
+		in sync.</p>
+	
+		<p>You should run this action after making any changes to the bindings of your 
+		application.</p>
+	
+		<p><button id="install-bindings">Install Now</button></p>
+	
+		<div id="result"></div>
+	{/fill_slot}
+{/use_macro}
