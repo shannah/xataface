@@ -1082,9 +1082,16 @@ END;
 		if ( PEAR::isError($action) ){
 			return '';
 		}
-		$base .= ' :: '.Dataface_LanguageTool::translate(
+		if (@$action['breadcrumb_label']) {
+			$base .= ' :: '.Dataface_LanguageTool::translate(
+			@$action['breadcrumb_label_i18n'] ? $action['breadcrumb_label_i18n'] : $action['label_i18n'],
+			$action['breadcrumb_label']);
+		} else {
+			$base .= ' :: '.Dataface_LanguageTool::translate(
 			$action['label_i18n'],
 			$action['label']);
+		}
+		
 		return "<b><i class='material-icons' style='font-size:100%'>bookmark</i></b> ".$base;
 	}
 
