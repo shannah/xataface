@@ -3155,6 +3155,11 @@ body.two-col #status-bar .responsive-content,
     margin-right: -1px !important;
     margin-top: -1px;
   }
+  
+	.xf-form-group-wrapper {
+		border-left: none !important;
+		border-right:none !important;
+	}
   .sidebox,
  .portlet > div,
  .resultlist-filters,
@@ -3200,4 +3205,12 @@ body.two-col #status-bar .responsive-content,
 
   .view-related-records-actions-wrapper {
       margin-top: -3em;
+  }
+  
+  body.no-table-tabs #table_tabs_wrapper {
+  	display:none;
+  }
+  
+  .new-record-header {
+  	padding-bottom: 1em;
   }

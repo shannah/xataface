@@ -2601,6 +2601,9 @@ class Dataface_Table {
 		foreach (array_keys($this->_fields) as $key){
 		    if (isset($field)) unset($field);
 		    $field =&  $this->_fields[$key];
+		    if ($key == 'xf_inserted_record_id') {
+		    	$field['widget']['type'] = 'hidden';
+		    }
 
 			if ( isset($this->_fields[$key]['group'])  ){
 				$grpname = $this->_fields[$key]['group'];
@@ -3170,6 +3173,22 @@ class Dataface_Table {
             }
             return $this->_atts['label'];
 
+	}
+	
+	/**
+	 * Gets the name of the table used for the new record form on this
+	 * table.  This is handy if you want to use a "dummy" table to handle
+	 * new record insertion into this table.
+	 *
+	 * The dummy table is responsible for adding the appropriate record into
+	 * this table, and it should contain a "xf_inserted_record_id" field, which
+	 * will must be populated with the record from *this* table.
+	 */
+	function getNewRecordFormTable() {
+		if (@$this->_atts['new_record_form']) {
+			return $this->_atts['new_record_form'];
+		}
+		return $this->tablename;
 	}
 
 

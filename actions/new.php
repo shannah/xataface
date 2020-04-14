@@ -36,6 +36,8 @@ class dataface_actions_new {
 		$formTool =& Dataface_FormTool::getInstance();
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
+		
+		$app->addBodyCSSClass('no-table-tabs');
 
 		$new = true;
 
@@ -47,6 +49,17 @@ class dataface_actions_new {
 
 		$currentRecord = new Dataface_Record($query['-table'], array());
 		$currentTable =& Dataface_Table::loadTable($query['-table']);
+		if (!$currentTable or PEAR::isError($currentTable)) {
+			die("No such table");
+		}
+		
+		if (!$_POST) {
+			$newRecordTableName = $currentTable->getNewRecordFormTable();
+			if ($newRecordTableName != $currentTable->tablename) {
+				header('Location: '.$app->url(array('-table' => $newRecordTableName), true, true));
+				exit;
+			}
+		}
 
 		$app->setPageTitle(
 		    df_translate(
@@ -223,6 +236,11 @@ class dataface_actions_new {
 						$urlParams[$passedParam] = $query[$passedParam];
 					}
 				}
+				
+				if ($currentRecord->getInsertedRecordId()) {
+					$currentRecord = df_get_record_by_id($currentRecord->getInsertedRecordId());
+				}
+				
 				$url = $currentRecord->getURL($urlParams);
 				if ( @$query['--lang'] ){
 					$url .= '&--lang='.$query['--lang'];
@@ -279,8 +297,24 @@ class dataface_actions_new {
 		}
 		$context = array('form'=>&$out);
 		$context['tabs'] = $formTool->createHTMLTabs($currentRecord, $form, @$query['--tab']);
-
-
+		$context['new_record_header_label'] = 'Create new '.$currentTable->getSingularLabel();
+		
+		if (@$currentTable->_atts['new_record_label']) {
+			$context['new_record_header_label'] = $currentTable->_atts['new_record_label'];
+		}
+		if (@$currentTable->_atts['new_record_label_html']) {
+			$context['new_record_header_label_html'] = $currentTable->_atts['new_record_label_html'];
+		}
+		
+		
+		$context['new_record_header_description'] = "";
+		if (@$currentTable->_atts['new_record_description']) {
+			$context['new_record_header_description'] = $currentTable->_atts['new_record_description'];
+		}
+		if (@$currentTable->_atts['new_record_description_html']) {
+			$context['new_record_header_description_html'] = $currentTable->_atts['new_record_description_html'];
+		}
+		
                 if ( isset($query['-template']) ) $template = $query['-template'];
                 else if ( @$query['-headless'] ) $template = 'Dataface_New_Record_headless.html';
 		else $template = 'Dataface_New_Record.html';

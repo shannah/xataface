@@ -186,7 +186,7 @@ jQuery(document).ready(function($){
 					hide a section.
 				*}
 				{if $section.field.collapsed}{assign var=display value=collapsed}{else}{assign var=display value=expanded}{/if}
-				{if $section.name == '__submit__' or $tab_data.sections|@count<2}
+				{if $section.name == '__submit__' or $tab_data.sections|@count<2 or $form_data.sections|@count <= 2}
 					{assign var="hide_heading" value="1"}
 					{*{define_slot name="before_submit_button"} {/define_slot}*}
 				{else}
@@ -220,10 +220,11 @@ jQuery(document).ready(function($){
 			hide a section.
 		*}
 		{if $section.field.collapsed}{assign var=display value=collapsed}{else}{assign var=display value=expanded}{/if}
-		{if $section.name == '__submit__'}
+		{if $section.name == '__submit__' or $form_data.sections|@count <= 2}
 			{assign var="hide_heading" value="1"}
 			{*{define_slot name="before_submit_button"} {/define_slot}*}
 		{else}
+			
 			{assign var="hide_heading" value="0"}
 		{/if}
 		

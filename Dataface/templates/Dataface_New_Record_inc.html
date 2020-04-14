@@ -1,4 +1,23 @@
-
+{if $ENV.action == 'new'}
+{define_slot name="new_record_form_header"}
+	<div class="new-record-header">
+		<h1 class="new-record-header-label">
+			{if $new_record_header_label_html}
+				{$new_record_header_label_html}
+			{else}
+				{$new_record_header_label|escape}
+			{/if}
+		</h1>
+		<div class="new-record-header-description formHelp">
+			{if $new_record_header_description_html}
+				{$new_record_header_description_html}
+			{else}
+				{$new_record_header_description|escape}
+			{/if}
+		</div>
+	</div>
+{/define_slot}
+{/if}
 {if $tabs and $tabs|@count>1}
     <div id="edit-record-tabs-container" class="tabs-container">
         <ul id="edit-record-tabs" class="tabs-nav">
