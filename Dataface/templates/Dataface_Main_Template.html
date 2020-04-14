@@ -77,7 +77,7 @@
 
 
 	</head>
-	<body onload="bodyOnload()" {block name="body_atts"}>
+	<body onload="bodyOnload()" class="{$ENV.APPLICATION_OBJECT->getBodyCSSClasses()|escape}" {block name="body_atts"}>
 
 		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')|escape}"
           title="RSS 1.0" type="application/rss+xml" />

@@ -270,6 +270,13 @@ class Dataface_AuthenticationTool {
 		}
 	}
 
+	function createToken() {
+		if (session_id() == '') {
+			return null;
+		}
+		return md5('sessid').'.'.base64_encode(session_id());
+	}
+
 	function authenticate(){
 		$app =& Dataface_Application::getInstance();
 		if ( !$this->authEnabled ) return true;
@@ -278,6 +285,9 @@ class Dataface_AuthenticationTool {
 		if ( $app->sessionEnabled() or $app->autoSession ){
 			$app->startSession($this->conf);
 		}
+		
+		
+		
 		$appdel =& $app->getDelegate();
 		
 		// Fire a trigger before we authenticate
@@ -327,33 +337,67 @@ class Dataface_AuthenticationTool {
 		}
 		
 		if ( isset( $_REQUEST['-action'] ) and $_REQUEST['-action'] == 'login' ){
+			
+			$json = @$_REQUEST['--no-prompt'];
 			$app->startSession();
 			if ( $this->isLoggedIn() ){
-				$app->redirect(DATAFACE_SITE_HREF.'?--msg='.urlencode("You are logged in"));
-
+				if ($json) {
+					df_write_json(array(
+						'code' => 200,
+						'token' => $this->createToken(),
+						'message' => 'Logged in'
+					));
+					exit;
+				} else {
+					$app->redirect(DATAFACE_SITE_HREF.'?--msg='.urlencode("You are logged in"));
+				}
 			}
 			
 			if ( $this->isLockedOut() ){
-				$app->redirect(DATAFACE_SITE_HREF.'?--msg='.urlencode("Sorry, you are currently locked out of the site due to failed login attempts.  Please try again later, or contact a system administrator for help."));
+				if ($json) {
+					df_write_json(array(
+						'code' => '400',
+						'message' => 'Too many failed attempts.  Locked out.'
+					));
+					exit;
+				} else {
+					$app->redirect(DATAFACE_SITE_HREF.'?--msg='.urlencode("Sorry, you are currently locked out of the site due to failed login attempts.  Please try again later, or contact a system administrator for help."));
+				}
 
 			}
 			// The user is attempting to log in.
 			$creds = $this->getCredentials();
 			$approved = $this->checkCredentials();
-			
 			if ( isset($creds['UserName']) and !$approved ){
 				
 				$this->flagFailedAttempt($creds);
-				
-				return PEAR::raiseError(
-					df_translate('Incorrect Password',
-							'Sorry, you have entered an incorrect username /password combination.  Please try again.'
-							),
-					DATAFACE_E_LOGIN_FAILURE
+				if ($json) {
+					df_write_json(array(
+						'code' => 400,
+						'message' => df_translate('Incorrect Password',
+								'Sorry, you have entered an incorrect username /password combination.  Please try again.'
+								)
+					));
+					exit;
+				} else {
+					return PEAR::raiseError(
+						df_translate('Incorrect Password',
+								'Sorry, you have entered an incorrect username /password combination.  Please try again.'
+								),
+						DATAFACE_E_LOGIN_FAILURE
 					);
-			} else if ( !$approved ){
+				}
 				
-				$this->showLoginPrompt();
+			} else if ( !$approved ){
+				if ($json) {
+					df_write_json(array(
+						'code' => 500,
+						'message' => 'No UserName provided.'
+					));
+				} else {
+					$this->showLoginPrompt();
+				}
+				
 				exit;
 			}
 			
@@ -362,6 +406,15 @@ class Dataface_AuthenticationTool {
 			// If we are this far, then the login worked..  We will store the 
 			// userid in the session.
 			$_SESSION['UserName'] = $creds['UserName'];
+			
+			if ($json) {
+				df_write_json(array(
+					'code' => 200,
+					'token' => $this->createToken(),
+					'message' => 'Logged in'
+				));
+				exit;
+			}
 			
 			import(XFROOT.'Dataface/Utilities.php');
 				
