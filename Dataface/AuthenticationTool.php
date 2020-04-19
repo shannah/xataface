@@ -617,7 +617,7 @@ class Dataface_AuthenticationTool {
 	
 	function getEmailColumn(){
 		if ( !isset($this->emailColumn) ){
-			import(XROOT.'Dataface/Ontology.php');
+			import(XFROOT.'Dataface/Ontology.php');
 			Dataface_Ontology::registerType('Person', 'Dataface/Ontology/Person.php', 'Dataface_Ontology_Person');
 			$ontology = Dataface_Ontology::newOntology('Person', $this->usersTable);
 			if ( isset($this->conf['email_column']) ) $this->emailColumn = $this->conf['email_column'];
