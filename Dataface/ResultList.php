@@ -652,6 +652,10 @@ END;
 		if (isset($app->prefs['auto_update_filters']) and !$app->prefs['auto_update_filters']) {
 			$autoUpdateFilters = false;
 		}
+        $showRowCounts = true;
+		if (isset($app->prefs['show_filter_counts']) and !$app->prefs['show_filter_counts']) {
+			$showRowCounts = false;
+		}
 		foreach ( $this->_filterCols as $col ){
 			$field =& $this->_table->getField($col);
 			
@@ -688,7 +692,8 @@ END;
 				
 				if ( $queryColVal == $row[$col] ) $selected = ' selected';
 				else $selected = '';
-				echo '<option value="'.df_escape($row[$col]).'"'.$selected.'>'.df_escape($val).' ('.$row['num'].')</option>';
+                $countStr = $showRowCounts ? (' ('.$row['num'].')') : '';
+				echo '<option value="'.df_escape($row[$col]).'"'.$selected.'>'.df_escape($val.$countStr).'</option>';
 				
 			}
 			//@xf_db_free_result($res);
