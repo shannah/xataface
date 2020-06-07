@@ -919,6 +919,9 @@ class Dataface_IO {
 						// we don't need to perform any permissions on it
 						continue;
 					}
+                    if (@$field['ownerstamp']) {
+                        continue;
+                    }
 					// If this field's change doesn't have veto power and its value has changed,
 					// we must make sure that the user has edit permission on this field.
 					return Dataface_Error::permissionDenied(
@@ -1115,6 +1118,8 @@ class Dataface_IO {
 		}
 		$s =& $this->_table;
 		$delegate =& $s->getDelegate();
+        
+
 
 		if ( $this->fireTriggers ){
 			$res = $this->fireBeforeInsert($record);

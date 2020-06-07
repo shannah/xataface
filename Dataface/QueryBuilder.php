@@ -357,6 +357,10 @@ class Dataface_QueryBuilder {
 				// state of the record.
 				continue;
 			}
+            if ($fieldArr['ownerstamp']) {
+                continue;
+            }
+
 			if ( $tableObj->isVersioned() and $tableObj->getVersionField() === $fieldname ){
 				continue;
 			}
@@ -451,6 +455,33 @@ class Dataface_QueryBuilder {
 					continue;
 				}
 			}
+            if (@$field['ownerstamp']) {
+                if (class_exists('Dataface_AuthenticationTool')) {
+                    $auth = Dataface_AuthenticationTool::getInstance();
+                    
+                    if ($tableObj->isText($fieldname)) {
+                        $insertedKeys[] = '`'.$key.'`';
+                        $unm = $auth->getLoggedInUserName();
+                        $insertedValues[] = $this->prepareValue($key, $unm);
+                        $record->setValue($key, $unm);
+                        continue;
+                    } else {
+                        $user = $auth->getLoggedInUser();
+                        if ($user) {
+                            $keys = array_keys($user->table()->keys());
+                            if (count($keys) == 1) {
+                                $id = $user->val($keys[0]);
+                                $insertedKeys[] = '`'.$key.'`';
+                                $insertedValues[] = $this->prepareValue($key, $id);
+                                $record->setValue($key, $id);
+                                continue;
+                            }
+                        }
+                    }
+                
+                }
+            
+            }
 			if ( !$record->hasValue($key) ) continue;
 			$val = $record->getValue($key);
 			if ( strtolower($this->_mutableFields[$key]['Extra']) == 'auto_increment' && !$val && $val !== 0 && $val !== '0' ){

@@ -1993,6 +1993,25 @@ class Dataface_Table {
 			$table =& self::loadTable($field['tablename']);
 			return $table->getDefaultValue($fieldname);
 		}
+        if (@$field['ownerstamp']) {
+            if (class_exists('Dataface_AuthenticationTool')) {
+                $auth = Dataface_AuthenticationTool::getInstance();
+                if ($this->isText($fieldname)) {
+                    return $auth->getLoggedInUserName();
+                } else {
+                    $user = $auth->getLoggedInUser();
+                    if ($user) {
+                        $keys = array_keys($user->table()->keys());
+                        if (count($keys) == 1) {
+                            $id = $user->val($keys[0]);
+                            return $id;
+                        }
+                    }
+                }
+                
+            }
+            
+        }
 		$delegate =& $this->getDelegate();
 		if ( isset($delegate) and method_exists($delegate, $fieldname.'__default') ){
 			return call_user_func(array(&$delegate, $fieldname.'__default'));
@@ -2619,27 +2638,30 @@ class Dataface_Table {
 					);
 				}
 			}
-			if ( strcasecmp($this->_fields[$key]['Type'], 'container') === 0){
+            if (@$field['ownerstamp'] or @$field['timestamp'] == 'insert' or @$field['timestamp'] == 'update') {
+                $field['widget']['type'] = 'hidden';
+            }
+			if ( strcasecmp($field['Type'], 'container') === 0){
 				/*
 				 * This field is a Container field.  We will need to set up the save path.
 				 * If no save path is specified we will create a directory by the name
 				 * of this field inside the table's directory.
 				 */
-				if ( $this->_fields[$key]['widget']['type'] == 'text' ) $this->_fields[$key]['widget']['type'] = 'file';
-				if ( !isset( $this->_fields[$key]['savepath'] ) ){
-					$this->_fields[$key]['savepath'] = $this->basePath().'/tables/'.$this->tablename.'/'.$key;
-				} else if ( strpos($this->_fields[$key]['savepath'], '/') !== 0 and !preg_match('/^[a-z0-9]{1,5}:\/\//', $this->_fields[$key]['savepath']) ) {
-					$this->_fields[$key]['savepath'] = DATAFACE_SITE_PATH.'/'.$this->_fields[$key]['savepath'];
+				if ( $field['widget']['type'] == 'text' ) $field['widget']['type'] = 'file';
+				if ( !isset( $field['savepath'] ) ){
+					$field['savepath'] = $this->basePath().'/tables/'.$this->tablename.'/'.$key;
+				} else if ( strpos($field['savepath'], '/') !== 0 and !preg_match('/^[a-z0-9]{1,5}:\/\//', $field['savepath']) ) {
+					$field['savepath'] = DATAFACE_SITE_PATH.'/'.$field['savepath'];
 				}
 
-				if ( !isset($this->_fields[$key]['url']) ){
-					$this->_fields[$key]['url'] = str_replace(DATAFACE_SITE_PATH, DATAFACE_SITE_URL, $this->_fields[$key]['savepath']);
+				if ( !isset($field['url']) ){
+					$field['url'] = str_replace(DATAFACE_SITE_PATH, DATAFACE_SITE_URL, $field['savepath']);
 
-				} else if ( strpos( $this->_fields[$key]['url'], '/') !== 0 and strpos($this->_fields[$key]['url'], 'http://') !== 0 ){
-					$this->_fields[$key]['url'] = DATAFACE_SITE_URL.'/'.$this->_fields[$key]['url'];
+				} else if ( strpos( $field['url'], '/') !== 0 and strpos($field['url'], 'http://') !== 0 ){
+					$field['url'] = DATAFACE_SITE_URL.'/'.$field['url'];
 				}
-                                if ( !isset($this->_fields[$key]['noLinkFromListView']) ){
-                                    $this->_fields[$key]['noLinkFromListView'] = 1;
+                                if ( !isset($field['noLinkFromListView']) ){
+                                    $field['noLinkFromListView'] = 1;
                                 }
 			}
 
