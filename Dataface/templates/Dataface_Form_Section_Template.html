@@ -198,6 +198,9 @@
 							<div class="formHelp">{$element.field.widget.frozen_description}</div>
 							{/if}
 						{/if}
+                        {if $element.field.ajax_preview}
+                            <div class="xf-ajax-preview" data-xf-update-url="{$element.field.ajax_preview|escape}"></div>
+                        {/if}
 							{if $element.field.widget.focus}
 							<script language="javascript" type="text/javascript"><!--
 							try{literal}{{/literal}quickForm.setFocus('{$element.field.name}');{literal}} catch(err){}{/literal}

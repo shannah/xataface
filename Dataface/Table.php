@@ -1716,6 +1716,9 @@ class Dataface_Table {
                             $widget['question'] = df_translate('tables.'.$curr['tablename'].'.fields.'.$fieldname.'.widget.question',$widget['question']);
 
                         }
+                        if (@$curr['ajax_value']) {
+                            $curr['widget']['atts']['data-xf-update-url'] = $curr['ajax_value'];
+                        }
                         unset($widget);
 						$this->_transient_fields[$fieldname] = $curr;
 					}
@@ -2640,6 +2643,9 @@ class Dataface_Table {
 			}
             if (@$field['ownerstamp'] or @$field['timestamp'] == 'insert' or @$field['timestamp'] == 'update') {
                 $field['widget']['type'] = 'hidden';
+            }
+            if (@$field['ajax_value']) {
+                $field['widget']['atts']['data-xf-update-url'] = $field['ajax_value'];
             }
 			if ( strcasecmp($field['Type'], 'container') === 0){
 				/*

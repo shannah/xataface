@@ -967,7 +967,7 @@ class Dataface_FormTool {
 	 */
 	function display(&$form, $template=null, $singleField=false, $useTabs=false){
 
-
+        Dataface_JavascriptTool::getInstance()->import('xataface/widgets/depends.js');
 		import(XFROOT.'HTML/QuickForm/Renderer/ArrayDataface.php');
 		//$skinTool =& Dataface_SkinTool::getInstance();
 		$renderer = new HTML_QuickForm_Renderer_ArrayDataface(true);
