@@ -1164,12 +1164,31 @@ END;
 
 		$query['--original_action'] = $query['-action'];
 		if ( $query['-action'] == 'browse') {
+            if (@$this->_conf['default_browse_params.'.$this->_currentTable]) {
+                $defaultParams = $this->_conf['default_browse_params.'.$this->_currentTable];
+                if (is_string($defaultParams)) {
+                    parse_str($defaultParams, $defaultParams);
+
+                }
+                if (is_array($defaultParams)) {
+                    foreach ($defaultParams as $k=>$v) {
+                        if (!isset($query[$k])) {
+                            $query[$k] = $v;
+                        }
+                    
+                    }
+                } 
+            }
+            
 			if ( isset($query['-relationship']) ){
 				$query['-action'] = 'related_records_list';
 			} else if ( isset($query['-new']) and $query['-new']) {
 				$query['-action'] = 'new';
 			} else {
 				$query['-action'] = $this->_conf['default_browse_action']; // for backwards compatibility to 0.5.x
+                if (@$this->_conf['default_browse_action.'.$this->_currentTable]) {
+                    $query['-action'] = $this->_conf['default_browse_action.'.$this->_currentTable];
+                }
 			}
 		} else if ( $query['-action'] == 'find_list' ){
 			$query['-action'] = 'list';
