@@ -1140,8 +1140,27 @@ END;
 
 		if ( !@$query['-action'] ) {
 			$query['-action'] = $this->_conf['default_action'];
+            if (@$this->_conf['default_action.'.$this->_currentTable]) {
+                $query['-action'] = $this->_conf['default_action.'.$this->_currentTable];
+            }
+            
 			$this->_conf['using_default_action'] = true;
 		}
+        if (@$this->_conf['using_default_action'] and isset($this->_conf['default_params.'.$this->_currentTable])) {
+            $defaultParams = $this->_conf['default_params.'.$this->_currentTable];
+            if (is_string($defaultParams)) {
+                parse_str($defaultParams, $defaultParams);
+
+            }
+            if (is_array($defaultParams)) {
+                foreach ($defaultParams as $k=>$v) {
+                    if (!isset($query[$k])) {
+                        $query[$k] = $v;
+                    }
+                    
+                }
+            } 
+        }
 
 		$query['--original_action'] = $query['-action'];
 		if ( $query['-action'] == 'browse') {
