@@ -218,9 +218,21 @@ class dataface_actions_new {
 				 */
 				//$query = $form->_record->getValues(array_keys($form->_record->_table->keys()));
 				$currentRecord->secureDisplay = false;
-				if ( $currentRecord->checkPermission('edit') ){
-					$nextAction = 'edit';
+                $newAction = Dataface_ActionTool::getInstance()->getAction(array('name'=>'new'));
+                if (@$newAction['after_action.'.$query['-table']]) {
+					$nextAction = $newAction['after_action_'.$query['-table']];
+				} else if (@$newAction['after_action']) {
+					$nextAction = $newAction['after_action'];
+                    
 				} else {
+				    $nextAction = 'edit';
+				}
+                $nextActionConfig = Dataface_ActionTool::getInstance()->getAction(array('name'=>$nextAction));
+                $perm = '';
+                if ($nextActionConfig and @$nextActionConfig['permission']) {
+                    $perm = $nextActionConfig['permission'];
+                }
+				if ( $perm and !$currentRecord->checkPermission($perm) ){
 					$nextAction = 'view';
 				}
 				$urlParams = array('-action'=>$nextAction);
@@ -258,6 +270,9 @@ class dataface_actions_new {
 				if ( strpos($url, '?') === false ) $url .= '?';
 				$link = $url.'&--saved=1&--msg='.$msg;
                                 //echo "$link";exit;
+                                
+                                
+                
 				$app->redirect("$link");
 
 			} else {

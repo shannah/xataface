@@ -101,7 +101,9 @@ class dataface_actions_translate {
 					 *
 					 */
 					$vals = $form->exportValues();
-					$vals['-query'] = preg_replace('/[&\?]-new=[^&]+/i', '', $vals['-query']);
+                    
+					$vals['-query'] = substr(preg_replace('/[&\?]-new=[^&]+/i', '', '?'.$vals['-query']), 1);
+                    
 					
 					$msg = implode("\n", $app->getMessages());
 					//$msg =@$response['--msg'];

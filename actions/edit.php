@@ -108,7 +108,6 @@ class dataface_actions_edit {
 			$form->addElement('hidden', '-query');
 			$form->setDefaults( array( '-action'=>$query['-action'],'-query'=>$_SERVER['QUERY_STRING']) );
 			
-			
 			/*
 			 * 
 			 * We have to deal with 3 cases.
@@ -213,6 +212,9 @@ class dataface_actions_edit {
 					 *
 					 */
 					$vals = $form->exportValues();
+                    if (@$vals['-query'] and $vals['-query']{0} != '?') {
+                        $vals['-query'] = '?' . $vals['-query'];
+                    }
 					$vals['-query'] = preg_replace('/[&\?]-new=[^&]+/i', '', $vals['-query']);
 					
 					$_SESSION['--last_modified_record_url'] = $form->_record->getURL();
@@ -228,17 +230,28 @@ class dataface_actions_edit {
 							"Record successfully saved.<br>"
 						).$msg
 					);
-					
+
+                    $editAction = Dataface_ActionTool::getInstance()->getAction(array('name'=>'edit'));
+                    if (@$editAction['after_action.'.$query['-table']]) {
+						$vals['-query'] = preg_replace('/([&\?])-action=[^&]+/', '$1-action='.$editAction['after_action.'.$query['-table']], $vals['-query']);
+					} else if (@$editAction['after_action']) {
+						$vals['-query'] = preg_replace('/([&\?])-action=[^&]+/', '$1-action='.$editAction['after_action'], $vals['-query']);
+                        
+					}
+                    
 					if ( preg_match('/[&\?]-action=edit&/', $vals['-query']) and !$form->_record->checkPermission('edit') ){
 						$vals['-query'] = preg_replace('/([&\?])-action=edit&/', '$1-action=view&', $vals['-query']);
 					} else if ( preg_match('/[&\?]-action=edit$/', $vals['-query']) and !$form->_record->checkPermission('edit') ){
 						$vals['-query'] = preg_replace('/([&\?])-action=edit$/', '$1-action=view', $vals['-query']);
 					}
 					$vals['-query'] = preg_replace('/&?--msg=[^&]*/', '', $vals['-query']);
-                                        if ( @$query['--lang'] ){
-                                            $vals['-query'] .= '&--lang='.$query['--lang'];
-                                        }
-					
+                    if ( @$query['--lang'] ){
+                        $vals['-query'] .= '&--lang='.$query['--lang'];
+                    }
+                    if ($vals['-query'] and $vals['-query']{0} == '?') {
+                        $vals['-query'] = substr($vals['-query'], 1);
+                    }
+                                        
 					$link = $_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?'.$vals['-query'].'&--saved=1&--msg='.$msg;
 					
 					
