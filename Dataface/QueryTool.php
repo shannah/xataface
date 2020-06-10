@@ -608,7 +608,15 @@ class Dataface_QueryTool {
 	
 	function &iterator(){
 	    self::$lastIterated = $this;
-		$it = new Dataface_RecordIterator($this->_tablename, $this->data());
+        $data = $this->data();
+        if ($data == null) {
+            $this->loadSet();
+            $data = $this->data();
+        }
+        if ($data == null) {
+            $data = array();
+        }
+		$it = new Dataface_RecordIterator($this->_tablename, $data);
 		return $it;
 	}
 	

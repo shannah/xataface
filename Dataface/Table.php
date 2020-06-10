@@ -4596,16 +4596,16 @@ class Dataface_Table {
                 }
             }
         }
-        if (!isset(self::$knownImportFilters[$this->_tablename])) {
+        if (!isset(self::$knownImportFilters[$this->tablename])) {
             $filters = $this->getImportFilters();
-            self::$knownImportFilters[$this->_tablename] = count($filters)>0;
+            self::$knownImportFilters[$this->tablename] = count($filters)>0;
             if (DATAFACE_EXTENSION_LOADED_APC) {
                 apc_store(DATAFACE_SITE_PATH.'/import_filters', self::$knownImportFilters);
             } else if (@$_SESSION) {
                 $_SESSION['import_filters'] = self::$knownImportFilters;
             }
         }
-        return self::$knownImportFilters[$this->_tablename];
+        return self::$knownImportFilters[$this->tablename];
 	}
 
 	/**
