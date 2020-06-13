@@ -407,7 +407,7 @@ import(XFROOT.'Dataface/QueryTool.php');
 				$recordid = $record->getId();
 				
 				
-				echo "<tr class=\"listing $rowClass\">";
+				echo "<tr class=\"listing $rowClass\" xf-record-id=\"".df_escape($recordid)."\">";
 				if ( $canSelect ) {
 					$permStr = array();
 					foreach ($recperms as $pk=>$pv){
@@ -448,7 +448,13 @@ import(XFROOT.'Dataface/QueryTool.php');
                             //echo "MaterialICon $materialIcon";exit;
                         }
                         
-						echo '<a href="'.df_escape($action['url']).'" '.
+                        $url = $action['url'];
+                        $onclick = @$action['onclick'];
+                        if ($onclick) {
+                            $url = 'javascript:void(0);';
+                            $onclick = 'onclick="'.htmlspecialchars($onclick).'" ';
+                        }
+						echo '<a href="'.df_escape($url).'" '.$onclick.
                             'class="'.df_escape($action['class']).' '.
                                 ((@$action['icon'] or $materialIcon)?'with-icon':'').'" '.
                                     (@$action['icon']?' style="'.df_escape('background-image: url('.$action['icon'].')').'"':'').(@$action['target']?' target="'.df_escape($action['target']).'"':'').' title="'.df_escape(@$action['description']?$action['description']:$action['label']).'">'.$materialIcon.'<span>'.df_escape($action['label']).'</span></a> ';

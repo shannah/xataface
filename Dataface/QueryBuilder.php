@@ -357,7 +357,7 @@ class Dataface_QueryBuilder {
 				// state of the record.
 				continue;
 			}
-            if ($fieldArr['ownerstamp']) {
+            if (@$fieldArr['ownerstamp']) {
                 continue;
             }
 
