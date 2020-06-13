@@ -4586,6 +4586,20 @@ class Dataface_Record {
 		return $out;
 	}
     
+    
+    function getStatus() {
+        
+        $del = $this->table()->getDelegate();
+        if ($del and method_exists($del, 'getStatus')) {
+            return $del->getStatus($this);
+        }
+        $fld = $this->table()->getStatusField();
+        if ($fld) {
+            return $this->val($fld);
+        }
+        return '';
+    }
+    
 
 	// @}
 	// END Record Metadata

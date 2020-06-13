@@ -439,7 +439,19 @@ import(XFROOT.'Dataface/QueryTool.php');
 				if ( count($actions)>0){
 					echo ' <span class="row-actions">';
 					foreach ($actions as $action){
-						echo '<a href="'.df_escape($action['url']).'" class="'.df_escape($action['class']).' '.(@$action['icon']?'with-icon':'').'" '.(@$action['icon']?' style="'.df_escape('background-image: url('.$action['icon'].')').'"':'').(@$action['target']?' target="'.df_escape($action['target']).'"':'').' title="'.df_escape(@$action['description']?$action['description']:$action['label']).'"><span>'.df_escape($action['label']).'</span></a> ';
+                        $materialIcon = '';
+                        if (@$action['materialIcon']) {
+                            $materialIconStyle = @$action['materialIconStyle'] ? 
+                                $action['materialIconStyle'] : 
+                                '';
+                            $materialIcon = '<i class="material-icons '.df_escape($materialIconStyle).'">'.df_escape($action['materialIcon']).'</i>';
+                            //echo "MaterialICon $materialIcon";exit;
+                        }
+                        
+						echo '<a href="'.df_escape($action['url']).'" '.
+                            'class="'.df_escape($action['class']).' '.
+                                ((@$action['icon'] or $materialIcon)?'with-icon':'').'" '.
+                                    (@$action['icon']?' style="'.df_escape('background-image: url('.$action['icon'].')').'"':'').(@$action['target']?' target="'.df_escape($action['target']).'"':'').' title="'.df_escape(@$action['description']?$action['description']:$action['label']).'">'.$materialIcon.'<span>'.df_escape($action['label']).'</span></a> ';
 					}
 					echo '</span>';
 				}

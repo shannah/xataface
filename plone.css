@@ -2665,6 +2665,11 @@ div.section_tools a { padding-right: 1em;}
 	display: none;
 }
 
+.row-actions a.with-icon > i {
+    
+    font-size: 150%;
+}
+
 .row-actions a.with-icon {
 	display: block;
 	float: left;
@@ -2793,6 +2798,8 @@ table.xf-grid-table td {
     height: 14px;
     
 }
+
+
 
 /*Dropdown navigation menus*/
 div.xf-button-bar-actions a,

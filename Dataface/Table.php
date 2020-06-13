@@ -1200,6 +1200,30 @@ class Dataface_Table {
 
 	}
 
+    private $statusField;
+
+	/**
+	 * @brief Makes a best guess at which field in this table stores the record
+	 * status.  The record status is a space-delimited string with tokens denoting
+     * status markers.  These are akin to CSS classes in HTML tags.
+	 *
+	 * @return string The name of the best candidate column to be the status.
+	 * @see Dataface_Record::getStatus()
+	 */
+	function getStatusField(){
+		if ( !isset($this->statusField) ){
+            $this->statusField = '';
+    		foreach ($this->fields(false,true) as $field){
+    			if (@$field['status']) {
+    			    $this->statusField = $field['name'];
+                    break;
+    			}
+    		}
+
+		}
+		return $this->statusField;
+
+	}
 
 	/**
 	 * @brief Makes a best guess at which field stores the creation date of the record.
@@ -4608,6 +4632,8 @@ class Dataface_Table {
         return self::$knownImportFilters[$this->tablename];
 	}
 
+    
+    
 	/**
 	 * @brief Import filters facilitate the importing of data into the table.
 	 * @return array Array of Dataface_ImportFilter objects

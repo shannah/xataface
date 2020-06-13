@@ -622,6 +622,7 @@ class Dataface_SkinTool extends Smarty{
 
 	}
 
+    private $statusClassesAddedToCSS = array();
 
 	function actions_menu($params, &$smarty){
 
@@ -638,6 +639,36 @@ class Dataface_SkinTool extends Smarty{
 		} else {
 			$context['class'] = '';
 		}
+
+        $app = Dataface_Application::getInstance();
+        
+        if (@$params['record'] or @$this->ENV['record'] or $app->getRecord()) {
+            if (@$params['record']) {
+                $record = $params['record'];
+            } else if (@$this->ENV['record']) {
+                $record = $this->ENV['record'];
+            } else if ($app->getRecord()) {
+                $record = $app->getRecord();
+            }
+            
+            $status = $record->getStatus();
+            if ($status) {
+
+                $status = explode(' ', $status);
+                foreach ($status as $i=>$s) {
+                    $status[$i] = 'xf-record-status-'.$s;
+                    if (!isset($this->statusClassesAddedToCSS[$s])) {
+                        $this->statusClassesAddedToCSS[$s] = true;
+                        $app->addHeadContent('<style>ul.xf-record-status-'.$s.' li.xf-record-hidden-status-'.$s.' {display:none !important;} ul.xf-record-status:not(.xf-record-status-'.$s.')  li.xf-record-visible-status-'.$s.' {display:none !important;}</style>');
+                    }
+                }
+                $status = implode(' ', $status);
+                $context['class'] .= ' xf-record-status '.$status;
+                $context['class'] = trim($context['class']);
+            } else {
+                $context['class'] = 'xf-record-status '.$context['class'];
+            }
+        }
 
 		if ( isset( $params['id_prefix'] ) ) {
 			$context['id_prefix'] = $params['id_prefix'];
@@ -675,13 +706,23 @@ class Dataface_SkinTool extends Smarty{
 			usort($actions, array(&$actionTool, '_compareActions'));
 		}
 
+        $statuses = array();
 		foreach ($actions as $k=>$a){
+            if (@$a['hidden_status']) $statuses[] = $a['hidden_status'];
+            if (@$a['visible_status']) $statuses[] = $a['visible_status'];
+                
+            
 			if ( @$a['subcategory'] ){
 				$p2 = $params;
 				$p2['category'] = $a['subcategory'];
 				$subactions = $actionTool->getActions($p2);
 
 				$actions[$k]['subactions'] = $subactions;
+                foreach ($subactions as $k=>$sa) {
+                    if (@$sa['hidden_status']) $statuses[] = $sa['hidden_status'];
+                    if (@$sa['visible_status']) $statuses[] = $sa['visible_status'];
+             
+                }
 
 			}
 
@@ -719,6 +760,19 @@ class Dataface_SkinTool extends Smarty{
 			$existing['more'] = $more;
 			$context['actions'] = $existing;
 		}
+        
+        
+        foreach ($statuses as $s) {
+            if (!isset($this->statusClassesAddedToCSS[$s])) {
+                $this->statusClassesAddedToCSS[$s] = true;
+
+                $app->addHeadContent('<style>ul.xf-record-status-'.$s.' li.xf-record-hidden-status-'.$s.' {display:none !important;} ul.xf-record-status:not(.xf-record-status-'.$s.')  li.xf-record-visible-status-'.$s.' {display:none !important;}</style>');
+            }
+        }
+        //echo print_r($context);exit;
+            
+        
+        
 		$smarty->display($context, 'Dataface_ActionsMenu.html');
 
 	}

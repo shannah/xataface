@@ -28,7 +28,7 @@
               <li id="{$id_prefix}{$action.id}"
               	  class="
               	  {if $action.name==$selected_action or $action.selected}selected {$action.class|escape}{else}plain {$action.class|escape}{/if}
-              	  {if $action.subactions}xf-dropdown{/if}"
+              	  {if $action.subactions}xf-dropdown{/if}{if $action.visible_status} xf-record-visible-status-{$action.visible_status}{/if}{if $action.hidden_status} xf-record-hidden-status-{$action.hidden_status}{/if}"
               	  {foreach from=$action.atts item=actionAttValue key=actionAttName}{$actionAttName|escape}="{$actionAttValue|escape}" {/foreach}
               	  >
                 
@@ -49,7 +49,7 @@
 							<li id="{$id_prefix}{$subaction.id}"
 							  class="
 							  {if $subaction.name==$selected_action or $subaction.selected}selected {$subaction.class|escape}{else}plain {$subaction.class|escape}{/if}
-							  {if $subaction.subactions}xf-dropdown{/if}"
+							  {if $subaction.subactions}xf-dropdown{/if}{if $subaction.visible_status} xf-record-visible-status-{$subaction.visible_status}{/if}{if $subaction.hidden_status} xf-record-hidden-status-{$subaction.hidden_status}{/if}"
 							  {foreach from=$subaction.atts item=subactionAttValue key=subactionAttName}{$subactionAttName|escape}="{$subactionAttValue|escape}" {/foreach}
 							  >
 								<a {if $subaction.subactions}onclick="return false;" {/if}class="{if $subaction.subactions}trigger horizontal-trigger{/if}" id="{$id_prefix}{$subaction.id|escape}-link" href="{$subaction.url|escape}"{if $subaction.onclick} onclick="{$subaction.onclick|escape}"{/if}{if $subaction.target} target="{$subaction.target|escape}"{/if}
@@ -66,7 +66,7 @@
 									<ul class="action-sub-sub-menu">
 										{foreach from=$subaction.subactions item=subsubaction key=subsubname}
 											<li id="{$id_prefix}{$subsubaction.id|escape}-link" 
-												 class="{if $subsubaction.name==$selected_action or $subsubaction.selected}selected {$subsubaction.class|escape}{else}plain {$subsubaction.class|escape}{/if}"
+												 class="{if $subsubaction.name==$selected_action or $subsubaction.selected}selected {$subsubaction.class|escape}{else}plain {$subsubaction.class|escape}{/if}{if $subsubaction.visible_status} xf-record-visible-status-{$subsubaction.visible_status}{/if}{if $subsubaction.hidden_status} xf-record-hidden-status-{$subsubaction.hidden_status}{/if}"
 												 {foreach from=$subsubaction.atts item=subsubactionAttValue key=subsubactionAttName}{$subsubactionAttName|escape}="{$subsubactionAttValue|escape}" {/foreach}
 												 >
 												<a id="{$id_prefix}{$subsubaction.id|escape}-link" href="{$subsubaction.url|escape}"{if $subsubaction.onclick} onclick="{$subsubaction.onclick|escape}"{/if}{if $subsubaction.target} target="{$subsubaction.target|escape}"{/if}
