@@ -2646,7 +2646,7 @@ td.calendar-right { vertical-align: top; padding: 1em;}
 div.section_tools a { padding-right: 1em;}
 
 .row-actions {
-	display: block;
+	display: flex;
 	height: 25px;
 	padding-left: 7px;
 	white-space: nowrap;
@@ -2677,7 +2677,7 @@ div.section_tools a { padding-right: 1em;}
 	width: 20px;
 	height: 20px;
 	border: none;
-	margin: 0;
+	margin: 5px;
 	padding: 0;
 	
 	
