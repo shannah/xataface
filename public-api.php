@@ -514,6 +514,24 @@ function df_save_record(&$record, $keys=null, $lang=null, $secure=false){
 
 }
 
+function xf_script($script, $useJavascriptTool=true) {
+    if ($useJavascriptTool) {
+        import(XFROOT.'Dataface/JavascriptTool.php');
+        Dataface_JavascriptTool::getInstance()->import($script);
+    } else {
+        Dataface_Application::getInstance()->addHeadContent('<script src="'.htmlspecialchars($script).'"></script>');
+    }
+}
+
+function xf_stylesheet($sheet, $useCSSTool=true) {
+    if ($useCSSTool) {
+        import(XFROOT.'Dataface/CSSTool.php');
+        Dataface_CSSTool::getInstance()->import($sheet);
+    } else {
+        Dataface_Application::getInstance()->addHeadContent('<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($sheet).'"/>');
+    }
+}
+
 function &df_get_valuelist($tablename, $valuelistname){
 	$table = Dataface_Table::loadTable($tablename);
 	$vl =& $table->getValuelist($valuelistname);
