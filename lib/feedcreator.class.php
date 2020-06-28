@@ -183,7 +183,7 @@ class FeedItem extends HtmlDescribable {
 	/**
 	 * Optional attributes of an item.
 	 */
-	var $author, $authorEmail, $image, $category, $comments, $guid, $source, $creator;
+	var $author, $authorEmail, $image, $category, $comments, $guid, $source, $creator, $enclosure;
 	
 	/**
 	 * Publishing date of an item. May be in one of the following formats:
@@ -984,6 +984,9 @@ class RSSCreator091 extends FeedCreator {
 					$feed.= "            <source>".df_escape($this->items[$i]->source)."</source>\n";
 			}
 			*/
+            if ($this->items[$i]->enclosure) {
+                $feed.= "            <enclosure url=\"".df_escape($this->items[$i]->enclosure['url'])."\" length=\"".df_escape($this->items[$i]->enclosure['length'])."\" type=\"".df_escape($this->items[$i]->enclosure['type'])."\"/>\n";
+            }
 			if ($this->items[$i]->category!="") {
 				$feed.= "            <category>".df_escape($this->items[$i]->category)."</category>\n";
 			}

@@ -4683,6 +4683,7 @@ class Dataface_Record {
 	}
 
 
+
 	/**
 	 * @brief Gets the length of the value in a particular field.  This can be especially
 	 * useful for blob and longtext fields that aren't loaded into memory.  It allows

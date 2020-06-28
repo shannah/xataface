@@ -22,10 +22,40 @@ class Dataface_FeedTool {
 		if ( !isset($res['date']) ) $res['date'] = $this->getItemDate($record);
 		if ( !isset($res['author']) ) $res['author'] = $this->getItemAuthor($record);
 		if ( !isset($res['source']) ) $res['source'] = $this->getItemSource($record);
+        if ( !isset($res['enclosure']) ) $res['enclosure'] = $this->getItemEnclosure($record);
 		
 		return $res;
 		
 	}
+    
+    function getItemEnclosure($record) {
+    	
+		$delegate =& $record->_table->getDelegate();
+		if ( isset($delegate) and method_exists($delegate, 'getRSSEnclosure') ){
+			return $delegate->getRSSEnclosure($record);
+		} else {
+			$table = $record->table();
+            $enclosureField = $table->getEnclosureField();
+            if ($enclosureField) {
+                $type = $record->getMimetype($enclosureField);
+                $length = $record->getLength($enclosureField);
+                if ($length > 0 and strpos($type, 'audio/') === 0 or strpos($type, 'video/') === 0) {
+                    return array(
+                        'url' => df_absolute_urL($record->display($enclosureField)),
+                        'length' => $length,
+                        'type' => $type
+                    );
+                }
+                
+            }
+            return null;
+	
+		}
+	
+		//return $record->getDescription();
+    	
+        
+    }
 	
 	function buildFeedData($query=null){
 		$app =& Dataface_Application::getInstance();
@@ -235,6 +265,7 @@ class Dataface_FeedTool {
 
 		$item->source = $data['source']; 
 		$item->author = $data['author'];
+        $item->enclosure = $data['enclosure'];
 		return $item;
 	}
 	

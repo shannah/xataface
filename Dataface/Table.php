@@ -1224,6 +1224,33 @@ class Dataface_Table {
 		return $this->statusField;
 
 	}
+    private $enclosureField;
+    
+    /**
+     * Gets the field that contains an 'enclosure' for RSS feeds.  An enclosure is
+     * generally an audio or video file that is used for podcasting.
+     * @return string The name of the best candidate column to be the enclosure field or null
+     */
+    function getEnclosureField() {
+        if (!isset($this->enclosureField)) {
+            $this->enclosureField = '';
+            foreach ($this->fields(false, true) as $field) {
+                if (@$field['enclosure']) {
+                    $this->enclosureField = $field['name'];
+                    break;
+                }
+                if ($this->isBlob($field['name']) or $this->isContainer($field['name'])) {
+                    $this->enclosureField = $field['name'];
+                }
+            }
+        }
+        if ($this->enclosureField) {
+            return $this->enclosureField;
+        } else {
+            return null;
+        }
+        
+    }
 
 	/**
 	 * @brief Makes a best guess at which field stores the creation date of the record.
