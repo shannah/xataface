@@ -61,7 +61,7 @@ import(XFROOT.'Dataface/QueryTool.php');
  		$this->_table =& Dataface_Table::loadTable($tablename);
  		$fieldnames = array_keys($this->_table->fields(false,true));
  		$fields =& $this->_table->fields(false,true);
- 		
+ 		$sortFilters = false;
  		if ( count($this->_columns)==0 ){
  			
  			foreach ($fieldnames as $field){
@@ -81,6 +81,29 @@ import(XFROOT.'Dataface/QueryTool.php');
  				if ( @$fields[$field]['filter'] ) $this->_filterCols[] = $field;
  			}
  		}
+        if (count($this->_filterCols) > 0) {
+            uasort($this->_filterCols, function($aName, $bName) {
+                $a =& $this->_table->getField($aName);
+                $b =& $this->_table->getField($bName);
+                $oa = 0;
+                $ob = 0;
+                
+                if (isset($a['filter.order'])) {
+                    $oa = $a['filter.order'];
+                } else if (isset($a['order'])) {
+                    $oa = $a['order'];
+                }
+                if (isset($b['filter.order'])) {
+                    $ob = $b['filter.order'];
+                } else if (isset($b['order'])) {
+                    $ob = $b['order'];
+                }
+                if ($oa == $ob) {
+                    return 0;
+                }
+                return ($oa < $ob) ? -1 : 1;
+            });
+        }
  		
  		
  		$this->_resultSet =& Dataface_QueryTool::loadResult($tablename, $db, $query);
