@@ -449,6 +449,12 @@
 				.css('cursor', 'pointer')
 				//.css('border', '1px solid black')
 				.attr('readonly', 1);
+            
+                $.each(this.getAttributeNames(), function(index, attName) {
+                    if (!attName.startsWith('xf-') && attName.toLowerCase() != 'name' && attName.toLowerCase() != 'id' ) {
+                        $(displayField).attr(attName, obj.attr(attName));
+                    }
+                });
 			
 
 			$(displayField).insertAfter(this);
