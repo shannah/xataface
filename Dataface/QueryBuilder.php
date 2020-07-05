@@ -459,7 +459,7 @@ class Dataface_QueryBuilder {
                 if (class_exists('Dataface_AuthenticationTool')) {
                     $auth = Dataface_AuthenticationTool::getInstance();
                     
-                    if ($tableObj->isText($fieldname)) {
+                    if ($tableObj->isText($field['name'])) {
                         $insertedKeys[] = '`'.$key.'`';
                         $unm = $auth->getLoggedInUserName();
                         $insertedValues[] = $this->prepareValue($key, $unm);
@@ -468,9 +468,9 @@ class Dataface_QueryBuilder {
                     } else {
                         $user = $auth->getLoggedInUser();
                         if ($user) {
-                            $keys = array_keys($user->table()->keys());
-                            if (count($keys) == 1) {
-                                $id = $user->val($keys[0]);
+                            $keynames = array_keys($keys);
+                            if (count($keynames) == 1) {
+                                $id = $user->val($keynames[0]);
                                 $insertedKeys[] = '`'.$key.'`';
                                 $insertedValues[] = $this->prepareValue($key, $id);
                                 $record->setValue($key, $id);
