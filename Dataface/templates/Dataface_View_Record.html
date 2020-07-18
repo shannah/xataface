@@ -46,6 +46,14 @@
 							<div class="dataface-view-description">{$rv->description}</div>
 						{/if}
 						<div class="dataface-view-status">{$rv->status|escape}</div>
+						
+
+						<div class="mobile mobile-record-actions">
+
+						    {actions_menu category="mobile_record_actions"}
+						</div>
+
+						
 					</div>
 				</td>
 			</tr>
@@ -189,8 +197,8 @@
 							<div class="dataface-view-description">{$rv->description}</div>
 							<div class="dataface-view-status">{$rv->status|escape}</div>
 						</div>
-						
 						{/if}
+						
 						{define_slot name="record_view_main_section"}
 							{if $ENV.prefs.collapse_all_sections_enabled}
 							<div class="section-tools">

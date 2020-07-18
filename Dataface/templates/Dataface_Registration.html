@@ -19,11 +19,19 @@
  *}
 {use_macro file="Dataface_Main_Template.html"}
 	{fill_slot name="main_section"}
+    <div id="login-window" xf-submit-label="Register Now">
+        {define_slot name="register_back_button"}
+        <div class="cancel-back-button">
+            <a class="cancel-back-button" onclick="window.history.back()"><i class="material-icons">clear</i></a>
+        </div>
+        {/define_slot}
 		{block name="before_registration_form"}
 		{define_slot name="registration_form"}
+
 		{define_slot name="registration_form_label"}<h1>{translate id="Dataface_Registration.label"}Registration Form{/translate}</h1>{/define_slot}
 		{$registration_form}
 		{/define_slot}
 		{block name="after_registration_form"}
+    </div>
 	{/fill_slot}
 {/use_macro}

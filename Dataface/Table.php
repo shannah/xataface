@@ -1199,6 +1199,23 @@ class Dataface_Table {
 		return $this->descriptionField;
 
 	}
+	
+	private $logoField;
+	
+	function getLogoField(){
+		if ( !isset($this->logoField) ){
+            $this->logoField = '';
+    		foreach ($this->fields(false,true) as $field){
+    			if (@$field['logo']) {
+    			    $this->logoField = $field['name'];
+                    break;
+    			}
+    		}
+
+		}
+		return $this->logoField;
+
+	}
 
     private $statusField;
 

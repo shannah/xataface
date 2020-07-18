@@ -495,9 +495,8 @@ class Dataface_FormTool {
 		}
 
 
-
 		$el->setAttributes($atts);
-		if ( $new and !$pt->checkPermission('new', $permissions) ){
+		if ( $new and !$pt->checkPermission($form->newPermission, $permissions) ){
 			$el->freeze();
 		} else if ( !$new and !$pt->checkPermission('edit', $permissions) ){
 			$el->freeze();
@@ -511,7 +510,6 @@ class Dataface_FormTool {
 		}
 		*/
 		$el->record =& $record;
-
 		$form->addElement($el);
 		/*
 		 *
@@ -966,8 +964,9 @@ class Dataface_FormTool {
 	 * @returns void
 	 */
 	function display(&$form, $template=null, $singleField=false, $useTabs=false){
+        xf_script('xataface/FormTool/form.js');
+        xf_script('xataface/widgets/depends.js');
 
-        Dataface_JavascriptTool::getInstance()->import('xataface/widgets/depends.js');
 		import(XFROOT.'HTML/QuickForm/Renderer/ArrayDataface.php');
 		//$skinTool =& Dataface_SkinTool::getInstance();
 		$renderer = new HTML_QuickForm_Renderer_ArrayDataface(true);

@@ -164,3 +164,76 @@ function updateSelected(tableid){var ids=getSelectedIds(tableid);if(ids.length==
 var form=document.getElementById("result_list_selected_items_form");form.elements['--selected-ids'].value=ids.join("\n");form.elements['-action'].value='copy_replace';form.submit();}
 function removeSelectedRelated(tableid){var ids=getSelectedIds(tableid);if(ids.length==0){alert("Please first check boxes beside the records you wish to remove, and then press 'Remove'.");return;}
 var form=document.getElementById("result_list_selected_items_form");form.elements['--selected-ids'].value=ids.join("\n");form.elements['-action'].value='remove_related_record';form.submit();}
+(function() {
+    // Mobile stuff now
+    var mobileActivated = false;
+    function xfHandleResize() {
+        var body = document.querySelector('body');
+        if (!body) return;
+        if (window.innerWidth < 768) {
+            if (body.classList.contains('large') || !body.classList.contains('small')) {
+                body.classList.add('small');
+                body.classList.remove('large');
+                window.dispatchEvent(new Event('xf-mobileenter'));
+            }
+            
+            mobileActivated = true;
+        } else {
+            if (body.classList.contains('small') || !body.classList.contains('large')) {
+                body.classList.remove('small');
+                body.classList.add('large');
+                window.dispatchEvent(new Event('xf-mobileexit'));
+            }
+            
+        }
+    }
+    xfHandleResize();
+    window.addEventListener('DOMContentLoaded', xfHandleResize);
+    window.addEventListener('resize', xfHandleResize);
+
+    var paddingTopExplicit = false;
+    var paddingBottomExplicit = false;
+    function updateBodyPadding() {
+
+        if (!mobileActivated) {
+            return;
+        }
+        var body = document.querySelector('body');
+        var changed = false;
+        if (!body.classList.contains('small')) {
+            changed = paddingTopExplicit || paddingBottomExplicit;
+            body.style.paddingBottom = null;
+            body.style.paddingTop = null;
+            paddingTopExplicit = paddingBottomExplicit = false;
+        } else {
+
+            var footer = document.querySelector('.mobile-footer');
+            if (footer) {
+                if (body.style.paddingBottom != footer.offsetHeight+'px') {
+                    changed = true;
+                }
+                body.style.paddingBottom = footer.offsetHeight + 'px';
+                explicitBottomPadding = true;
+            }
+            
+            var header = document.querySelector('.mobile-header');
+            if (header) {
+                if (body.style.paddingTop != header.offsetHeight+'px') {
+                    changed = true;
+                }
+                body.style.paddingTop = header.offsetHeight + 'px';
+                explicitBottomPadding = true;
+            }
+            
+        }
+        
+        if (changed) {
+            var event = new Event('xf-viewport-changed');
+            window.dispatchEvent(event);
+        }
+        
+    }
+    window.addEventListener('DOMContentLoaded', updateBodyPadding);
+    window.addEventListener('load', updateBodyPadding);
+    setInterval(updateBodyPadding, 1000);
+})();

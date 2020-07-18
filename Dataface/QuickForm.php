@@ -57,6 +57,8 @@ define( 'QUICKFORM_NO_SUCH_FIELD_ERROR',3);
 class Dataface_QuickForm extends HTML_QuickForm {
 
 	public static $TRACK_SUBMIT = true;
+    
+    var $newPermission = 'new';
 
 
 	/**
@@ -395,8 +397,8 @@ class Dataface_QuickForm extends HTML_QuickForm {
 
 
 		$formTool =& Dataface_FormTool::getInstance();
-		$el =& $formTool->buildWidget($this->_record, $field, $this, $field['name'], $this->_new, $permissions);
 
+		$el =& $formTool->buildWidget($this->_record, $field, $this, $field['name'], $this->_new, $permissions);
 
 		return $el;
 
@@ -514,7 +516,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 				 *
 				 */
 				if ( !Dataface_PermissionsTool::view($this->_record, array('field'=>$name))
-					and !($this->_new and Dataface_PermissionsTool::checkPermission('new',$this->_record->getPermissions(array('field'=>$name))))
+					and !($this->_new and Dataface_PermissionsTool::checkPermission($this->newPermission,$this->_record->getPermissions(array('field'=>$name))))
 				){
 					unset($widget);
 					continue;
@@ -589,7 +591,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		$this->addElement('hidden','-new');
 
 		$this->setDefaults(array('-new'=>$this->_new));
-		if ( ($this->_new and Dataface_PermissionsTool::checkPermission('new',$this->_table) ) or
+		if ( ($this->_new and Dataface_PermissionsTool::checkPermission($this->newPermission,$this->_table) ) or
 		     (!$this->_new and Dataface_PermissionsTool::edit($this->_record) ) ){
 		     $saveButtonLabel = df_translate('tables.'.$this->_table->tablename.'.save_button_label', '');
 			if ( !$saveButtonLabel ) $saveButtonLabel = df_translate('save_button_label','Save');
@@ -926,14 +928,13 @@ class Dataface_QuickForm extends HTML_QuickForm {
 					$this->freeze();
 				}
 
-				if ( $this->_new  and /*!Dataface_PermissionsTool::edit($this->_table)*/!Dataface_PermissionsTool::checkPermission('new',$this->_table) ){
+				if ( $this->_new  and /*!Dataface_PermissionsTool::edit($this->_table)*/!Dataface_PermissionsTool::checkPermission($this->newPermission,$this->_table) ){
 					$this->freeze();
 				}
 				$formTool =& Dataface_FormTool::getInstance();
 
 
 				if ( $this->_new || Dataface_PermissionsTool::view($this->_record) ){
-					//echo $this->_renderer->toHtml();
 					echo $formTool->display($this, $this->xml ? 'Dataface_Form_Template.xml' : null);
 				} else {
 					echo "<p>".df_translate('scripts.GLOBAL.INSUFFICIENT_PERMISSIONS_TO_VIEW_RECORD','Sorry you have insufficient permissions to view this record.')."</p>";

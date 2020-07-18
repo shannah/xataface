@@ -173,17 +173,30 @@ import(XFROOT.'Dataface/QueryTool.php');
  		return '';
         }
         
- 	function renderRow(&$record){
+ 	function renderRow(&$record, $mode = 'desktop'){
  		$del =& $record->_table->getDelegate();
- 		if ( isset($del) and method_exists($del, 'renderRow') ){
- 			return $del->renderRow($record);
+ 		if ($mode == 'desktop') {
+ 		    if ( isset($del) and method_exists($del, 'renderRow') ){
+                return $del->renderRow($record);
+            }
+            $app =& Dataface_Application::getInstance();
+            $appdel =& $app->getDelegate();
+            if ( isset($appdel) and method_exists($appdel,'renderRow') ){
+                return $appdel->renderRow($record);
+            }
+            return null;
+ 		} else if ($mode == 'mobile') {
+ 		    if ( isset($del) and method_exists($del, 'renderRowMobile') ){
+                return $del->renderRowMobile($record);
+            }
+            $app =& Dataface_Application::getInstance();
+            $appdel =& $app->getDelegate();
+            if ( isset($appdel) and method_exists($appdel,'renderRowMobile') ){
+                return $appdel->renderRowMobile($record);
+            }
+            return null;
  		}
- 		$app =& Dataface_Application::getInstance();
- 		$appdel =& $app->getDelegate();
- 		if ( isset($appdel) and method_exists($appdel,'renderRow') ){
- 			return $appdel->renderRow($record);
- 		}
- 		return null;
+ 		
  	}
  	
  	function &getResults(){
@@ -210,8 +223,42 @@ import(XFROOT.'Dataface/QueryTool.php');
  	
  	}
  	
- 	function toHtml(){
+ 	private function print_actions($actions) {
+ 	    foreach ($actions as $action){
+            $materialIcon = '';
+            if (@$action['materialIcon']) {
+                $materialIconStyle = @$action['materialIconStyle'] ? 
+                    $action['materialIconStyle'] : 
+                    '';
+                $materialIcon = '<i class="material-icons '.df_escape($materialIconStyle).'">'.df_escape($action['materialIcon']).'</i>';
+                //echo "MaterialICon $materialIcon";exit;
+            }
+        
+            $url = $action['url'];
+            $onclick = @$action['onclick'];
+            if ($onclick) {
+                $url = 'javascript:void(0);';
+                $onclick = 'onclick="'.htmlspecialchars($onclick).'" ';
+            }
+            echo '<a href="'.df_escape($url).'" '.$onclick.
+                'class="'.df_escape($action['class']).' '.
+                    ((@$action['icon'] or $materialIcon)?'with-icon':'').'" '.
+                        (@$action['icon']?' style="'.df_escape('background-image: url('.$action['icon'].')').'"':'').(@$action['target']?' target="'.df_escape($action['target']).'"':'').' title="'.df_escape(@$action['description']?$action['description']:$action['label']).'">'.$materialIcon.'<span>'.df_escape($action['label']).'</span></a> ';
+        }
+ 	}
+ 	
+ 	function toHtml($mode = 'all'){
+ 	    import(XFROOT.'Dataface/ActionTool.php');
+ 	    $mobile = $mode == 'mobile';
+ 	    $desktop = $mode == 'desktop';
+ 	    $all = $mode == 'all';
+ 	    if ($all) {
+ 	        $this->toHtml('mobile');
+ 	        return $this->toHtml('desktop') . $this->toHtml('mobile');
+ 	    }
+ 	    
  		$app =& Dataface_Application::getInstance();
+ 		$at =& Dataface_ActionTool::getInstance();
  		$query =& $app->getQuery();
  		if ( isset( $query['-sort']) ){
  			$sortcols = explode(',', trim($query['-sort']));
@@ -240,11 +287,13 @@ import(XFROOT.'Dataface/QueryTool.php');
  		if ( $this->_resultSet->found() > 0 ) {
  		
  			
- 			if ( @$app->prefs['use_old_resultlist_controller'] ){
+ 			if  ($desktop and @$app->prefs['use_old_resultlist_controller'] ){
 				ob_start();
 				df_display(array(), 'Dataface_ResultListController.html');
 				$controller = ob_get_contents();
 				ob_end_clean();
+			} else {
+			    $controller = '';
 			}
 		
  			
@@ -258,7 +307,7 @@ import(XFROOT.'Dataface/QueryTool.php');
 				//echo '<script language="javascript" type="text/javascript" src="'.DATAFACE_URL.'/js/Dataface/ResultList.js"></script>';
 			}
 			
-			if ( !@$app->prefs['hide_result_filters'] and count($this->_filterCols) > 0 ){
+			if ( $desktop and !@$app->prefs['hide_result_filters'] and count($this->_filterCols) > 0 ){
 				echo $this->getResultFilters();
 			}
 			unset($query);
@@ -292,98 +341,107 @@ import(XFROOT.'Dataface/QueryTool.php');
 			
 			$sq = json_encode($sq);
 			$jt = Dataface_JavascriptTool::getInstance();
+
 			$jt->import('list.js');
-			echo '
-				<table data-xataface-query="'.df_escape($sq).'" id="result_list" class="listing resultList resultList--'.$this->_tablename.'">
-				<thead>
-				<tr>';
-			if ( $canSelect){
-				echo '<th><input type="checkbox" onchange="toggleSelectedRows(this,\'result_list\');"></th>';
-			}
-			
-			if ( !@$app->prefs['disable_ajax_record_details']  ){
-				echo '	<th><!-- Expand record column --></th>
-				';
-			}
-			echo '<th class="row-actions-header"></th>';
 			$results =& $this->getResults();
-			$perms = array();
+			if ($desktop) {
 			
 			
-			foreach ($this->_columns as $key){
-				$cursor=$this->_resultSet->start();
-				$results->reset();
-				$perms[$key] = false;
-				while ( $results->hasNext() ){
-					$record = $results->next();
-					if ( $record->checkPermission('list', array("field"=>$key)) ){
-						$perms[$key] = true;
-						break;
-					}
-				}
-			}
-			
-			$numCols = 0;
-			
-			$rowHeaderHtml = $this->renderRowHeader();
-			if ( isset($rowHeaderHtml) ){
-				echo $rowHeaderHtml;
-			} else {
-				
-				
-				
-				foreach ($this->_columns as $key ){
-					if ( in_array($key, $this->_columns) ){
-						//if ( !($perms[$key] =  Dataface_PermissionsTool::checkPermission('list', $this->_table, array('field'=>$key)) /*Dataface_PermissionsTool::view($this->_table, array('field'=>$key))*/) ) continue;
-						if ( !@$perms[$key] ) continue;
-						if ( isset($sort_columns[$key]) ){
-							$class = 'sorted-column-'.$sort_columns[$key];
-							$query = array();
-							$qs_columns = $sort_columns;
-							unset($qs_columns[$key]);
-							$sort_query = $key.' '.($sort_columns[$key] == 'desc' ? 'asc' : 'desc');
-							foreach ( $qs_columns as $qcolkey=> $qcolvalue){
-								$sort_query .= ', '.$qcolkey.' '.$qcolvalue;
-							}
-						} else {
-							$class = 'unsorted-column';
-							$sort_query = $key.' asc';
-							foreach ( $sort_columns as $scolkey=>$scolvalue){
-								$sort_query .= ', '.$scolkey.' '.$scolvalue;
-							}
-							
-						}
-						$sq = array('-sort'=>$sort_query);
-						$link = Dataface_LinkTool::buildLink($sq);
-						$numCols++;
-						$label = $this->_table->getFieldProperty('column:label', $key);
-						$legend = $this->_table->getFieldProperty('column:legend', $key);
-						if ( $legend ){
-							$legend = '<span class="column-legend">'.df_escape($legend).'</span>';
-						}
-						
-						$colType = $this->_table->getType($key);
-						$class .= ' coltype-'.$colType;
-						$cperms = $this->_table->getPermissions(array('field'=>$key));
-						if ( !$this->_table->isSearchable($key) or !@$cperms['find'] ){
-							$class .= ' unsearchable-column';
-						} else {
-							$class .= ' searchable-column';
-						}
-						
-						$class .= ' '.$this->getHeaderCellClass($key);
-						
-						if ( !$label ) $label = $this->_table->getFieldProperty('widget:label',$key);
-						$searchColumn = $this->_table->getDisplayField($key);
-						echo "<th data-column=\"$key\" data-search-column=\"$searchColumn\" class=\"$class\"><a class='sort-link' href=\"$link\"><i class='material-icons'>sort</i></a><span class='th-label'>".df_escape($label)."</span> $legend</th>";
-					}
-				}
-			}
-			echo "</tr>
-				</thead>
-                                <tfoot style='display:none'>".$this->getTfootContent()."</tfoot>
-				<tbody>
-				";
+                echo '
+                    <table data-xataface-query="'.df_escape($sq).'" id="result_list" class="listing resultList resultList--'.$this->_tablename.'">
+                    <thead>
+                    <tr>';
+                if ( $canSelect){
+                    echo '<th><input type="checkbox" onchange="toggleSelectedRows(this,\'result_list\');"></th>';
+                }
+            
+                if ( !@$app->prefs['disable_ajax_record_details']  ){
+                    echo '	<th><!-- Expand record column --></th>
+                    ';
+                }
+                echo '<th class="row-actions-header"></th>';
+                
+                $perms = array();
+            
+            
+                foreach ($this->_columns as $key){
+                    $cursor=$this->_resultSet->start();
+                    $results->reset();
+                    $perms[$key] = false;
+                    while ( $results->hasNext() ){
+                        $record = $results->next();
+                        if ( $record->checkPermission('list', array("field"=>$key)) ){
+                            $perms[$key] = true;
+                            break;
+                        }
+                    }
+                }
+            
+                $numCols = 0;
+            
+                $rowHeaderHtml = $this->renderRowHeader();
+                if ( isset($rowHeaderHtml) ){
+                    echo $rowHeaderHtml;
+                } else {
+                
+                
+                
+                    foreach ($this->_columns as $key ){
+                        if ( in_array($key, $this->_columns) ){
+                            //if ( !($perms[$key] =  Dataface_PermissionsTool::checkPermission('list', $this->_table, array('field'=>$key)) /*Dataface_PermissionsTool::view($this->_table, array('field'=>$key))*/) ) continue;
+                            if ( !@$perms[$key] ) continue;
+                            if ( isset($sort_columns[$key]) ){
+                                $class = 'sorted-column-'.$sort_columns[$key];
+                                $query = array();
+                                $qs_columns = $sort_columns;
+                                unset($qs_columns[$key]);
+                                $sort_query = $key.' '.($sort_columns[$key] == 'desc' ? 'asc' : 'desc');
+                                foreach ( $qs_columns as $qcolkey=> $qcolvalue){
+                                    $sort_query .= ', '.$qcolkey.' '.$qcolvalue;
+                                }
+                            } else {
+                                $class = 'unsorted-column';
+                                $sort_query = $key.' asc';
+                                foreach ( $sort_columns as $scolkey=>$scolvalue){
+                                    $sort_query .= ', '.$scolkey.' '.$scolvalue;
+                                }
+                            
+                            }
+                            $sq = array('-sort'=>$sort_query);
+                            $link = Dataface_LinkTool::buildLink($sq);
+                            $numCols++;
+                            $label = $this->_table->getFieldProperty('column:label', $key);
+                            $legend = $this->_table->getFieldProperty('column:legend', $key);
+                            if ( $legend ){
+                                $legend = '<span class="column-legend">'.df_escape($legend).'</span>';
+                            }
+                        
+                            $colType = $this->_table->getType($key);
+                            $class .= ' coltype-'.$colType;
+                            $cperms = $this->_table->getPermissions(array('field'=>$key));
+                            if ( !$this->_table->isSearchable($key) or !@$cperms['find'] ){
+                                $class .= ' unsearchable-column';
+                            } else {
+                                $class .= ' searchable-column';
+                            }
+                        
+                            $class .= ' '.$this->getHeaderCellClass($key);
+                        
+                            if ( !$label ) $label = $this->_table->getFieldProperty('widget:label',$key);
+                            $searchColumn = $this->_table->getDisplayField($key);
+                            echo "<th data-column=\"$key\" data-search-column=\"$searchColumn\" class=\"$class\"><a class='sort-link' href=\"$link\"><i class='material-icons'>sort</i></a><span class='th-label'>".df_escape($label)."</span> $legend</th>";
+                        }
+                    }
+                }
+                echo "</tr>
+                    </thead>
+                                    <tfoot style='display:none'>".$this->getTfootContent()."</tfoot>
+                    <tbody>
+                    ";
+            } // end if ($desktop)
+            else if ($mobile) {
+                echo '<div class="mobile mobile-listing resultList--'.$this->_tablename.'" data-xataface-query="'.df_escape($sq).'">';
+            }
 	
 			
 			$cursor=$this->_resultSet->start();
@@ -429,69 +487,60 @@ import(XFROOT.'Dataface/QueryTool.php');
 				}
 				$recordid = $record->getId();
 				
+				if ($desktop) {
 				
-				echo "<tr class=\"listing $rowClass\" xf-record-id=\"".df_escape($recordid)."\">";
-				if ( $canSelect ) {
-					$permStr = array();
-					foreach ($recperms as $pk=>$pv){
-						if ( $pv ) $permStr[] = $pk;
-					}
-					$permStr = df_escape(implode(',', $permStr));
-					echo '<td class="checkbox-cell"><input class="rowSelectorCheckbox" xf-record-id="'.df_escape($recordid).'" id="rowSelectorCheckbox:'.df_escape($recordid).'" type="checkbox" data-xf-permissions="'.$permStr.'"></td>';
-				}
+                    echo "<tr class=\"listing $rowClass\" xf-record-id=\"".df_escape($recordid)."\">";
+                    if ( $canSelect ) {
+                        $permStr = array();
+                        foreach ($recperms as $pk=>$pv){
+                            if ( $pv ) $permStr[] = $pk;
+                        }
+                        $permStr = df_escape(implode(',', $permStr));
+                        echo '<td class="checkbox-cell"><input class="rowSelectorCheckbox" xf-record-id="'.df_escape($recordid).'" id="rowSelectorCheckbox:'.df_escape($recordid).'" type="checkbox" data-xf-permissions="'.$permStr.'"></td>';
+                    }
+                
+                
+                
+                
+                    if ( !@$app->prefs['disable_ajax_record_details']  ){
+                        echo '<td class="ajax-record-details-cell">';
+                        echo '<script language="javascript" type="text/javascript"><!--
+                                registerRecord(\''.addslashes($recordid).'\',  '.$record->toJS(array()).');
+                                //--></script>
+                                <img src="'.DATAFACE_URL.'/images/treeCollapsed.gif" onclick="resultList.showRecordDetails(this, \''.addslashes($recordid).'\')"/>';
+                    
+                    
+                        echo '</td>';
+                        unset($at, $actions);
+                    }
+                } else if ($mobile){
+                    echo "<div class=\"mobile-listing-row $rowClass\" xf-record-id=\"".df_escape($recordid)."\" xf-record-id=\"".df_escape($recordid)."\">";
+                
+                }
 				
-				
-				
-				
-				if ( !@$app->prefs['disable_ajax_record_details']  ){
-					echo '<td class="ajax-record-details-cell">';
-					echo '<script language="javascript" type="text/javascript"><!--
-							registerRecord(\''.addslashes($recordid).'\',  '.$record->toJS(array()).');
-							//--></script>
-							<img src="'.DATAFACE_URL.'/images/treeCollapsed.gif" onclick="resultList.showRecordDetails(this, \''.addslashes($recordid).'\')"/>';
-					
-					
-					echo '</td>';
-					unset($at, $actions);
-				}
-				
-				$at =& Dataface_ActionTool::getInstance();
-				$actions = $at->getActions(array('category'=>'list_row_actions', 'record'=>&$record));
+
+
 				//print_r($actions);
-				echo '<td class="row-actions-cell">';
-				if ( count($actions)>0){
-					echo ' <span class="row-actions">';
-					foreach ($actions as $action){
-                        $materialIcon = '';
-                        if (@$action['materialIcon']) {
-                            $materialIconStyle = @$action['materialIconStyle'] ? 
-                                $action['materialIconStyle'] : 
-                                '';
-                            $materialIcon = '<i class="material-icons '.df_escape($materialIconStyle).'">'.df_escape($action['materialIcon']).'</i>';
-                            //echo "MaterialICon $materialIcon";exit;
-                        }
-                        
-                        $url = $action['url'];
-                        $onclick = @$action['onclick'];
-                        if ($onclick) {
-                            $url = 'javascript:void(0);';
-                            $onclick = 'onclick="'.htmlspecialchars($onclick).'" ';
-                        }
-						echo '<a href="'.df_escape($url).'" '.$onclick.
-                            'class="'.df_escape($action['class']).' '.
-                                ((@$action['icon'] or $materialIcon)?'with-icon':'').'" '.
-                                    (@$action['icon']?' style="'.df_escape('background-image: url('.$action['icon'].')').'"':'').(@$action['target']?' target="'.df_escape($action['target']).'"':'').' title="'.df_escape(@$action['description']?$action['description']:$action['label']).'">'.$materialIcon.'<span>'.df_escape($action['label']).'</span></a> ';
-					}
-					echo '</span>';
-				}
-				echo '</td>';
+				if ($desktop) {
+				    $actions = $at->getActions(array('category'=>'list_row_actions', 'record'=>&$record));
+				    echo '<td class="row-actions-cell">';
+				
+                    if ( count($actions)>0){
+                        echo ' <span class="row-actions">';
+                        $this->print_actions($actions);
+                        echo '</span>';
+                    }
+				    
+				    echo '</td>';
+				} 
 				
 				
 				
-				$rowContentHtml = $this->renderRow($record);
+				
+				$rowContentHtml = $this->renderRow($record, $mode);
 				if ( isset($rowContentHtml) ){
 					echo $rowContentHtml;
-				} else {
+				} else if ($desktop) {
 					//$expandTree=false; // flag to indicate when we added the expandTree button
 					//if ( @$app->prefs['enable_ajax_record_details'] === 0 ){
 					//	$expandTree = true;
@@ -530,79 +579,117 @@ import(XFROOT.'Dataface/QueryTool.php');
 						echo "<td id=\"td-".rand()."\" class=\"field-content $cellClass $rowClass $editable_class\">$val</td>";
 						unset($thisField);
 					}
+				} else if ($mobile) {
+				    echo "<div class='mobile-row-content $rowClass' >";
+				    $logoField = $record->table()->getLogoField();
+                    $aOpen = '';
+                    $aClose = '';
+                    if ($link) {
+                        $aOpen = '<a href="'.df_escape($link).'">';
+                        $aClose = '</a>';
+                    }
+				    if ($logoField and $record->val($logoField) and $record->checkPermission('view', array('field' => $logoField))) {
+				        echo "<div class='mobile-logo'>$aOpen".$record->htmlValue($logoField)."$aClose</div>";
+				    } else {
+				        echo "<div class='mobile-logo'>$aOpen<i class='material-icons'>description</i>$aClose</div>";
+				    }
+
+				    echo "<div class='mobile-title'>$aOpen".df_escape($record->getTitle())."$aClose</div>";
+				    echo "<div class='mobile-description'>$aOpen".df_escape($record->getDescription())."$aClose</div>";
+                    $actions = $at->getActions(array('category'=>'list_row_actions', 'record'=>&$record));
+                    if ( count($actions)>0){
+                        echo ' <div class="mobile-row-actions">';
+                        $this->print_actions($actions);
+                        echo '</div>';
+                    }
+                    
+
+
+				    echo "</div><!-- mobile-row-content -->";
 				}
-				echo "</tr>";
 				
-				echo "<tr class=\"listing $rowClass\" style=\"display:none\" id=\"{$recordid}-row\">";
-				if ( $canSelect ){
-					echo "<td><!--placeholder for checkbox col --></td>";
+				if ($desktop) {
+				    echo "</tr>";
+				} else if ($mobile) {
+				    echo "</div><!-- mobile-listing -->";
 				}
-				echo '<td><!-- placeholder for actions --></td>';
-				echo "<td colspan=\"".($numCols+1)."\" id=\"{$recordid}-cell\"></td>
-					  </tr>";
+				
+				if ($desktop) {
+				    echo "<tr class=\"listing $rowClass\" style=\"display:none\" id=\"{$recordid}-row\">";
+                    if ( $canSelect ){
+                        echo "<td><!--placeholder for checkbox col --></td>";
+                    }
+                    echo '<td><!-- placeholder for actions --></td>';
+                    echo "<td colspan=\"".($numCols+1)."\" id=\"{$recordid}-cell\"></td>
+                          </tr>";
+				}
+				
 				
 				unset($record);
 			}
-			if ( @$app->prefs['enable_resultlist_add_row'] ){
-				echo "<tr id=\"add-new-row\" df:table=\"".df_escape($this->_table->tablename)."\">";
-				if ( $canSelect ) $colspan=2;
-				else $colspan = 1;
-				echo "<td colspan=\"$colspan\"><script language=\"javascript\">require(DATAFACE_URL+'/js/addable.js')</script><a href=\"#\" onclick=\"df_addNew('add-new-row');return false;\">".df_translate('scripts.GLOBAL.LABEL_ADD_ROW', "Add Row")."</a></td>";
-				foreach ( $this->_columns as $key ){
-					echo "<td><span df:field=\"".df_escape($key)."\"></span></td>";
-				}
-				echo "</tr>";
-			}
-			echo "</tbody>
-				</table>";
-			if ( $canSelect ){
-				echo  '<form id="result_list_selected_items_form" method="post" action="'.df_absolute_url(DATAFACE_SITE_HREF).'">';
-				$app =& Dataface_Application::getInstance();
-				$q =& $app->getQuery();
-				foreach ( $q as $key=>$val){
-					if ( strlen($key)>1 and $key{0} == '-' and $key{1} == '-' ){
-						continue;
-					}
-					echo '<input type="hidden" name="'.urlencode($key).'" value="'.df_escape($val).'" />';
-				}
-				echo '<input type="hidden" name="--selected-ids" id="--selected-ids" />';
-				echo '<input type="hidden" name="-from" id="-from" value="'.$q['-action'].'" />';
-				echo '<input type="hidden" name="--redirect" value="'.base64_encode($app->url('')).'" />';
-				echo '</form>';
-			
-	
-				import(XFROOT.'Dataface/ActionTool.php');
-				$at =& Dataface_ActionTool::getInstance();
-				$actions = $at->getActions(array('category'=>'selected_result_actions'));
-				if ( count($actions) > 0){
-					echo '<div id="selected-actions">'.df_translate('scripts.Dataface_ResultList.MESSAGE_WITH_SELECTED', "With Selected").': <ul class="selectedActionsMenu" id="result_list-selectedActionsMenu">';
-					foreach ($actions as $action){
-						$img = '';
-						if ( @$action['icon'] ){
-							$img = '<img src="'.$action['icon'].'"/>';
-						}
-						
-						if ( !@$action['onclick'] and !$action['url'] ){
-							$action['onclick'] = "return actOnSelected('result_list', '".@$action['name']."'".(@$action['confirm']?", function(){return confirm('".addslashes($action['confirm'])."');}":"").")";
-							
-						}
-						
-						echo <<<END
-						<li id="action-{$action['id']}"><a href="{$action['url']}" onclick="{$action['onclick']}" title="{$action['description']}">{$img}{$action['label']}</a></li>
+			if ($desktop) {
+			    if ( @$app->prefs['enable_resultlist_add_row'] ){
+                    echo "<tr id=\"add-new-row\" df:table=\"".df_escape($this->_table->tablename)."\">";
+                    if ( $canSelect ) $colspan=2;
+                    else $colspan = 1;
+                    echo "<td colspan=\"$colspan\"><script language=\"javascript\">require(DATAFACE_URL+'/js/addable.js')</script><a href=\"#\" onclick=\"df_addNew('add-new-row');return false;\">".df_translate('scripts.GLOBAL.LABEL_ADD_ROW', "Add Row")."</a></td>";
+                    foreach ( $this->_columns as $key ){
+                        echo "<td><span df:field=\"".df_escape($key)."\"></span></td>";
+                    }
+                    echo "</tr>";
+                }
+                echo "</tbody>
+                    </table>";
+                if ( $canSelect ){
+                    echo  '<form id="result_list_selected_items_form" method="post" action="'.df_absolute_url(DATAFACE_SITE_HREF).'">';
+                    $app =& Dataface_Application::getInstance();
+                    $q =& $app->getQuery();
+                    foreach ( $q as $key=>$val){
+                        if ( strlen($key)>1 and $key{0} == '-' and $key{1} == '-' ){
+                            continue;
+                        }
+                        echo '<input type="hidden" name="'.urlencode($key).'" value="'.df_escape($val).'" />';
+                    }
+                    echo '<input type="hidden" name="--selected-ids" id="--selected-ids" />';
+                    echo '<input type="hidden" name="-from" id="-from" value="'.$q['-action'].'" />';
+                    echo '<input type="hidden" name="--redirect" value="'.base64_encode($app->url('')).'" />';
+                    echo '</form>';
+            
+    
+                    
+
+                    $actions = $at->getActions(array('category'=>'selected_result_actions'));
+                    if ( count($actions) > 0){
+                        echo '<div id="selected-actions">'.df_translate('scripts.Dataface_ResultList.MESSAGE_WITH_SELECTED', "With Selected").': <ul class="selectedActionsMenu" id="result_list-selectedActionsMenu">';
+                        foreach ($actions as $action){
+                            $img = '';
+                            if ( @$action['icon'] ){
+                                $img = '<img src="'.$action['icon'].'"/>';
+                            }
+                        
+                            if ( !@$action['onclick'] and !$action['url'] ){
+                                $action['onclick'] = "return actOnSelected('result_list', '".@$action['name']."'".(@$action['confirm']?", function(){return confirm('".addslashes($action['confirm'])."');}":"").")";
+                            
+                            }
+                        
+                            echo <<<END
+                            <li id="action-{$action['id']}"><a href="{$action['url']}" onclick="{$action['onclick']}" title="{$action['description']}">{$img}{$action['label']}</a></li>
 END;
-					}
-			
-			
-					echo '</ul></div>';
-				}
+                        }
+            
+            
+                        echo '</ul></div>';
+                    }
+                }
+        
+                if ( @$app->prefs['use_old_resultlist_controller'] ){
+                    echo '<div class="resultlist-controller" id="resultlist-controller-bottom">';
+    
+                    echo $controller;
+                    echo '</div>';
+                }
 			}
-		
-			if ( @$app->prefs['use_old_resultlist_controller'] ){
-				echo '<div class="resultlist-controller" id="resultlist-controller-bottom">';
-	
-				echo $controller;
-				echo '</div>';
-			}
+			
 		
 			
 			$out = ob_get_contents();

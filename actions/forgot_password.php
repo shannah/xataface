@@ -278,13 +278,30 @@ END
                         ."\r\nContent-type: text/plain; charset=".$app->_conf['oe'];
 		if ( isset($info['headers']) ) $headers = $info['headers'];
 		//echo "Subject: $subject \nEmail: $email \n$msg \nHeaders: $headers";exit;
-		if ( @$app->_conf['_mail']['func'] ) $func = $app->_conf['_mail']['func'];
-		else $func = 'mail';
-		$res = $func($email,
-					$subject,
-					$msg,
-					$headers,
-					$parameters);
+        
+		$event = new StdClass;
+		$event->email = $email;
+        $event->subject = $subject;
+        $event->message = array('text/plain' => $msg);
+        $event->headers = $headers;
+        $event->parameters = $parameters;
+		$event->consumed = false;
+        $app->fireEvent('mail', $event);
+        
+        if ($event->consumed) {
+            $res = @$event->out;
+        } else {
+    		if ( @$app->_conf['_mail']['func'] ) $func = $app->_conf['_mail']['func'];
+    		else $func = 'mail';
+    		$res = $func($email,
+    					$subject,
+    					$msg,
+    					$headers,
+    					$parameters);
+        }
+		
+        
+		
 		if ( !$res ){
 			throw new Exception(df_translate('actions.forgot_password.failed_send_activation',"Failed to send activation email.  Please try again later."), DATAFACE_E_ERROR);
 		} else {

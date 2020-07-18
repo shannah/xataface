@@ -1,0 +1,33 @@
+
+ {if df_count_actions('_tables') > 0}
+    <nav class="mobile tables" role="navigation">
+        {actions_menu category=_tables}
+    </nav>
+ {else }
+
+    <nav class="mobile tables" role="navigation">
+    <ul class="mobile tables-list">
+        {block name="tables_menu_head_mobile"}
+        {define_slot name="tables_menu_options_mobile"}
+
+        {foreach from=$ENV.APPLICATION._tables item=label key=table}
+            {assign var=nav value=$ENV.APPLICATION_OBJECT->getNavItem($table, $label)}
+            {if $nav}
+        <li {if $nav.selected}class="selected"{/if}><a href="{$nav.href|escape}"
+                            accesskey="accesskeys-navigation"
+                            class="table-selection-tab {if $nav.selected}selected{/if}"
+                            title="{$nav.label|escape}"
+                            data-table-link-id="TableLink_{$table|escape}">
+                                
+                                
+                                    {$nav.label|escape}
+                                
+                            </a></li>
+            {/if}
+        {/foreach}
+        {/define_slot}
+        {block name="tables_menu_tail_mobile"}
+    </ul>
+    </nav>
+    
+{/if}

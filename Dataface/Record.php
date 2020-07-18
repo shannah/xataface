@@ -2797,10 +2797,10 @@ class Dataface_Record {
 
 		//if ( $field['widget']['type'] != 'htmlarea' ) $val = htmlentities($val,ENT_COMPAT, 'UTF-8');
 		//if ( $this->_table->isText($fieldname) and $field['widget']['type'] != 'htmlarea' and $field['contenttype'] != 'text/html' ) $val = nl2br($val);
-
-		if ( $this->_table->isBlob($fieldname) or $this->_table->isContainer($fieldname) ){
+        $isImage = $this->isImage($fieldname, $index, $where, $sort);
+		if ($isImage or $this->_table->isBlob($fieldname) or $this->_table->isContainer($fieldname) ){
 			if ( $this->getLength($fieldname, $index,$where,$sort) > 0 ){
-				if ( $this->isImage($fieldname, $index, $where, $sort) ){
+				if ( $isImage ){
 					$val = '<img src="'.$val.'"';
                                         if ( !isset($parmas['alt']) ){
                                             $params['alt'] = $strval;
@@ -4678,6 +4678,10 @@ class Dataface_Record {
 	 * @see http://xataface.com/documentation/how-to/how-to-handle-file-uploads
 	 */
 	function isImage($fieldname, $index=0, $where=0, $sort=0){
+	    $field =& $this->_table->getField($fieldname);
+	    if (@$field['image'] or @$field['logo']) {
+	        return true;
+	    }
 		return preg_match('/^image/', $this->getMimetype($fieldname,$index,$where,$sort));
 
 	}

@@ -224,7 +224,16 @@ class Dataface_ActionTool {
 			
 			if ( @$params['name'] and @$params['name'] !== @$action['name']) continue;
 			if ( @$params['id'] and @$params['id'] !== @$action['id']) continue;
-			
+			if ( @$params['withtags']) {
+			    if (!@$action['tags'] or strpos($action['tags'], $params['withtags']) === false) {
+			        continue;
+			    }
+			}
+			if (@$params['sanstags']) {
+			    if (@$action['tags'] and strpos($action['tags'], $params['sanstags']) !== false) {
+			        continue;
+			    }
+			}
 			if ( isset($params['category'])  and $params['category'] !== @$action['category']) continue;
 				// make sure that the category matches
 			

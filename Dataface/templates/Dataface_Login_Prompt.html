@@ -32,6 +32,53 @@
 	</style>
 	{/fill_slot}
 	{fill_slot name="main_section"}
+        <script>{literal}
+        // hide sidemenu
+            (function() {
+                var sideMenu = document.querySelector('.sidemenu.header');
+                if (sideMenu) {
+                    sideMenu.style.display = 'none';
+                }
+                var toggle = document.querySelector('.sidebarIconToggle');
+                if (toggle) {
+                    toggle.style.display = 'none';
+                }
+                
+                function installFocusListeners() {
+
+                    var username = document.getElementById('Login-Username');
+                    var password = document.getElementById('Login-Password');
+                    if (username) {
+                        var fld = username.querySelector('input');
+                        if (fld) {
+                            fld.addEventListener('focus', function() {
+                                username.classList.add('focused');
+                            });
+                            fld.addEventListener('blur', function() {
+                                username.classList.remove('focused');
+                            });
+                        }
+                        
+                    }
+                    if (password) {
+                        var fld = password.querySelector('input');
+                        if (fld) {
+                            fld.addEventListener('focus', function() {
+                                password.classList.add('focused');
+                            });
+                            fld.addEventListener('blur', function() {
+                                password.classList.remove('focused');
+                            });
+                        }
+                        
+                    }
+                }
+                
+                window.addEventListener('DOMContentLoaded', installFocusListeners);
+            })();
+            
+            
+        {/literal}</script>
 		<div id="login-window">
 		{if $ENV.user}
 		<div id="xf-already-logged-in-msg" style="display:none">{translate id="You are already logged in"}You are already logged in{/translate}</div>
@@ -46,7 +93,8 @@
 		{/if}
 		{block name="before_login_form"}
 		{define_slot name="login_form"}
-		<h1>{translate id="Please Login"}Please Login to access this section of the site{/translate}</h1>
+        {define_slot name="login_logo"}<div id="login-logo">{include file="Dataface_Logo.html"}</div>{/define_slot}
+		{define_slot name="login_heading"}<h1>{translate id="Please Login"}Please Login to access this section of the site{/translate}</h1>{/define_slot}
 		{if $msg}<div class="portalMessage">{$msg}</div>{/if}
 		<form action="{$ENV.DATAFACE_SITE_HREF}" method="post" class="xataface-login-form">
 		<input type="hidden" name="-action" value="login" />
@@ -77,15 +125,15 @@
 				<input type="password" name="Password" value="{$ENV.REQUEST.Password|escape}">
 			</div>
 			{block name="after_login_password"}
-			<input id="Login-submit" name="-submit" type="submit" value="{translate id="scripts.GLOBAL.LABEL_SUBMIT"}Submit{/translate}"/>
+			<input id="Login-submit" name="-submit" type="submit" value="{translate id="scripts.GLOBAL.LABEL_LOGIN"}Log in{/translate}"/>
 			{block name="after_login_submit"}
 		</fieldset>
 		
 		</form>
 		{actions category="login_actions" var="login_actions"}
-		<ul>
+		<ul class="login-actions">
 		{foreach from=$login_actions item="action"}
-		 	<li><a href="{$action.url|escape}">{$action.label|escape}</a></li>
+		 	<li><a href="{$action.url|escape}">{if $action.materialIcon}<i class="material-icons">{$action.materialIcon|escape}</i>{/if}<span>{$action.label|escape}</span></a></li>
 		{/foreach}
 		</ul>
 		{/define_slot}

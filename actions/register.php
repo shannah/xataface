@@ -87,7 +87,7 @@ class dataface_actions_register {
 		
 		// Create a new record form on the users table
 		$this->form =& df_create_new_record_form($app->_conf['_auth']['users_table']);
-		
+		$this->form->newPermission = 'register';
 		// add the -action element so that the form will direct us back here.
 		$this->form->addElement('hidden','-action');
 		$this->form->setDefaults(array('-action'=>$query['-action']));
@@ -191,6 +191,7 @@ class dataface_actions_register {
 		// We don't want to keep the registration page in history, because we want to
 		// be able to redirect the user back to where he came from before registering.
 		$app->prefs['no_history'] = true;
+        xf_script('xataface/actions/register.js');
 		df_display($context, 'Dataface_Registration.html');
 	
 	}
@@ -421,7 +422,7 @@ class dataface_actions_register {
 				
 				
 				
-				
+				$info['message'] = array();
 				$msg = <<<END
 Thank you for registering for an account on $site_title .  In order to complete your registration,
 please visit $activation_url .
@@ -429,11 +430,13 @@ please visit $activation_url .
 If you have not registered for an account on this web site and believe that you have received
 this email eroneously, please report this to $admin_email .
 -----------------------------------------------------------
-This message was sent by $site_title which is powered by $application_name version $application_version
-$application_name built using Dataface version $dataface_version (http://fas.sfu.ca/dataface).
+This message was sent by $site_title version $application_version
+Powered by Xataface version $dataface_version .
 END;
 
-				$info['message'] = df_translate(
+
+
+				$info['message']['text/plain'] = df_translate(
 					'actions.register.MESSAGE_REGISTRATION_ACTIVATION_EMAIL_MESSAGE',
 					$msg,
 					array(
@@ -445,20 +448,71 @@ END;
 						'dataface_version'=>$dataface_version
 						)
 					);
-			
+                
+                $msg = <<<END
+<p>Thank you for registering for an account on $site_title .  In order to complete your registration,
+please click <a href="$activation_url">here</a>.</p>
+
+<p>If you have not registered for an account on this web site and believe that you have received
+this email eroneously, please report this to $admin_email </p>
+
+<hr/>
+
+<p style="font-size: 50%">This message was sent by $site_title  version $application_version<br/>
+Powered by Xataface version $dataface_version.</p>
+END;
+                $info['message']['text/html'] = df_translate(
+                	'actions.register.MESSAGE_REGISTRATION_ACTIVATION_EMAIL_MESSAGE_HTML',
+                	$msg,
+                	array(
+                		'site_title'=>$site_title,
+                		'activation_url'=>$activation_url,
+                		'admin_email'=>$admin_email,
+                		'application_name'=>$application_name,
+                		'application_version'=>$application_version,
+                		'dataface_version'=>$dataface_version
+                		)
+                	);
 			
 			}
+            if (is_string($info['message'])) {
+                $info['mesage'] = array('text/plain'=>$info['message']);
+            }
 			
 			// Now that we have all of the information ready to send.  Let's send
 			// the email message.
 			
 			if ( @$conf['_mail']['func'] ) $func = $conf['_mail']['func'];
 			else $func = 'mail';
-			$res = $func($info['to'],
-						$info['subject'],
-						$info['message'],
-						@$info['headers'],
-						@$info['parameters']);
+            $params = @$info['parameters'] ? $info['parameters'] : '';
+            $headers = @$info['headers'] ? $info['headers'] : '';
+            
+            
+    		$event = new StdClass;
+    		$event->email = $info['to'];
+            $event->subject = $info['subject'];
+            $event->message = $info['message'];
+            $event->headers = $headers;
+            $event->from = $admin_email;
+            if (strpos($admin_email, '<') === false) {
+                $event->from = $application_name.'<'.$admin_email.'>';
+            }
+            $event->parameters = $params;
+    		$event->consumed = false;
+            $app->fireEvent('mail', $event);
+
+            if (@$event->consumed) {
+                $res = $event->out;
+            } else {
+    			$res = $func($info['to'],
+    						$info['subject'],
+    						$info['message'],
+    						$headers,
+    						$params);
+                
+            }
+            
+			
 			if ( !$res ){
 				return PEAR::raiseError('Failed to send activation email.  Please try again later.', DATAFACE_E_ERROR);
 			} else {

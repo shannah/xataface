@@ -54,16 +54,19 @@ jQuery(document).ready(function($){
 			if ( !response.code ) throw "Unknown server error.";
 			if ( response.code == 200 ){
 				setStatus(response.message);
+                $('#reset-password-submit-button').get(0).disabled = false;
 			} else {
 				throw response.message;
 			}
 		} catch (e){
 			setStatus(e);
+            $('#reset-password-submit-button').get(0).disabled = false;
 		}
 	}
 	
 	
-	$('#submit-button', formDiv).click(function(){
+	$('#reset-password-submit-button', formDiv).click(function(){
+        this.disabled = true;
 		if ( getUsername() ){
 			submitFormByUsername(serverCallback);
 		} else if ( getEmail() ){
@@ -72,5 +75,21 @@ jQuery(document).ready(function($){
 			alert('Please enter a username or email address.');
 		}
 	});
+    
+    $('#reset-password-by').on('change', function() {
+        $("#email-or-username").focus();
+    });
+
+    
+    (function() {
+        var sideMenu = document.querySelector('.sidemenu.header');
+        if (sideMenu) {
+            sideMenu.style.display = 'none';
+        }
+        var toggle = document.querySelector('.sidebarIconToggle');
+        if (toggle) {
+            toggle.style.display = 'none';
+        }
+    })();
 
 });

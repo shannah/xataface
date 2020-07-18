@@ -617,6 +617,29 @@ class Dataface_SkinTool extends Smarty{
 			$params['record'] =& $this->ENV['record'];
 		}
 		$actions = $actionTool->getActions($params);
+        foreach ($actions as $k=>$a) {
+			if ( @$a['subcategory'] ){
+				$p2 = $params;
+				$p2['category'] = $a['subcategory'];
+				$subactions = $actionTool->getActions($p2);
+                if (count($subactions) > 0) {
+                    if (@$params['flatten']) {
+                        foreach ($subactions as $sa) {
+                            $actions[] = $sa;
+                        }
+                        unset($actions[$k]);
+                    } else {
+                        $actions[$k]['subactions'] = $subactions;
+                    }
+    				
+                    
+                } else {
+                    unset($actions[$k]);
+                }
+				
+
+			}
+        }
 		$context = array($varname=>$actions);
 		$smarty->assign($context);
 
@@ -716,13 +739,17 @@ class Dataface_SkinTool extends Smarty{
 				$p2 = $params;
 				$p2['category'] = $a['subcategory'];
 				$subactions = $actionTool->getActions($p2);
-
-				$actions[$k]['subactions'] = $subactions;
-                foreach ($subactions as $k=>$sa) {
-                    if (@$sa['hidden_status']) $statuses[] = $sa['hidden_status'];
-                    if (@$sa['visible_status']) $statuses[] = $sa['visible_status'];
+                if (count($subactions) > 0) {
+    				$actions[$k]['subactions'] = $subactions;
+                    foreach ($subactions as $k=>$sa) {
+                        if (@$sa['hidden_status']) $statuses[] = $sa['hidden_status'];
+                        if (@$sa['visible_status']) $statuses[] = $sa['visible_status'];
              
+                    }
+                } else {
+                    unset($actions[$k]);
                 }
+				
 
 			}
 

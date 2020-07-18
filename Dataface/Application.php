@@ -1352,17 +1352,17 @@ END
 		return intval($mv);
 	}
 
-	function getPageTitle(){
+	function getPageTitle($mode='desktop'){
 		if ( isset($this->pageTitle) ){
 			return $this->pageTitle;
 		} else {
-			$title = $this->getSiteTitle();
+			$title = $mode == 'mobile' ? '' : $this->getSiteTitle();
 			$query =& $this->getQuery();
 			if ( ($record = $this->getRecord()) && $query['-mode'] == 'browse'  ){
-                return $record->getTitle().' - '.$title;
+                return $record->getTitle().($title?(' - '.$title):'');
             } else {
                 $tableLabel = Dataface_Table::loadTable($query['-table'])->getLabel();
-                return $tableLabel.' - '.$title;
+                return $tableLabel.($title?(' - '.$title):'');
 
             }
 		}
@@ -2290,6 +2290,9 @@ END
 		foreach ($listeners as $listener){
 			$res = call_user_func($listener, $params);
 			if ( PEAR::isError($res) ) return $res;
+            if ($params and ($params instanceof stdClass) and @$params->consumed) {
+                return $res;
+            }
 		}
 		$this->firedEvents[$name] = true;
 		return true;

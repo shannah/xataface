@@ -32,7 +32,14 @@
 		<meta http-equiv="Content-Type" content="text/html; charset={$ENV.APPLICATION.oe|escape}"/>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" /> 
                 <title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
-		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css"/>{/define_slot}
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css"/>
+		<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/sidemenu.css"/>
+        <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/fab.css"/>{/define_slot}
+        {define_slot name="dataface_rss_links"}
+		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')|escape}"
+          title="RSS 2.0" type="application/rss+xml" />
+         {/define_slot}
 		{define_slot name="custom_stylesheets"}<!-- Stylesheets go here -->{/define_slot}
 		{block name="custom_stylesheets2"}
 		{define_slot name="dataface_javascripts"}
@@ -46,7 +53,7 @@
 		DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF|escape:javascript}';
 		
 		//--></script>
-	
+
 		<script type="text/javascript"
 				src="{$ENV.DATAFACE_URL|escape}/plone_javascripts.js">
 		</script>
@@ -79,11 +86,55 @@
 	</head>
 	<body onload="bodyOnload()" class="{$ENV.APPLICATION_OBJECT->getBodyCSSClasses()|escape}" {block name="body_atts"}>
 
-		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')|escape}"
-          title="RSS 1.0" type="application/rss+xml" />
+        
+		
 
 	{block name="before_body"}
 	{define_slot name="html_body"}<!-- Replace the entire HTML Body with the "html_body" slot -->
+
+        <div class="sidemenu header mobile-header">
+            <div class="mobile page-title">{define_slot name="html_title_mobile"}{$ENV.APPLICATION_OBJECT->getPageTitle('mobile')|escape}{/define_slot}</div>
+        </div>
+          <input type="checkbox" class="sidemenu openSidebarMenu" id="openSidebarMenu">
+          <label for="openSidebarMenu" class=" sidebarIconToggle">
+            <div class="spinner diagonal part-1"></div>
+            <div class="spinner horizontal"></div>
+            <div class="spinner diagonal part-2"></div>
+          </label>
+          <div id="sidebarMenu" class="sidemenu">
+            
+            {if $ENV.prefs.show_tables_menu}
+                {block name="before_nav_menu_mobile"}
+                {include file="xataface/mobile/navmenu.html"}
+                {block name="after_nav_menu_mobile"}
+
+            {/if}
+            
+            {if !$ENV.prefs.hide_user_status}
+            <div id="user-status-mobile">
+                    {if !$ENV.prefs.hide_personal_tools}
+                    {if $ENV.user}
+                        {block name="before_personal_tools_mobile"}
+                        {define_slot name="personal_tools_mobile"}
+                            <nav role="navigation" class="personal-tools-menu-mobile">
+                            {actions_menu category="personal_tools"}
+                                </nav>
+                            <!--<div id="personal-tools"><a href="{$ENV.user->getURL()}">My Profile</a></div>-->
+                        {/define_slot}
+                        {block name="after_personal_tools"}
+                    {else}
+                    
+                        <nav role="navigation" class="personal-tools-menu-mobile">
+                            {actions_menu category="personal_tools"}
+                                </nav>
+                    {/if}
+                    {/if}
+                    
+            </div>
+            {/if}
+          </div>
+          
+    
 	<div id="top-section">
 		{block name="before_header"}
 		{define_slot name="global_header"}{include file="global_header.html"}{/define_slot}
@@ -209,8 +260,8 @@
 					{literal}
 					var leftCol = document.getElementById('left_column');
 					var leftColumnContent = leftCol.textContent;
-					console.log(leftColumnContent);
-					console.log('len='+leftColumnContent.trim().length);
+					//console.log(leftColumnContent);
+					//console.log('len='+leftColumnContent.trim().length);
 					if (leftColumnContent.trim().length == 0) {
 						leftCol.style.width="0";
 						leftCol.style.padding="0";
@@ -333,14 +384,47 @@
 	</table>
 
 	{/define_slot}
+    
+    {define_slot name="fab"}
+         {actions var="menus" category="table_actions_menu" flatten="1" sanstags="#large#"}  
+
+         {if $menus|@count>0}
+
+             <script type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/xataface/fab.js"></script>
+             <div class="zoom">
+                 {if $menus|@count < 2}
+
+                     {foreach from=$menus item=action}
+                        
+                         <a class="zoom-fab zoom-btn-large" id="zoomBtn" title="{$action.title|escape}" href="{$action.url|escape}"><i class="material-icons">{if $action.materialIcon}{$action.materialIcon|escape}{else}details{/if}</i></a>
+                      {/foreach}
+                 {else}
+                     <a class="zoom-fab zoom-btn-large" id="zoomBtn"><i class="material-icons">menu</i></a>
+                     <ul class="zoom-menu">
+                         {foreach from=$menus item=action}
+                             <li><a class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out zoom-btn-action-{$action.name}" href="{$action.url|escape}"><i class="material-icons">{if $action.materialIcon}{$action.materialIcon|escape}{else}{$action.label|escape}{/if}</i></a></li>
+                             
+                         {/foreach}
+                     </ul>
+                {/if}
+                 
+               </div>
+         {/if}
+        
+    {/define_slot}
+    
 	{define_slot name="fineprint"}
 		{block name="before_fineprint"}
 		{include file="Dataface_Fineprint.html"}
 		{block name="after_fineprint"}
 	{/define_slot}
+	{block name="before_mobile_footer"}
+	    {define_slot name="mobile_footer"}{include file="xataface/mobile/footer.html"}{/define_slot}
+	{block name="after_mobile_footer"}
 	{block name="before_global_footer"}
 	{define_slot name="global_footer"}{include file="global_footer.html"}{/define_slot}
 	{block name="after_global_footer"}
+    
 	{/define_slot}
 	{block name="javascript_tool_includes"}
 	</body>

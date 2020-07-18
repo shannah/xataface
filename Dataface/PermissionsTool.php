@@ -714,8 +714,7 @@ class Dataface_PermissionsTool_Instance {
 		
 		
 		if ( is_array($perms) ){
-			
-			return  (isset( $perms[$permissionName]) and $perms[$permissionName]);
+			return (isset( $perms[$permissionName]) and $perms[$permissionName]);
 		}
 		
 		if ( PEAR::isError($perms) ){

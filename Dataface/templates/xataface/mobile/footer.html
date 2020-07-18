@@ -1,0 +1,19 @@
+<div class="mobile-footer">
+	{if $ENV.prefs.show_table_tabs} 
+   		{block name="before_table_tabs_mobile"}
+		{define_slot name="table_tabs_mobile"}
+			<div class="tabs_wrapper_mobile" id="table_tabs_wrapper_mobile">
+
+					<nav role="navigation" class="table_tabs_mobile">
+						{actions_menu  class="contentViews" category="table_tabs" selected_action=$ENV.mode}
+
+					</nav>
+
+
+				<div style="height:0px;padding:0;margin:0;clear:both"></div>
+			</div>
+			
+		{/define_slot}
+        {block name="after_table_tabs_mobile"}
+    {/if}
+</div>

@@ -92,6 +92,7 @@
 	mode = list
 	permission = show all
 	order=4
+	tags="#large#"
 
 [copy_replace] 
     label="Copy Set"
@@ -156,6 +157,11 @@
 	materialIcon="more_vert"
 	subcategory=record_actions
 	category="record_actions_menu"
+	
+[record_actions_mobile > record_actions]
+    category=mobile_record_actions
+    materialIcon="more_horiz"
+    
 
 [view_xml]
 	label = Export XML
@@ -323,6 +329,10 @@
 	selected_condition = "$query['-action'] == 'edit'"
 	permission = edit
 	order=-1
+	materialIcon=create
+	
+[edit_mobile > edit]
+    category=mobile_record_actions
 
 ;; Translate a record
 [translate]
@@ -335,6 +345,10 @@
 	condition = "($tableobj =& Dataface_Table::loadTable($table)) and count($tableobj->getTranslations()) > 0"
 	permission = translate
 	order=3
+	materialIcon=translate
+	
+[translate_mobile > translate]
+    category = mobile_record_actions
 
 ;; History for a record
 [history]
@@ -346,6 +360,10 @@
 	condition = "is_array($this->_conf['history'])"
 	permission = history
 	order=4
+	materialIcon=history
+	
+[history_mobile > history]
+    category=mobile_record_actions
 
 [view_history_record_details]
 	mode = browse
@@ -749,3 +767,4 @@
 	condition="($app->_conf[_auth] and !df_is_logged_in())"
 	materialIcon="security"
 	url="?-action=login"
+	
