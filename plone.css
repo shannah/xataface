@@ -3321,7 +3321,8 @@ body.two-col #status-bar .responsive-content,
       font-weight:bold;
   }
   
-  body.large .cancel-back-button {
+  body.large .cancel-back-button,
+  body.small.RecordDialogBody .cancel-back-button {
       display:none;
   }
   
@@ -3866,12 +3867,58 @@ body.two-col #status-bar .responsive-content,
         margin:0;
     }
     
-    table.Dataface_QuickForm-table-wrapper > tbody > tr > td .field input {
+    table.Dataface_QuickForm-table-wrapper > tbody > tr > td .field label {
+        font-size: 50%;
+        margin:0;
+        padding:0;
+        color: rgb(10, 132, 255);
+    }
+    table.Dataface_QuickForm-table-wrapper > tbody > tr > td .field input,
+    table.Dataface_QuickForm-table-wrapper > tbody > tr > td .field select,
+    table.Dataface_QuickForm-table-wrapper > tbody > tr > td .field textarea  {
         width: 100%;
         box-sizing: border-box;
         margin:0;
     }
     
+    table.Dataface_QuickForm-table-wrapper > tbody > tr > td .field input[type=checkbox] {
+        width: auto;
+    }
+    
+    .xf-form-group-wrapper.button-section {
+        position:fixed;
+        bottom:0;
+        width:100%;
+        left:0;
+        right:0;
+        box-sizing:border-box;
+        margin:0;
+        background-color:white;
+    }
+    .xf-form-group-wrapper.button-section tr,
+    .xf-form-group-wrapper.button-section td {
+        padding:0;
+        margin:0;
+        
+    }
+    .xf-form-group-wrapper.button-section input[name="--session:save"] {
+        color:white;
+        background-color: rgb(10, 132, 255);
+        width: 100%;
+        box-sizing:border-box;
+    }
+    
+    .xf-form-group-wrapper.button-section .field > div > table {
+        width:100%;
+        box-sizing:border-box;
+    }
+    
+    
+    
+    table.Dataface_QuickForm-table-wrapper > tbody > tr > td .field select {
+        padding: 5px;
+        font-size: 14pt;
+    }
     
     .mobile-record-actions > ul {
         display:flex;
@@ -4020,7 +4067,27 @@ body.small .search-instructions-link {
     display:none;
 }
 
-body.small h2.advanced-search-heading {
-    font-size: 50%;
+body.small h2.advanced-search-heading,
+body.small h1.new-record-header-label,
+body.small h3.edit-record-heading  {
+    font-size: 75%;
+    padding: 10px;
 }
-  
+
+
+body.small .ui-dialog-titlebar-close {
+    position:fixed;
+    background-color: #eaeaea !important;
+    width: 30px;
+    height: 30px;
+    top: 10px;
+    right: 10px;
+    border-radius: 15px;
+    box-shadow:none;
+    border: none;
+    font-size: 30px;
+    text-align:center;
+    margin:0;
+    padding:0;
+}
+

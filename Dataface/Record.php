@@ -4088,7 +4088,7 @@ class Dataface_Record {
 			}
 
 			if ( !isset($title) ){
-				$fields =& $this->_table->fields();
+				$fields =& $this->_table->fields(false, true);
 				$found_title = false; // flag to specify that a specific title field has been found
 									  // declared by the 'title' flag in the fields.ini file.
 

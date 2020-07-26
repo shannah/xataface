@@ -208,11 +208,15 @@ var form=document.getElementById("result_list_selected_items_form");form.element
         } else {
 
             var footer = document.querySelector('.mobile-footer');
-            if (footer) {
-                if (body.style.paddingBottom != footer.offsetHeight+'px') {
+            var buttons = document.querySelector('.button-section');
+            if (footer || buttons) {
+                var offsetHeight = 0;
+                if (footer) offsetHeight = footer.offsetHeight;
+                if (buttons) offsetHeight = Math.max(offsetHeight, buttons.offsetHeight);
+                if (body.style.paddingBottom != offsetHeight+'px') {
                     changed = true;
                 }
-                body.style.paddingBottom = footer.offsetHeight + 'px';
+                body.style.paddingBottom = offsetHeight + 'px';
                 explicitBottomPadding = true;
             }
             
