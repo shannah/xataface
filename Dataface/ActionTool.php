@@ -229,6 +229,18 @@ class Dataface_ActionTool {
 			        continue;
 			    }
 			}
+            if (@$params['with']) {
+                $missingKey = false;
+                foreach (explode(' ', $params['with']) as $withKey) {
+                    if (!$action[$withKey]) {
+                        $missingKey = true;
+                        break;
+                    }
+                }
+                if ($missingKey) {
+                    continue;
+                }
+            }
 			if (@$params['sanstags']) {
 			    if (@$action['tags'] and strpos($action['tags'], $params['sanstags']) !== false) {
 			        continue;
