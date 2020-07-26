@@ -240,4 +240,5 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     window.addEventListener('DOMContentLoaded', updateBodyPadding);
     window.addEventListener('load', updateBodyPadding);
     setInterval(updateBodyPadding, 1000);
+    
 })();

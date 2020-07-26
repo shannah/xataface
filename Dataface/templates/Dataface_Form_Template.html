@@ -210,8 +210,17 @@ jQuery(document).ready(function($){
 {include file=Dataface_Form_Section_Template.html elements=$form_data.elements}
 {foreach from=$form_data.sections item=section}
 	{if $section.elements}
-	    <div class="xf-form-group-wrapper {if $section.name == '__submit__'}button-section{/if}" data-form-group="{$section.field.name|escape}">
-
+	    <div class="xf-form-group-wrapper {if $section.field.noheader}noheader{/if} {if $section.field.hidden}hidden{/if} {if $section.name == '__submit__'}button-section{/if}" data-form-group="{$section.field.name|escape}">
+            {if $section.name == '__submit__'}
+            {define_slot name="fieldgroup_menu"}
+            <ul class="xf-fieldgroup-menu">
+                {foreach from=$form_data.sections item=section}
+                {if $section.field.materialIcon and $section.field.hidden}<li class="xf-fieldgroup-menuitem" data-xf-fieldgroup-name="{$section.field.name|escape}"><a href="#" title="{$section.header|escape}"><i class="material-icons">{$section.field.materialIcon|escape}</i></a></li>{/if}
+    
+                {/foreach}
+            </ul>
+            {/define_slot}
+            {/if}
 		{*
 			#02 - Scriptaculous collapsible sidebar
 			---------------------------------------
@@ -239,10 +248,10 @@ jQuery(document).ready(function($){
 	{/if}
 {/foreach}
 
-
 {/if}
 {block name="before_form_close_tag" form=$form_data}
 </form>
+
 {block name="after_form" form=$form_data}
 
  

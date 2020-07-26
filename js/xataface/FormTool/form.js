@@ -35,5 +35,23 @@
         
     }
     
+    function installFieldgroupMenu() {
+
+        $('ul.xf-fieldgroup-menu > li > a').click(function() {
+            if ($(this).hasClass('disabled')) {
+                return false;
+            }
+            var groupName = $(this).parent().attr('data-xf-fieldgroup-name');
+            console.log(groupName);
+            if (groupName) {
+                $('[data-form-group="' + groupName +'"]').removeClass('hidden');
+                $(this).prop('disabled', true).addClass('disabled');
+            }
+            return false;
+            
+        });
+        
+    }
+    window.addEventListener('DOMContentLoaded', installFieldgroupMenu);
     window.addEventListener('DOMContentLoaded', installMobileSubmitButton);
 })();

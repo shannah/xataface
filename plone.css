@@ -4091,3 +4091,37 @@ body.small .ui-dialog-titlebar-close {
     padding:0;
 }
 
+
+
+ul.xf-fieldgroup-menu {
+    list-style-type:none;
+    list-style-image: none;
+    display:flex;
+    border-top: 1px solid #eaeaea;
+    margin:0;
+}
+
+ul.xf-fieldgroup-menu > li {
+    flex-grow:1;
+    margin:0;
+    padding:10px;
+    padding-bottom:0;
+
+}
+
+.xf-form-group-wrapper.hidden {
+    display:none;
+}
+
+.xf-form-group-wrapper.noheader > h3.Dataface_collapsible_sidebar {
+    display:none;
+}
+
+.xf-fieldgroup-menu > li > a.disabled {
+    color: #cccccc;
+}
+
+
+
+
+
