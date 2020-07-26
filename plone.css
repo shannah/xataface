@@ -3180,9 +3180,7 @@ body.two-col #status-bar .responsive-content,
       border: none !important;
   }
 
-  .advanced-search-heading, .edit-record-heading {
-      display:none;
-  }
+ 
 
   .resultControllerWrapper {
     font-size: 90%;
@@ -3287,7 +3285,7 @@ body.two-col #status-bar .responsive-content,
       width: 30px;
       height: 30px;
       top: 10px;
-      left: 10px;
+      right: 10px;
       border-radius: 15px;
       box-shadow:none;
       border: none;
@@ -3296,6 +3294,7 @@ body.two-col #status-bar .responsive-content,
       margin:0;
       padding:0;
   }
+
   
   a.cancel-back-button {
       display:block;
@@ -3320,6 +3319,10 @@ body.two-col #status-bar .responsive-content,
       transform: translateX(-50%) translateY(-50%);
       font-size: 20px;
       font-weight:bold;
+  }
+  
+  body.large .cancel-back-button {
+      display:none;
   }
   
   
@@ -3992,5 +3995,32 @@ body.small.RecordDialogBody {
   
 body.small.RecordDialogBody h1.new-record-header-label {
     display:none;
+}
+
+body.small #selected-actions {
+    display:none;
+}
+
+body.small.no-mobile-header .sidemenu.mobile-header,
+body.small.no-mobile-header .openSidebarMenu,
+body.small.no-mobile-header .sidebarIconToggle {
+    display:none;
+    
+}
+
+body.small.no-table-tabs nav.table_tabs_mobile {
+    display:none;
+}
+
+body.small.no-fab div.zoom,
+body.large div.zoom {
+    display:none;
+}
+body.small .search-instructions-link {
+    display:none;
+}
+
+body.small h2.advanced-search-heading {
+    font-size: 50%;
 }
   

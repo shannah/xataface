@@ -223,6 +223,7 @@ class Dataface_SkinTool extends Smarty{
 		$this->register_function('feed', array(&$this,'feed'));
 		$this->register_function('records', array(&$this, 'records'));
 		$this->register_function('form_context', array(&$this, 'form_context'));
+        $this->register_function('cancel_back_button', array(&$this, 'cancel_back_button'));
 		$this->register_block('translate', array(&$this, 'translate'));
 		$this->register_block('use_macro',array(&$this,'use_macro'));
 		$this->register_block('define_slot', array(&$this,'define_slot'));
@@ -257,7 +258,8 @@ class Dataface_SkinTool extends Smarty{
 
 		return $this->resultController;
 	}
-
+    
+    
 	/**
      * Get the compile path for this resource.
      *
@@ -541,6 +543,34 @@ class Dataface_SkinTool extends Smarty{
 		$smarty->assign($context);
 
 	}
+
+    /**
+     * Displays a cancel back button in the upper right corner on mobile.  
+     * If the referer is within the app, it will use window.history.back()
+     * to go back.  Otherwise it will just go to the browse URL with the current
+     * query.
+     */
+    function cancel_back_button($params, &$smarty) {
+        $referer = @$_SERVER['HTTP_REFERER'];
+        $href = "window.history.back()";
+        $onclick = $href;
+        $href = '#';
+        
+        if (!$referer or strpos($referer, df_absolute_url(DATAFACE_SITE_URL)) !== 0) {
+            $href = Dataface_Application::getInstance()->url('-action=browse');
+            $onclick = '';
+        }
+        $href = htmlspecialchars($href);
+        $html = <<<END
+            <div class="cancel-back-button">
+                <a class="cancel-back-button" href="$href" onclick="$onclick"><i class="material-icons">clear</i></a>
+            </div>
+END;
+        return $html;
+        
+            
+    }
+
 
 	/**
 	 * Prints an 'img' tag that will show a thumbnail of the requested image using

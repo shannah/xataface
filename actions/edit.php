@@ -34,13 +34,18 @@ class dataface_actions_edit {
 		import( XFROOT.'Dataface/FormTool.php');
 		import( XFROOT.'Dataface/QuickForm.php');
 		$formTool =& Dataface_FormTool::getInstance();
-		
-				
+        		
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 		$resultSet =& $app->getResultSet();
 		
 		$currentRecord =& $app->getRecord();
+        
+        $app->addBodyCSSClass('no-table-tabs');
+        $app->addBodyCSSClass('no-mobile-header');
+        $app->addBodyCSSClass('no-fab');
+		
+        
 		if (!$currentRecord) {
 		    if (@$query['--recordid']) {
 		        $currentRecord = df_get_record_by_id($query['--recordid']);

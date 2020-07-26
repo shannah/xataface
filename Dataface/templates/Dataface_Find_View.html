@@ -19,6 +19,12 @@
  *}
 {use_macro file="Dataface_Main_Template.html"}
 	{fill_slot name="main_section"}
+        <script>
+            document.body.classList.add('no-mobile-header');
+            document.body.classList.add('no-fab');
+            document.body.classList.add('no-table-tabs');
+        </script>
+        {cancel_back_button}
 		{if $error}<div id="error">{translate id=$error_i18n}{$error}{/translate}</div>{/if}
 		{block name="before_find_form"}
 		{define_slot name="find_form"}

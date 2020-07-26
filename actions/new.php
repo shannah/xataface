@@ -38,7 +38,8 @@ class dataface_actions_new {
 		$query =& $app->getQuery();
 		
 		$app->addBodyCSSClass('no-table-tabs');
-
+        $app->addBodyCSSClass('no-mobile-header');
+        $app->addBodyCSSClass('no-fab');
 		$new = true;
 
                 $includedFields = null; // Null for all fields

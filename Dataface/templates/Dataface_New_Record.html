@@ -19,6 +19,9 @@
  *}
 {use_macro file="Dataface_Main_Template.html"}
 	{fill_slot name="main_section"}
+        {define_slot name="new_record_back_button"}
+        {cancel_back_button}
+        {/define_slot}
 		{block name="before_new_record_form"}
 		{define_slot name="new_record_form"}
                     {include file="Dataface_New_Record_inc.html"}

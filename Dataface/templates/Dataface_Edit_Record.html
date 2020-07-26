@@ -19,8 +19,11 @@
  *}
 {if $ENV.resultSet->found() > 0 }
 	{use_macro file="Dataface_Record_Template.html"}
-	
+        
 		{fill_slot name="record_content"}
+            {define_slot name="edit_record_back_button"}
+            {cancel_back_button}
+            {/define_slot}
 			{block name="before_edit_record_form"}
 			{define_slot name="edit_record_form"}
                             {include file="Dataface_Edit_Record_inc.html"}
@@ -33,6 +36,9 @@
 {else}
 	{use_macro file="Dataface_Main_Template.html"}
 		{fill_slot name="main_section"}
+            {define_slot name="edit_record_back_button"}
+            {cancel_back_button}
+            {/define_slot}
 			{translate id="No records matched request"}No records matched the request{/translate}
 		{/fill_slot}
 	{/use_macro}
