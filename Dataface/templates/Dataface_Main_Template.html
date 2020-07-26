@@ -386,7 +386,7 @@
 	{/define_slot}
     
     {define_slot name="fab"}
-         {actions var="menus" category="table_actions_menu" flatten="1" sanstags="#large#"}  
+         {actions var="menus" category="table_actions_menu" flatten="1" sanstags="#large#" with="materialIcon"}  
 
          {if $menus|@count>0}
 
@@ -396,14 +396,13 @@
 
                      {foreach from=$menus item=action}
                         
-                         <a class="zoom-fab zoom-btn-large" id="zoomBtn" title="{$action.title|escape}" href="{$action.url|escape}"><i class="material-icons">{if $action.materialIcon}{$action.materialIcon|escape}{else}details{/if}</i></a>
+                         <a class="zoom-fab zoom-btn-large" id="zoomBtn" title="{$action.title|escape}" href="{$action.url|escape}"><i class="material-icons">{$action.materialIcon|escape}</i></a>
                       {/foreach}
                  {else}
                      <a class="zoom-fab zoom-btn-large" id="zoomBtn"><i class="material-icons">menu</i></a>
                      <ul class="zoom-menu">
                          {foreach from=$menus item=action}
-                             <li><a class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out zoom-btn-action-{$action.name}" href="{$action.url|escape}"><i class="material-icons">{if $action.materialIcon}{$action.materialIcon|escape}{else}{$action.label|escape}{/if}</i></a></li>
-                             
+                             <li><a class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out zoom-btn-action-{$action.name}" href="{$action.url|escape}"><i class="material-icons">{$action.materialIcon|escape}</i></a></li>
                          {/foreach}
                      </ul>
                 {/if}
