@@ -245,7 +245,7 @@
 			
 			if ( typeof(this.params) == 'object' ){
 				// We have some parameters to pass along
-				
+				console.log(this.params);
 				$.each(this.params, function(key,val){
 					url += '&'+encodeURIComponent(key)+'='+encodeURIComponent(val);
 				});

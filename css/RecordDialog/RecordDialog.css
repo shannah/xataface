@@ -2,3 +2,19 @@
   height: 100%;
   overflow: hidden;
 }
+
+body.small .ui-widget-content {
+    background:white;
+}
+
+body.small .ui-widget-header {
+    background:white;
+    color: black;
+    border:none;
+}
+
+body.small .ui-dialog {
+    position: fixed;
+    
+}
+

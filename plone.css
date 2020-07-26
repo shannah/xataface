@@ -113,7 +113,6 @@ h6 a {
 
 h1 {
     font-size: 160%;
-    padding-right: 4em;
 }
 
 h2 {
@@ -3984,6 +3983,14 @@ body.two-col #status-bar .responsive-content,
         max-width: 275px;
     }
 }
+
+
+body.small.RecordDialogBody {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
   
-  
+body.small.RecordDialogBody h1.new-record-header-label {
+    display:none;
+}
   

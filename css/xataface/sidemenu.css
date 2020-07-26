@@ -87,11 +87,11 @@ body.small .sidebarMenuInner li a{
     cursor: pointer;
     text-decoration: none;
 }
-body.small input[type="checkbox"]:checked ~ #sidebarMenu {
+body.small input[type="checkbox"].sidemenu:checked ~ #sidebarMenu {
     transform: translateX(0);
 }
 
-body.small input[type=checkbox] {
+body.small input[type=checkbox].sidemenu {
     transition: all 0.3s;
     box-sizing: border-box;
     display: none;
@@ -137,18 +137,18 @@ body.small .diagonal.part-2 {
     float: left;
     margin-top: 3px;
 }
-body.small input[type=checkbox]:checked ~ .sidebarIconToggle > .horizontal {
+body.small input[type=checkbox].sidemenu:checked ~ .sidebarIconToggle > .horizontal {
     transition: all 0.3s;
     box-sizing: border-box;
     opacity: 0;
 }
-body.small input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
+body.small input[type=checkbox].sidemenu:checked ~ .sidebarIconToggle > .diagonal.part-1 {
     transition: all 0.3s;
     box-sizing: border-box;
     transform: rotate(135deg);
     margin-top: 8px;
 }
-body.small input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
+body.small input[type=checkbox].sidemenu:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     transition: all 0.3s;
     box-sizing: border-box;
     transform: rotate(-135deg);
