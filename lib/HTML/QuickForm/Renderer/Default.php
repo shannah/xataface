@@ -246,7 +246,20 @@ class HTML_QuickForm_Renderer_Default extends HTML_QuickForm_Renderer
             $html = str_replace('<!-- BEGIN required -->', '', $html);
             $html = str_replace('<!-- END required -->', '', $html);
         } else {
-            $html = preg_replace("/([ \t\n\r]*)?<!-- BEGIN required -->(\s|\S)*<!-- END required -->([ \t\n\r]*)?/i", '', $html);
+            $parts = explode('<!-- BEGIN required -->', $html);
+			if (count($parts) > 1) {
+				$parts2 = explode('<!-- END required -->', $parts[1]);
+				if (count($parts2) > 1) {
+					array_shift($parts2);
+					$parts[1] = implode(' ', $parts2);
+				}
+				$html = implode(' ', $parts);
+			}
+            
+            // Had to remove this perfectly good preg_replace call because PHP 7.1.2 on windows
+            // seemed to crash (hard crash - not fatal error - like segfault crash), on this preg
+            // replace.  Replaced with the explode/implode stuff above
+            //$html = preg_replace("/([ \t\n\r]*)?<!-- BEGIN required -->(\s|\S)*<!-- END required -->([ \t\n\r]*)?/i", '', $html);
         }
         if (isset($error)) {
             $html = str_replace('{error}', $error, $html);
