@@ -186,7 +186,7 @@ class Dataface_FormTool {
 	 * @see WidgetHandler::pushField()
 	 * @see pullField()
 	 */
-	function pushField($record, &$field, $form, $formFieldName, $new=false){
+	function pushField($record, &$field, $form, $formFieldName, $new=false, $validate=true){
 		if ( !is_array($field) ) throw new Exception("No field passed to pushField");
 		// See if there is a widgethandler registered for this widget type
 		$table =& $record->_table;
@@ -237,10 +237,15 @@ class Dataface_FormTool {
 
 
 		$params = array();
-		if ( !$record->validate($field['name'], $value, $params) ){
-
-			return Dataface_Error::permissionDenied($params['message']);
-		}
+        if ($validate) {
+    		if ( !$record->validate($field['name'], $value, $params) ){
+                if (!@$params['message']) {
+                    $params['message'] = 'Validation failed';
+                }
+    			return Dataface_Error::permissionDenied($params['message']);
+    		}
+        }
+		
 
 
 		if ( PEAR::isError($value) ){
@@ -1172,37 +1177,52 @@ class Dataface_FormTool {
 	 * @return boolean True if the form validates.
 	 */
 	function validateRecordForm($record, &$form, $new=false, $tab=null){
-
-		if ( !$form->validate() ) return false;
+        
+		if (!$form->isSubmitted()) return false;
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 
 		$targets = preg_grep('/^--session:target:/', array_keys($query));
-
+        
 		if ( count($targets) > 0 ) return true;
 
 		$tabs = $record->tabs();
 
-		if ( count($tabs) <= 1 ) return true;
+		if ( count($tabs) <= 1 ) return $form->validate();
 			// There is only one tab so we don't have to do anything fancy.
-		$session_data =& $this->getSessionData();
+		$session_data = $this->getSessionData();
+        $tabforms = array($form);
+        $submittedValues = array();
+ 		foreach ($form->_fieldnames as $field){
+            $submittedValues[$field] = $record->val($field);
+		}
 		foreach ( array_keys($tabs) as $tabname ){
 			if ($tabname == $tab) continue;
 			if ( !$session_data or !$session_data['tabs'] or !in_array($tabname, array_keys($session_data['tabs'])) ) continue;
-			$currForm =& $this->createRecordForm($record, $new, $tabname);
+			$currForm = $this->createRecordForm($record, $new, $tabname);
 			$currForm->_build();
 
 			//$currForm->setConstants($currForm->_defaultValues);
 			//$_POST = $currForm->exportValues();
 			$this->decorateRecordForm($record, $currForm, $new, $tabname);
+            $tabforms[$tabname] = $currForm;
+	 		foreach ($currForm->_fieldnames as $field){
+                $submittedValues[$field] = $record->val($field);
+			}
+        }
+        foreach ($tabforms as $tabname=>$currForm) {
+            
+        
 			//$currForm->_submitValues = $currForm->_defaultValues;
 			$currForm->_flagSubmitted = true;
-			if ( !$currForm->validate() ){
-
-				$form->setElementError('global.'.$tabname, df_translate('classes.FormTool.errors.ERROR_IN_TAB', 'A validation error occurred in the '.$tabs[$tabname]['label'].' tab.  Please verify that this tab\'s input is correct before saving.', array('tab'=>$tabs[$tabname]['label'])));
+			if ( !$currForm->validate($submittedValues) ){
+                if ($currForm !== $form) {
+                    $form->setElementError('global.'.$tabname, df_translate('classes.FormTool.errors.ERROR_IN_TAB', 'A validation error occurred in the '.$tabs[$tabname]['label'].' tab.  Please verify that this tab\'s input is correct before saving.', array('tab'=>$tabs[$tabname]['label'])));
+                }
+				
 
 			}
-			unset($currForm);
+
 		}
 
 
@@ -1398,7 +1418,8 @@ class Dataface_FormTool {
 			return $_SESSION[$session_key];
 
 		} else {
-			return null;
+            $null = null;
+			return $null;
 		}
 	}
 

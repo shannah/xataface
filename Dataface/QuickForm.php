@@ -780,7 +780,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 * standard QuickForm method by adding custom validation from the Record object.
 	 *
 	 */
-	 function validate(){
+	 function validate($submittedValues = null){
 	 	$this->_build();
 	 	//$this->push();
 	 	if ( $this->isSubmitted() ){
@@ -798,11 +798,16 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 		//foreach ( array_keys($this->_fields) as $field ){
 
 	 		$rec = new Dataface_Record($this->_record->_table->tablename, array());
+            
+            $rec->setValues($this->_record->getValues());
+            if ($submittedValues) {
+                $rec->setValues($submittedValues);
+            }
 	 		$rec->pouch = $this->_record->pouch;
 	 		$formTool =& Dataface_FormTool::getInstance();
 	 		foreach ($this->_fieldnames as $field){
 	 		    $fieldDef =& $this->_table->getField($field);
-	 		    $formTool->pushField($rec, $fieldDef, $this, $field, $this->_new);
+	 		    $formTool->pushField($rec, $fieldDef, $this, $field, $this->_new, false);
 	 		    unset($fieldDef);
 			}
 			
