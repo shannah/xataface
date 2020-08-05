@@ -1191,23 +1191,28 @@ class Dataface_FormTool {
 		if ( count($tabs) <= 1 ) return $form->validate();
 			// There is only one tab so we don't have to do anything fancy.
 		$session_data = $this->getSessionData();
-        $tabforms = array($form);
+        $tabforms = array();
         $submittedValues = array();
  		foreach ($form->_fieldnames as $field){
             $submittedValues[$field] = $record->val($field);
 		}
+        $clone = new Dataface_Record($record->table()->tablename, $record->vals());
 		foreach ( array_keys($tabs) as $tabname ){
-			if ($tabname == $tab) continue;
+			//if ($tabname == $tab) {
+    	 	//	continue;
+            //}
 			if ( !$session_data or !$session_data['tabs'] or !in_array($tabname, array_keys($session_data['tabs'])) ) continue;
-			$currForm = $this->createRecordForm($record, $new, $tabname);
+			$currForm = $this->createRecordForm($clone, $new, $tabname);
 			$currForm->_build();
 
 			//$currForm->setConstants($currForm->_defaultValues);
 			//$_POST = $currForm->exportValues();
-			$this->decorateRecordForm($record, $currForm, $new, $tabname);
+			$this->decorateRecordForm($clone, $currForm, $new, $tabname);
             $tabforms[$tabname] = $currForm;
+            $currForm->_flagSubmitted = true;
 	 		foreach ($currForm->_fieldnames as $field){
-                $submittedValues[$field] = $record->val($field);
+                $this->pushField($clone, $clone->table()->getField($field), $currForm, $field, $new, false);
+                $submittedValues[$field] = $clone->val($field);
 			}
         }
         foreach ($tabforms as $tabname=>$currForm) {
