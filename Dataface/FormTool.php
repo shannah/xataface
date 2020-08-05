@@ -1557,7 +1557,7 @@ class Dataface_FormTool {
 
 
 		foreach ( array_keys($session_data['tabs']) as $tabname ){
-			$temp =& $this->createRecordForm($record, $new, $tabname);
+			$temp = $this->createRecordForm($record, $new, $tabname);
 
 				// Note that this form could be a form for the $record object
 				// or it could be a form for one of its join records
