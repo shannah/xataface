@@ -186,7 +186,7 @@ class Dataface_FormTool {
 	 * @see WidgetHandler::pushField()
 	 * @see pullField()
 	 */
-	function pushField($record, &$field, $form, $formFieldName, $new=false, $validate=true){
+	function pushField($record, &$field, $form, $formFieldName, $new=false, $validate=false){
 		if ( !is_array($field) ) throw new Exception("No field passed to pushField");
 		// See if there is a widgethandler registered for this widget type
 		$table =& $record->_table;
@@ -234,7 +234,7 @@ class Dataface_FormTool {
 		$value = $this->pushValue($record, $field, $form, $element, $metaValues);
 
 
-
+        
 		$params = array();
         if ($validate) {
     		if ( !$record->validate($field['name'], $value, $params) ){
