@@ -235,7 +235,6 @@ class Dataface_FormTool {
 
 
 
-
 		$params = array();
         if ($validate) {
     		if ( !$record->validate($field['name'], $value, $params) ){
@@ -1197,16 +1196,18 @@ class Dataface_FormTool {
             $submittedValues[$field] = $record->val($field);
 		}
         $clone = new Dataface_Record($record->table()->tablename, $record->vals());
+        foreach ($form->_fieldnames as $field) {
+            $this->pushField($clone, $clone->table()->getField($field), $form, $field, $new, false);
+            $submittedValues[$field] = $clone->val($field);
+        }
+
 		foreach ( array_keys($tabs) as $tabname ){
-			//if ($tabname == $tab) {
-    	 	//	continue;
-            //}
-			if ( !$session_data or !$session_data['tabs'] or !in_array($tabname, array_keys($session_data['tabs'])) ) continue;
+			if ( !$session_data or !$session_data['tabs'] or !in_array($tabname, array_keys($session_data['tabs'])) ) {
+                continue;
+            }
+
 			$currForm = $this->createRecordForm($clone, $new, $tabname);
 			$currForm->_build();
-
-			//$currForm->setConstants($currForm->_defaultValues);
-			//$_POST = $currForm->exportValues();
 			$this->decorateRecordForm($clone, $currForm, $new, $tabname);
             $tabforms[$tabname] = $currForm;
             $currForm->_flagSubmitted = true;
@@ -1215,10 +1216,10 @@ class Dataface_FormTool {
                 $submittedValues[$field] = $clone->val($field);
 			}
         }
+        if (count($tabforms) === 0) {
+            $tabforms[] = $form;
+        }
         foreach ($tabforms as $tabname=>$currForm) {
-            
-        
-			//$currForm->_submitValues = $currForm->_defaultValues;
 			$currForm->_flagSubmitted = true;
 			if ( !$currForm->validate($submittedValues) ){
                 if ($currForm !== $form) {
