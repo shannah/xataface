@@ -27,7 +27,7 @@
 		{define_slot name="view_tab_content"}
 		{record_view var=rv record=$record}
 		
-		<script type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/jquery-ui.packed.js"></script>
+		{php}xf_script('jquery-ui.min.js');{/php}
 					
 		<table width="100%">
 			{if !$rv->showLogo}
@@ -255,88 +255,79 @@
 					 <script type="text/javascript">
 					// <![CDATA[
 						require(DATAFACE_URL+'/js/ajaxgold.js');
-						
-						var DatafaceSections = {
+                        jQuery(document).ready(function($) {
+    						window.DatafaceSections = {
 							
-							'setDisplay': function(el,disp){
-								var params = '--record_id=*&--name='+encodeURIComponent('tables.{/literal}{$record->_table->tablename}{literal}.sections.'+el.getAttribute('df:section_name')+'.display')+'&--value='+disp;
-								var query = window.location.search;
-								if ( query.indexOf('-action=') >= 0 ){
-									query = query.replace(/([?&])-action=[^&]+/g, '$1-action=ajax_set_preference');
-								} else {
-									query = '-action=ajax_set_preference';
-								}
-								query = query.replace(/^[?]/, '');
-								var url = DATAFACE_SITE_HREF;
-								//alert(url + " : " + params);
-								postDataReturnText(url, params + '&' + query, function(text){});
+    							'setDisplay': function(el,disp){
+    								var params = '--record_id=*&--name='+encodeURIComponent('tables.{/literal}{$record->_table->tablename}{literal}.sections.'+el.getAttribute('df:section_name')+'.display')+'&--value='+disp;
+    								var query = window.location.search;
+    								if ( query.indexOf('-action=') >= 0 ){
+    									query = query.replace(/([?&])-action=[^&]+/g, '$1-action=ajax_set_preference');
+    								} else {
+    									query = '-action=ajax_set_preference';
+    								}
+    								query = query.replace(/^[?]/, '');
+    								var url = DATAFACE_SITE_HREF;
+    								//alert(url + " : " + params);
+    								postDataReturnText(url, params + '&' + query, function(text){});
 									
-							},
+    							},
 							
-							'oncollapse': function(el){
-								return this.setDisplay(el, 'collapsed');
+    							'oncollapse': function(el){
+    								return this.setDisplay(el, 'collapsed');
 							
-							},
+    							},
 							
-							'onexpand': function(el){
-								return this.setDisplay(el, 'expanded');
-							},
-							'collapseAll': function(){
+    							'onexpand': function(el){
+    								return this.setDisplay(el, 'expanded');
+    							},
+    							'collapseAll': function(){
 							
-								var handles = getElementsByClassName(document,'*','expansion-handle');
-								for ( var i=0; i<handles.length; i++){
-									if ( !jQuery(handles[i].parentNode.nextSibling).hasClass('closed') ){
-										jQuery(handles[i].parentNode.nextSibling).slideToggle("slow", Xataface.blocks.collapsible_sidebar.toggleCallback);
-										//cd.collapseElement(handles[i]);
-									}
-								}
-							},
-							'expandAll': function(){
-								var handles = getElementsByClassName(document,'*','expansion-handle');
-								for ( var i=0; i<handles.length; i++){
-									if ( jQuery(handles[i].parentNode.nextSibling).hasClass('closed') ){
-										jQuery(handles[i].parentNode.nextSibling).slideToggle("slow", Xataface.blocks.collapsible_sidebar.toggleCallback);
-										//cd.collapseElement(handles[i]);
-									}
-								}
-							}
+    								var handles = getElementsByClassName(document,'*','expansion-handle');
+    								for ( var i=0; i<handles.length; i++){
+    									if ( !jQuery(handles[i].parentNode.nextSibling).hasClass('closed') ){
+    										jQuery(handles[i].parentNode.nextSibling).slideToggle("slow", Xataface.blocks.collapsible_sidebar.toggleCallback);
+    										//cd.collapseElement(handles[i]);
+    									}
+    								}
+    							},
+    							'expandAll': function(){
+    								var handles = getElementsByClassName(document,'*','expansion-handle');
+    								for ( var i=0; i<handles.length; i++){
+    									if ( jQuery(handles[i].parentNode.nextSibling).hasClass('closed') ){
+    										jQuery(handles[i].parentNode.nextSibling).slideToggle("slow", Xataface.blocks.collapsible_sidebar.toggleCallback);
+    										//cd.collapseElement(handles[i]);
+    									}
+    								}
+    							}
 						
 						
-						};
+    						};
 						
-						var updateSections = function(container){
-									//alert('here');
+    						window.updateSections = function(container){
+    									//alert('here');
 									
-									var params = window.location.search;//+'&'+Sortable.serialize("dataface-sections-left");
-									params = params.replace(/([?&])-action=[^&]+/g, '$1-action=ajax_sort_sections');
+    									var params = window.location.search;//+'&'+Sortable.serialize("dataface-sections-left");
+    									params = params.replace(/([?&])-action=[^&]+/g, '$1-action=ajax_sort_sections');
 									
 									
-									var movables = jQuery(container).find('.movable');
-									var movables_str = '';
-									for ( var i=0; i<movables.length; i++){
-										movables_str += ','+movables[i].getAttribute('df:section_name');
-									}
-									params += '&--'+encodeURIComponent(container.getAttribute('id'))+'='+encodeURIComponent(movables_str);
-									params = params.substring(1);
-									//alert(params);
-									postDataReturnText(DATAFACE_SITE_HREF, params, function(data){document.getElementById('terminal').innerHTML=data;});
-									//alert(Sortable.serialize("dataface-sections-left"));
-								}
+    									var movables = jQuery(container).find('.movable');
+    									var movables_str = '';
+    									for ( var i=0; i<movables.length; i++){
+    										movables_str += ','+movables[i].getAttribute('df:section_name');
+    									}
+    									params += '&--'+encodeURIComponent(container.getAttribute('id'))+'='+encodeURIComponent(movables_str);
+    									params = params.substring(1);
+    									//alert(params);
+    									postDataReturnText(DATAFACE_SITE_HREF, params, function(data){document.getElementById('terminal').innerHTML=data;});
+    									//alert(Sortable.serialize("dataface-sections-left"));
+    								}
 								
-						jQuery('#dataface-sections-left').sortable({'handle': '.movable-handle', 'update': function(){updateSections(jQuery('#dataface-sections-left').get(0));}});
-						jQuery('#dataface-sections-main').sortable({'handle': '.movable-handle', 'update': function(){updateSections(jQuery('#dataface-sections-main').get(0));}});
-						/*Sortable.create("dataface-sections-left",
-							{
-								dropOnEmpty:true,
-								constraint:false, 
-								handle:'movable-handle',
-								tag:'div',
-								only:'movable',
-								onUpdate: updateSections
-							});
-						Sortable.create("dataface-sections-main",
-						{dropOnEmpty:true,constraint:false, handle:'movable-handle',tag:'div',only:'movable', onUpdate:updateSections});
-					*/
+    						jQuery('#dataface-sections-left').sortable({'handle': '.movable-handle', 'update': function(){updateSections(jQuery('#dataface-sections-left').get(0));}});
+    						jQuery('#dataface-sections-main').sortable({'handle': '.movable-handle', 'update': function(){updateSections(jQuery('#dataface-sections-main').get(0));}});
+                        });
+						
+						
 					// ]]>
 					 </script>
 					 {/literal}
