@@ -186,7 +186,7 @@ class Dataface_FormTool {
 	 * @see WidgetHandler::pushField()
 	 * @see pullField()
 	 */
-	function pushField($record, &$field, $form, $formFieldName, $new=false, $validate=true){
+	function pushField($record, &$field, $form, $formFieldName, $new=false, $validate=false){
 		if ( !is_array($field) ) throw new Exception("No field passed to pushField");
 		// See if there is a widgethandler registered for this widget type
 		$table =& $record->_table;
@@ -234,8 +234,7 @@ class Dataface_FormTool {
 		$value = $this->pushValue($record, $field, $form, $element, $metaValues);
 
 
-
-
+        
 		$params = array();
         if ($validate) {
     		if ( !$record->validate($field['name'], $value, $params) ){
@@ -1191,29 +1190,36 @@ class Dataface_FormTool {
 		if ( count($tabs) <= 1 ) return $form->validate();
 			// There is only one tab so we don't have to do anything fancy.
 		$session_data = $this->getSessionData();
-        $tabforms = array($form);
+        $tabforms = array();
         $submittedValues = array();
  		foreach ($form->_fieldnames as $field){
             $submittedValues[$field] = $record->val($field);
 		}
-		foreach ( array_keys($tabs) as $tabname ){
-			if ($tabname == $tab) continue;
-			if ( !$session_data or !$session_data['tabs'] or !in_array($tabname, array_keys($session_data['tabs'])) ) continue;
-			$currForm = $this->createRecordForm($record, $new, $tabname);
-			$currForm->_build();
+        $clone = new Dataface_Record($record->table()->tablename, $record->vals());
+        foreach ($form->_fieldnames as $field) {
+            $this->pushField($clone, $clone->table()->getField($field), $form, $field, $new, false);
+            $submittedValues[$field] = $clone->val($field);
+        }
 
-			//$currForm->setConstants($currForm->_defaultValues);
-			//$_POST = $currForm->exportValues();
-			$this->decorateRecordForm($record, $currForm, $new, $tabname);
+		foreach ( array_keys($tabs) as $tabname ){
+			if ( !$session_data or !$session_data['tabs'] or !in_array($tabname, array_keys($session_data['tabs'])) ) {
+                continue;
+            }
+
+			$currForm = $this->createRecordForm($clone, $new, $tabname);
+			$currForm->_build();
+			$this->decorateRecordForm($clone, $currForm, $new, $tabname);
             $tabforms[$tabname] = $currForm;
+            $currForm->_flagSubmitted = true;
 	 		foreach ($currForm->_fieldnames as $field){
-                $submittedValues[$field] = $record->val($field);
+                $this->pushField($clone, $clone->table()->getField($field), $currForm, $field, $new, false);
+                $submittedValues[$field] = $clone->val($field);
 			}
         }
+        if (count($tabforms) === 0) {
+            $tabforms[] = $form;
+        }
         foreach ($tabforms as $tabname=>$currForm) {
-            
-        
-			//$currForm->_submitValues = $currForm->_defaultValues;
 			$currForm->_flagSubmitted = true;
 			if ( !$currForm->validate($submittedValues) ){
                 if ($currForm !== $form) {
@@ -1552,7 +1558,7 @@ class Dataface_FormTool {
 
 
 		foreach ( array_keys($session_data['tabs']) as $tabname ){
-			$temp =& $this->createRecordForm($record, $new, $tabname);
+			$temp = $this->createRecordForm($record, $new, $tabname);
 
 				// Note that this form could be a form for the $record object
 				// or it could be a form for one of its join records

@@ -11,6 +11,13 @@ if [[ $status == *"ERROR!"* ]]; then
 fi
 scaffolddir="$SCRIPTPATH/..";
 ACMD="$1"
-mysqldump --socket="$scaffolddir"/tmp/mysql.sock -u `php $SCRIPTPATH/print_config_var.php _database.user` `php $SCRIPTPATH/print_config_var.php _database.name`
+DATABASE=`php $SCRIPTPATH/print_config_var.php _database.name`
+IGNORE_TABLES=""
+for table in $(sh bin/mysql.sh -e "show tables like 'dataface__view_%'")
+do
+	IGNORE_TABLES+="--ignore-table $DATABASE.$table "
+done
+
+mysqldump $IGNORE_TABLES --socket="$scaffolddir"/tmp/mysql.sock -u `php $SCRIPTPATH/print_config_var.php _database.user` $DATABASE
 ERROR=$?
 exit $ERROR
