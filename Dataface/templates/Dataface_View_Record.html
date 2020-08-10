@@ -28,7 +28,52 @@
 		{record_view var=rv record=$record}
 		
 		{php}xf_script('jquery-ui.min.js');{/php}
-					
+		{foreach from=$rv->sections item=section}
+			{if $section.class == 'override'}
+			    {assign var="contentOverridden" value=1}
+				{define_slot name="`$section.name`_section_content"}
+				{if $section.content}
+					<div class="dataface-view-section">
+					{$section.content}
+					</div>
+				{elseif $section.fields}
+					<table class="record-view-table">
+					<tbody>
+					{foreach from=$section.fields item=field key=fieldname}
+						{if $field.visibility.browse != 'hidden'}
+							{if $section.record}
+								{assign var="field_value" value=$section.record->htmlValue($field.name)}
+							{else}
+								{assign var="field_value" value=$record->htmlValue($field.name)}
+							
+							{/if}
+							{if !empty($field_value)}
+								<tr><th class="record-view-label">
+										{if $field.label_link}<a href="{$field.label_link|escape}" target="_blank" class="field-label-link no-link-icon">{/if}
+											{$field.widget.label|escape}
+										{if $field.label_link}</a>{/if}
+									</th>
+									<td class="record-view-value">{$field_value}</td></tr>
+							{/if}
+						{/if}
+					{/foreach}
+					</tbody>
+					</table>
+				{elseif $section.records}
+					{glance_list records=$section.records}
+				{/if}
+				{/define_slot}
+
+			{/if}
+		
+		{/foreach}
+        
+		{if $contentOverridden}		
+			<div class="mobile mobile-record-actions">
+
+			    {actions_menu category="mobile_record_actions"}
+			</div>
+        {else}
 		<table width="100%">
 			{if !$rv->showLogo}
 			<tr>
@@ -335,7 +380,7 @@
 				</td>
 			</tr>
 		</table>
-		
+		{/if} {* contentOverridden *}
 			
 		{/define_slot}	
 		
