@@ -5,6 +5,17 @@ namespace xf\io;
  * Class providing useful http client methods
  */
 class HttpClient {
+    
+    private static function status_line($response_headers) {
+        $status_line = null;
+        foreach ($response_headers as $line) {
+            if (preg_match('{HTTP\/\S*\s(\d{3})}', $line)) {
+                $status_line = $line;
+            }
+        }
+        return $status_line;
+    }
+    
     /**
      * Performs an HTTP GET request
      * @param string $url The URL to request
@@ -23,12 +34,13 @@ class HttpClient {
                 'header'  => $headerStr,
                 'method'  => 'GET',
                 'ignore_errors' => true,
-                'follow_locaton' => true
+                'follow_location' => true
             )
         );
         $context  = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
-        $status_line = $http_response_header[0];
+        
+        $status_line = self::status_line($http_response_header);
         preg_match('{HTTP\/\S*\s(\d{3})}', $status_line, $match);
         $out = new \StdClass;
         $out->status = intval($match[1]);
