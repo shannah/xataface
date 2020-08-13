@@ -801,7 +801,10 @@ class Dataface_QuickForm extends HTML_QuickForm {
             
             $rec->setValues($this->_record->getValues());
             if ($submittedValues) {
-                $rec->setValues($submittedValues);
+                foreach ($submittedValues as $k=>$v) {
+                    $rec->setValue($k, $v);
+                }
+                //$rec->setValues($submittedValues);
             }
 	 		$rec->pouch = $this->_record->pouch;
 	 		$formTool =& Dataface_FormTool::getInstance();
