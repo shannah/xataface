@@ -1,4 +1,6 @@
-/*! jQuery UI - v1.8.23 - 2012-08-15
+console.log("deprecation notice:  jquery-ui.packed.js will be removed from a future version of Xataface.  Please use jquery-ui.min.js instead");
+
+// /*! jQuery UI - v1.8.23 - 2012-08-15
 * https://github.com/jquery/jquery-ui
 * Includes: jquery.ui.core.js
 * Copyright (c) 2012 AUTHORS.txt; Licensed MIT, GPL */

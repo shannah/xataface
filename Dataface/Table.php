@@ -1199,6 +1199,8 @@ class Dataface_Table {
 		return $this->descriptionField;
 
 	}
+    
+	
 	
 	private $logoField;
 	
@@ -1214,6 +1216,23 @@ class Dataface_Table {
 
 		}
 		return $this->logoField;
+
+	}
+    
+	private $bylineField;
+	
+	function getBylineField(){
+		if ( !isset($this->bylineField) ){
+            $this->bylineField = '';
+    		foreach ($this->fields(false,true) as $field){
+    			if (@$field['byline']) {
+    			    $this->bylineField = $field['name'];
+                    break;
+    			}
+    		}
+
+		}
+		return $this->bylineField;
 
 	}
 
@@ -3270,6 +3289,13 @@ class Dataface_Table {
             return $this->_atts['label'];
 
 	}
+    
+    function getListStyle() {
+        if (@$this->_atts) {
+            return $this->_atts['listStyle'];
+        }
+        return 'auto';
+    }
 	
 	/**
 	 * Gets the name of the table used for the new record form on this

@@ -65,7 +65,6 @@
         
         function setVal(newval) {
             var tagName = $(field).prop("tagName").toLowerCase();
-            console.log("TagName="+tagName);
             if (tagName == 'input' || tagName == 'select' || tagName == 'textarea') {
                 return $(field).val(newval);
             } else if (contentType == 'html'){
@@ -109,7 +108,6 @@
                     if (results && results.length > 0) {
                         var oldVal = val();
                         if (oldVal != results[0]) {
-                            console.log("changed", oldVal, results[0]);
                             setVal(results[0]);
                             $(field).trigger('change');
                         }
@@ -117,7 +115,6 @@
                 } else {
                     var oldVal = val();
                     if (oldVal != res) {
-                        console.log("changed", oldVal, res);
                         setVal(res);
                         $(field).trigger('change');
                     }
@@ -128,7 +125,6 @@
             var newVal = replaceVars(field, query);
             var oldVal = val();
             if (oldVal != newVal) {
-                console.log("changed", oldVal, newVal);
                 setVal(newVal);
                 $(field).trigger('change');
             }
@@ -140,12 +136,13 @@
             //console.log('found');
             var depField = this;
             var varNames = extractVars($(depField).attr('data-xf-update-url'));
+            var event = $(depField).attr('data-xf-update-event') || 'change';
             var len = varNames.length;
             for (var i=0; i<len; i++) {
                 var varName = varNames[i];
                 var fld = findField(this, varName);
                 if (fld) {
-                    $(fld).change(function() {
+                    $(fld).on(event, function() {
                         update(depField);
                     });
                 }

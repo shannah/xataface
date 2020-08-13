@@ -4159,6 +4159,38 @@ class Dataface_Record {
 		}
 
 	}
+    
+	/**
+	 * @brief Returns a brief by-line of the record for use in listings and summaries.
+	 *
+	 * @return string A string by-line of the record.
+	 *
+	 * @since 0.8
+	 *
+	 * @section Synopsis
+	 *
+	 * This method first checks to see if a getByline() method has been explicitly
+	 * defined in the delegate class and returns its result if found.  If none is found
+	 * it will try to guess which field is meant to be used as a by-line based on
+	 * various heuristics.  Usually it will just use the first TEXT field it finds and
+	 * treat that as a description.
+	 *
+	 * 
+	 *
+	 * @see http://www.xataface.com/wiki/Delegate_class_methods
+	 * @see http://xataface.com/documentation/tutorial/getting_started/delegate_classes
+	 * @see Dataface_Table::getBylineField()
+	 */
+	function getByLine(){
+		if ( ($res = $this->callDelegateFunction('getByline')) !== null ){
+			return $res;
+		} else if ( $bylineField = $this->_table->getBylineField() ){
+			return $this->htmlValue($bylineField);
+		} else {
+			return '';
+		}
+
+	}
 
 	/**
 	 * @brief Returns a Unix timestamp representing the date/time that this record was

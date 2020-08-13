@@ -84,7 +84,7 @@
 
 
 	</head>
-	<body onload="bodyOnload()" class="{$ENV.APPLICATION_OBJECT->getBodyCSSClasses()|escape}" {block name="body_atts"}>
+	<body onload="bodyOnload()" class="{$ENV.APPLICATION_OBJECT->getBodyCSSClasses()|escape}" {block name="body_atts"}{if $ENV.record} xf-record-id="{$ENV.record->getId()|escape}"{/if}>
 
         
 		

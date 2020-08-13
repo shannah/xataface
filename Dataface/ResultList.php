@@ -45,6 +45,9 @@ import(XFROOT.'Dataface/QueryTool.php');
  	
  	var $_results;
  	var $_resultSet;
+    // List style allows you to set the style of the list to override default.
+    // Values: auto or mobile
+    var $listStyle = 'auto';
  	
  	var $_filterCols = array();
  
@@ -59,6 +62,7 @@ import(XFROOT.'Dataface/QueryTool.php');
  		if( !is_array($query) ) $this->_query = array();
  		
  		$this->_table =& Dataface_Table::loadTable($tablename);
+        $this->listStyle = $this->_table->getListStyle();
  		$fieldnames = array_keys($this->_table->fields(false,true));
  		$fields =& $this->_table->fields(false,true);
  		$sortFilters = false;
@@ -348,7 +352,7 @@ import(XFROOT.'Dataface/QueryTool.php');
 			
 			
                 echo '
-                    <table data-xataface-query="'.df_escape($sq).'" id="result_list" class="listing resultList resultList--'.$this->_tablename.'">
+                    <table data-xataface-query="'.df_escape($sq).'" id="result_list" class="listing resultList resultList--'.$this->_tablename.' list-style-'.$this->listStyle.'">
                     <thead>
                     <tr>';
                 if ( $canSelect){
@@ -440,7 +444,7 @@ import(XFROOT.'Dataface/QueryTool.php');
                     ";
             } // end if ($desktop)
             else if ($mobile) {
-                echo '<div class="mobile mobile-listing resultList--'.$this->_tablename.'" data-xataface-query="'.df_escape($sq).'">';
+                echo '<div class="mobile mobile-listing resultList--'.$this->_tablename.' list-style-'.$this->listStyle.'" data-xataface-query="'.df_escape($sq).'">';
             }
 	
 			
@@ -471,7 +475,9 @@ import(XFROOT.'Dataface/QueryTool.php');
 				$query = array_merge( $baseQuery, array( "-action"=>"browse", "-relationship"=>null, "-cursor"=>$cursor++) );
 				
 				if (  @$recperms['link'] ){
-					if ( @$app->prefs['result_list_use_geturl'] ){
+                    if (@$app->prefs['result_list_use_publiclink']) {
+                        $link = $record->getPublicLink();
+                    } else if ( @$app->prefs['result_list_use_geturl'] ){
 						$link = $record->getURL('-action=view');
 					} else {
 						
@@ -593,7 +599,11 @@ import(XFROOT.'Dataface/QueryTool.php');
 				    } else {
 				        echo "<div class='mobile-logo'>$aOpen<i class='material-icons'>description</i>$aClose</div>";
 				    }
-
+                    $byLine = $record->getByLine();
+                    if ($byLine) {
+                        // getByLine returns HTML content so we don't escape it.
+                        echo "<div class='mobile-byline'>".$byLine."</div>";
+                    }
 				    echo "<div class='mobile-title'>$aOpen".df_escape($record->getTitle())."$aClose</div>";
 				    echo "<div class='mobile-description'>$aOpen".df_escape($record->getDescription())."$aClose</div>";
                     $actions = $at->getActions(array('category'=>'list_row_actions', 'record'=>&$record));
@@ -659,7 +669,7 @@ import(XFROOT.'Dataface/QueryTool.php');
                     
 
                     $actions = $at->getActions(array('category'=>'selected_result_actions'));
-                    if ( count($actions) > 0){
+                    if ( count($actions) > 0 and $this->listStyle != 'mobile'){
                         echo '<div id="selected-actions">'.df_translate('scripts.Dataface_ResultList.MESSAGE_WITH_SELECTED', "With Selected").': <ul class="selectedActionsMenu" id="result_list-selectedActionsMenu">';
                         foreach ($actions as $action){
                             $img = '';
