@@ -170,7 +170,8 @@ class Dataface_SkinTool extends Smarty{
 			'mode'=>&$app->_query['-mode'],
 			'language'=>$app->_conf['lang'],
 			'prefs'=>&$app->prefs,
-			'search'=>@$_REQUEST['-search']
+			'search'=>@$_REQUEST['-search'],
+            'APPLICATION_VERSION' => $app->getApplicationVersion()
 
 		);
 

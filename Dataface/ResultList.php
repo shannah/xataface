@@ -113,7 +113,9 @@ import(XFROOT.'Dataface/QueryTool.php');
  		$this->_resultSet =& Dataface_QueryTool::loadResult($tablename, $db, $query);
  		
  	}
- 	 	function Dataface_ResultList($tablename, $db='', $columns=array(), $query=array()) { self::__construct($tablename, $db, $columns, $query); }
+ 	function Dataface_ResultList($tablename, $db='', $columns=array(), $query=array()) {
+        self::__construct($tablename, $db, $columns, $query); 
+    }
  	
  	function renderCell(&$record, $fieldname){
  		$del =& $record->_table->getDelegate();
@@ -139,7 +141,10 @@ import(XFROOT.'Dataface/QueryTool.php');
  		if ( $fulltext ){
             $fulltext = 'data-fulltext="'.df_escape($fulltext).'"';
         }
- 		if ( !@$field['noEditInListView'] and @$field['noLinkFromListView'] and $record->checkPermission('edit', array('field'=>$fieldname) ) ){
+ 		if ( !@$field['noEditInListView'] and 
+                @$field['noLinkFromListView'] and 
+                $record->checkPermission('edit', array('field'=>$fieldname) ) ) {
+                    
  			$recid = $record->getId();
  			
  			$out = '<span df:showlink="1" df:id="'.$recid.'#'.$fieldname.'" class="df__editable" '.$fulltext.'>'.df_escape($out).'</span>';
@@ -163,7 +168,7 @@ import(XFROOT.'Dataface/QueryTool.php');
  		return null;
  	}
  	
-        function getTfootContent(){
+    function getTfootContent(){
             if ( !isset($tablename) ) $tablename = $this->_table->tablename;
  		$del =& $this->_table->getDelegate();
  		if ( isset($del) and method_exists($del, 'renderRowFooterTemplate') ){
@@ -175,7 +180,7 @@ import(XFROOT.'Dataface/QueryTool.php');
  			return $appdel->renderRowFooterTemplate($tablename);
  		}
  		return '';
-        }
+    }
         
  	function renderRow(&$record, $mode = 'desktop'){
  		$del =& $record->_table->getDelegate();
@@ -202,6 +207,8 @@ import(XFROOT.'Dataface/QueryTool.php');
  		}
  		
  	}
+    
+    
  	
  	function &getResults(){
  		if ( !isset($this->_results) ){
@@ -252,18 +259,36 @@ import(XFROOT.'Dataface/QueryTool.php');
  	}
  	
  	function toHtml($mode = 'all'){
+        xf_script('xataface/actions/list.js');
  	    import(XFROOT.'Dataface/ActionTool.php');
  	    $mobile = $mode == 'mobile';
  	    $desktop = $mode == 'desktop';
  	    $all = $mode == 'all';
  	    if ($all) {
- 	        $this->toHtml('mobile');
- 	        return $this->toHtml('desktop') . $this->toHtml('mobile');
+ 	        //$this->toHtml('mobile');
+ 	        return $this->toHtml('desktop').$this->toHtml('mobile');
  	    }
  	    
+        
+        
  		$app =& Dataface_Application::getInstance();
  		$at =& Dataface_ActionTool::getInstance();
  		$query =& $app->getQuery();
+        
+        if ($mobile) {
+            
+		    $actions = $at->getActions(['category'=>'mobile_list_settings']);
+		    echo '<div class="mobile-list-settings-wrapper">';
+		
+            if ( count($actions)>0){
+                echo ' <div class="mobile-list-settings">';
+                $this->print_actions($actions);
+                echo '</div>';
+            }
+		    
+		    echo '</div>';
+        }
+        
  		if ( isset( $query['-sort']) ){
  			$sortcols = explode(',', trim($query['-sort']));
  			$sort_columns = array();

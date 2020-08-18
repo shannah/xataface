@@ -1,0 +1,93 @@
+body {
+    padding-bottom:40px;
+    background-color:transparent;
+}
+
+.xf-filter-options {
+    position:fixed;
+    top:0;
+    left:100%;
+    width:100%;
+    bottom:0;
+    visibility:hidden;
+    background-color: transparent;
+    z-index:100;
+}
+
+.xf-filter-options.slidein {
+    visibility:visible;
+    left:0;
+}
+
+h1, h1 > span {
+    text-align:center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+h1 {
+    padding-top: 20px;
+}
+
+.dialog-content {
+    background-color: white;
+    margin: 0 0 40px 0;
+    padding: 0;
+}
+
+.xf-buttons {
+    position:fixed;
+    height:40px;
+    bottom:0;
+    left:0;
+    right:0;
+    width:100%;
+    padding: 5px;
+    box-sizing:border-box;
+    z-index:200;
+}
+
+.xf-buttons button {
+    background-color: rgb(10, 132, 255);
+    color:white;
+    width:100%;
+    display:block;
+    border:none;
+    border-radius: 5px;
+    font-size: 14px;
+    padding: 10px;
+    box-sizing:border-box;
+}
+
+ul, li {
+    list-style-type:none;
+    list-style-image:none;
+    padding:0;
+    margin:0;
+}
+
+
+li.xf-filter-field > a, ul.xf-filter-options-list > li  {
+    text-decoration:none;
+    color: black;
+    font-size: 12px;
+    border-bottom: 1px solid #eaeaea;
+    display:block;
+    padding: 10px;
+    position:relative;
+    
+}
+
+li.xf-filter-field > a > i.material-icons {
+    position:absolute;
+    right: 10px;
+    top: 10px;
+    padding:0;
+    margin:0;
+    width: 20px;
+}
+
+span.xf-filter-option-count {
+    font-size: 75%;
+    color: #666;
+}

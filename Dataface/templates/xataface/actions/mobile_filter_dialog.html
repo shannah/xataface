@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css?v={$ENV.APPLICATION_VERSION}"/>
+    <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/actions/mobile_filter_dialog.css?v={$ENV.APPLICATION_VERSION}"/>
+</head>
+<body class='mobile-sort-dialog'>
+    
+    <h1>Filter</h1>
+    <ul class='xf-filter-form'>
+    {foreach from=$searchFields item=field}
+    <li class='xf-filter-field xf-filter-type-{$field.type|escape}'>
+        
+
+        {if $field.type == 'filter'}
+        <a href='javascript:void(0)' onclick='showOptions(this)'>
+            <i class='material-icons'>arrow_forward_ios</i>
+            <span class='xf-filter-label'>{$field.label|escape}</span>
+            {if $field.value}<span class='xf-filter-value'>: {$field.value|escape}</span>{/if}
+            
+        </a>
+        <div class='xf-filter-options' data-field='{$field.fieldDef.name}'>
+            <div class='dialog-content'>
+                <h1><span>{$field.label|escape}</span></h1>
+                <ul class='xf-filter-options-list'>
+                    {foreach from=$field.options item=option}
+                    <li>
+                
+                        <input 
+                            onclick='updateFilters(this);' 
+                            data-key='{$option.key|escape}' 
+                            type='checkbox' 
+                            id='{$field.name|escape}-option-{$option.key|escape}'
+                            {if $option.selected}checked{/if}/>
+                        <label for='{$field.name|escape}-option-{$option.key|escape}'>
+                            <span class='xf-filter-option-value'>{$option.value|escape}</span>
+                            {if $option.count}<span class='xf-filter-option-count'>({$option.count|escape})</span>{/if}
+                        </labeL>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+        {elseif $field.type == 'date-range'}
+    
+        {elseif $field.type == 'contains'}
+    
+        {elseif $field.type == 'checkbox'}
+    
+        {elseif $field.type == 'range'}
+    
+        {elseif $field.type == 'min'}
+    
+        {elseif $field.type == 'max'}
+    
+        {elseif $field.type == 'checkbox'}
+    
+        {else}
+    
+    
+        {/if}
+
+    </li>
+    {/foreach}
+    </ul>
+    
+    <div class='xf-buttons'>
+        <button class='xf-apply-btn' onclick='applyFilters()'>Show <span class='num-results'>x</span> Results</button>
+    </div>
+    
+    <script>{literal}
+        
+        var win = window.parent;
+        var filterSearch = win.location.search;
+        
+        function showOptions(targetEl) {
+            var $ = win.jQuery;
+            var options = $('>.xf-filter-options', $(targetEl).parent());
+            
+            $(options).addClass('slidein');
+            win.activeSheet.pushState({
+                back : function() {
+                    $(options).removeClass('slidein');
+                },
+                el : options.get(0)
+            });
+            
+        }
+        
+        function applyFilters() {
+            if (win.activeSheet) {
+                win.activeSheet.close();
+            }
+            win.jQuery('<div class="spin fillscreen"></div>').appendTo(win.document.body);
+            win.location.search=filterSearch;
+            return false;
+        }
+        
+        function updateFilters(srcEl) {
+            var $ = win.jQuery;
+            var wrapper = $(srcEl).parents('[data-field]').first();
+            var field = $(wrapper).attr('data-field');
+            var selectedKeys = [];
+            var selectedString = '';
+            $('input[data-key]', wrapper).each(function() {
+                if (!this.checked) {
+                    return;
+                }
+                selectedKeys.push(this.getAttribute('data-key'));
+            });
+            if (selectedKeys.length == 0) {
+                if (filterSearch.indexOf('&'+field+'=') >= 0) {
+                    var re = new RegExp('&'+field+'=[^&]*');
+                    
+                    filterSearch = filterSearch.replace(re, '');
+                    updateCounts();
+                    return;
+                }
+            }
+            var selectedString = '=' + selectedKeys.join(' OR =');
+            if (filterSearch.indexOf('&'+field+'=') >= 0) {
+                var re = new RegExp('&'+field+'=[^&]*');
+                
+                filterSearch = filterSearch.replace(re, '');
+            }
+            filterSearch += '&'+field+'='+encodeURIComponent(selectedString);
+            updateCounts();
+            
+        }
+        
+        function updateCounts() {
+            var search = filterSearch;
+            var $ = win.jQuery;
+            if (!$ || !$.get) return;
+            
+            if (search.indexOf('-action=') >= 0) {
+                search = search.replace(/-action=[^&]*/, '-action=ajax_count_results');
+            } else {
+                search += '&-action=ajax_count_results';
+            }
+            $.get(search, function(res) {
+                console.log(res);
+                if (res && res.found) {
+                    document.querySelector('button.xf-apply-btn > .num-results').innerHTML = ''+res.found;
+
+                }
+            })
+        }
+        updateCounts();
+    {/literal}</script>
+</body>
+    

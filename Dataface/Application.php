@@ -1340,6 +1340,20 @@ END
 	}
 
 
+    /**
+     * Returns the application version as reported in the version.txt file.  This only
+     * returns the build version, which is the 2nd component of the version in version.txt
+     * Value is returned as an int.
+     *
+     * If no version is supplied, this will return 0
+     * 
+     * @return int The application version number.
+     */
+    function getApplicationVersion() {
+        return df_get_file_system_version();
+        
+    }
+    
 	/**
 	 * @brief Get the mysql major version number of MySQL.
 	 * returns int

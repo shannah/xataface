@@ -515,6 +515,7 @@ function df_save_record(&$record, $keys=null, $lang=null, $secure=false){
 }
 
 function xf_script($script, $useJavascriptTool=true) {
+    $app = Dataface_Application::getInstance();
     if ($useJavascriptTool) {
         $pos = strpos($script, ':');
         if ($pos == 4 and substr($script, 0, 4) == 'http') {
@@ -530,12 +531,17 @@ function xf_script($script, $useJavascriptTool=true) {
         import(XFROOT.'Dataface/JavascriptTool.php');
         Dataface_JavascriptTool::getInstance()->import($script);
     } else {
+        if (strpos($script, '?') !== false) {
+            $script .= '&v='.$app->getApplicationVersion();
+        } else {
+            $script .= '?v='.$app->getApplicationVersion();
+        }
         Dataface_Application::getInstance()->addHeadContent('<script src="'.htmlspecialchars($script).'"></script>');
     }
 }
 
 function xf_stylesheet($sheet, $useCSSTool=true) {
-
+    $app = Dataface_Application::getInstance();
     if ($useCSSTool) {
         $pos = strpos($sheet, ':');
         if ($pos == 4 and substr($sheet, 0, 4) == 'http') {
@@ -551,6 +557,11 @@ function xf_stylesheet($sheet, $useCSSTool=true) {
         import(XFROOT.'Dataface/CSSTool.php');
         Dataface_CSSTool::getInstance()->import($sheet);
     } else {
+        if (strpos($sheet, '?') !== false) {
+            $sheet .= '&v='.$app->getApplicationVersion();
+        } else {
+            $sheet .= '?v='.$app->getApplicationVersion();
+        }
         Dataface_Application::getInstance()->addHeadContent('<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($sheet).'"/>');
     }
 }

@@ -193,6 +193,15 @@ var form=document.getElementById("result_list_selected_items_form");form.element
 
     var paddingTopExplicit = false;
     var paddingBottomExplicit = false;
+    var viewport = {
+        top : 0,
+        left : 0,
+        right : 0,
+        bottom : 0,
+        width : window.innerWidth,
+        height : window.innerHeight
+         
+    };
     function updateBodyPadding() {
 
         if (!mobileActivated) {
@@ -205,6 +214,9 @@ var form=document.getElementById("result_list_selected_items_form");form.element
             body.style.paddingBottom = null;
             body.style.paddingTop = null;
             paddingTopExplicit = paddingBottomExplicit = false;
+            viewport.top = viewport.bottom = viewport.left = viewport.right = 0;
+            viewport.width = window.innerWidth;
+            viewport.height = window.innerHeight;
         } else {
 
             var footer = document.querySelector('.mobile-footer');
@@ -217,6 +229,9 @@ var form=document.getElementById("result_list_selected_items_form");form.element
                     changed = true;
                 }
                 body.style.paddingBottom = offsetHeight + 'px';
+                viewport.bottom = offsetHeight;
+                viewport.height = window.innerHeight - viewport.bottom - viewport.top;
+                viewport.width = window.innerWidth;
                 explicitBottomPadding = true;
             }
             
@@ -226,6 +241,9 @@ var form=document.getElementById("result_list_selected_items_form");form.element
                     changed = true;
                 }
                 body.style.paddingTop = header.offsetHeight + 'px';
+                viewport.top = header.offsetHeight;
+                viewport.height = window.innerHeight - viewport.top - viewport.bottom;
+                viewport.width = window.innerWidth;
                 explicitBottomPadding = true;
             }
             
@@ -237,6 +255,16 @@ var form=document.getElementById("result_list_selected_items_form");form.element
         }
         
     }
+    
+    function getViewport() {
+        return Object.assign({}, viewport);
+    }
+    window.xataface = window.xataface || {};
+    Object.defineProperty(window.xataface, 'viewport', {
+        get: getViewport,
+        configurable: false,
+        enumerable: false
+    });
     window.addEventListener('DOMContentLoaded', updateBodyPadding);
     window.addEventListener('load', updateBodyPadding);
     setInterval(updateBodyPadding, 1000);

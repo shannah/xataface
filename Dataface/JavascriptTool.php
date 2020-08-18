@@ -259,7 +259,10 @@ class Dataface_JavascriptTool {
 	 */
 	public function getURL(){
 		$this->compile();
-		return DATAFACE_SITE_HREF.'?-action=js&--id='.$this->generateCacheKeyForScripts(array_keys($this->scripts));
+        $app = Dataface_Application::getInstance();
+		return DATAFACE_SITE_HREF . 
+            '?v='.$app->getApplicationVersion().'&-action=js&--id=' . 
+                $this->generateCacheKeyForScripts(array_keys($this->scripts));
 	}
 	
 	/**

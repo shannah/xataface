@@ -4220,7 +4220,89 @@ ul.xf-fieldgroup-menu > li {
     color: #cccccc;
 }
 
+div.mobile-list-settings-wrapper {
+    display:none;
+}
+
+body.small div.mobile-list-settings-wrapper {
+    position:fixed;
+    z-index: 100;
+    background-color: rgb(10, 132, 255);
+    border-radius: 20px;
+    color white;
+    display:none;
+    -webkit-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    -moz-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 0);
+    padding:5px 15px 5px 15px;
+    box-sizing: border-box;
+    font-size: 11px;
+}
+
+body.small div.mobile-list-settings-wrapper > div {
+    padding:0;
+    margin:auto;
+    display:flex;
+}
+body.small div.mobile-list-settings-wrapper span,
+body.small div.mobile-list-settings-wrapper i {
+    color: white;
+}
+body.small div.mobile-list-settings-wrapper i  {
+    font-size: 16px;
+    vertical-align:middle;
+    margin-right: 5px;
+}
+
+body.small div.mobile-list-settings-wrapper > div > a {
+    border-left: 1px solid white;
+    height: 100%;
+    flex-grow:1;
+    box-sizing: border-box;
+}
+body.small div.mobile-list-settings-wrapper > div > a:first-child {
+    border-left: none;
+}
+body.small div.mobile-list-settings-wrapper a {
+    text-decoration:none;
+    padding: 5px 10px 5px 10px;
+}
 
 
+body.small div.mobile-list-settings-wrapper.active {
+    display:block;
+}
 
 
+/** A progress indicator.  Just create a div with this class **/
+.spin {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, .3);
+    border-radius: 50%;
+    border-top-color: #ccc;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+}
+
+.spin.fillscreen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -25px;
+}

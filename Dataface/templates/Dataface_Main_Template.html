@@ -33,9 +33,9 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" /> 
                 <title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css"/>
-		<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/sidemenu.css"/>
-        <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/fab.css"/>{/define_slot}
+		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css?v={$ENV.APPLICATION_VERSION}"/>
+		<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/sidemenu.css?v={$ENV.APPLICATION_VERSION}"/>
+        <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/fab.css?v={$ENV.APPLICATION_VERSION}"/>{/define_slot}
         {define_slot name="dataface_rss_links"}
 		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')|escape}"
           title="RSS 2.0" type="application/rss+xml" />
@@ -55,11 +55,11 @@
 		//--></script>
 
 		<script type="text/javascript"
-				src="{$ENV.DATAFACE_URL|escape}/plone_javascripts.js">
+				src="{$ENV.DATAFACE_URL|escape}/plone_javascripts.js?v={$ENV.APPLICATION_VERSION}">
 		</script>
 		{if $ENV.APPLICATION.usage_mode == 'edit'}
 		<script type="text/javascript"
-				src="{$ENV.DATAFACE_URL|escape}/js/editable.js">
+				src="{$ENV.DATAFACE_URL|escape}/js/editable.js?v={$ENV.APPLICATION_VERSION}">
 		</script>
 		{/if}
 		
@@ -390,7 +390,7 @@
 
          {if $menus|@count>0}
 
-             <script type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/xataface/fab.js"></script>
+             <script type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/xataface/fab.js?v={$ENV.APPLICATION_VERSION}"></script>
              <div class="zoom">
                  {if $menus|@count < 2}
 

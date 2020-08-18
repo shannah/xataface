@@ -768,3 +768,24 @@
 	materialIcon="security"
 	url="?-action=login"
 	
+    
+[mobile_list_filter]
+    category=mobile_list_settings
+    materialIcon=filter_list
+    label=Filter
+    description=Filter results
+    permission=list
+    url="javascript:void(0)"
+    onclick="window.xataface.list.openFilterDialog()"
+    
+[mobile_list_sort]
+    category=mobile_list_settings
+    materialIcon=sort
+    label=Sort
+    description=Sort results
+    url="javascript:void(0)"
+    onclick="window.xataface.list.openSortDialog()"
+    permission=list
+    
+[mobile_sort_dialog]
+    permission=list

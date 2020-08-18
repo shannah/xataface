@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css"/>
+    <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/actions/mobile_sort_dialog.css"/>
+</head>
+<body class='mobile-sort-dialog'>
+    <h1>Sort</h1>
+    
+    
+    <ul class='sort-actions'>
+    {foreach from=$sort_actions item=action}
+        <li>
+            <input 
+                name="sort" 
+                type="radio" 
+                id="{$action.name|escape}"
+                {if $action.selected}checked{/if} 
+                onclick="{$action.onclick|escape}"
+            
+            />
+            <label for="{$action.name|escape}"><span>{$action.label|escape}</span>
+                {if $action.materialIcon}<i class='material-icons'>{$action.materialIcon|escape}</i>{/if}
+            </label>
+        </li>
+    {/foreach}
+    </ul>
+    <script>{literal}
+        
+        var win = window.parent;
+        var search = win.location.search;
+        
+        function setSort(sortVal) {
+            if (win.activeSheet) {
+                win.activeSheet.close();
+            }
+            search = search.replace(/&-sort=[^&]*/, '');
+            search = search.replace(/\?-sort=[^&]*/, '?');
+            search += '&-sort='+encodeURIComponent(sortVal);
+            
+            win.jQuery('<div class="spin fillscreen"></div>').appendTo(win.document.body);
+            win.location.search=search;
+            
+            
+        }
+        
+        function sortAscending(fieldName) {
+            setSort(fieldName+' asc');
+        }    
+        
+        function sortDescending(fieldName) {
+            setSort(fieldName+" desc");
+        }
+    {/literal}</script>
+    
+</body>
+</html>

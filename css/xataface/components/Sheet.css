@@ -1,0 +1,105 @@
+.Sheet-removing {
+    visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 0.5s, opacity 0.5s linear;
+}
+
+
+.xf-sheet-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -25px;
+}
+
+
+.xf-sheet {
+    max-height:0;         
+    overflow-y: hidden;
+    -webkit-transition: max-height 0.3s ease-in-out;
+    -moz-transition: max-height 0.3s ease-in-out;
+    -o-transition: max-height 0.3s ease-in-out;
+    transition: max-height 0.3s ease-in-out;
+    position:fixed;
+
+    bottom:0;
+    left:0;
+    right:0;
+    background-color: white;
+    z-index: 500;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+
+}
+
+.xf-sheet.slidein {
+    max-height: 80%;
+}
+
+.xf-sheet-background {
+    z-index:499;
+    background-color: black;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s ease-in-out;
+    -moz-transition: opacity 0.3s ease-in-out;
+    -o-transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
+    position:fixed;
+    top:0; left:0; bottom:0; right:0; width:100%; height:100%;
+}
+
+.xf-sheet-background.fadein {
+    opacity: 0.5;
+}
+
+.xf-sheet.xf-sheet-bottom {
+
+}
+
+
+.xf-sheet.xf-sheet-top {
+    margin-bottom: 20px;
+}
+
+.xf-sheet.xf-sheet-left {
+    margin-right: 20px;
+}
+
+.xf-sheet.xf-sheet-right {
+    
+    margin-left: 20px;
+}
+
+.xf-sheet-contentframe {
+    border:none;
+    width:100%;
+    height:100%;
+}
+
+.xf-sheet-close {
+    color: black;
+    position:absolute;
+    top:15px;
+    left:15px;
+    font-size: 20px;
+}
+
+.xf-sheet-close > i.xf-sheet-back-icon {
+    display:none;
+}
+
+.xf-sheet-close.xf-sheet-back-btn > i.xf-sheet-back-icon {
+    display:block;
+}
+.xf-sheet-close.xf-sheet-back-btn > i.xf-sheet-close-icon {
+    display:none;
+}
+.xf-sheet-contentframe {
+    -webkit-transition: height 0.3s ease-in-out;
+    -moz-transition: height 0.3s ease-in-out;
+    -o-transition: height 0.3s ease-in-out;
+    transition: height 0.3s ease-in-out;
+    position:relative;
+    z-index:-1;
+}

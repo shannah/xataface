@@ -51,8 +51,9 @@ class Dataface_CSSTool {
 	
 	
 	public function getURL(){
+        $app = Dataface_Application::getInstance();
 		$this->compile();
-		return DATAFACE_SITE_HREF.'?-action=css&--id='.$this->generateCacheKeyForScripts(array_keys($this->stylesheets));
+		return DATAFACE_SITE_HREF.'?v='.$app->getApplicationVersion().'&-action=css&--id='.$this->generateCacheKeyForScripts(array_keys($this->stylesheets));
 	}
 	
 	public function getIncluded(){

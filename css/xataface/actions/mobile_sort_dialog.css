@@ -1,0 +1,40 @@
+
+.sort-actions li {
+    list-style-image:none;
+    list-style-type:none;
+}
+
+html, body, ul {
+    padding:0;
+    margin:0;
+}
+
+body {
+    padding: 10px;
+}
+
+
+
+h1 {
+    text-align:center;
+    font-size: 14px;
+    font-weight:bold;
+}
+
+label {
+    font-size: 11px;
+}
+
+input {
+    vertical-align: middle;
+    font-size: 16px;
+    width: 20px;
+    height: 20px;
+}
+
+li {
+    border-bottom: 1px solid #eaeaea;
+    margin:0;
+    padding: 10px 0 10px 0;
+    
+}
