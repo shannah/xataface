@@ -278,6 +278,23 @@ import(XFROOT.'Dataface/QueryTool.php');
         if ($mobile) {
             
 		    $actions = $at->getActions(['category'=>'mobile_list_settings']);
+
+            if (@$actions['mobile_list_filter']) {
+
+                // Change the label of the filter action to indicate if any filters are currently applied
+                $filterCount = 0;
+                foreach ($this->_table->fields(false, true, true) as $fieldDef) {
+                    if (@$fieldDef['filter']) {
+                        $queryVal = @$query[$fieldDef['name']];
+                        if ($queryVal and trim($queryVal)) {
+                            $filterCount++;
+                        }
+                    }
+                }
+                if ($filterCount > 0) {
+                    $actions['mobile_list_filter']['label'] .= ' • '.$filterCount;
+                }
+            }
 		    echo '<div class="mobile-list-settings-wrapper">';
 		
             if ( count($actions)>0){

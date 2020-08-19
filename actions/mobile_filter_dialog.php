@@ -123,7 +123,8 @@ class dataface_actions_mobile_filter_dialog {
                 }
                 
                 $options = null;
-                
+                $currentValue = null;
+                $maxValueLen = 20;
                 if ($type == 'filter') {
                     $options = [];
                     $col = $fieldDef['name'];
@@ -146,6 +147,40 @@ class dataface_actions_mobile_filter_dialog {
                         }
                        
                     }
+                    if (count($selectedValues) > 0) {
+                        $currentValue = '';
+                        foreach ($selectedValues as $idx=>$selVal) {
+                            if (strlen($currentValue) >= $maxValueLen) {
+                                $currentValue .= ', and '. (count($selectedValues)-$idx).' other';
+                                break;
+                            }
+                            if ($idx == 2) {
+                                $currentValue .= ', and ' . (count($selectedValues)-$idx).' other';
+                                break;
+                            }
+                            
+                            if ($idx > 0) {
+                                $currentValue .= ', ';
+                            }
+                            $currentValue .= $selVal;
+                        }
+                        if (strlen($currentValue) > $maxValueLen + 15) {
+                            $parts = explode(', ', $currentValue);
+                            foreach ($parts as $idx=>$part) {
+                                if ($idx == count($parts)-1 and strpos($part,'and ') === 0) {
+                                    // This is the last part that is just saying 'and 1 other'
+                                    break;
+                                }
+                                if (strlen($part) > 10) {
+                                    $parts[$idx] = substr($part, 0, 5).'...'.substr($part, strlen($part)-5);
+                                }
+                            }
+                            $currentValue = implode(', ', $parts);
+                        }
+                    }
+                    
+                    
+                    
                     $res = df_query("select `$col`, count(*) as `num` " . 
                         $qb->_from() . " " . 
                             $qb->_secure( $qb->_where(array($col=>null)) ) . 
@@ -167,7 +202,7 @@ class dataface_actions_mobile_filter_dialog {
         				    'key' => $row[$col],
                             'value' => $val,
                             'count' => $row['num'],
-                            'selected' => in_array($row[$col], $selectedValues)
+                            'selected' => in_array($row[$col], $selectedValues),
         				];
         			}
                     
@@ -178,7 +213,8 @@ class dataface_actions_mobile_filter_dialog {
                     'label' => $label,
                     'description' => $description,
                     'type' => $type,
-                    'options' => $options
+                    'options' => $options,
+                    'value' => $currentValue
                 ];
             }
             

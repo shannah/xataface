@@ -4225,22 +4225,12 @@ div.mobile-list-settings-wrapper {
 }
 
 body.small div.mobile-list-settings-wrapper {
-    position:fixed;
-    z-index: 100;
-    background-color: rgb(10, 132, 255);
-    border-radius: 20px;
-    color white;
-    display:none;
-    -webkit-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
-    -moz-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
-    box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, 0);
-    padding:5px 15px 5px 15px;
     box-sizing: border-box;
     font-size: 11px;
+    display:block;
 }
+
+
 
 body.small div.mobile-list-settings-wrapper > div {
     padding:0;
@@ -4249,6 +4239,10 @@ body.small div.mobile-list-settings-wrapper > div {
 }
 body.small div.mobile-list-settings-wrapper span,
 body.small div.mobile-list-settings-wrapper i {
+    color: #666;
+}
+body.small div.mobile-list-settings-wrapper.active span,
+body.small div.mobile-list-settings-wrapper.active i {
     color: white;
 }
 body.small div.mobile-list-settings-wrapper i  {
@@ -4273,7 +4267,19 @@ body.small div.mobile-list-settings-wrapper a {
 
 
 body.small div.mobile-list-settings-wrapper.active {
-    display:block;
+    position:fixed;
+    z-index: 100;
+    background-color: rgb(10, 132, 255);
+    border-radius: 20px;
+    color white;
+    -webkit-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    -moz-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 0);
+    padding:5px 15px 5px 15px;
+
 }
 
 
