@@ -165,6 +165,7 @@ var form=document.getElementById("result_list_selected_items_form");form.element
 function removeSelectedRelated(tableid){var ids=getSelectedIds(tableid);if(ids.length==0){alert("Please first check boxes beside the records you wish to remove, and then press 'Remove'.");return;}
 var form=document.getElementById("result_list_selected_items_form");form.elements['--selected-ids'].value=ids.join("\n");form.elements['-action'].value='remove_related_record';form.submit();}
 (function() {
+    
     // Mobile stuff now
     var mobileActivated = false;
     function xfHandleResize() {
@@ -268,5 +269,30 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     window.addEventListener('DOMContentLoaded', updateBodyPadding);
     window.addEventListener('load', updateBodyPadding);
     setInterval(updateBodyPadding, 1000);
+    
+})();
+
+(function() {
+    // browser detection
+    function iOS() {
+            
+      return [
+        'iPad Simulator',
+        'iPhone Simulator',
+        'iPod Simulator',
+        'iPad',
+        'iPhone',
+        'iPod'
+      ].includes(navigator.platform)
+      // iPad on iOS 13 detection
+      || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+    }
+    
+    function addUserAgentCSSClass() {
+        if (iOS()) {
+            document.body.classList.add('iphone');
+        }
+    }
+    window.addEventListener('DOMContentLoaded', addUserAgentCSSClass);
     
 })();

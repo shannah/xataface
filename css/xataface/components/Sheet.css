@@ -1,10 +1,11 @@
-.Sheet-removing {
-    visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s 0.5s, opacity 0.5s linear;
-}
+/**
+ * Styles for the Sheet component.
+ * @see js/xataface/components/Sheet.js
+ */
 
-
+/**
+ * Used for displaying progress spinner in center of sheet.
+ */
 .xf-sheet-spinner {
     position: absolute;
     top: 50%;
@@ -13,7 +14,9 @@
     margin-left: -25px;
 }
 
-
+/**
+ * Styles for actual sheet element.
+ */
 .xf-sheet {
     max-height:0;         
     overflow-y: hidden;
@@ -33,10 +36,17 @@
 
 }
 
+/**
+ * Style applied when sheet is displayed to get slide-in effect.
+ */
 .xf-sheet.slidein {
     max-height: 80%;
 }
 
+/**
+ * Semi-transparent dark background displayed over full page
+ * when sheet is displayed.
+ */
 .xf-sheet-background {
     z-index:499;
     background-color: black;
@@ -49,6 +59,9 @@
     top:0; left:0; bottom:0; right:0; width:100%; height:100%;
 }
 
+/**
+ * Applied to sheet background when it is shown to get fade-in effect.
+ */
 .xf-sheet-background.fadein {
     opacity: 0.5;
 }
@@ -71,12 +84,11 @@
     margin-left: 20px;
 }
 
-.xf-sheet-contentframe {
-    border:none;
-    width:100%;
-    height:100%;
-}
 
+
+/**
+ * The close button.
+ */
 .xf-sheet-close {
     color: black;
     position:absolute;
@@ -85,21 +97,54 @@
     font-size: 20px;
 }
 
+/**
+ * The back icon for the close button isn't shown by default.
+ */
 .xf-sheet-close > i.xf-sheet-back-icon {
     display:none;
 }
 
+/**
+ * The back button is shown when the xf-sheet-back-btn class is applied
+ * to the close button.  This happens when a 'sub page' is navigated to
+ * inside the sheet.
+ */
 .xf-sheet-close.xf-sheet-back-btn > i.xf-sheet-back-icon {
     display:block;
 }
+
+/**
+ * The close button is hidden when the xf-sheet-back-btn class is applied
+ * to the close button.
+ */
 .xf-sheet-close.xf-sheet-back-btn > i.xf-sheet-close-icon {
     display:none;
 }
+
+/**
+ * Styles for iframe containing sheet content.
+ */
 .xf-sheet-contentframe {
+    border:none;
+    width:100%;
+    height:100%;
     -webkit-transition: height 0.3s ease-in-out;
     -moz-transition: height 0.3s ease-in-out;
     -o-transition: height 0.3s ease-in-out;
     transition: height 0.3s ease-in-out;
     position:relative;
+    
+}
+
+/** For some reason on iOS, the iframe needs to have a z-index of -1 or
+  the close button won't be visible, even though the close button z-index was higher.
+  However, on Chrome, if we do this, it blocks pointer events in the iframe.
+  So we use the 'iphone' class which is applied in plone_javascripts.js on load
+  to only apply this z-index on iPhone.  Ugh!!
+  
+  TODO: Need to test other browsers to see which side of this debate they fall on.
+
+*/
+body.iphone .xf-sheet-contentframe {
     z-index:-1;
 }
