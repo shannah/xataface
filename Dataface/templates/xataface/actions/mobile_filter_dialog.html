@@ -22,7 +22,7 @@
             <span class='xf-filter-value'>{if $field.value}: {$field.value|escape}{/if}</span>
             
         </a>
-        <div class='xf-filter-options' data-field='{$field.fieldDef.name}'>
+        <div class='xf-filter-options' data-field='{$field.fieldDef.name}' data-filter-type='{$field.type|escape}'>
             <div class='dialog-content'>
                 <h1><span>{$field.label|escape}</span></h1>
                 <ul class='xf-filter-options-list'>
@@ -47,11 +47,59 @@
         </div>
         {elseif $field.type == 'date-range'}
         
-        {elseif $field.type == 'contains'}
-    
+        {elseif $field.type == 'text'}
+        <a href='javascript:void(0)' onclick='showOptions(this)'>
+            <i class='material-icons'>arrow_forward_ios</i>
+            <span class='xf-filter-label'>{$field.label|escape}</span>
+            <span class='xf-filter-value'>{if $field.value}: {$field.value|escape}{/if}</span>
+            
+        </a>
+        <div class='xf-filter-options' data-field='{$field.fieldDef.name}' data-filter-type='{$field.type|escape}'>
+            <div class='dialog-content'>
+                <h1><span>{$field.label|escape}</span></h1>
+                <div class='text-filter-input'>
+                    <i class='material-icons'>search</i>
+                    <input type='text' class='search-field' value='{$field.value|escape}'/>
+                </div>
+                <div class='text-filter-options'>
+                    <input type='radio' value='contains' class='text-filter-option' name='{$field.fieldDef.name}-text-filter-option' id='{$field.fieldDef.name}-text-filter-option-contains' {if !$field.searchSuffix and !$field.searchPrefix}checked{/if}/>
+                    <label for='{$field.fieldDef.name}-text-filter-option-contains'>Contains</label>
+                    
+                    <input type='radio' value='exact' class='text-filter-option' name='{$field.fieldDef.name}-text-filter-option' id='{$field.fieldDef.name}-text-filter-option-exact' {if $field.searchPrefix =='='}checked{/if}/>
+                    <label for='{$field.fieldDef.name}-text-filter-option-exact'>Exact</label>
+                    
+                    <input type='radio' value='startswith' class='text-filter-option' name='{$field.fieldDef.name}-text-filter-option' id='{$field.fieldDef.name}-text-filter-option-starts-with' {if $field.searchPrefix=='~' and $field.searchSuffix=='%'}checked{/if}/>
+                    <label for='{$field.fieldDef.name}-text-filter-option-starts-with'>Starts with</label>
+                    
+                    <input type='radio' value='endswith' class='text-filter-option' name='{$field.fieldDef.name}-text-filter-option' id='{$field.fieldDef.name}-text-filter-option-ends-with' {if $field.searchPrefix=='~%'}checked{/if}/>
+                    <label for='{$field.fieldDef.name}-text-filter-option-ends-with'>Ends with</label>
+                </div>
+            </div>
+        </div>
         {elseif $field.type == 'checkbox'}
     
         {elseif $field.type == 'range'}
+        <a href='javascript:void(0)' onclick='showOptions(this)'>
+            <i class='material-icons'>arrow_forward_ios</i>
+            <span class='xf-filter-label'>{$field.label|escape}</span>
+            <span class='xf-filter-value'>{if $field.value}: {$field.value|escape}{/if}</span>
+            
+        </a>
+        <div class='xf-filter-options' data-field='{$field.fieldDef.name}'>
+            <div class='dialog-content'>
+                <h1><span>{$field.label|escape}</span></h1>
+                <div class='range-inputs'>
+                    <div class='min-wrapper'>
+                        <input type='text' class='range-min'/>
+                        <span class='min-label'>Min.</span>
+                    </div>
+                    <div class='max-wrapper'>
+                        <input type='text' class='range-max'/>
+                        <span class='max-label'>Max.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     
         {elseif $field.type == 'min'}
     
@@ -71,115 +119,7 @@
     <div class='xf-buttons'>
         <button class='xf-apply-btn' onclick='applyFilters()'>Show <span class='num-results'>x</span> Results</button>
     </div>
-    
-    <script>{literal}
-        
-        var win = window.parent;
-        var filterSearch = win.location.search;
-        
-        function showOptions(targetEl) {
-            var $ = win.jQuery;
-            var options = $('>.xf-filter-options', $(targetEl).parent());
-            
-            $(options).addClass('slidein');
-            win.activeSheet.pushState({
-                back : function() {
-                    $(options).removeClass('slidein');
-                },
-                el : options.get(0)
-            });
-            
-        }
-        
-        function applyFilters() {
-            if (win.activeSheet) {
-                win.activeSheet.close();
-            }
-            win.jQuery('<div class="spin fillscreen"></div>').appendTo(win.document.body);
-            win.location.search=filterSearch;
-            return false;
-        }
-        
-        function updateFilters(srcEl, update) {
-            if (update === undefined) {
-                update = true;
-            }
-            var $ = win.jQuery;
-            var wrapper = $(srcEl).parents('[data-field]').first();
-            var field = $(wrapper).attr('data-field');
-            var topListItem = $(wrapper).parent();
-            var filterValueSpan = $('span.xf-filter-value', topListItem);
-            
-            var selectedKeys = [];
-            var selectedString = '';
-            $('input[data-key]', wrapper).each(function() {
-                if (!this.checked) {
-                    return;
-                }
-                selectedKeys.push(this.getAttribute('data-key'));
-            });
-            if (selectedKeys.length == 0) {
-                if (filterSearch.indexOf('&'+field+'=') >= 0) {
-                    var re = new RegExp('&'+field+'=[^&]*');
-                    
-                    filterSearch = filterSearch.replace(re, '');
-                    if (selectedKeys.length > 0) {
-                        filterValueSpan.text('('+selectedKeys.length+')');
-                    } else {
-                        filterValueSpan.text('');
-                    }
-                    
-                    if (update) updateCounts();
-                    return;
-                }
-            }
-            var selectedString = '=' + selectedKeys.join(' OR =');
-            if (filterSearch.indexOf('&'+field+'=') >= 0) {
-                var re = new RegExp('&'+field+'=[^&]*');
-                
-                filterSearch = filterSearch.replace(re, '');
-            }
-            filterSearch += '&'+field+'='+encodeURIComponent(selectedString);
-            if (selectedKeys.length > 0) {
-                filterValueSpan.text('('+selectedKeys.length+')');
-            } else {
-                filterValueSpan.text('');
-            }
-            if (update) updateCounts();
-            
-        }
-        
-        function updateCounts() {
-            var search = filterSearch;
-            var $ = win.jQuery;
-            if (!$ || !$.get) return;
-            
-            if (search.indexOf('-action=') >= 0) {
-                search = search.replace(/-action=[^&]*/, '-action=ajax_count_results');
-            } else {
-                search += '&-action=ajax_count_results';
-            }
-            $.get(search, function(res) {
-                console.log(res);
-                if (res && res.found) {
-                    document.querySelector('button.xf-apply-btn > .num-results').innerHTML = ''+res.found;
+    <script src="{$ENV.DATAFACE_URL|escape}/js/xataface/actions/mobile_filter_dialog.js?v={$ENV.APPLICATION_VERSION}"></script>
 
-                }
-            })
-        }
-        
-        function resetFilters() {
-            var filterBoxes = document.querySelectorAll('input.filter-box');
-            
-            filterBoxes.forEach(function(input) {
-                if (input.checked) {
-                    input.checked = false;
-                    updateFilters(input, false);
-                }
-            });
-            updateCounts();
-        }
-        updateCounts();
-    {/literal}</script>
 </body>
     

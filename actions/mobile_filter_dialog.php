@@ -124,6 +124,8 @@ class dataface_actions_mobile_filter_dialog {
                 
                 $options = null;
                 $currentValue = null;
+                $searchPrefix = null;
+                $searchSuffix = null;
                 $maxValueLen = 20;
                 if ($type == 'filter') {
                     $options = [];
@@ -207,6 +209,25 @@ class dataface_actions_mobile_filter_dialog {
         			}
                     
                 } 
+                else if ($type == 'text') {
+                    $queryVal = @$query[$fieldDef['name']];
+                    if ($queryVal) {
+                        $currentValue = $queryVal;
+                        if ($currentValue{0} == '=') {
+                            $searchPrefix = $currentValue{0};
+                            $currentValue = substr($currentValue, 1);
+                        } else if ($currentValue{0} == '~') {
+                            if (strpos($currentValue, '~%') === 0) {
+                                $searchPrefix = '~%';
+                                $currentValue = substr($currentValue, 2);
+                            } else if ($currentValue{strlen($currentValue)-1} == '%') {
+                                $searchPrefix = '~';
+                                $searchSuffix = '%';
+                                $currentValue = substr($currentValue, 1, strlen($currentValue)-2);
+                            }
+                        }
+                    }
+                }
                 $actions[] = [
                     'fieldDef' => $fieldDef,
                     'name' => $fieldDef['name'].'-'.$type,
@@ -214,7 +235,9 @@ class dataface_actions_mobile_filter_dialog {
                     'description' => $description,
                     'type' => $type,
                     'options' => $options,
-                    'value' => $currentValue
+                    'value' => $currentValue,
+                    'searchPrefix' => $searchPrefix,
+                    'searchSuffix' => $searchSuffix
                 ];
             }
             

@@ -109,3 +109,46 @@ span.xf-filter-option-count {
     outline: none !important;
     box-shadow: none !important;
 }
+
+div.text-filter-options {
+    display:flex;
+    padding: 10px;
+}
+
+div.text-filter-input > i {
+    position:absolute;
+    margin: 5px;
+    padding:5px;
+}
+
+
+div.text-filter-input {
+    width:100%;
+    padding: 10px;
+    box-sizing:border-box;
+}
+div.text-filter-input > input {
+    width: 100%;
+    box-sizing:border-box;
+    padding-left: 30px;
+    
+}
+
+input.text-filter-option {
+    display:none;
+}
+input.text-filter-option + label {
+    background-color: #eaeaea;
+    border-radius: 20px;
+    padding: 5px 20px 5px 20px;
+    font-size: 10px;
+    color: #666;
+    flex-grow:1;
+    text-align:center;
+    margin: 2px;
+}
+
+input.text-filter-option:checked + label {
+    background-color: #ccc;
+    color: #333;
+}
