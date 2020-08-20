@@ -129,10 +129,41 @@ function updateFilters(srcEl, update) {
         
     }
     
+    function updateRangeFilter() {
+        var minInput = $('input.range-min', wrapper);
+        var maxInput = $('input.range-max', wrapper);
+        var minVal = minInput.val();
+        if (minVal === null || minVal === undefined) {
+            minVal = '';
+        }
+        var maxVal = maxInput.val();
+        if (maxVal === null || maxVal === undefined) {
+            maxVal = '';
+        }
+        
+        var fieldVal = '';
+        if (minVal !== '' && maxVal !== '') {
+            fieldVal = minVal + '..' + maxVal;
+        } else if (minVal !== '' && maxVal === '') {
+            fieldVal = '>=' + minVal;
+        } else if (maxVal !== '' && minVal === '') {
+            fieldVal = '<=' + maxVal;
+        }
+        updateFieldValue(field, fieldVal);
+        if (fieldVal.length > 0) {
+            filterValueSpan.text(': '+fieldVal);
+        } else {
+            filterValueSpan.text('');
+        }
+        if (update) updateCounts();
+    }
+    
     if (filterType == 'filter') {
         updateFilterFilter();
     } else if (filterType == 'text') {
         updateTextFilter();
+    } else if (filterType == 'range' || filterType == 'min' || filterType == 'max') {
+        updateRangeFilter();
     }
     
     
@@ -186,11 +217,17 @@ function resetFilters() {
         updateFilters(input, false);
     });
     
+    var rangeInputs = document.querySelectorAll('input.range-min, input.range-max');
+    rangeInputs.forEach(function(input) {
+        $(input).val('');
+        updateFilters(input, false);
+    });
+    
     
     updateCounts();
 }
 
-var searchFields = document.querySelectorAll('input.search-field');
+var searchFields = document.querySelectorAll('input.search-field, input.range-min, input.range-max');
 var timeoutHandle = null;
 searchFields.forEach(function(input) {
     input.addEventListener('input', function(e) {
@@ -207,6 +244,14 @@ var textFilterOptions = document.querySelectorAll('input.text-filter-option');
 textFilterOptions.forEach(function(input) {
     input.addEventListener('click', function(e) {
         updateFilters(input);
+    });
+});
+
+var clearButtons = document.querySelectorAll('i.clear-btn');
+clearButtons.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        btn.nextElementSibling.value = '';
+        updateFilters(btn.nextElementSibling);
     });
 });
 

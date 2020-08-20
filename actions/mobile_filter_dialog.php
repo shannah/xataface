@@ -127,6 +127,10 @@ class dataface_actions_mobile_filter_dialog {
                 $searchPrefix = null;
                 $searchSuffix = null;
                 $maxValueLen = 20;
+                $currentMinValue = null;
+                $currentMaxValue = null;
+                $minIcon = @$fieldDef['filter.min.icon'];
+                $maxIcon = @$fieldDef['filter.max.icon'];
                 if ($type == 'filter') {
                     $options = [];
                     $col = $fieldDef['name'];
@@ -227,6 +231,23 @@ class dataface_actions_mobile_filter_dialog {
                             }
                         }
                     }
+                } else if ($type == 'range' or $type == 'min' or $type == 'max') {
+                    $currentValue = @$query[$fieldDef['name']];
+                    
+                    if ($currentValue and $currentValue{0} == '<') {
+                        $currentMaxValue = substr($currentValue, 1);
+                        if ($currentMaxValue and $currentMaxValue{0} == '=') {
+                            $currentMaxValue = substr($currentMaxValue, 1);
+                        }
+                    } else if ($currentValue and $currentValue{0} == '>') {
+                        $currentMinValue = substr($currentValue, 1);
+                        if ($currentMinValue and $currentMinValue{0} == '=') {
+                            $currentMinValue = substr($currentMinValue, 1);
+                        }
+                    } else if ($currentValue and strpos($currentValue, '..') !== false) {
+                        list($currentMinValue, $currentMaxValue) = explode('..', $currentValue);
+                    }
+                    
                 }
                 $actions[] = [
                     'fieldDef' => $fieldDef,
@@ -237,7 +258,14 @@ class dataface_actions_mobile_filter_dialog {
                     'options' => $options,
                     'value' => $currentValue,
                     'searchPrefix' => $searchPrefix,
-                    'searchSuffix' => $searchSuffix
+                    'searchSuffix' => $searchSuffix,
+                    'currentMinValue' => $currentMinValue,
+                    'currentMaxValue' => $currentMaxValue,
+                    'minIcon' => $minIcon,
+                    'maxIcon' => $maxIcon,
+                    'maxPlaceholder' => @$fieldDef['filter.max.placeholder'],
+                    'minPlaceholder' => @$fieldDef['filter.min.placeholder'],
+                    'placeholder' => @$fieldDef['filter.placeholder']
                 ];
             }
             

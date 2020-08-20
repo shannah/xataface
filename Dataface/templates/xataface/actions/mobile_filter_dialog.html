@@ -59,7 +59,12 @@
                 <h1><span>{$field.label|escape}</span></h1>
                 <div class='text-filter-input'>
                     <i class='material-icons'>search</i>
-                    <input type='text' class='search-field' value='{$field.value|escape}'/>
+                    <i class='clear-btn material-icons'>cancel</i>
+                    <input type='text' 
+                        class='search-field' 
+                        value='{$field.value|escape}'
+                        {if $field.placeholder}placeholder='{$field.placeholder|escape}'{/if}
+                        />
                 </div>
                 <div class='text-filter-options'>
                     <input type='radio' value='contains' class='text-filter-option' name='{$field.fieldDef.name}-text-filter-option' id='{$field.fieldDef.name}-text-filter-option-contains' {if !$field.searchSuffix and !$field.searchPrefix}checked{/if}/>
@@ -78,32 +83,44 @@
         </div>
         {elseif $field.type == 'checkbox'}
     
-        {elseif $field.type == 'range'}
+        {elseif $field.type == 'range' or $field.type == 'min' or $field.type == 'max'}
         <a href='javascript:void(0)' onclick='showOptions(this)'>
             <i class='material-icons'>arrow_forward_ios</i>
             <span class='xf-filter-label'>{$field.label|escape}</span>
             <span class='xf-filter-value'>{if $field.value}: {$field.value|escape}{/if}</span>
             
         </a>
-        <div class='xf-filter-options' data-field='{$field.fieldDef.name}'>
+        <div class='xf-filter-options' data-field='{$field.fieldDef.name}' data-filter-type='{$field.type|escape}'>
             <div class='dialog-content'>
                 <h1><span>{$field.label|escape}</span></h1>
                 <div class='range-inputs'>
+                    {if $field.type != 'max'}
                     <div class='min-wrapper'>
-                        <input type='text' class='range-min'/>
+                        {if $field.minIcon}<i class='material-icons'>{$field.minIcon|escape}</i>{/if}
+                        <i class='clear-btn material-icons'>cancel</i>
+                        <input type='text' 
+                            class='range-min {if $field.minIcon}icon-input{/if}' 
+                            value='{$field.currentMinValue|escape}' 
+                            {if $field.minPlaceholder}placeholder='{$field.minPlaceholder|escape}'{/if}
+                            />
                         <span class='min-label'>Min.</span>
                     </div>
+                    {/if}
+                    {if $field.type != 'min'}
                     <div class='max-wrapper'>
-                        <input type='text' class='range-max'/>
+                        {if $field.maxIcon}<i class='material-icons'>{$field.maxIcon|escape}</i>{/if}
+                        <i class='clear-btn material-icons'>cancel</i>
+                        <input type='text' 
+                            class='range-max {if $field.maxIcon}icon-input{/if}' 
+                            value='{$field.currentMaxValue|escape}' 
+                            {if $field.maxPlaceholder}placeholder='{$field.maxPlaceholder|escape}'{/if}/>
                         <span class='max-label'>Max.</span>
                     </div>
+                    {/if}
                 </div>
             </div>
         </div>
     
-        {elseif $field.type == 'min'}
-    
-        {elseif $field.type == 'max'}
     
         {elseif $field.type == 'checkbox'}
     

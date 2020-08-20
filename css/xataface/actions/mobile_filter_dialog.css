@@ -152,3 +152,55 @@ input.text-filter-option:checked + label {
     background-color: #ccc;
     color: #333;
 }
+
+div.range-inputs {
+    display:flex;
+    box-sizing:border-box;
+    padding:10px;
+    margin:0;
+    width:100%;
+}
+
+div.range-inputs > * {
+    flex-grow: 1;
+    padding: 10px;
+    box-sizing: border-box;
+    position:relative;
+}
+
+div.range-inputs input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+div.range-inputs > * > i.material-icons {
+    position:absolute;
+    top: 18px;
+    left: 15px;
+}
+
+div.range-inputs input.icon-input {
+    padding-left: 20px;
+}
+
+div.range-inputs > * > i.material-icons.clear-btn{
+    position:absolute;
+    left: auto;
+    right: 15px;
+    color: #cccccc;
+    
+}
+
+div.text-filter-input > i.material-icons.clear-btn {
+    position:absolute;
+    left: auto;
+    right: 10px;
+    color: #cccccc;
+}
+
+div.range-inputs > * > i.material-icons.clear-btn + input,
+div.text-filter-input > i.material-icons.clear-btn + input {
+    padding-right: 20px;
+}
+
+
