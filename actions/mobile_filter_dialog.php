@@ -131,6 +131,47 @@ class dataface_actions_mobile_filter_dialog {
                 $currentMaxValue = null;
                 $minIcon = @$fieldDef['filter.min.icon'];
                 $maxIcon = @$fieldDef['filter.max.icon'];
+                $inputType = 'text';
+                if ($table->isDate($name) and $table->isTime($name)) {
+                    $inputType = 'datetime-local';
+                } else if ($table->isDate($name)) {
+                    $inputType = 'date';
+                } else if ($table->isTime($name)) {
+                    $inputType = 'time';
+                }
+                
+                if (@$fieldDef['filter.input.type']) {
+                    $inputType = $fieldDef['filter.input.type'];
+                }
+                $inputAttributes = [];
+                $prefix = 'filter.input.';
+                $prefixLen = strlen($prefix);
+                
+                foreach ($fieldDef as $k=>$v) {
+                    if ($k === 'filter.input.type') {
+                        continue;
+                    }
+                    if (substr($k, 0, $prefixLen) === $prefix) {
+                        $inputAttributes[substr($k, $prefixLen)] = $v;
+                    }
+                }
+                $minInputAttributes = [];
+                $maxInputAttributes = [];
+                $prefix = 'filter.max.input.';
+                $prefixLen = strlen($prefix);
+                foreach ($fieldDef as $k=>$v) {
+                    if (substr($k, 0, $prefixLen) === $prefix) {
+                        $maxInputAttributes[substr($k, $prefixLen)] = $v;
+                    }
+                }
+                $prefix = 'filter.min.input.';
+                $prefixLen = strlen($prefix);
+                foreach ($fieldDef as $k=>$v) {
+                    if (substr($k, 0, $prefixLen) === $prefix) {
+                        $minInputAttributes[substr($k, $prefixLen)] = $v;
+                    }
+                }
+                
                 if ($type == 'filter') {
                     $options = [];
                     $col = $fieldDef['name'];
@@ -230,6 +271,9 @@ class dataface_actions_mobile_filter_dialog {
                                 $currentValue = substr($currentValue, 1, strlen($currentValue)-2);
                             }
                         }
+                        if ($inputType == 'datetime-local') {
+                            $currentValue = str_replace(' ', 'T', $currentValue);
+                        }
                     }
                 } else if ($type == 'range' or $type == 'min' or $type == 'max') {
                     $currentValue = @$query[$fieldDef['name']];
@@ -246,6 +290,11 @@ class dataface_actions_mobile_filter_dialog {
                         }
                     } else if ($currentValue and strpos($currentValue, '..') !== false) {
                         list($currentMinValue, $currentMaxValue) = explode('..', $currentValue);
+                    }
+                    
+                    if ($inputType == 'datetime-local') {
+                        $currentMinValue = str_replace(' ', 'T', $currentMinValue);
+                        $currentMaxValue = str_replace(' ', 'T', $currentMaxValue);
                     }
                     
                 }
@@ -265,7 +314,11 @@ class dataface_actions_mobile_filter_dialog {
                     'maxIcon' => $maxIcon,
                     'maxPlaceholder' => @$fieldDef['filter.max.placeholder'],
                     'minPlaceholder' => @$fieldDef['filter.min.placeholder'],
-                    'placeholder' => @$fieldDef['filter.placeholder']
+                    'placeholder' => @$fieldDef['filter.placeholder'],
+                    'inputType' => $inputType,
+                    'inputAttributes' => $inputAttributes,
+                    'minInputAttributes' => $minInputAttributes,
+                    'maxInputAttributes' => $maxInputAttributes
                 ];
             }
             

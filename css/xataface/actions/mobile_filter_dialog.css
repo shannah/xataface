@@ -159,6 +159,7 @@ div.range-inputs {
     padding:10px;
     margin:0;
     width:100%;
+    flex-wrap: wrap;
 }
 
 div.range-inputs > * {
@@ -202,5 +203,11 @@ div.range-inputs > * > i.material-icons.clear-btn + input,
 div.text-filter-input > i.material-icons.clear-btn + input {
     padding-right: 20px;
 }
+
+input[type='date'] {
+    padding:0;
+}
+
+
 
 

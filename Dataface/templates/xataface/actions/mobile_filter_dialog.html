@@ -59,11 +59,14 @@
                 <h1><span>{$field.label|escape}</span></h1>
                 <div class='text-filter-input'>
                     <i class='material-icons'>search</i>
-                    <i class='clear-btn material-icons'>cancel</i>
-                    <input type='text' 
+                    {if $field.inputType == 'text'}<i class='clear-btn material-icons'>cancel</i>{/if}
+                    <input type='{$field.inputType|escape}' 
                         class='search-field' 
                         value='{$field.value|escape}'
                         {if $field.placeholder}placeholder='{$field.placeholder|escape}'{/if}
+                        {foreach from=$field.inputAttributes item=attVal key=attKey}
+                            {$attKey|escape}='{$attVal|escape}'
+                        {/foreach}
                         />
                 </div>
                 <div class='text-filter-options'>
@@ -97,11 +100,14 @@
                     {if $field.type != 'max'}
                     <div class='min-wrapper'>
                         {if $field.minIcon}<i class='material-icons'>{$field.minIcon|escape}</i>{/if}
-                        <i class='clear-btn material-icons'>cancel</i>
-                        <input type='text' 
+                        {if $field.inputType == 'text'}<i class='clear-btn material-icons'>cancel</i>{/if}
+                        <input type='{$field.inputType|escape}' 
                             class='range-min {if $field.minIcon}icon-input{/if}' 
                             value='{$field.currentMinValue|escape}' 
                             {if $field.minPlaceholder}placeholder='{$field.minPlaceholder|escape}'{/if}
+                            {foreach from=$field.minInputAttributes item=attVal key=attKey}
+                                {$attKey|escape}='{$attVal|escape}'
+                            {/foreach}
                             />
                         <span class='min-label'>Min.</span>
                     </div>
@@ -109,11 +115,15 @@
                     {if $field.type != 'min'}
                     <div class='max-wrapper'>
                         {if $field.maxIcon}<i class='material-icons'>{$field.maxIcon|escape}</i>{/if}
-                        <i class='clear-btn material-icons'>cancel</i>
-                        <input type='text' 
+                        {if $field.inputType == 'text'}<i class='clear-btn material-icons'>cancel</i>{/if}
+                        <input type='{$field.inputType|escape}' 
                             class='range-max {if $field.maxIcon}icon-input{/if}' 
                             value='{$field.currentMaxValue|escape}' 
-                            {if $field.maxPlaceholder}placeholder='{$field.maxPlaceholder|escape}'{/if}/>
+                            {if $field.maxPlaceholder}placeholder='{$field.maxPlaceholder|escape}'{/if}
+                            {foreach from=$field.maxInputAttributes item=attVal key=attKey}
+                                {$attKey|escape}='{$attVal|escape}'
+                            {/foreach}
+                            />
                         <span class='max-label'>Max.</span>
                     </div>
                     {/if}

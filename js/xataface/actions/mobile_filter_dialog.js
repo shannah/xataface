@@ -141,6 +141,13 @@ function updateFilters(srcEl, update) {
             maxVal = '';
         }
         
+        if (minInput.attr('type') == 'datetime-local') {
+            minVal = minVal.replace('T', ' ');
+        }
+        if (maxInput.attr('type') == 'datetime-local') {
+            maxVal = maxVal.replace('T', ' ');
+        }
+        
         var fieldVal = '';
         if (minVal !== '' && maxVal !== '') {
             fieldVal = minVal + '..' + maxVal;
