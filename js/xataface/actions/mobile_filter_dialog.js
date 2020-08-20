@@ -5,6 +5,7 @@
 var win = window.parent;
 var $ = win.jQuery;
 
+
 // Variable to keep track of the query string.  
 // It starts out with the current query string of the parent window.
 var filterSearch = win.location.search;
@@ -16,14 +17,22 @@ var filterSearch = win.location.search;
 function showOptions(targetEl) {
     var $ = win.jQuery;
     var options = $('>.xf-filter-options', $(targetEl).parent());
-    
+    var dialogContent = $('.dialog-content', options);
+    options.css({'overflow-y' : '', 'bottom' : '', 'margin-bottom' : ''});
     $(options).addClass('slidein');
+    
     win.activeSheet.pushState({
         back : function() {
             $(options).removeClass('slidein');
         },
-        el : options.get(0)
+        el : options.get(0),
+        verticalMargins : 40
     });
+    setTimeout(function() {
+        if (isOverflown(options.get(0))) {
+            options.css({'overflow-y' : 'scroll', 'bottom' : '0', 'margin-bottom' : '40px'});
+        }
+    }, 800);
     
 }
 
@@ -165,7 +174,23 @@ function updateFilters(srcEl, update) {
         if (update) updateCounts();
     }
     
-    if (filterType == 'filter') {
+    function updateFilterVocabularyBox() {
+        var fieldVal = $(srcEl).val();
+        $('input.search-field, input.range-min, input.range-max', wrapper).val('');
+        $('input.text-filter-option[value="contains"]', wrapper).each(function() {
+            this.checked = true;
+        });
+        updateFieldValue(field, fieldVal);
+        if (fieldVal.length > 0) {
+            filterValueSpan.text(': '+$(srcEl).attr('data-option-value'));
+        } else {
+            filterValueSpan.text('');
+        }
+        if (update) updateCounts();
+    }
+    if ($(srcEl).hasClass('filter-vocabulary-box')) {
+        updateFilterVocabularyBox();
+    } else if (filterType == 'filter') {
         updateFilterFilter();
     } else if (filterType == 'text') {
         updateTextFilter();
@@ -230,8 +255,35 @@ function resetFilters() {
         updateFilters(input, false);
     });
     
+    var filterVocabInputs = document.querySelectorAll('input.filter-vocabulary-box');
+    filterVocabInputs.forEach(function(input) {
+        if ($(input).attr('value') == '') {
+            input.checked = true;
+            updateFilters(input, false);
+        } else {
+            input.checked = false;
+        }
+    });
     
     updateCounts();
+}
+
+/**
+ * Checks if element is overflown.
+ */
+function isOverflown(element) {
+    if (element.scrollHeight > window.innerHeight || element.clientHeight > window.innerHeight) {
+        return true;
+    }
+    return false;
+}
+
+function checkCustomOption(srcEl) {
+    var $ = win.jQuery;
+    var wrapper = $(srcEl).parents('[data-field]').first();
+    $('[value="custom"]', wrapper).each(function() {
+        this.checked = true;
+    });
 }
 
 var searchFields = document.querySelectorAll('input.search-field, input.range-min, input.range-max');
@@ -240,6 +292,9 @@ searchFields.forEach(function(input) {
     input.addEventListener('input', function(e) {
         if (timeoutHandle) {
             clearTimeout(timeoutHandle);
+        }
+        if ($(input).val()) {
+            checkCustomOption(input);
         }
         timeoutHandle = setTimeout(function() {
             updateFilters(input);

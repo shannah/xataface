@@ -61,17 +61,89 @@ class dataface_actions_mobile_filter_dialog {
         
         $actions = [];
         foreach ($filterFields as $fieldDef) {
-            $type = @$fieldDef['filter.type'];
+            $type =  null;
+
+            
             $name = $fieldDef['name'];
             $int = $table->isInt($name);
             $float = $table->isFloat($name);
+            $date = $table->isDate($name);
+            $time = $table->isTime($name);
             $vocabulary = @$fieldDef['vocabulary'];
+            
+            // The filter.vocabulary can refers to a valuelist that can supply
+            // common filters that the user can choose by default.  If one is
+            // supplied, then the default behaviour will be to use text or range
+            // over 'filter' type, and the user will be presented with the options
+            // in this filter vocabulary first - but with an 'other' option which 
+            // will display the standard text or range fields.
+            $filterVocabulary = @$fieldDef['filter.vocabulary'];
+            $filterValuelist = null;
+            if ($filterVocabulary) {
+                $vals = $table->getValuelist($filterVocabulary);
+                if ($vals) {
+                    $filterValuelist = [];
+                    $idx = 0;
+                    foreach ($vals as $k=>$v) {
+                        $filterValuelist[] = [
+                            'name' => 'opt-'.($idx++),
+                            'key' => $k,
+                            'value' => $v,
+                            'selected' => (@$query[$name] and $query[$name] === $k)
+                        ];
+                    }
+                } else {
+                    $filterVocabulary = null;
+                    $filterValuelist = null;
+                }
+            }
+            if (!$filterVocabulary and $date) {
+                // This is a date field, so we'll add some sensible quicksearches like
+                $filterVocabulary = 'xf_common_date_ranges';
+                $vals = [];
+                if ($time) {
+                    $vals[''] = 'Any time';
+                    $vals['>=-1 hour'] = 'Past hour';
+                    $vals['>=-24 hour'] = 'Past 24 hours';
+                    $vals['>=-7 day'] = 'Past week';
+                    $vals['>=-1 month'] = 'Past month';
+                    $vals['>=-1 year'] = 'Past year';
+                    $vals['custom'] = 'Custom range...';
+                } else {
+                    $vals[''] = 'Any time';
+                    $vals['today'] = 'Today';
+                    $vals['>=-7 day'] = 'Past week';
+                    $vals['>=-1 month'] = 'Past month';
+                    $vals['>=-1 year'] = 'Past year';
+                    $vals['custom'] = 'Custom range...';
+                }
+                $filterValuelist = [];
+                $idx = 0;
+                foreach ($vals as $k=>$v) {
+                    $filterValuelist[] = [
+                        'name' => 'opt-'.($idx++),
+                        'key' => $k,
+                        'value' => $v,
+                        'selected' => (@$query[$name] and $query[$name] === $k)
+                    ];
+                }
+                
+            }
+            
+            
+
             $valuelist = null;
+            
+            if (@$fieldDef['filter.type']) {
+                $type = @$fieldDef['filter.type'];
+            }
+            
+            
             if ($vocabulary) {
                 $valuelist = $table->getValuelist($vocabulary);
             }
             if (!$type) {
-                if ($vocabulary or @$fieldDef['filter']) {
+                if ($vocabulary and !$filterVocabulary) {
                     $type = 'filter';
                 } else {
                     if ($int) {
@@ -82,15 +154,15 @@ class dataface_actions_mobile_filter_dialog {
                         }
                     } else if ($float) {
                         $type = 'range';
-                    } else if ($table->isChar($name) or $table->isText($name)) {
-                        $type = 'contains';
-                    } else if ($table->isDate($name)) {
-                        $type = 'date-range';
-                    } else if ($table->isTime($name)) {
-                        $type = 'time-range';
                     } else {
-                        $type = 'contains';
+                        if ($filterVocabulary) {
+                            $type = 'text';
+                        } else {
+                            $type = 'filter';
+                        }
+                        
                     }
+                        
                 }
                 
             }
@@ -132,11 +204,11 @@ class dataface_actions_mobile_filter_dialog {
                 $minIcon = @$fieldDef['filter.min.icon'];
                 $maxIcon = @$fieldDef['filter.max.icon'];
                 $inputType = 'text';
-                if ($table->isDate($name) and $table->isTime($name)) {
+                if ($date and $time) {
                     $inputType = 'datetime-local';
-                } else if ($table->isDate($name)) {
+                } else if ($date) {
                     $inputType = 'date';
-                } else if ($table->isTime($name)) {
+                } else if ($time) {
                     $inputType = 'time';
                 }
                 
@@ -298,26 +370,85 @@ class dataface_actions_mobile_filter_dialog {
                     }
                     
                 }
+                
+                $currentValueLabel = null;
+                if ($currentValue and $filterValuelist) {
+                    foreach ($filterValuelist as $opt) {
+                        if ($opt['key'] == $currentValue) {
+                            $currentValueLabel = $opt['value'];
+                            break;
+                        }
+                    }
+                }
+                
                 $actions[] = [
+                    // Reference to field definition (i.e. from $table->getField($name))
                     'fieldDef' => $fieldDef,
+                    
+                    // The Action name.  
                     'name' => $fieldDef['name'].'-'.$type,
+                    
+                    // Label to display next to the filter option
                     'label' => $label,
+                    
+                    // Description (not used yet but could be a tool-tip)
                     'description' => $description,
+                    
+                    // The filter type. E.g. filter, text, range, min, max
                     'type' => $type,
+                    
+                    // The options available in this filter.  Includes 'key', 'value', 'count', and 'selected'
+                    // properties.
                     'options' => $options,
+                    
+                    // Options provided by a filter valuelist.  Same properties as 'options' has.
+                    'filterValuelist' => $filterValuelist,
+                    
+                    // Name of the filter vocabulary if it has one.  If this is non-empty/non-null,
+                    // then 'filterValuelist' must be non-empty.
+                    'filterVocabulary' => $filterVocabulary,
+                    
+                    // The current value of the filter.
                     'value' => $currentValue,
+                    'valueLabel' => $currentValueLabel,
+                    
+                    // Search prefix.  E.g. '=', '>', '>=', etc...
                     'searchPrefix' => $searchPrefix,
+                    
+                    // Search suffix.  E.g. '%'
                     'searchSuffix' => $searchSuffix,
+                    
+                    // Current filter value for the 'min' field of the filter.
                     'currentMinValue' => $currentMinValue,
+                    
+                    // Current filter value for the 'max' field of the filter.
                     'currentMaxValue' => $currentMaxValue,
+                    
+                    // Icon to display in the 'min' field
                     'minIcon' => $minIcon,
+                    
+                    // Icon to display in the 'max' field.
                     'maxIcon' => $maxIcon,
+                    
+                    // Placeholder text for the max field.
                     'maxPlaceholder' => @$fieldDef['filter.max.placeholder'],
+                    
+                    // Placeholder text for the min field.
                     'minPlaceholder' => @$fieldDef['filter.min.placeholder'],
+                    
+                    // Placeholder text for the search field.
                     'placeholder' => @$fieldDef['filter.placeholder'],
+                    
+                    // The input type for the search and range fields.  E.g. text, date, datetime-local, etc..
                     'inputType' => $inputType,
+                    
+                    // Attributes used for the input field.  Associative array
                     'inputAttributes' => $inputAttributes,
+                    
+                    // Attributes used for the max input field.  Associative array
                     'minInputAttributes' => $minInputAttributes,
+                    
+                    // Attributes used for the min input field.  Associative array
                     'maxInputAttributes' => $maxInputAttributes
                 ];
             }

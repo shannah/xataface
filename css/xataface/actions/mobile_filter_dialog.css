@@ -6,12 +6,12 @@ body {
 .xf-filter-options {
     position:fixed;
     top:0;
-    left:100%;
+    left:0;
     width:100%;
-    bottom:0;
     visibility:hidden;
     background-color: transparent;
     z-index:100;
+    padding-bottom: 40px;
 }
 
 .xf-filter-options.slidein {
@@ -31,9 +31,13 @@ h1 {
 
 .dialog-content {
     background-color: white;
-    margin: 0 0 40px 0;
-    padding: 0;
-    height:100%;
+    /*margin: 0 0 40px 0;*/
+    padding: 0 0 0 0;
+    height: 100%;
+    height: -webkit-calc(100% - 40px);
+    height: -moz-calc(100% - 40px);
+    height: calc(100% - 40px);
+    box-sizing:border-box;
 }
 
 .xf-buttons {
@@ -46,6 +50,7 @@ h1 {
     padding: 5px;
     box-sizing:border-box;
     z-index:200;
+    background-color:white;
 }
 
 .xf-buttons button {
@@ -68,7 +73,7 @@ ul, li {
 }
 
 
-li.xf-filter-field > a, ul.xf-filter-options-list > li  {
+li.xf-filter-field > a, ul.xf-filter-options-list > li, ul.xf-filter-vocabulary-list > li  {
     text-decoration:none;
     color: black;
     font-size: 12px;

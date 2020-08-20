@@ -918,7 +918,6 @@ class Dataface_QueryBuilder {
 		} else {
 			$where = '';
 		}
-
 		return $where;
 	}
 

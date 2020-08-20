@@ -19,7 +19,7 @@
         <a href='javascript:void(0)' onclick='showOptions(this)'>
             <i class='material-icons'>arrow_forward_ios</i>
             <span class='xf-filter-label'>{$field.label|escape}</span>
-            <span class='xf-filter-value'>{if $field.value}: {$field.value|escape}{/if}</span>
+            <span class='xf-filter-value'>{if $field.valueLabel}: {$field.valueLabel|escape}{elseif $field.value}: : {$field.value|escape}{/if}</span>
             
         </a>
         <div class='xf-filter-options' data-field='{$field.fieldDef.name}' data-filter-type='{$field.type|escape}'>
@@ -51,7 +51,7 @@
         <a href='javascript:void(0)' onclick='showOptions(this)'>
             <i class='material-icons'>arrow_forward_ios</i>
             <span class='xf-filter-label'>{$field.label|escape}</span>
-            <span class='xf-filter-value'>{if $field.value}: {$field.value|escape}{/if}</span>
+            <span class='xf-filter-value'>{if $field.valueLabel}: {$field.valueLabel|escape}{elseif $field.value}: {$field.value|escape}{/if}</span>
             
         </a>
         <div class='xf-filter-options' data-field='{$field.fieldDef.name}' data-filter-type='{$field.type|escape}'>
@@ -90,12 +90,36 @@
         <a href='javascript:void(0)' onclick='showOptions(this)'>
             <i class='material-icons'>arrow_forward_ios</i>
             <span class='xf-filter-label'>{$field.label|escape}</span>
-            <span class='xf-filter-value'>{if $field.value}: {$field.value|escape}{/if}</span>
+            <span class='xf-filter-value'>{if $field.valueLabel}: {$field.valueLabel|escape}{elseif $field.value}: : {$field.value|escape}{/if}</span>
             
         </a>
         <div class='xf-filter-options' data-field='{$field.fieldDef.name}' data-filter-type='{$field.type|escape}'>
             <div class='dialog-content'>
                 <h1><span>{$field.label|escape}</span></h1>
+                {if $field.filterVocabulary}
+                <ul class='xf-filter-vocabulary-list'>
+                    {foreach from=$field.filterValuelist item=option}
+                    <li>
+                
+                        <input 
+                            class='filter-vocabulary-box'
+                            onclick='updateFilters(this);' 
+                            data-key='{$option.key|escape}'
+                            value='{$option.key|escape}' 
+                            type='radio' 
+                            name='{$field.name|escape}'
+                            id='{$field.name|escape}-option-{$option.name|escape}'
+                            {if $option.selected}checked{/if}
+                            data-option-value="{$option.value|escape}"
+                            />
+                        <label for='{$field.name|escape}-option-{$option.name|escape}'>
+                            <span class='xf-filter-option-value'>{$option.value|escape}</span>
+                            {if $option.count}<span class='xf-filter-option-count'>({$option.count|escape})</span>{/if}
+                        </labeL>
+                    </li>
+                    {/foreach}
+                </ul>
+                {/if}
                 <div class='range-inputs'>
                     {if $field.type != 'max'}
                     <div class='min-wrapper'>
