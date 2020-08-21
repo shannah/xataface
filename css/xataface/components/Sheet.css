@@ -39,7 +39,7 @@
 /**
  * Style applied when sheet is displayed to get slide-in effect.
  */
-.xf-sheet.slidein {
+.xf-sheet.xf-sheet-bottom.slidein, .xf-sheet.xf-sheet-top.slidein {
     max-height: 80%;
 }
 
@@ -77,11 +77,26 @@
 
 .xf-sheet.xf-sheet-left {
     margin-right: 20px;
+    
 }
 
 .xf-sheet.xf-sheet-right {
     
-    margin-left: 20px;
+    max-height: 100%;
+    max-width: 0;
+    left: auto;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    -webkit-transition: max-width 0.3s ease-in-out;
+    -moz-transition: max-width 0.3s ease-in-out;
+    -o-transition: max-width 0.3s ease-in-out;
+    transition: max-width 0.3s ease-in-out;
+    
+}
+
+.xf-sheet.xf-sheet-right.slidein {
+    max-width: 300px;
 }
 
 

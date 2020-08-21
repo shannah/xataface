@@ -264,22 +264,17 @@ import(XFROOT.'Dataface/QueryTool.php');
  	    $mobile = $mode == 'mobile';
  	    $desktop = $mode == 'desktop';
  	    $all = $mode == 'all';
- 	    if ($all) {
- 	        //$this->toHtml('mobile');
- 	        return $this->toHtml('desktop').$this->toHtml('mobile');
- 	    }
- 	    
-        
-        
  		$app =& Dataface_Application::getInstance();
  		$at =& Dataface_ActionTool::getInstance();
  		$query =& $app->getQuery();
-        
-        if ($mobile) {
+ 	    if ($all) {
             
-		    $actions = $at->getActions(['category'=>'mobile_list_settings']);
+            ob_start();
+            
+            
+		    $actions = $at->getActions(['category'=>'list_settings']);
 
-            if (@$actions['mobile_list_filter']) {
+            if (@$actions['list_filter']) {
 
                 // Change the label of the filter action to indicate if any filters are currently applied
                 $filterCount = 0;
@@ -292,19 +287,33 @@ import(XFROOT.'Dataface/QueryTool.php');
                     }
                 }
                 if ($filterCount > 0) {
-                    $actions['mobile_list_filter']['label'] .= ' • '.$filterCount;
+                    $actions['list_filter']['label'] .= ' • '.$filterCount;
                 }
             }
-		    echo '<div class="mobile-list-settings-wrapper">';
-		
+        
+            $cls = (@$app->prefs['use_xataface2_result_filters'] ? 'mobile' : '');
+        
+		    echo '<div class="mobile-list-settings-wrapper '.$cls.'">';
+	
             if ( count($actions)>0){
                 echo ' <div class="mobile-list-settings">';
                 $this->print_actions($actions);
                 echo '</div>';
             }
-		    
+	    
 		    echo '</div>';
-        }
+            
+            $filtersHtml = ob_get_contents();
+            ob_end_clean();
+ 	        //$this->toHtml('mobile');
+ 	        return $filtersHtml . $this->toHtml('desktop').$this->toHtml('mobile');
+ 	    }
+ 	    
+        
+        
+ 		
+        
+        
         
  		if ( isset( $query['-sort']) ){
  			$sortcols = explode(',', trim($query['-sort']));
@@ -354,7 +363,12 @@ import(XFROOT.'Dataface/QueryTool.php');
 			}
 			
 			if ( $desktop and !@$app->prefs['hide_result_filters'] and count($this->_filterCols) > 0 ){
-				echo $this->getResultFilters();
+                if (@$app->prefs['use_xataface2_result_filters']) {
+                    echo $this->getResultFilters();
+                } else {
+
+                }
+				
 			}
 			unset($query);
 			

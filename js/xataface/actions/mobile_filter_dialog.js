@@ -20,7 +20,9 @@ function showOptions(targetEl) {
     var dialogContent = $('.dialog-content', options);
     options.css({'overflow-y' : '', 'bottom' : '', 'margin-bottom' : ''});
     $(options).addClass('slidein');
-    
+    if (win.activeSheet.position === 'left' || win.activeSheet.position === 'right') {
+        $(options).css('height', '100%');
+    }
     win.activeSheet.pushState({
         back : function() {
             $(options).removeClass('slidein');

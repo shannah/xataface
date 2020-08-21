@@ -35,8 +35,10 @@
         } else {
             qStr += '&-action=mobile_sort_dialog';
         }
+        var position = $('body').hasClass('small') ? 'bottom' : 'right';
         var sheet = new xataface.Sheet({
-            url : qStr
+            url : qStr,
+            position: position
         });
         sheet.show();
     }
@@ -48,8 +50,10 @@
         } else {
             qStr += '&-action=mobile_filter_dialog';
         }
+        var position = $('body').hasClass('small') ? 'bottom' : 'right';
         var sheet = new xataface.Sheet({
-            url : qStr
+            url : qStr,
+            position : position
         });
         sheet.show();
     }

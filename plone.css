@@ -3553,6 +3553,9 @@ body.two-col #status-bar .responsive-content,
   
   
   @media only screen and (max-width: 768px) {
+      .desktop {
+          display:none !important;
+      }
       
       #login-logo {
           width: 100%;
@@ -4221,10 +4224,6 @@ ul.xf-fieldgroup-menu > li {
 }
 
 div.mobile-list-settings-wrapper {
-    display:none;
-}
-
-body.small div.mobile-list-settings-wrapper {
     box-sizing: border-box;
     font-size: 11px;
     display:block;
@@ -4232,41 +4231,41 @@ body.small div.mobile-list-settings-wrapper {
 
 
 
-body.small div.mobile-list-settings-wrapper > div {
+div.mobile-list-settings-wrapper > div {
     padding:0;
     margin:auto;
     display:flex;
 }
-body.small div.mobile-list-settings-wrapper span,
-body.small div.mobile-list-settings-wrapper i {
+div.mobile-list-settings-wrapper span,
+div.mobile-list-settings-wrapper i {
     color: #666;
 }
-body.small div.mobile-list-settings-wrapper.active span,
-body.small div.mobile-list-settings-wrapper.active i {
+div.mobile-list-settings-wrapper.active span,
+div.mobile-list-settings-wrapper.active i {
     color: white;
 }
-body.small div.mobile-list-settings-wrapper i  {
+div.mobile-list-settings-wrapper i  {
     font-size: 16px;
     vertical-align:middle;
     margin-right: 5px;
 }
 
-body.small div.mobile-list-settings-wrapper > div > a {
+div.mobile-list-settings-wrapper > div > a {
     border-left: 1px solid white;
     height: 100%;
     flex-grow:1;
     box-sizing: border-box;
 }
-body.small div.mobile-list-settings-wrapper > div > a:first-child {
+div.mobile-list-settings-wrapper > div > a:first-child {
     border-left: none;
 }
-body.small div.mobile-list-settings-wrapper a {
+div.mobile-list-settings-wrapper a {
     text-decoration:none;
     padding: 5px 10px 5px 10px;
 }
 
 
-body.small div.mobile-list-settings-wrapper.active {
+div.mobile-list-settings-wrapper.active {
     position:fixed;
     z-index: 100;
     background-color: rgb(10, 132, 255);

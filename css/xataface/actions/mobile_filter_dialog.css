@@ -3,6 +3,10 @@ body {
     background-color:transparent;
 }
 
+h1 {
+    margin-bottom: 10px;
+}
+
 .xf-filter-options {
     position:fixed;
     top:0;

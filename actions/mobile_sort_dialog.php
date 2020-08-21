@@ -116,7 +116,7 @@ class dataface_actions_mobile_sort_dialog {
                     'materialIcon' => $materialIcon,
                     'selected' => $selected,
                     'name' => $table->tablename.'_sort_actions_'.$fieldDef['name'].'_asc',
-                    'onclick' => 'sortAcending("'.$fieldDef['name'].'")',
+                    'onclick' => 'sortAscending("'.$fieldDef['name'].'")',
                 ];
             }
             

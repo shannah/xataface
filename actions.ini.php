@@ -769,8 +769,8 @@
 	url="?-action=login"
 	
     
-[mobile_list_filter]
-    category=mobile_list_settings
+[list_filter]
+    category=list_settings
     materialIcon=filter_list
     label=Filter
     description=Filter results
@@ -778,8 +778,8 @@
     url="javascript:void(0)"
     onclick="window.xataface.list.openFilterDialog()"
     
-[mobile_list_sort]
-    category=mobile_list_settings
+[ist_sort]
+    category=list_settings
     materialIcon=sort
     label=Sort
     description=Sort results

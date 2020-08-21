@@ -66,7 +66,7 @@
             }
         });
         
-        $(sheet.backgroundEl).on('touchstart', function(e) {
+        $(sheet.backgroundEl).on('touchstart click', function(e) {
             e.stopPropagation();
             e.preventDefault();
             sheet.close();
@@ -122,6 +122,9 @@
     }
     
     function adjustSize(sheet, el) {
+        if (this.position !== 'bottom' && this.position !== 'top') {
+            return;
+        }
         if (!sheet.installed || !sheet.iframe) {
             if (sheet.intervalHandle) {
                 clearInterval(sheet.intervalHandle);
