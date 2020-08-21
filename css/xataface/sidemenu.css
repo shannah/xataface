@@ -13,6 +13,15 @@ body.large #openSidebarMenu
     
 }
 
+@media only screen and (min-width:768px) {
+    .sidemenu.header, 
+    .sidemenu.main, 
+    #sidebarMenu,
+    #openSidebarMenu {
+        display:none;
+    }
+}
+
 body.small {
     background: #fff;
     padding: 0;
