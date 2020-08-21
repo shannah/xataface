@@ -11,6 +11,13 @@
     </div>
     <h1>Filter</h1>
     <ul class='xf-filter-form'>
+    <li class='xf-filter-field xf-filter-type-keyword'>
+        <div class='keyword-search-wrapper'>
+            <i class='material-icons'>search</i>
+            <i class='clear-btn material-icons'>cancel</i>
+            <input type="text" id="keyword-search-field" value="{$query|escape}" class='keyword-search-field'/>
+        </div>
+    </li>
     {foreach from=$searchFields item=field}
     <li class='xf-filter-field xf-filter-type-{$field.type|escape}'>
         

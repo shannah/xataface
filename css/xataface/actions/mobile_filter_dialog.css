@@ -213,6 +213,29 @@ input[type='date'] {
     padding:0;
 }
 
+div.keyword-search-wrapper {
+    position:relative;
+}
+
+div.keyword-search-wrapper > input.keyword-search-field {
+    width: 100%;
+    box-sizing:border-box;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+div.keyword-search-wrapper > i.material-icons {
+    position:absolute;
+    top: 9px;
+    left: 5px;
+}
+
+div.keyword-search-wrapper > i.material-icons.clear-btn {
+    left: auto;
+    right: 5px;
+    color: #cccccc;
+}
+
 
 
 

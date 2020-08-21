@@ -60,6 +60,7 @@ class dataface_actions_mobile_filter_dialog {
        
         
         $actions = [];
+        
         foreach ($filterFields as $fieldDef) {
             $type =  null;
 
@@ -459,7 +460,7 @@ class dataface_actions_mobile_filter_dialog {
             
         }
         
-        df_display(['searchFields' => $actions], 'xataface/actions/mobile_filter_dialog.html');
+        df_display(['searchFields' => $actions, 'query' => @$query['-search']], 'xataface/actions/mobile_filter_dialog.html');
         
     }
     

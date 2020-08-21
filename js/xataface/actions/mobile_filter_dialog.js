@@ -67,11 +67,25 @@ function updateFilters(srcEl, update) {
         update = true;
     }
     var $ = win.jQuery;
+    
+    
+    if ($(srcEl).hasClass('keyword-search-field')) {
+        // This is the main -search field we treat it differently than the rest.
+        updateFieldValue('-search', $(srcEl).val());
+        if (update) {
+            updateCounts();
+        }
+        return;
+    }
+    
     var wrapper = $(srcEl).parents('[data-field]').first();
     var filterType = $(wrapper).attr('data-filter-type');
     var field = $(wrapper).attr('data-field');
     var topListItem = $(wrapper).parent();
     var filterValueSpan = $('span.xf-filter-value', topListItem);
+    
+    
+    
     function updateFilterFilter() {
         
         var selectedKeys = [];
@@ -265,6 +279,12 @@ function resetFilters() {
         }
     });
     
+    var keywordSearches = document.querySelectorAll('input.keyword-search-field');
+    keywordSearches.forEach(function(input) {
+        $(input).val('');
+        updateFilters(input, false);
+    });
+    
     updateCounts();
 }
 
@@ -314,6 +334,19 @@ clearButtons.forEach(function(btn) {
     btn.addEventListener('click', function(e) {
         btn.nextElementSibling.value = '';
         updateFilters(btn.nextElementSibling);
+    });
+});
+
+var keywordSearchFields = document.querySelectorAll('input.keyword-search-field');
+keywordSearchFields.forEach(function(input) {
+    input.addEventListener('input', function(e) {
+        if (timeoutHandle) {
+            clearTimeout(timeoutHandle);
+        }
+
+        timeoutHandle = setTimeout(function() {
+            updateFilters(input);
+        }, 500);
     });
 });
 
