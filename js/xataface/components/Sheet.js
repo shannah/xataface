@@ -122,7 +122,7 @@
     }
     
     function adjustSize(sheet, el) {
-        if (this.position !== 'bottom' && this.position !== 'top') {
+        if (sheet.position !== 'bottom' && sheet.position !== 'top') {
             return;
         }
         if (!sheet.installed || !sheet.iframe) {

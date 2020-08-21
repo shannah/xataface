@@ -122,6 +122,7 @@ span.xf-filter-option-count {
 div.text-filter-options {
     display:flex;
     padding: 10px;
+    flex-wrap: wrap;
 }
 
 div.text-filter-input > i {
