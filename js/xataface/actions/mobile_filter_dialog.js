@@ -9,6 +9,9 @@ var $ = win.jQuery;
 // Variable to keep track of the query string.  
 // It starts out with the current query string of the parent window.
 var filterSearch = win.location.search;
+if (!filterSearch) {
+    filterSearch = '?';
+}
 
 /**
  * Shows the filter options for a specific field.
@@ -19,6 +22,7 @@ function showOptions(targetEl) {
     var options = $('>.xf-filter-options', $(targetEl).parent());
     var dialogContent = $('.dialog-content', options);
     options.css({'overflow-y' : '', 'bottom' : '', 'margin-bottom' : ''});
+    dialogContent.css({'height' : ''});
     $(options).addClass('slidein');
     if (win.activeSheet.position === 'left' || win.activeSheet.position === 'right') {
         $(options).css('height', '100%');
@@ -33,6 +37,7 @@ function showOptions(targetEl) {
     setTimeout(function() {
         if (isOverflown(options.get(0))) {
             options.css({'overflow-y' : 'scroll', 'bottom' : '0', 'margin-bottom' : '40px'});
+            dialogContent.css({'height' : 'auto'});
         }
     }, 800);
     
@@ -51,9 +56,16 @@ function applyFilters() {
     return false;
 }
 
+/**
+ * Updates a field value in the current filterSearch string.
+ * @param string field Field name
+ * @param string value Field value
+ */
 function updateFieldValue(field, value) {
     var re = new RegExp('&'+field+'=[^&]*');
     filterSearch = filterSearch.replace(re, '');
+    re = new RegExp('\?'+field+'=[^&]*');
+    filterSearch = filterSearch.replace(re, '?');
     if (value) {
         filterSearch += '&' + encodeURIComponent(field) + '=' + encodeURIComponent(value);
     }
@@ -87,7 +99,9 @@ function updateFilters(srcEl, update) {
     var filterValueSpan = $('span.xf-filter-value', topListItem);
     
     
-    
+    /**
+     * Update filter for filter type
+     */
     function updateFilterFilter() {
         
         var selectedKeys = [];
@@ -128,6 +142,9 @@ function updateFilters(srcEl, update) {
         if (update) updateCounts();
     }
     
+    /**
+     * Update filter for text type
+     */
     function updateTextFilter() {
         var textInput = $('input.search-field', wrapper);
         var checkedOption = $('input.text-filter-option:checked', wrapper);
@@ -154,6 +171,9 @@ function updateFilters(srcEl, update) {
         
     }
     
+    /**
+     * Update filter for range type
+     */
     function updateRangeFilter() {
         var minInput = $('input.range-min', wrapper);
         var maxInput = $('input.range-max', wrapper);
@@ -190,6 +210,9 @@ function updateFilters(srcEl, update) {
         if (update) updateCounts();
     }
     
+    /**
+     * Update filter for filter vocabulary
+     */
     function updateFilterVocabularyBox() {
         var fieldVal = $(srcEl).val();
         $('input.search-field, input.range-min, input.range-max', wrapper).val('');
@@ -223,6 +246,9 @@ function updateFilters(srcEl, update) {
  */
 function updateCounts() {
     var search = filterSearch;
+    if (!search) {
+        search = '?';
+    }
     var $ = win.jQuery;
     if (!$ || !$.get) return;
     
@@ -308,6 +334,8 @@ function checkCustomOption(srcEl) {
     });
 }
 
+// Add listeners to all of the input fields related to filtering to dynamically update
+// the counts
 var searchFields = document.querySelectorAll('input.search-field, input.range-min, input.range-max');
 var timeoutHandle = null;
 searchFields.forEach(function(input) {

@@ -56,11 +56,12 @@
      */
     function openSortDialog() {
         var qStr = window.location.search;
-        if (qStr.indexOf('-action=') !== -1) {
-            qStr = qStr.replace(/-action=[^&]*/, '-action=mobile_sort_dialog');
-        } else {
-            qStr += '&-action=mobile_sort_dialog';
+        if (!qStr) {
+            qStr = '?';
         }
+        qStr = qStr.replace(/\?-action=[^&]*/, '?').replace(/&-action=[^&]*/, '');
+        qStr += '&-action=mobile_sort_dialog';
+        
         var position = $('body').hasClass('small') ? 'bottom' : 'right';
         var sheet = new xataface.Sheet({
             url : qStr,
@@ -74,11 +75,12 @@
      */
     function openFilterDialog() {
         var qStr = window.location.search;
-        if (qStr.indexOf('-action=') !== -1) {
-            qStr = qStr.replace(/-action=[^&]*/, '-action=mobile_sort_dialog');
-        } else {
-            qStr += '&-action=mobile_filter_dialog';
+        if (!qStr) {
+            qStr = '?';
         }
+        qStr = qStr.replace(/\?-action=[^&]*/, '?').replace(/&-action=[^&]*/, '');
+        qStr += '&-action=mobile_filter_dialog';
+        
         var position = $('body').hasClass('small') ? 'bottom' : 'right';
         var sheet = new xataface.Sheet({
             url : qStr,
