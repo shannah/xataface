@@ -66,6 +66,7 @@ class dataface_actions_mobile_filter_dialog {
 
             
             $name = $fieldDef['name'];
+            $text = $table->isText($name);
             $int = $table->isInt($name);
             $float = $table->isFloat($name);
             $date = $table->isDate($name);
@@ -156,7 +157,7 @@ class dataface_actions_mobile_filter_dialog {
                     } else if ($float) {
                         $type = 'range';
                     } else {
-                        if ($filterVocabulary) {
+                        if ($filterVocabulary or $text or $date or $time) {
                             $type = 'text';
                         } else {
                             $type = 'filter';
