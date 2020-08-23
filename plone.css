@@ -4311,3 +4311,30 @@ div.mobile-list-settings-wrapper.active {
     margin-top: -25px;
     margin-left: -25px;
 }
+
+.mobile-app-menu-trigger {
+    position:absolute;
+    right:0;
+    top:0;
+    height:100%;
+    background-color:white;
+    display:flex;
+    padding-top:15px;
+    padding-right: 10px;
+}
+
+.mobile-app-menu-trigger > i {
+    font-size: 200%;
+    flex-grow:1;
+}
+
+.mobile-back-btn {
+    position:absolute;
+    z-index:20;
+    top: 18px;
+    left:10px;
+}
+.mobile-back-btn > a > i {
+    color:white;
+    font-size: 24px;
+}

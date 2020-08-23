@@ -42,7 +42,11 @@
 .xf-sheet.xf-sheet-bottom.slidein, .xf-sheet.xf-sheet-top.slidein {
     max-height: 80%;
 }
-
+.xf-sheet.xf-sheet-fill.slidein {
+    max-height: 100%;
+    height:100%;
+    
+}
 /**
  * Semi-transparent dark background displayed over full page
  * when sheet is displayed.

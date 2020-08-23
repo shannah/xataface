@@ -1,3 +1,4 @@
+//require <jquery.packed.js>
 //require-css <xataface/components/Sheet.css>
 (function() {
     var $ = jQuery;

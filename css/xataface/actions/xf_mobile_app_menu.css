@@ -1,0 +1,27 @@
+h1 {
+    margin-left: 60px;
+}
+
+.personal-tools-menu-mobile > ul > li > a > span{
+    color:#555555;
+}
+
+.personal-tools-menu-mobile > ul {
+    box-sizing:border-box;
+    width:100%;
+}
+
+.personal-tools-menu-mobile > ul > li > a {
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 10px;
+    width:100%;
+    box-sizing:border-box;
+    display:block;
+}
+
+.personal-tools-menu-mobile > ul > li > a > i {
+    color: #cccccc;
+    font-size: 150%;
+    vertical-align:top;
+    margin-right:10px;
+}

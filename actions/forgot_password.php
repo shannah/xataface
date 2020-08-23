@@ -19,6 +19,9 @@ class dataface_actions_forgot_password {
 		$query =& $app->getQuery();
 		$jt = Dataface_JavascriptTool::getInstance();
 		$jt->import('forgot_password.js');
+		$app->addBodyCSSClass('no-table-tabs');
+        $app->addBodyCSSClass('no-mobile-header');
+        $app->addBodyCSSClass('no-fab');
 				
 		try {
 			if ( isset($query['--uuid']) ){

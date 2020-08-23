@@ -2428,6 +2428,9 @@ END
 		// Set up security filters
 		$query =& $this->getQuery();
 		$table = Dataface_Table::loadTable($query['-table']);
+        xf_script('xataface/actions/core.js');
+        // Ignore jquery because it is included in the head of the document
+        Dataface_JavascriptTool::getInstance()->ignore('jquery.packed.js');
 
 		if (@$this->_conf['using_default_action'] and $table->isSingleton()) {
 		    $query['-action'] = $this->_conf['default_browse_action'];
@@ -2488,6 +2491,9 @@ END
 		if ( !isset($this->prefs['disable_ajax_record_details']) ){
 			$this->prefs['disable_ajax_record_details'] = 1;
 		}
+        if (!isset($this->prefs['mobile_nav_style'])) {
+            $this->prefs['mobile_nav_style'] = 'hamburger';
+        }
 
 		if ( $query['-action'] == 'login_prompt' ) $this->prefs['no_history'] = 1;
 
@@ -2495,8 +2501,14 @@ END
 		if ( isset($applicationDelegate) and method_exists($applicationDelegate, 'getPreferences') ){
 			$this->prefs = array_merge($this->prefs, $applicationDelegate->getPreferences());
 		}
-		$this->prefs = array_map('intval', $this->prefs);
-
+        foreach ($this->prefs as $k=>$v) {
+            if ($v === '0') {
+                $this->prefs[$k] = 0;
+            } else if ($v === '1') {
+                $this->prefs[$k] = 1;
+            }
+        }
+		
 		// Check to make sure that this table hasn't been disallowed
 		$disallowed = false;
 		if ( isset($this->_conf['_disallowed_tables']) ){
@@ -2535,7 +2547,7 @@ END
 			);
 
 		}
-
+        
 
 		$actionTool = Dataface_ActionTool::getInstance();
 

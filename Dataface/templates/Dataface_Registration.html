@@ -22,7 +22,7 @@
     <div id="login-window" xf-submit-label="Register Now">
         {define_slot name="register_back_button"}
         <div class="cancel-back-button">
-            <a class="cancel-back-button" onclick="window.history.back()"><i class="material-icons">clear</i></a>
+            <a class="cancel-back-button" href="{$ENV.BACK_LINK|escape}"><i class="material-icons">clear</i></a>
         </div>
         {/define_slot}
 		{block name="before_registration_form"}

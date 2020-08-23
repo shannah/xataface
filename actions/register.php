@@ -44,13 +44,16 @@ class dataface_actions_register {
 		$this->params =& $params['action'];
 		unset($params);
 		$params =& $this->params;
-
+		
 		Dataface_PermissionsTool::getInstance()->setDelegate(new dataface_actions_register_permissions_delegate());
 		
 		
 		$app =& Dataface_Application::getInstance();
 		$auth =& Dataface_AuthenticationTool::getInstance();
-
+        
+		$app->addBodyCSSClass('no-table-tabs');
+        $app->addBodyCSSClass('no-mobile-header');
+        $app->addBodyCSSClass('no-fab');
 		
 		import(XFROOT.'Dataface/Ontology.php');
 		Dataface_Ontology::registerType('Person', 'Dataface/Ontology/Person.php', 'Dataface_Ontology_Person');

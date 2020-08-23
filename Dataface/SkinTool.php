@@ -171,7 +171,8 @@ class Dataface_SkinTool extends Smarty{
 			'language'=>$app->_conf['lang'],
 			'prefs'=>&$app->prefs,
 			'search'=>@$_REQUEST['-search'],
-            'APPLICATION_VERSION' => $app->getApplicationVersion()
+            'APPLICATION_VERSION' => $app->getApplicationVersion(),
+            'BACK_LINK' => $this->getBackLink()
 
 		);
 
@@ -260,6 +261,17 @@ class Dataface_SkinTool extends Smarty{
 		return $this->resultController;
 	}
     
+    function getBackLink() {
+        $app = Dataface_Application::getInstance();
+        $query = $app->getQuery();
+        
+        $referer = @$_SERVER['HTTP_REFERER'];
+        if ($referer and strpos($_SERVER['HTTP_REFERER'], df_absolute_url(DATAFACE_SITE_URL)) === 0) {
+            return 'javascript:window.history.back()';//$referer;
+        } else {
+            return df_absolute_url(DATAFACE_SITE_URL);
+        }
+    }
     
 	/**
      * Get the compile path for this resource.
@@ -552,19 +564,10 @@ class Dataface_SkinTool extends Smarty{
      * query.
      */
     function cancel_back_button($params, &$smarty) {
-        $referer = @$_SERVER['HTTP_REFERER'];
-        $href = "window.history.back()";
-        $onclick = $href;
-        $href = '#';
-        
-        if (!$referer or strpos($referer, df_absolute_url(DATAFACE_SITE_URL)) !== 0) {
-            $href = Dataface_Application::getInstance()->url('-action=browse');
-            $onclick = '';
-        }
-        $href = htmlspecialchars($href);
+        $href = $this->getBackLink();
         $html = <<<END
             <div class="cancel-back-button">
-                <a class="cancel-back-button" href="$href" onclick="$onclick"><i class="material-icons">clear</i></a>
+                <a class="cancel-back-button" href="$href"><i class="material-icons">clear</i></a>
             </div>
 END;
         return $html;
@@ -642,10 +645,13 @@ END;
 		if ( !isset($params['var']) ) throw new Exception('actions: var is a required parameter.', E_USER_ERROR);
 		$varname = $params['var'];
 		unset($params['var']);
+        $firstOnly = @$params['first'];
+        unset($params['first']);
+        
 		import( XFROOT.'Dataface/ActionTool.php');
 		$actionTool =& Dataface_ActionTool::getInstance();
 		if ( !isset($params['record']) ){
-			$params['record'] =& $this->ENV['record'];
+            $params['record'] =& $this->ENV['record'];
 		}
 		$actions = $actionTool->getActions($params);
         foreach ($actions as $k=>$a) {
@@ -671,7 +677,17 @@ END;
 
 			}
         }
-		$context = array($varname=>$actions);
+        if ($firstOnly) {
+            $action = null;
+            foreach ($actions as $a) {
+                $action = $a;
+                break;
+            }
+            $context = array($varname=>$action);
+        } else {
+            $context = array($varname=>$actions);
+        }
+		
 		$smarty->assign($context);
 
 	}

@@ -6,11 +6,10 @@
 		<div class="forgot-password-form">
             {define_slot name="forgot_password_back_button"}
             <div class="cancel-back-button">
-                <a class="cancel-back-button" onclick="window.history.back()"><i class="material-icons">clear</i></a>
+                <a class="cancel-back-button" href="{$ENV.BACK_LINK|escape}"><i class="material-icons">clear</i></a>
             </div>
             {/define_slot}
 			<div class="portalMessage status-message" {if !$error}style="display:none"{/if}>{if $error}{$error|escape}{/if}</div>
-			<script src="{$ENV.DATAFACE_URL|escape}/js/jquery.packed.js"></script>
 			<script src="{$ENV.DATAFACE_URL|escape}/js/forgot_password.js"></script>
             
             {define_slot name="login_logo"}<div id="login-logo">{include file="Dataface_Logo.html"}</div>{/define_slot}

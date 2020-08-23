@@ -1,19 +1,46 @@
 <div class="mobile-footer">
-	{if $ENV.prefs.show_table_tabs} 
-   		{block name="before_table_tabs_mobile"}
-		{define_slot name="table_tabs_mobile"}
-			<div class="tabs_wrapper_mobile" id="table_tabs_wrapper_mobile">
+    {if $ENV.prefs.mobile_nav_style=='hamburger'}
+        {* 
+            Use the mobile_nav_style preference to choose the navigation style for mobile.
+            Options include:
+            
+            1. hamburger - Use the hamburger menu for navigating top-level.  With this option,
+               the table_tabs_mobile category actions will be used for bottom tabs - 2nd level navigation.
+            2. tabs - Use tabs for navigating top-level.
+        *}
+    	{if $ENV.prefs.show_table_tabs} 
+       		{block name="before_table_tabs_mobile"}
+    		{define_slot name="table_tabs_mobile"}
+    			<div class="tabs_wrapper_mobile" id="table_tabs_wrapper_mobile">
 
-					<nav role="navigation" class="table_tabs_mobile">
-						{actions_menu  class="contentViews" category="table_tabs" selected_action=$ENV.mode}
+    					<nav role="navigation" class="table_tabs_mobile">
+    						{actions_menu  class="contentViews" category="table_tabs" selected_action=$ENV.mode}
 
-					</nav>
+    					</nav>
 
 
-				<div style="height:0px;padding:0;margin:0;clear:both"></div>
-			</div>
+    				<div style="height:0px;padding:0;margin:0;clear:both"></div>
+    			</div>
 			
-		{/define_slot}
+    		{/define_slot}
+            {block name="after_table_tabs_mobile"}
+        {/if}
+        
+    {elseif $ENV.prefs.mobile_nav_style=='tabs' or !$ENV.prefs.mobile_nav_style}
+    	{block name="before_table_tabs_mobile"}
+ 		{define_slot name="table_tabs_mobile"}
+ 			<div class="tabs_wrapper_mobile" id="table_tabs_wrapper_mobile">
+                    <a class='mobile-app-menu-trigger' href="{$ENV.APPLICATION_OBJECT->url('-action=xf_mobile_app_menu')|escape}" data-xf-sheet-position="fill"><i class='material-icons'>menu</i></a>
+ 					<nav role="navigation" class="table_tabs_mobile">
+ 						{actions_menu  class="contentViews" category="_tables" selected_action=$ENV.mode}
+
+ 					</nav>
+
+
+ 				<div style="height:0px;padding:0;margin:0;clear:both"></div>
+ 			</div>
+		
+ 		{/define_slot}
         {block name="after_table_tabs_mobile"}
     {/if}
 </div>

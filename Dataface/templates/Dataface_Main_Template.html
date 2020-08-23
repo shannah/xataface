@@ -31,15 +31,25 @@
 	{define_slot name="html_head"}
 		<meta http-equiv="Content-Type" content="text/html; charset={$ENV.APPLICATION.oe|escape}"/>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" /> 
-                <title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		{define_slot name="dataface_stylesheets"}<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css?v={$ENV.APPLICATION_VERSION}"/>
+        <title>{define_slot name="html_title"}{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}{/define_slot}</title>
+        <meta name="xataface-back-link" content="{$ENV.BACK_LINK|escape}">
+        {define_slot name="apple_mobile_web_app_meta_tags"}
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="{$ENV.APPLICATION_OBJECT->getSiteTitle()|escape}">
+        {/define_slot}
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        
+		{define_slot name="dataface_stylesheets"}
+        <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css?v={$ENV.APPLICATION_VERSION}"/>
 		<link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/sidemenu.css?v={$ENV.APPLICATION_VERSION}"/>
-        <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/fab.css?v={$ENV.APPLICATION_VERSION}"/>{/define_slot}
+        <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/fab.css?v={$ENV.APPLICATION_VERSION}"/>
+        {/define_slot}
         {define_slot name="dataface_rss_links"}
 		<link rel="alternate" href="{$ENV.APPLICATION_OBJECT->url('-action=feed&--format=RSS2.0')|escape}"
           title="RSS 2.0" type="application/rss+xml" />
-         {/define_slot}
+        {/define_slot}
 		{define_slot name="custom_stylesheets"}<!-- Stylesheets go here -->{/define_slot}
 		{block name="custom_stylesheets2"}
 		{define_slot name="dataface_javascripts"}
@@ -53,7 +63,7 @@
 		DATAFACE_SITE_HREF = '{$ENV.DATAFACE_SITE_HREF|escape:javascript}';
 		
 		//--></script>
-
+        <script src="{$ENV.DATAFACE_URL|escape}/js/jquery.packed.js?v={$ENV.APPLICATION_VERSION}"></script>
 		<script type="text/javascript"
 				src="{$ENV.DATAFACE_URL|escape}/plone_javascripts.js?v={$ENV.APPLICATION_VERSION}">
 		</script>
@@ -84,7 +94,7 @@
 
 
 	</head>
-	<body onload="bodyOnload()" class="{$ENV.APPLICATION_OBJECT->getBodyCSSClasses()|escape}" {block name="body_atts"}{if $ENV.record} xf-record-id="{$ENV.record->getId()|escape}"{/if}>
+	<body onload="bodyOnload()" class="{$ENV.APPLICATION_OBJECT->getBodyCSSClasses()|escape} mobile-nav-style-{$ENV.prefs.mobile_nav_style|escape}" {block name="body_atts"}{if $ENV.record} xf-record-id="{$ENV.record->getId()|escape}"{/if}>
 
         
 		
@@ -93,8 +103,23 @@
 	{define_slot name="html_body"}<!-- Replace the entire HTML Body with the "html_body" slot -->
 
         <div class="sidemenu header mobile-header">
+			{actions category="mobile_app_back" var="back_action" first="1"}
+			{if $back_action}
+                <div class='mobile-back-btn'>
+                    <a href="{if $back_action.url}{$back_action.url|escape}{else}{$ENV.BACK_LINK|escape}{/if}">
+                       <i class='material-icons'>{$back_action.materialIcon|escape}</i>
+                    </a>
+                </div>
+            {/if}
+            
             <div class="mobile page-title">{define_slot name="html_title_mobile"}{$ENV.APPLICATION_OBJECT->getPageTitle('mobile')|escape}{/define_slot}</div>
         </div>
+        {if $ENV.prefs.mobile_nav_style=='hamburger' and !$back_action}
+            {*
+                If the mobile_nav_style=hamburger preference is set,
+                then we are using a Hamburger menu for navigation.
+            *}
+
           <input type="checkbox" class="sidemenu openSidebarMenu" id="openSidebarMenu">
           <label for="openSidebarMenu" class=" sidebarIconToggle">
             <div class="spinner diagonal part-1"></div>
@@ -131,9 +156,9 @@
                     {/if}
                     
             </div>
-            {/if}
+            {/if}{* !$ENV.prefs.hide_personal_tools *}
           </div>
-          
+         {/if} {* $ENV.prefs.mobile_nav_style=='hamburger' *}
     
 	<div id="top-section">
 		{block name="before_header"}
@@ -386,6 +411,15 @@
 	{/define_slot}
     
     {define_slot name="fab"}
+        {*
+            The FAB (floating action button), which uses the table_actions_menu
+            category.
+            
+            Exclude actions from the FAB using the #large# tag in the action.
+            Include actions in the FAB by adding materialIcon. If action doesn't 
+            have materialIcon, it won't be included in the FAB.
+    
+        *}
          {actions var="menus" category="table_actions_menu" flatten="1" sanstags="#large#" with="materialIcon"}  
 
          {if $menus|@count>0}

@@ -64,7 +64,7 @@ function applyFilters() {
 function updateFieldValue(field, value) {
     var re = new RegExp('&'+field+'=[^&]*');
     filterSearch = filterSearch.replace(re, '');
-    re = new RegExp('\?'+field+'=[^&]*');
+    re = new RegExp('\\?'+field+'=[^&]*');
     filterSearch = filterSearch.replace(re, '?');
     if (value) {
         filterSearch += '&' + encodeURIComponent(field) + '=' + encodeURIComponent(value);

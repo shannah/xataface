@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/plone.css?v={$ENV.APPLICATION_VERSION}"/>
+        <link rel="stylesheet" type="text/css" href="{$ENV.DATAFACE_URL|escape}/css/xataface/actions/xf_mobile_app_menu.css?v={$ENV.APPLICATION_VERSION}"/>
+        <base target="_parent"/>
+    </head>
+    <body>
+        
+        <div id="xf-mobile-app-menu" class="xf-mobile-app-menu">
+          <h1>Menu</h1>
+          {if !$ENV.prefs.hide_user_status}
+          <div id="user-status-mobile">
+                  {if !$ENV.prefs.hide_personal_tools}
+                  {if $ENV.user}
+                      {block name="before_personal_tools_mobile"}
+                      {define_slot name="personal_tools_mobile"}
+                          <nav role="navigation" class="personal-tools-menu-mobile">
+                          {actions_menu category="personal_tools"}
+                              </nav>
+                          <!--<div id="personal-tools"><a href="{$ENV.user->getURL()}">My Profile</a></div>-->
+                      {/define_slot}
+                      {block name="after_personal_tools"}
+                  {else}
+                  
+                      <nav role="navigation" class="personal-tools-menu-mobile">
+                          {actions_menu category="personal_tools"}
+                              </nav>
+                  {/if}
+                  {/if}
+                  
+          </div>
+          {/if}
+        </div>
+        
+    </body>
+</html>
