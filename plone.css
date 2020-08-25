@@ -3467,24 +3467,24 @@ body.two-col #status-bar .responsive-content,
         padding: 3mm;
       }
   
-      .mobile-listing.list-style-mobile .mobile-listing-row .mobile-byline,
-      .mobile-listing.list-style-mobile .mobile-listing-row .mobile-byline > a {
+      .mobile-byline,
+      .mobile-byline > a {
         font-weight: normal;
         font-size: 8pt;
         line-height: 12pt;
         color: gray;
       }
   
-      .mobile-listing.list-style-mobile .mobile-listing-row .mobile-title,
-      .mobile-listing.list-style-mobile .mobile-listing-row .mobile-title > a {
+      .mobile-title,
+      .mobile-title > a {
         font-weight: bold;
         font-size: 12pt;
         line-height: 18pt;
         color: black;
       }
   
-      .mobile-listing.list-style-mobile .mobile-listing-row .mobile-description,
-      .mobile-listing.list-style-mobile .mobile-listing-row .mobile-description > a {
+      .mobile-description,
+      .mobile-description > a {
         font-weight: normal;
         color: #666666;
         font-size: 10pt;
@@ -3499,7 +3499,7 @@ body.two-col #status-bar .responsive-content,
   
   
   
-      .mobile-listing.list-style-mobile .mobile-row-content .mobile-logo img {
+      .mobile-logo img {
           max-width: 50px;
           max-height: 50px;
           float:left;
@@ -3507,8 +3507,8 @@ body.two-col #status-bar .responsive-content,
           padding-bottom: 3mm;
       }
   
-      .mobile-listing.list-style-mobile .mobile-row-content .mobile-logo > i,
-      .mobile-listing.list-style-mobile .mobile-row-content .mobile-logo > a > i {
+      .mobile-logo > i,
+      .mobile-logo > a > i {
            font-size: 50px;
            width: 50px;
            height: 50px;
@@ -3737,24 +3737,24 @@ body.two-col #status-bar .responsive-content,
     padding: 3mm;
   }
   
-  .mobile-listing-row .mobile-byline,
-  .mobile-listing-row .mobile-byline > a {
+  .mobile-byline,
+  .mobile-byline > a {
     font-weight: normal;
     font-size: 8pt;
     line-height: 12pt;
     color: gray;
   }
   
-  .mobile-listing-row .mobile-title,
-  .mobile-listing-row .mobile-title > a {
+  .mobile-title,
+  .mobile-title > a {
     font-weight: bold;
     font-size: 12pt;
     line-height: 18pt;
     color: black;
   }
   
-  .mobile-listing-row .mobile-description,
-  .mobile-listing-row .mobile-description > a {
+  .mobile-description,
+  .mobile-description > a {
     font-weight: normal;
     color: #666666;
     font-size: 10pt;
@@ -4315,7 +4315,6 @@ div.mobile-list-settings-wrapper.active {
 .mobile-app-menu-trigger {
     position:absolute;
     right:0;
-    top:0;
     height:100%;
     background-color:white;
     display:flex;
@@ -4337,4 +4336,53 @@ div.mobile-list-settings-wrapper.active {
 .mobile-back-btn > a > i {
     color:white;
     font-size: 24px;
+}
+
+@media only screen and (max-width:768px) {
+    .mobile-record-relationships {
+        margin-left:-20px;
+        margin-right:-5px;
+    }
+
+    .mobile-record-relationships > ul > li {
+        list-style-type:none;
+        list-style-image:none;
+        padding:0;
+        margin:0;
+    }
+    .mobile-record-relationships > ul {
+        padding:0;
+        margin:0;
+    }
+
+    .mobile-record-relationships > ul > li > a {
+        border-bottom: 1px solid #eaeaea;
+        border-top: 1px solid #eaeaea;
+        padding: 5px 20px 5px 20px;
+        text-decoration: none;
+        color: #333;
+        box-sizing:border-box;
+        width:100%;
+        display:block;
+    
+    
+    }
+
+    ul > li > a > i.navicon {
+        float:right;
+        width:20px;
+        color: #ccc;
+        margin:auto;
+        font-size: 20px;
+    }
+
+    .resultlist-controller, .result-tools {
+        display:none;
+    }
+    
+}
+
+.tabs_wrapper_mobile {
+    overflow-x:scroll;
+    margin-right:30px;
 }

@@ -66,68 +66,10 @@ class Dataface_RelatedList {
         $this->_limit = isset($query['-related:limit']) ? $query['-related:limit'] : 30;
 
 
-        if (isset($query['-related:search'])) {
-            $rwhere = array();
-            foreach ($this->_relationship->fields() as $rfield) {
-                //list($garbage,$rfield) = explode('.', $rfield);
-                $rwhere[] = '`' . str_replace('.', '`.`', $rfield) . '` LIKE \'%' . addslashes($query['-related:search']) . '%\'';
-            }
-            $rwhere = implode(' OR ', $rwhere);
-        } else {
-            $rwhere = 0;
-        }
-        //echo $rwhere;
-        $column_search_keys = preg_grep('/^-related:s:[a-zA-Z_0-9]+$/', array_keys($query));
-        $terms = array();
-
-        foreach ( $column_search_keys as $search_key ){
-            $field_name = substr($search_key, strrpos($search_key, ':')+1);
-            if ( $this->_relationship->hasField($field_name, true) ){
-                $field = $this->_relationship->getField($field_name);
-                $field_table = Dataface_Table::loadTable($field['tablename']);
-                if ( !is_numeric($query[$search_key]) and ($field_table->isChar($field['name']) or $field_table->isText($field['name'])) ){
-                    $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'` LIKE \'%'.addslashes($query[$search_key]).'%\'';
-                } else {
-                    $terms[] = '`'.$field['tablename'].'`.`'.$field_name.'`=\''.addslashes($query[$search_key]).'\'';
-                }
-
-                $filter_info = array(
-                    'field_name' => $field_name,
-                    'field_label' => $field['widget']['label'],
-                    'field_value' => $query[$search_key],
-                    'field_display_value' => $query[$search_key],
-                    'url' => $app->url('-related:s:'.$field_name.'=')
-                );
-                if ( @$field['vocabulary'] ){
-                    $vlkey = $filter_info['field_value'];
-                    if ( preg_match('/^\,(\d+)\,$/', $vlkey, $matches) ){
-                        $vlkey = $matches[1];
-                    }
-                    $valuelist =& $field_table->getValuelist($field['vocabulary']);
-                    if ( isset($valuelist[$vlkey]) ){
-                        $filter_info['field_display_value'] = $valuelist[$vlkey];
-
-                    }
-                    unset($valuelist);
-                    unset($field_table);
-                } else if ($field_table->getDisplayField($field_name) !== $field_name){
-                    $dummyRecord = df_get_record($field['tablename'], array($field_name=>'='.$query[$search_key]));
-                    if ($dummyRecord){
-                        $filter_info['field_display_value'] = $dummyRecord->display($field_name);
-                    }
-                    unset($dummyRecord);
-                }
-                $this->filters[] = $filter_info;
-            }
-        }
-        if ( $terms ){
-            if ( $rwhere === 0 ){
-                $rwhere = implode(' AND ', $terms);
-            } else {
-                $rwhere = '('.$rwhere.') AND '.implode(' AND ', $terms);
-            }
-        }
-        $this->_where = $rwhere;
+        
+        $this->_where = $this->_relationship->where($query);
+        $this->filters = $this->_where['filters'];
+        $this->_where = $this->_where['where'];
     }
         function Dataface_RelatedList(&$record, $relname, $db='') { self::__construct($record, $relname, $db); }
 
@@ -171,13 +113,113 @@ class Dataface_RelatedList {
         return null;
     }
 
-    function toHtml() {
+    
+    private $_records;
+    
+    private function _getRecords() {
+        if (!isset($this->_records)) {
+            $this->_records =& $this->_record->getRelatedRecords($this->_relationship_name, true, $this->_start, $this->_limit, $this->_where);
+        }
+        return $this->_records;
+    }
+    
+    private $_perms;
+    private function _getPerms() {
+        if (!isset($this->_perms)) {
+            $this->_perms = $this->_record->getPermissions(array('relationship' => $this->_relationship_name));
+        }
+        return $this->_perms;
+    }
+    
+ 	private function print_actions($actions) {
+ 	    foreach ($actions as $action){
+            $materialIcon = '';
+            if (@$action['materialIcon']) {
+                $materialIconStyle = @$action['materialIconStyle'] ? 
+                    $action['materialIconStyle'] : 
+                    '';
+                $materialIcon = '<i class="material-icons '.df_escape($materialIconStyle).'">'.df_escape($action['materialIcon']).'</i>';
+                //echo "MaterialICon $materialIcon";exit;
+            }
+        
+            $url = $action['url'];
+            $onclick = @$action['onclick'];
+            if ($onclick) {
+                $url = 'javascript:void(0);';
+                $onclick = 'onclick="'.htmlspecialchars($onclick).'" ';
+            }
+            echo '<a href="'.df_escape($url).'" '.$onclick.
+                'class="'.df_escape($action['class']).' '.
+                    ((@$action['icon'] or $materialIcon)?'with-icon':'').'" '.
+                        (@$action['icon']?' style="'.df_escape('background-image: url('.$action['icon'].')').'"':'').(@$action['target']?' target="'.df_escape($action['target']).'"':'').' title="'.df_escape(@$action['description']?$action['description']:$action['label']).'">'.$materialIcon.'<span>'.df_escape($action['label']).'</span></a> ';
+        }
+ 	}
+ 	
+
+    function toHtml($mode = 'all') {
         $context = array();
         $context['relatedList'] = $this;
         $app = & Dataface_Application::getInstance();
         $context['app'] = & $app;
-
+        
+ 	    $mobile = $mode == 'mobile';
+ 	    $desktop = $mode == 'desktop';
+ 	    $all = $mode == 'all';
+        
         $query = & $app->getQuery();
+        
+ 	    if ($all) {
+            
+            ob_start();
+            
+            $at = Dataface_ActionTool::getInstance();
+		    $actions = $at->getActions([
+                'category'=>'related_list_settings',
+                'table' => $this->_tablename,
+                'relationship' => $this->_relationship_name,
+                'record' => $rthis->_record
+            ]);
+
+            if (@$actions['related_list_filter']) {
+
+                // Change the label of the filter action to indicate if any filters are currently applied
+                $filterCount = 0;
+                if (@$query['-related:search']) {
+                    $filterCount++;
+                }
+                foreach ($this->_relationship->fields(true) as $fieldName) {
+                    $fieldDef = $this->_relationship->getField($fieldName);
+                    if (@$fieldDef['filter']) {
+                        $queryVal = @$query['-related:s:'.$fieldDef['name']];
+                        if ($queryVal and trim($queryVal)) {
+                            $filterCount++;
+                        }
+                    }
+                }
+                if ($filterCount > 0) {
+                    $actions['related_list_filter']['label'] .= ' • '.$filterCount;
+                }
+            }
+        
+            
+        
+		    echo '<div class="mobile-list-settings-wrapper '.$cls.'">';
+	
+            if ( count($actions)>0){
+                echo ' <div class="mobile-list-settings">';
+                $this->print_actions($actions);
+                echo '</div>';
+            }
+	    
+		    echo '</div>';
+            
+            $filtersHtml = ob_get_contents();
+            ob_end_clean();
+ 	        //$this->toHtml('mobile');
+ 	        return $filtersHtml . $this->toHtml('desktop').$this->toHtml('mobile');
+ 	    }
+        
+        
         $context['query'] = & $query;
 
         if (isset($query['-related:sort'])) {
@@ -246,7 +288,7 @@ class Dataface_RelatedList {
 
 
 
-        $records = & $this->_record->getRelatedRecords($this->_relationship_name, true, $this->_start, $this->_limit, $this->_where);
+        $records = & $this->_getRecords();
 
         if (PEAR::isError($records)) {
             $records->addUserInfo("Error retrieving records from relationship " . $this->_relationship_name);
@@ -255,7 +297,7 @@ class Dataface_RelatedList {
         $context['records'] = & $records;
 
         //echo "<br/><b>Now Showing</b> ".($this->_start+1)." to ".(min($this->_start + $this->_limit, $this->_record->numRelatedRecords($this->_relationship_name)));
-        $perms = $this->_record->getPermissions(array('relationship' => $this->_relationship_name));
+        $perms = $this->_getPerms();
         $context['perms'] = $perms;
         $context['record_editable'] = Dataface_PermissionsTool::edit($this->_record);
         $context['can_add_new_related_record'] = @$perms['add new related record'];
@@ -334,7 +376,7 @@ class Dataface_RelatedList {
         $at = & Dataface_ActionTool::getInstance();
         $selected_actions = $at->getActions(array('category' => 'selected_related_result_actions'));
         $context['selected_actions'] = $selected_actions;
-
+        
         if ($this->_relationship->_schema['list']['type'] == 'treetable') {
             import(XFROOT.'Dataface/TreeTable.php');
             $treetable = new Dataface_TreeTable($this->_record, $this->_relationship->getName());
@@ -349,94 +391,102 @@ class Dataface_RelatedList {
             if (count($records) > 0) {
 
                 ob_start();
-                echo '
-                        <table class="listing relatedList relatedList--' . $this->_tablename . ' relatedList--' . $this->_tablename . '--' . $this->_relationship_name . '" id="relatedList">
-                        <thead>
-                        <tr>';
+                if ($mobile) {
+                     echo '<div class="mobile mobile-listing relatedList--' . $this->_tablename . ' relatedList--' . $this->_tablename . '--' . $this->_relationship_name . ' list-style-'.$this->listStyle.'" id="relatedList-mobile">';
+                     
+                } else {
+                    echo '
+                            <table class="listing relatedList relatedList--' . $this->_tablename . ' relatedList--' . $this->_tablename . '--' . $this->_relationship_name . '" id="relatedList">
+                            <thead>
+                            <tr>';
+                
 
-                if (count($selected_actions) > 0) {
-                    echo '<th>';
-                    if (!$this->hideActions) {
-                        echo '<input type="checkbox" onchange="toggleSelectedRows(this,\'relatedList\');">';
-                    }
-                    echo '</th>';
-                }
-                $cols = array_keys(current($records));
+                            if (count($selected_actions) > 0) {
+                                echo '<th>';
+                                if (!$this->hideActions) {
+                                    echo '<input type="checkbox" onchange="toggleSelectedRows(this,\'relatedList\');">';
+                                }
+                                echo '</th>';
+                            }
+                            $cols = array_keys(current($records));
 
 
 
-                $col_tables = array();
-                $table_keys = array();
-                $localFields = $this->_record->table()->fields();
-                $usedColumns = array();
-                foreach ($cols as $key) {
-                    if ($key == $default_order_column)
-                        continue;
-                    if (is_int($key))
-                        continue;
-                    if (isset($sort_columns[$key])) {
-                        $class = 'sorted-column-' . $sort_columns[$key];
-                        $query = array();
-                        $qs_columns = $sort_columns;
-                        unset($qs_columns[$key]);
-                        $sort_query = $key . ' ' . ($sort_columns[$key] == 'desc' ? 'asc' : 'desc');
-                        foreach ($qs_columns as $qcolkey => $qcolvalue) {
-                            $sort_query .= ', ' . $qcolkey . ' ' . $qcolvalue;
-                        }
-                    } else {
-                        $class = 'unsorted-column';
-                        $sort_query = $key . ' asc';
-                        foreach ($sort_columns as $scolkey => $scolvalue) {
-                            $sort_query .= ', ' . $scolkey . ' ' . $scolvalue;
-                        }
-                    }
-                    $sq = array('-related:sort' => $sort_query);
-                    $link = Dataface_LinkTool::buildLink($sq);
+                            $col_tables = array();
+                            $table_keys = array();
+                            $localFields = $this->_record->table()->fields();
+                            $usedColumns = array();
+                            foreach ($cols as $key) {
+                                if ($key == $default_order_column)
+                                    continue;
+                                if (is_int($key))
+                                    continue;
+                                if (isset($sort_columns[$key])) {
+                                    $class = 'sorted-column-' . $sort_columns[$key];
+                                    $query = array();
+                                    $qs_columns = $sort_columns;
+                                    unset($qs_columns[$key]);
+                                    $sort_query = $key . ' ' . ($sort_columns[$key] == 'desc' ? 'asc' : 'desc');
+                                    foreach ($qs_columns as $qcolkey => $qcolvalue) {
+                                        $sort_query .= ', ' . $qcolkey . ' ' . $qcolvalue;
+                                    }
+                                } else {
+                                    $class = 'unsorted-column';
+                                    $sort_query = $key . ' asc';
+                                    foreach ($sort_columns as $scolkey => $scolvalue) {
+                                        $sort_query .= ', ' . $scolkey . ' ' . $scolvalue;
+                                    }
+                                }
+                                $sq = array('-related:sort' => $sort_query);
+                                $link = Dataface_LinkTool::buildLink($sq);
 
-                    $fullpath = $this->_relationship_name . '.' . $key;
+                                $fullpath = $this->_relationship_name . '.' . $key;
 
-                    $field =&  $this->_relationship->getField($key);
-                    if (isset($this->_relationship->_schema['visibility'][$key]) and $this->_relationship->_schema['visibility'][$key] == 'hidden')
-                        continue;
-                    if ($field['visibility']['list'] != 'visible')
-                        continue;
-                    if ($s->isBlob($fullpath) or $s->isPassword($fullpath))
-                        continue;
-                    if (isset($local_fkey_fields[$key]) and !isset($this->_relationship->_schema['visibility'][$key]))
-                        continue;
-                    if (PEAR::isError($field)) {
-                        $field->addUserInfo("Error getting field info for field $key in RelatedList::toHtml() ");
-                        return $field;
-                    }
-                    $usedColumns[] = $key;
+                                $field =&  $this->_relationship->getField($key);
+                                if (isset($this->_relationship->_schema['visibility'][$key]) and $this->_relationship->_schema['visibility'][$key] == 'hidden')
+                                    continue;
+                                if ($field['visibility']['list'] != 'visible')
+                                    continue;
+                                if ($s->isBlob($fullpath) or $s->isPassword($fullpath))
+                                    continue;
+                                if (isset($local_fkey_fields[$key]) and !isset($this->_relationship->_schema['visibility'][$key]))
+                                    continue;
+                                if (PEAR::isError($field)) {
+                                    $field->addUserInfo("Error getting field info for field $key in RelatedList::toHtml() ");
+                                    return $field;
+                                }
+                                $usedColumns[] = $key;
 
-                    $label = $field['widget']['label'];
-                    if (isset($field['column']) and @$field['column']['label']) {
-                        $label = $field['column']['label'];
-                    }
+                                $label = $field['widget']['label'];
+                                if (isset($field['column']) and @$field['column']['label']) {
+                                    $label = $field['column']['label'];
+                                }
 
-                    $legend = '';
-                    if (@$field['column'] and @$field['column']['legend']) {
-                        $legend = '<span class="column-legend">' . df_escape($field['column']['legend']) . '</span>';
-                    }
-                    if (!$this->noLinks) {
-                        echo '<th><a href="' . df_escape($link) . '">' . df_escape($field['widget']['label']) . "</a> $legend</th>\n";
-                    } else {
-                        echo '<th>' . $field['widget']['label'] . '</th>';
-                    }
-                    if (!isset($col_tables[$key]))
-                        $col_tables[$key] = $field['tablename'];
-                    if (!isset($table_keys[$col_tables[$key]])) {
-                        $table_table = & Dataface_Table::loadTable($field['tablename']);
-                        $table_keys[$col_tables[$key]] = array_keys($table_table->keys());
-                        unset($table_table);
-                    }
-                    unset($field);
-                }
-                echo "</tr>
-					</thead>
-					<tbody id=\"relatedList-body\">
-					";
+                                $legend = '';
+                                if (@$field['column'] and @$field['column']['legend']) {
+                                    $legend = '<span class="column-legend">' . df_escape($field['column']['legend']) . '</span>';
+                                }
+                                if (!$this->noLinks) {
+                                    echo '<th><a href="' . df_escape($link) . '">' . df_escape($field['widget']['label']) . "</a> $legend</th>\n";
+                                } else {
+                                    echo '<th>' . $field['widget']['label'] . '</th>';
+                                }
+                                if (!isset($col_tables[$key]))
+                                    $col_tables[$key] = $field['tablename'];
+                                if (!isset($table_keys[$col_tables[$key]])) {
+                                    $table_table = & Dataface_Table::loadTable($field['tablename']);
+                                    $table_keys[$col_tables[$key]] = array_keys($table_table->keys());
+                                    unset($table_table);
+                                }
+                                unset($field);
+                            }
+                            echo "</tr>
+            					</thead>
+            					<tbody id=\"relatedList-body\">
+            					";
+                        
+                } // if (!$mobile)
+                
 
                 $limit = min($this->_limit, $this->_record->numRelatedRecords($this->_relationship_name, $this->_where) - $this->_start);
                 $relatedTable = $this->_relationship->getDomainTable();
@@ -452,10 +502,13 @@ class Dataface_RelatedList {
 
                 $fullpaths = array();
                 $fields_index = array();
-                foreach ($usedColumns as $key) {
-                    $fullpaths[$key] = $this->_relationship_name . '.' . $key;
-                    $fields_index[$key] =& $this->_relationship->getField($key);
+                if ($desktop) {
+                    foreach ($usedColumns as $key) {
+                        $fullpaths[$key] = $this->_relationship_name . '.' . $key;
+                        $fields_index[$key] =& $this->_relationship->getField($key);
+                    }
                 }
+                
 
                 $evenRow = false;
 
@@ -483,94 +536,156 @@ class Dataface_RelatedList {
                     if ( !@$rowPerms['view'] ){
                     	continue;
                     }
-
-                    echo "<tr class=\"listing $rowClass\" style=\"$style\" id=\"row_$rrecid\">";
-                    if (count($selected_actions) > 0) {
-                        echo '
-						<td class="' . $rowClass . ' viewableColumn" nowrap>';
-                        if (!$this->hideActions) {
-                            echo '<input xf-record-id="' . df_escape($rrecid) . '" class="rowSelectorCheckbox" id="rowSelectorCheckbox:' . df_escape($rrecid) . '" type="checkbox">';
+                    if ($mobile) {
+                        echo "<div class=\"mobile-listing mobile-listing-row\" id=\"mobile-$row_$rrecid\" xf-record-id=\"$row_$rrecid\">";
+                        
+                        
+    				    echo "<div class='mobile-row-content $rowClass' >";
+    				    $logoField = $this->_relationship->getLogoField();
+                        $aOpen = '';
+                        $aClose = '';
+                        if ($link) {
+                            $aOpen = '<a href="'.df_escape($link).'">';
+                            $aClose = '</a>';
                         }
-                        echo '</td>';
-                    }
-
-
-                    $link_queries = array();
-                    foreach ($usedColumns as $key) {
-                        if (is_int($key))
-                            continue;
-
-                        $fullpath = $fullpaths[$key];
-                        unset($field);
-                        $field = & $fields_index[$key]; //$s->getField($fullpath);
-                        $srcRecord = & $rrec->toRecord($field['tablename']);
-                        if ( !@$app->_conf['legacy_compatibility_mode'] ){
-                        	$link = $this->_record->getURL('-action=view_related_record&-related-record-id=' . urlencode($rrecid));
-                        } else {
-                        	//$link = $srcRecord->getURL('-action=browse&-portal-context=' . urlencode($rrecid));
-                        	$link = $rrec->getURL('-action=browse', $field['tablename']);
+    				    if ($logoField and $rrec->val($logoField) and $rrec->checkPermission('view', array('field' => $logoField))) {
+    				        echo "<div class='mobile-logo'>$aOpen".$rrec->htmlValue($logoField)."$aClose</div>";
+    				    } else {
+    				        echo "<div class='mobile-logo'>$aOpen<i class='material-icons'>description</i>$aClose</div>";
+    				    }
+                        $byLine = $rrec->getByLine();
+                        if ($byLine) {
+                            // getByLine returns HTML content so we don't escape it.
+                            echo "<div class='mobile-byline'>".$byLine."</div>";
                         }
-                        $srcRecordId = $srcRecord->getId();
-                        $disableFullTextExpansion = false;
-                        //$val = $this->_record->preview($fullpath, $i,255, $this->_where, $sort_columns_str);
-                        if (  $srcRecord->table()->isContainer($field['name']) or $srcRecord->table()->isBlob($field['name']) ){
-                            $val =  $rrec->htmlValue($key, array('class'=>'blob-preview'));
-                                    //$rrec->htmlValue($key);
-                            $disableFullTextExpansion = true;
-                        } else {
-                            $val = strip_tags($rrec->display($key));
+    				    echo "<div class='mobile-title'>$aOpen".df_escape($rrec->getTitle())."$aClose</div>";
+    				    echo "<div class='mobile-description'>$aOpen".df_escape($rrec->getDescription())."$aClose</div>";
+                        $actions = $at->getActions([
+                            'category'=>'related_list_row_actions', 
+                            'record'=>$this->_record,
+                            'relationship' => $this->_relationship_name,
+                            'table' => $this->_tablename,
+                            'related_record' => $rrec
+                            ]
+                        );
+                        $actions2 = $at->getActions([
+                            'category' => 'list_row_actions',
+                            'record' => $rrec->toRecord(),
+                            'table' => $rrec->toRecord()->table()->tablename
+                        ]);
+                        foreach($actions2 as $k=>$v) {
+                            $actions[$k] = $v;
                         }
-                        $title = "";
+                        if ( count($actions)>0){
+                            echo ' <div class="mobile-row-actions">';
+                            $this->print_actions($actions);
+                            echo '</div>';
+                        }
+                    
 
-                        if ($key == $default_order_column) {
+
+    				    echo "</div><!-- mobile-row-content -->";
+                        
+                        echo "</div> <!-- mobile-listing -->";
+                        
+                    } else {
+                        echo "<tr class=\"listing $rowClass\" style=\"$style\" id=\"row_$rrecid\" xf-record-id=\"$row_$rrecid\">";
+                        if (count($selected_actions) > 0) {
+                            echo '
+    						<td class="' . $rowClass . ' viewableColumn" nowrap>';
+                            if (!$this->hideActions) {
+                                echo '<input xf-record-id="' . df_escape($rrecid) . '" class="rowSelectorCheckbox" id="rowSelectorCheckbox:' . df_escape($rrecid) . '" type="checkbox">';
+                            }
+                            echo '</td>';
+                        }
+                        $link_queries = array();
+                        foreach ($usedColumns as $key) {
+                            if (is_int($key))
+                                continue;
+
+                            $fullpath = $fullpaths[$key];
                             unset($field);
-                            unset($srcRecord);
-                            continue;
-                        } else {
-                            if ($val != 'NO ACCESS') {
-                                $accessClass = 'viewableColumn';
+                            $field = & $fields_index[$key]; //$s->getField($fullpath);
+                            $srcRecord = & $rrec->toRecord($field['tablename']);
+                            if ( !@$app->_conf['legacy_compatibility_mode'] ){
+                            	$link = $this->_record->getURL('-action=view_related_record&-related-record-id=' . urlencode($rrecid));
                             } else {
+                            	//$link = $srcRecord->getURL('-action=browse&-portal-context=' . urlencode($rrecid));
+                            	$link = $rrec->getURL('-action=browse', $field['tablename']);
+                            }
+                            $srcRecordId = $srcRecord->getId();
+                            $disableFullTextExpansion = false;
+                            //$val = $this->_record->preview($fullpath, $i,255, $this->_where, $sort_columns_str);
+                            if (  $srcRecord->table()->isContainer($field['name']) or $srcRecord->table()->isBlob($field['name']) ){
+                                $val =  $rrec->htmlValue($key, array('class'=>'blob-preview'));
+                                        //$rrec->htmlValue($key);
+                                $disableFullTextExpansion = true;
+                            } else {
+                                $val = strip_tags($rrec->display($key));
+                            }
+                            $title = "";
 
-                                $accessClass = '';
-                            }
+                            if ($key == $default_order_column) {
+                                unset($field);
+                                unset($srcRecord);
+                                continue;
+                            } else {
+                                if ($val != 'NO ACCESS') {
+                                    $accessClass = 'viewableColumn';
+                                } else {
 
-                            $maxcols = 50;
-                            if ( @$field['list'] and @$field['list']['maxcols'] ){
-                                $maxcols = intval($field['list']['maxcols']);
-                            }
-                            $fulltext = "";
-                            if ( !$disableFullTextExpansion and strlen($val) > $maxcols ){
-                                $fulltext = $val;
-                                $val = substr($val, 0, $maxcols).'...';
-                            }
-                            if ( !$disableFullTextExpansion and $fulltext ){
-                                $fulltext = 'data-fulltext="'.df_escape($fulltext).'"';
-                            }
+                                    $accessClass = '';
+                                }
 
-                            $cellClass = 'resultListCell resultListCell--' . $key;
-                            $cellClass .= ' ' . $srcRecord->table()->getType($key);
-                            $renderVal = $this->renderCell($srcRecord, $field['Field']);
-                            if (isset($renderVal))
-                                $val = $renderVal;
-                            if ($link and !@$field['noLinkFromListView'] and !$this->noLinks and $rrec->checkPermission('link', array('field' => $key)))
-                                $val = "<a href=\"" . df_escape($link) . "\" title=\"" . df_escape($title) . "\" data-xf-related-record-id=\"" . df_escape($srcRecordId) . "\" class=\"xf-related-record-link\"><span " . $fulltext.">". $val . "</span></a>";
-                            else
-                                $val = "<span ".$fulltext.">".$val."</span>";
-                            echo "<td class=\"$cellClass $rowClass $accessClass\">".$val."</td>\n";
-                            unset($srcRecord);
+                                $maxcols = 50;
+                                if ( @$field['list'] and @$field['list']['maxcols'] ){
+                                    $maxcols = intval($field['list']['maxcols']);
+                                }
+                                $fulltext = "";
+                                if ( !$disableFullTextExpansion and strlen($val) > $maxcols ){
+                                    $fulltext = $val;
+                                    $val = substr($val, 0, $maxcols).'...';
+                                }
+                                if ( !$disableFullTextExpansion and $fulltext ){
+                                    $fulltext = 'data-fulltext="'.df_escape($fulltext).'"';
+                                }
+
+                                $cellClass = 'resultListCell resultListCell--' . $key;
+                                $cellClass .= ' ' . $srcRecord->table()->getType($key);
+                                $renderVal = $this->renderCell($srcRecord, $field['Field']);
+                                if (isset($renderVal))
+                                    $val = $renderVal;
+                                if ($link and !@$field['noLinkFromListView'] and !$this->noLinks and $rrec->checkPermission('link', array('field' => $key)))
+                                    $val = "<a href=\"" . df_escape($link) . "\" title=\"" . df_escape($title) . "\" data-xf-related-record-id=\"" . df_escape($srcRecordId) . "\" class=\"xf-related-record-link\"><span " . $fulltext.">". $val . "</span></a>";
+                                else
+                                    $val = "<span ".$fulltext.">".$val."</span>";
+                                echo "<td class=\"$cellClass $rowClass $accessClass\">".$val."</td>\n";
+                                unset($srcRecord);
+                            }
                         }
-                    }
-                    echo "</tr>\n";
+                        echo "</tr>\n";
+                    } // if (!$mobile)
+                    
+
+
+                    
                 }
 
-                echo "</tbody>
-					</table>";
+                if ($mobile) {
+                    echo "</div>";
+                } else {
+                    echo "</tbody>
+    					</table>";
+                }
 
                 $related_table_html = ob_get_contents();
                 $context['related_table_html'] = $related_table_html;
+                $context['related_list_mode'] = $mode;
                 ob_end_clean();
-
-                if (!$this->hideActions) {
+                if ($mobile) {
+                    return $related_table_html;
+                }
+                if (!$mobile and !$this->hideActions) {
                     ob_start();
 
                     echo '<form id="result_list_selected_items_form" method="post">';

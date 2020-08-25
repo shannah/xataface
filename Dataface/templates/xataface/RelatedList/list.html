@@ -142,7 +142,7 @@
 			<div class="resultlist-controller">
 				{$relatedResultController}
 			</div>
-			
+			{if $ENV.prefs.allow_reorder_related_rows}
 			<script language="javascript" src="{$prototype_url|escape}"></script>
 			<script language="javascript" src="{$scriptaculous_url|escape}"></script>
 			<script language="javascript" src="{$effects_url|escape}"></script>
@@ -223,7 +223,7 @@
 			
 			{/literal}</script>
 			
-
+            {/if}
 		{/if}
 	
 	{else}

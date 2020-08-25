@@ -1,60 +1,114 @@
 //require <jquery.packed.js>
+//require <xataface/components/InfiniteScroll.js>
 (function(){
 	var $ = jQuery;
-	
+    window.xataface = window.xataface || {};
+    window.xataface.relatedList = {};
+    window.xataface.relatedList.openSortDialog = openSortDialog;
+    window.xataface.relatedList.openFilterDialog = openFilterDialog;
+    
+    
+	$(document).ready(function() {
+        if (window.innerWidth < 768) {
+            // For mobile we enable infinite scrolling
+            new xataface.InfiniteScroll({
+                related: true,
+                scrollEl : $('body').get(0),
+                parentEl : $('.mobile-listing').get(0) 
+            });
+        } 
+	});
 	// Decorate the show/hide columns action
-		$('li.show-hide-related-list-columns-action a').click(function(){
-			var iframe = $('<iframe>')
-				.attr('width', '100%')
-				.attr('height', $(window).height() * 0.8)
+	$('li.show-hide-related-list-columns-action a').click(function(){
+		var iframe = $('<iframe>')
+			.attr('width', '100%')
+			.attr('height', $(window).height() * 0.8)
+			
+			.on('load', function(){
+				var winWidth = $(window).width() * 0.8;
+				var width = Math.min(800, winWidth);
+				$(this).width(width);
+				//dialog.dialog("option" , "position", "center");
 				
-				.on('load', function(){
-					var winWidth = $(window).width() * 0.8;
-					var width = Math.min(800, winWidth);
-					$(this).width(width);
-					//dialog.dialog("option" , "position", "center");
-					
-					var showHideController = iframe.contentWindow.xataface.controllers.ShowHideColumnsController;
-					showHideController.saveCallbacks.push(function(data){
-						data.preventDefault = true;
-						dialog.dialog('close');
-						window.location.reload(true);
-					});
-					
-				})
-				.attr('src', $(this).attr('href')+'&--format=iframe')
-				.get(0);
-				;
-			var dialog = $("<div></div>").append(iframe).appendTo("body").dialog({
-				autoOpen: false,
-				modal: true,
-				resizable: false,
-				width: "auto",
-				height: "auto",
-				close: function () {
-					$(iframe).attr("src", "");
-				},
-				buttons : {
-					'Save' : function(){
-						$('button.save', iframe.contentWindow.document.body).click();
-					}
-				},
-				create: function(event, ui) {
-				   $('body').addClass('stop-scrolling');
-				 },
-				 beforeClose: function(event, ui) {
-				   $('body').removeClass('stop-scrolling');
-				 }
-			});
-			/*jQuery(iframe).dialog({
-				autoOpen : true,
-				modal : true,
-				resizable : false,
+				var showHideController = iframe.contentWindow.xataface.controllers.ShowHideColumnsController;
+				showHideController.saveCallbacks.push(function(data){
+					data.preventDefault = true;
+					dialog.dialog('close');
+					window.location.reload(true);
+				});
 				
-				width : "auto",
-				height: "auto"
-			});*/
-			dialog.dialog("option", "title", "Show/Hide Columns").dialog("open");
-			return false;
+			})
+			.attr('src', $(this).attr('href')+'&--format=iframe')
+			.get(0);
+			;
+		var dialog = $("<div></div>").append(iframe).appendTo("body").dialog({
+			autoOpen: false,
+			modal: true,
+			resizable: false,
+			width: "auto",
+			height: "auto",
+			close: function () {
+				$(iframe).attr("src", "");
+			},
+			buttons : {
+				'Save' : function(){
+					$('button.save', iframe.contentWindow.document.body).click();
+				}
+			},
+			create: function(event, ui) {
+			   $('body').addClass('stop-scrolling');
+			 },
+			 beforeClose: function(event, ui) {
+			   $('body').removeClass('stop-scrolling');
+			 }
 		});
+		/*jQuery(iframe).dialog({
+			autoOpen : true,
+			modal : true,
+			resizable : false,
+			
+			width : "auto",
+			height: "auto"
+		});*/
+		dialog.dialog("option", "title", "Show/Hide Columns").dialog("open");
+		return false;
+	});
+    
+    /**
+     * Opens the sort dialog.
+     */
+    function openSortDialog() {
+        var qStr = window.location.search;
+        if (!qStr) {
+            qStr = '?';
+        }
+        qStr = qStr.replace(/\?-action=[^&]*/, '?').replace(/&-action=[^&]*/, '');
+        qStr += '&-action=related_sort_dialog';
+        
+        var position = $('body').hasClass('small') ? 'bottom' : 'right';
+        var sheet = new xataface.Sheet({
+            url : qStr,
+            position: position
+        });
+        sheet.show();
+    }
+    
+    /**
+     * Opens the filter dialog.
+     */
+    function openFilterDialog() {
+        var qStr = window.location.search;
+        if (!qStr) {
+            qStr = '?';
+        }
+        qStr = qStr.replace(/\?-action=[^&]*/, '?').replace(/&-action=[^&]*/, '');
+        qStr += '&-action=related_filter_dialog';
+        
+        var position = $('body').hasClass('small') ? 'bottom' : 'right';
+        var sheet = new xataface.Sheet({
+            url : qStr,
+            position : position
+        });
+        sheet.show();
+    }
 })();

@@ -1121,6 +1121,49 @@ class Dataface_RelatedRecord {
 			return $record->getTitle();
 		}
 	}
+    
+    function getByLine() {
+		$method = 'rel_'.$this->_relationshipName.'__getByLine';
+		$del = $this->_record->table()->getDelegate();
+		
+		if ( isset($del) and method_exists($del, $method) ){
+			return $del->$method($this);
+		}
+		
+		
+		$record =& $this->toRecord();
+		if ( $this->checkPermission('view') ){
+			$oldSecureDisplay = $record->secureDisplay;
+			$record->secureDisplay = false;
+			$out = $record->getByLine();
+			$record->secureDisplay = $oldSecureDisplay;
+			return $out;
+		} else {
+			return $record->getByLine();
+		}
+    }
+    
+    
+	function getDescription(){
+		$method = 'rel_'.$this->_relationshipName.'__getDescription';
+		$del = $this->_record->table()->getDelegate();
+		
+		if ( isset($del) and method_exists($del, $method) ){
+			return $del->$method($this);
+		}
+		
+		
+		$record =& $this->toRecord();
+		if ( $this->checkPermission('view') ){
+			$oldSecureDisplay = $record->secureDisplay;
+			$record->secureDisplay = false;
+			$out = $record->getDescription();
+			$record->secureDisplay = $oldSecureDisplay;
+			return $out;
+		} else {
+			return $record->getDescription();
+		}
+	}
 	
 	/**
 	 * @brief Gets the record title.  This wraps the domain record's getTitle()

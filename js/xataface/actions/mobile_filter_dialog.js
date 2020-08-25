@@ -6,6 +6,7 @@ var win = window.parent;
 var $ = win.jQuery;
 
 
+
 // Variable to keep track of the query string.  
 // It starts out with the current query string of the parent window.
 var filterSearch = win.location.search;
@@ -57,17 +58,39 @@ function applyFilters() {
 }
 
 /**
+ * If the relatedFilter flag is set, then this will convert standard query parameters
+ * into their related counterparts.
+ * -search => -related%3Asearch
+ * fieldname => -related%3Afieldname
+ */
+function encodeFieldName(field) {
+    if (window.relatedFilter) {
+        if (field.indexOf(':') > 0) {
+            field = encodeURIComponent(field);
+        }
+        if (field == '-search') {
+            field = '-related%3Asearch';
+        } else if (field.indexOf('-related%3A') < 0) {
+            field = '-related%3As%3A' + field;
+        }
+        
+    }
+    return field;
+}
+
+/**
  * Updates a field value in the current filterSearch string.
  * @param string field Field name
  * @param string value Field value
  */
 function updateFieldValue(field, value) {
+    field = encodeFieldName(field);
     var re = new RegExp('&'+field+'=[^&]*');
     filterSearch = filterSearch.replace(re, '');
     re = new RegExp('\\?'+field+'=[^&]*');
     filterSearch = filterSearch.replace(re, '?');
     if (value) {
-        filterSearch += '&' + encodeURIComponent(field) + '=' + encodeURIComponent(value);
+        filterSearch += '&' + field + '=' + encodeURIComponent(value);
     }
 }
 
@@ -94,7 +117,7 @@ function updateFilters(srcEl, update) {
     
     var wrapper = $(srcEl).parents('[data-field]').first();
     var filterType = $(wrapper).attr('data-filter-type');
-    var field = $(wrapper).attr('data-field');
+    var field = encodeFieldName($(wrapper).attr('data-field'));
     var topListItem = $(wrapper).parent();
     var filterValueSpan = $('span.xf-filter-value', topListItem);
     
@@ -320,7 +343,8 @@ function resetFilters() {
  * Checks if element is overflown.
  */
 function isOverflown(element) {
-    if (element.scrollHeight > window.innerHeight || element.clientHeight > window.innerHeight) {
+    
+    if (element.scrollHeight > window.innerHeight + 40 || element.clientHeight > window.innerHeight + 40) {
         return true;
     }
     return false;

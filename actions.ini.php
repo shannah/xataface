@@ -1581,6 +1581,18 @@
     url="javascript:void(0)"
     onclick="window.xataface.list.openFilterDialog()"
     
+[related_list_filter]
+    category=related_list_settings
+    materialIcon=filter_list
+    label=Filter
+    description=Filter results
+    permission=list
+    url="javascript:void(0)"
+    onclick="window.xataface.relatedList.openFilterDialog()"
+    permission=view
+    related=1
+    allow_override="relationships.ini"
+    
 [list_sort]
     category=list_settings
     materialIcon=sort
@@ -1590,8 +1602,24 @@
     onclick="window.xataface.list.openSortDialog()"
     permission=list
     
+[related_list_sort]
+    category=related_list_settings
+    materialIcon=sort
+    label=Sort
+    description=Sort results
+    url="javascript:void(0)"
+    onclick="window.xataface.relatedList.openSortDialog()"
+    permission=view
+    related=1
+    allow_override="relationships.ini"
+    
 [mobile_sort_dialog]
     permission=list
+    
+[related_sort_dialog]
+	permission = view
+	related=1
+	allow_override="relationships.ini"
     
 [mobile_filter_dialog]
     permission=list
@@ -1600,7 +1628,7 @@
     permission=list
     
 [mobile_app_back]
-    condition="in_array($query['-action'], ['view'])"
+    condition="in_array($query['-action'], ['view', 'related_records_list'])"
     materialIcon=arrow_back_ios
     label="Back"
     category=mobile_app_back

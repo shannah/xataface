@@ -45,4 +45,12 @@ class XFException extends \Exception {
             new \Exception($message, 401)
         );
     }
+    
+    public static function throwBadRequest($message = "Bad Request") {
+        throw new XFException(
+            $message, 
+            500, 
+            new \Exception($message, 500)
+        );
+    }
 }

@@ -3172,6 +3172,7 @@ END
 		$resultSet = $app->getResultSet();
 		if ( isset($context['record']) ) $record = $context['record'];
 		else $record = $app->getRecord();
+        $related_record = @$context['related_record'];
 
 		if ( isset($context['relationship']) ){
 			//$tableObj =& Dataface_Table::loadTable($table);

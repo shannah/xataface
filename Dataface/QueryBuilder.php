@@ -757,30 +757,31 @@ class Dataface_QueryBuilder {
 	}
 
 	/**
-         * @brief A wrapper around the _where() method that optionally takes
-         * a Dataface_Record object as a parameter.  This produces just the
-         * where clause of an SQL query.
-         *
-         * @param mixed $query Either an array of parameters or a Dataface_Record object
-         * which will be used for its keys.
-         * @param Boolean $merge Whether to merge the criteria with the object's
-         * current query.
-         * @return string The where clause e.g. "WHERE name='Steve' and age=29"
-         * @since 2.0.3
-         */
-        public function where($query = null, $merge=true){
-            if ( $query instanceof Dataface_Record ){
-                $record = $query;
-                $keys = array_keys($record->table()->keys());
-                $query = array();
-                foreach ($keys as $key){
-                    $query[$key] =  "=".$this->_serializer->serialize($key, $record->val($key));
-                }
-            } else if ( !isset($query) ){
-                $query = array();
+     * @brief A wrapper around the _where() method that optionally takes
+     * a Dataface_Record object as a parameter.  This produces just the
+     * where clause of an SQL query.
+     *
+     * @param mixed $query Either an array of parameters or a Dataface_Record object
+     * which will be used for its keys.
+     * @param Boolean $merge Whether to merge the criteria with the object's
+     * current query.
+     * @return string The where clause e.g. "WHERE name='Steve' and age=29"
+     * @since 2.0.3
+     */
+    public function where($query = null, $merge=true){
+        if ( $query instanceof Dataface_Record ){
+            $record = $query;
+            $keys = array_keys($record->table()->keys());
+            $query = array();
+            foreach ($keys as $key){
+                $query[$key] =  "=".$this->_serializer->serialize($key, $record->val($key));
             }
-            return $this->_where($query, $merge);
+        } else if ( !isset($query) ){
+            $query = array();
         }
+        return $this->_where($query, $merge);
+    }
+
 
 	/**
 	 * Returns the where clause for the sql query.

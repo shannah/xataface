@@ -177,6 +177,11 @@
     <div class='xf-buttons'>
         <button class='xf-apply-btn' onclick='applyFilters()'>Show <span class='num-results'>x</span> Results</button>
     </div>
+    {if $relatedFilter}
+    <script>
+        window.relatedFilter=true;    
+    </script>
+    {/if}
     <script src="{$ENV.DATAFACE_URL|escape}/js/xataface/actions/mobile_filter_dialog.js?v={$ENV.APPLICATION_VERSION}"></script>
 
 </body>

@@ -41,7 +41,12 @@
         }
         
         if (!this.action) {
-            this.action = 'xf_infinite_scroll';
+            if (this.related) {
+                this.action = 'xf_infinite_scroll_related';
+            } else {
+                this.action = 'xf_infinite_scroll';
+            }
+            
         }
         
         if (!this.selector) {
@@ -88,17 +93,47 @@
      * @return The next query.
      */
     function getNextQuery(currentQuery, pageSize) {
+        
         var skip = getQueryVariable(currentQuery, '-skip');
         if (!skip) {
             skip = 0;
         }
         skip = parseInt(skip);
         skip += pageSize;
+        
         currentQuery = currentQuery.replace(/&-skip=[^&]*/, '')
             .replace(/\?-skip=[^&]*/, '?')
             .replace(/&-limit=[^&]*/, '')
             .replace(/\?-limit=[^&]*/, '?');
         currentQuery += '&-skip='+skip+'&-limit='+pageSize;
+        return currentQuery;
+    }
+    
+    function getNextQueryRelated(currentQuery, pageSize, action) {
+        var skip = getQueryVariable(currentQuery, '-related:start');
+        if (!skip) {
+            skip = 0;
+        }
+        
+        skip = parseInt(skip);
+        var queryPageSize = getQueryVariable(currentQuery, '-related:limit');
+        if (queryPageSize) {
+            pageSize = parseInt(queryPageSize);
+        }
+        skip += pageSize;
+        
+        currentQuery = currentQuery
+            .replace(/\?-action=[^&]*/, '?')
+            .replace(/&-action=[^&]*/, '')
+            .replace(/\?-related%3Askip=[^&]*/, '?')
+            .replace(/&-related%3Askip=[^&]*/, '')
+            .replace(/\?-related%3Astart=[^&]*/, '?')
+            .replace(/&-related%3Astart=[^&]*/, '')
+            .replace(/&-related%3Alimit=[^&]*/, '')
+            .replace(/\?-related%3Alimit=[^&]*/, '?');
+            console.log("Query", currentQuery);
+        currentQuery += '&' + encodeURIComponent('-related:start') + '='+skip+'&'+encodeURIComponent('-related:skip')+'='+skip+'&' +encodeURIComponent('-related:limit')+'='+pageSize + '&-action=' + encodeURIComponent(action);
+        console.log('q=',currentQuery);
         return currentQuery;
     }
     
@@ -114,7 +149,9 @@
         }
         this.loading = true;
         var self = this;
-        var query = getNextQuery(this.currentQuery, this.pageSize);
+        var query = this.related ? 
+            getNextQueryRelated(this.currentQuery, this.pageSize, this.action) :
+            getNextQuery(this.currentQuery, this.pageSize, this.action);
         $.get(query).done(function(data) {
             self.loading = false;
             if (!data) {

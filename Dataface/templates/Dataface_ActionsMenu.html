@@ -40,8 +40,11 @@
 				   {if $action.materialIcon}<i class="material-icons {$action.materialIconStyle|escape}">{$action.materialIcon|escape}</i>{/if}
 				   {if !$action.icon and !$action.materialIcon and $action.subactions}<i class="material-icons {$action.materialIconStyle|escape}">arrow_drop_down</i>{/if}
                    <span class="action-label">{$action.label|escape}</span>
-                  
+                   {if $action.navicon}
+                       <i class="material-icons navicon">{$action.navicon|escape}</i>
+                   {/if}
                 </a>
+                
                  {if $action.subactions}
 											
 					<ul class="action-sub-menu">

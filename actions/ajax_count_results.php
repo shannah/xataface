@@ -13,8 +13,21 @@ class dataface_actions_ajax_count_results {
             $this->out(['code' => 400, 'message' => 'Permission denied']);
             return;
         }
-        $resultSet = $app->getResultSet();
-        $count = $resultSet->found();
+        if (!@$query['-relationship']) {
+            $resultSet = $app->getResultSet();
+            $count = $resultSet->found();
+        } else {
+            import(XFROOT.'xf/relationships/RelatedQueryTool.php');
+            $qb = new xf\relationships\RelatedQueryTool();
+
+            $qb->setIncludeLimits(false);
+            $qb->setIncludeOrderBy(false);
+            $filterSql = $qb->getSQL(['override_columns' => ['__COLUMN__']]);
+            $filterSql = str_replace('`__COLUMN__`', "count(*) as `num`", $filterSql);
+            list($count) = xf_db_fetch_row(df_query($filterSql));
+
+        }
+        
         $this->out(['code' => 200, 'found' => $count]);
         
     }

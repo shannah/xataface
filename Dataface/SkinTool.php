@@ -695,8 +695,13 @@ END;
     private $statusClassesAddedToCSS = array();
 
 	function actions_menu($params, &$smarty){
-
+        
 		$context = array();
+        $navicon = null;
+        if (isset($params['navicon'])) {
+            $navicon = $params['navicon'];
+            unset($params['navicon']);
+        }
 		if ( isset( $params['id'] ) ) {
 			$context['id'] = $params['id'];
 			unset($params['id']);
@@ -780,7 +785,7 @@ END;
 		foreach ($actions as $k=>$a){
             if (@$a['hidden_status']) $statuses[] = $a['hidden_status'];
             if (@$a['visible_status']) $statuses[] = $a['visible_status'];
-                
+            if ($navicon) $actions[$k]['navicon'] = $navicon; 
             
 			if ( @$a['subcategory'] ){
 				$p2 = $params;

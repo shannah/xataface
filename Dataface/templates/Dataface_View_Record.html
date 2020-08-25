@@ -73,6 +73,9 @@
 
 			    {actions_menu category="mobile_record_actions"}
 			</div>
+            <div class="mobile mobile-record-relationships">
+                {actions_menu category="__relationships__" navicon="arrow_forward_ios"}
+            </div>
         {else}
 		<table width="100%">
 			{if !$rv->showLogo}
@@ -97,7 +100,7 @@
 
 						    {actions_menu category="mobile_record_actions"}
 						</div>
-
+                        
 						
 					</div>
 				</td>
@@ -241,6 +244,13 @@
 							<h3>{$record->getTitle()|escape}</h3>
 							<div class="dataface-view-description">{$rv->description}</div>
 							<div class="dataface-view-status">{$rv->status|escape}</div>
+                            
+    						
+                            <div class="mobile mobile-record-relationships">
+                                {actions_menu category="__relationships__" navicon="arrow_forward_ios"}
+                            </div>
+                            
+                            
 						</div>
 						{/if}
 						

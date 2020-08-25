@@ -197,6 +197,19 @@ class Dataface_ActionTool {
 			}
 		}
 		
+        if (@$params['category'] == '__relationships__') {
+            // Special case.  The __relationships__ category will get the table's relationship as actions.
+            if (!$tablename) {
+                $query = $app->getQuery();
+                $tablename = $query['-table'];
+            }
+            $table = Dataface_Table::loadTable($tablename);
+            if (PEAR::isError($table)) {
+                throw new Exception("Cannot find table: ".$tablename);
+            }
+            return $table->getRelationshipsAsActions([]);
+        }
+        
 		if ( $tablename !== null ){
 			// Some actions are loaded from the table's actions.ini file and must be loaded before we return the actions.
 			$table =& Dataface_Table::loadTable($tablename);
