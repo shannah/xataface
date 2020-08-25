@@ -98,7 +98,7 @@
 	{$moveUpForm}
     {assign var=relatedSearchKey value="-related:search"}
     {if !$relatedList->hideActions and ($filterQuery.$relatedSearchKey or $filters)}
-        <div class="related-filters">
+        <div class="desktop related-filters">
         {translate id="scripts.GLOBAL.RECORDS_MATCHED_REQUEST"}Showing matches for query{/translate}
         {if !$relatedList->hideActions and $relatedList->_where and $filterQuery.$relatedSearchKey}
             <span> Search: <em>&quot;{$filterQuery.$relatedSearchKey|escape}&quot;</em>
