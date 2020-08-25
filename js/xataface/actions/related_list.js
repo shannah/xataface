@@ -6,10 +6,16 @@
     window.xataface.relatedList = {};
     window.xataface.relatedList.openSortDialog = openSortDialog;
     window.xataface.relatedList.openFilterDialog = openFilterDialog;
-    
+    var settingsWrapper = document.querySelector('.mobile-list-settings-wrapper');
     
 	$(document).ready(function() {
         if (window.innerWidth < 768) {
+            
+            
+            setTimeout(function() {
+                $('body').on('scroll', showListSettings);
+            }, 1000);
+            
             // For mobile we enable infinite scrolling
             new xataface.InfiniteScroll({
                 related: true,
@@ -18,6 +24,7 @@
             });
         } 
 	});
+    $(window).on('xf-viewport-changed', updateSettingsButtonPosition);
 	// Decorate the show/hide columns action
 	$('li.show-hide-related-list-columns-action a').click(function(){
 		var iframe = $('<iframe>')
@@ -73,6 +80,26 @@
 		dialog.dialog("option", "title", "Show/Hide Columns").dialog("open");
 		return false;
 	});
+    
+    
+    /**
+     * Update the settings wrapper position to 10 px above the mobile footer.
+     */
+    function updateSettingsButtonPosition() {
+        var viewport = xataface.viewport;
+        if (viewport) {
+            settingsWrapper.style.bottom = (viewport.bottom + 10) + 'px';
+        }
+    }
+    
+    /**
+     * Marks the settings wrapper as "active" which causes it to float.
+    */
+    function showListSettings() {
+        $(settingsWrapper).addClass('active');
+        
+    }
+    
     
     /**
      * Opens the sort dialog.
