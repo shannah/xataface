@@ -53,7 +53,8 @@ function applyFilters() {
         win.activeSheet.close();
     }
     win.jQuery('<div class="spin fillscreen"></div>').appendTo(win.document.body);
-    win.location.search=filterSearch;
+    //win.location.search=filterSearch;
+    win.location.replace(filterSearch);
     return false;
 }
 

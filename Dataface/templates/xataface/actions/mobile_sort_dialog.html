@@ -40,7 +40,7 @@
             search += '&-sort='+encodeURIComponent(sortVal);
             
             win.jQuery('<div class="spin fillscreen"></div>').appendTo(win.document.body);
-            win.location.search=search;
+            win.location.replace(search);
             
             
         }
