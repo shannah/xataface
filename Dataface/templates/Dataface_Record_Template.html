@@ -18,7 +18,21 @@
  *-------------------------------------------------------------------------------
  *}
 {load_record}
+ {if $ENV.record and $ENV.record->getTableAttribute('cover_image')}
+    {$ENV.APPLICATION_OBJECT->addBodyCSSClass('cover-image')}
+{/if}
 {use_macro file="Dataface_Main_Template.html"}
+
+    {fill_slot name="mobile_overflow_menu"}
+    	{actions var="menus" category="record_actions"}  
+    	{if $menus|@count > 0 }
+    		<nav role="navigation" class='personal-tools-menu'>
+    			{actions_menu category="record_actions_menu"}
+    		</nav>
+
+        
+    	{/if}
+    {/fill_slot}
 
 	{fill_slot name="main_section"}
 		
@@ -29,23 +43,52 @@
 		{block name="after_details_controller"}
 		{/if}
 		{block name="before_record_heading"}
+        <div class='record-heading'>
 		{define_slot name="record_heading"}
-			
+                {if $ENV.record and $ENV.record->getTableAttribute('cover_image')}
+                <div class='record-heading-cover-image' style='background-image:url({$ENV.record->getTableAttribute('cover_image')|escape})'>
+                   
+                </div>
+                {/if}
+			    {if $ENV.record and $ENV.table_object->getLogoField() and $ENV.record->val($ENV.table_object->getLogoField())}
+                    <div class='record-heading-logo'>
+                    {$ENV.record->htmlValue($ENV.table_object->getLogoField(), 0, 0, 0, 'width=32')}
+                    </div>
+                {/if}
 				<h2 class="dataface-record-title">{if $ENV.record}<span class="dataface-current-record-prelabel"><b>{translate id="templates.Dataface_Record.LABEL_CURRENT_RECORD"}Current Record{/translate}:</b> </span>{$ENV.record->getTitle()|escape}
 					{assign var=pkey value=$ENV.record->getPrimaryKeyValue()}
 					{if $ENV.record->getTitle() != $pkey and is_numeric($pkey)}
 						<span class="id-field">#{$pkey|escape}</span>
 					{/if}
 					{else}No Records Matched your Request{/if}</h2>
+                {if $ENV.record}
+                    <div class='record-heading-description'>
+                        {$ENV.record->getDescription()}
+                    </div>
+                    {actions var=actions category="record_actions|mobile_edit" with="featured"}
+                    {if $actions|@count>0}
+    				<div class="mobile mobile-record-actions">
+
+    				    {actions_menu actions=$actions}
+    				</div>
+                    {/if}
+                    
+                {/if}
 			
 		{/define_slot}
+        </div>
 		{block name="after_record_heading"}
 		{block name="before_record_tabs"}
 		{if $ENV.prefs.show_record_tabs}
-			<div class="tabs_wrapper">
+			<div class="tabs_wrapper desktop">
 				
 				<nav role="navigation" class="table_tabs">
-					{record_tabs mincount=2 id="record_tabs" id_prefix="record-tabs-" class="contentViews" selected_action=$ENV.mode}
+                    {if $ENV.record and $ENV.record->getTableAttribute('no_view_tab')}
+                        {record_tabs mincount=2 id="record_tabs" id_prefix="record-tabs-" class="contentViews" selected_action=$ENV.mode exclude="view"}
+                    {else}
+					    {record_tabs mincount=2 id="record_tabs" id_prefix="record-tabs-" class="contentViews" selected_action=$ENV.mode}
+                        
+                    {/if}
 				</nav>
 				
 				{actions var="menus" category="record_actions"}  
@@ -59,6 +102,19 @@
 				<div style="height:0px;padding:0;margin:0;clear:both"></div>
 			</div>
 
+			<div class="tabs_wrapper mobile">
+				
+				<nav role="navigation" class="table_tabs">
+                    {if $ENV.record and $ENV.record->getTableAttribute('no_view_tab')}
+                    {record_tabs exclude="edit view" mincount=2 id="record_tabs" id_prefix="mobile-record-tabs-" class="contentViews" selected_action=$ENV.mode}
+                    {else}
+					{record_tabs exclude="edit" mincount=2 id="record_tabs" id_prefix="mobile-record-tabs-" class="contentViews" selected_action=$ENV.mode}
+                    {/if}
+				</nav>
+				
+
+				<div style="height:0px;padding:0;margin:0;clear:both"></div>
+			</div>
 			
 		
 		

@@ -296,3 +296,5 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     window.addEventListener('DOMContentLoaded', addUserAgentCSSClass);
     
 })();
+
+

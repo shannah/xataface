@@ -37,7 +37,7 @@ body.small .sidemenu.header {
     background-color: black;
     position: fixed;
     height: 60px!important;
-    overflow: hidden;
+    /*overflow: hidden;*/
     z-index: 10;
 }
 body.small .sidemenu.main {

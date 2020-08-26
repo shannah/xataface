@@ -169,6 +169,25 @@ class Dataface_ActionTool {
 		if ( !is_array($params) ){
 			trigger_error("In Dataface_ActionTool::getActions(), expected parameter to be an array but received a scalar: ".$params.".".Dataface_Error::printStackTrace(), E_USER_ERROR);
 		}
+        if (@$params['category']) {
+            $cats = $params['category'];
+            if (is_string($cats)) {
+                $pos = strpos($cats, '|');
+                if ($pos !== false) {
+                    $cats = array_map('trim', explode('|', $cats));
+                }
+                
+            }
+            if (is_array($cats)) {
+                $out = [];
+                foreach ($cats as $cat) {
+                    $params['category'] = $cat;
+                    $out = array_merge($out, $this->getActions($params, $actions));
+                }
+                return $out;
+            }
+        }
+        
 		$app =& Dataface_Application::getInstance();
 		
 		$out = array();
@@ -230,11 +249,20 @@ class Dataface_ActionTool {
 			}
 			else $actions = $this->actions;
 		}
+        $excludes = null;
+        if (@$params['exclude']) {
+            $excludes = $params['exclude'];
+            if (is_string($excludes)) {
+                $excludes = explode(' ', $excludes);
+            }
+        }
 		foreach ( array_keys($actions) as $key ){
 			if ( isset($action) ) unset($action);
 			$action = $actions[$key];
 			$action['atts'] = array();
-			
+			if ($excludes and in_array($action['name'], $excludes)) {
+			    continue;
+			}
 			if ( @$params['name'] and @$params['name'] !== @$action['name']) continue;
 			if ( @$params['id'] and @$params['id'] !== @$action['id']) continue;
 			if ( @$params['withtags']) {
@@ -245,7 +273,7 @@ class Dataface_ActionTool {
             if (@$params['with']) {
                 $missingKey = false;
                 foreach (explode(' ', $params['with']) as $withKey) {
-                    if (!$action[$withKey]) {
+                    if (!@$action[$withKey]) {
                         $missingKey = true;
                         break;
                     }
@@ -331,7 +359,7 @@ class Dataface_ActionTool {
 			
 			unset($action);
 		}
-		
+
 		uasort($out, array(&$this, '_compareActions'));
 		return $out;
 	}

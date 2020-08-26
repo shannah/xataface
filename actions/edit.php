@@ -44,6 +44,8 @@ class dataface_actions_edit {
         $app->addBodyCSSClass('no-table-tabs');
         $app->addBodyCSSClass('no-mobile-header');
         $app->addBodyCSSClass('no-fab');
+        $app->addBodyCSSClass('no-record-heading');
+    
 		
         
 		if (!$currentRecord) {

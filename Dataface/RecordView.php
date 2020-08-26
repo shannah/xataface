@@ -117,7 +117,7 @@ class Dataface_RecordView {
 			}
 			if ( $record->_table->isMetaField($field['name']) ) continue;
 			
-			if ( !@$app->prefs['hide_record_view_logo'] ){
+			if ( false and !@$app->prefs['hide_record_view_logo'] ){
 				if ( ($record->isImage($field['name']) and @$field['logo'] !== '0') or @$field['logo']) {
 					$this->showLogo = true;
 					

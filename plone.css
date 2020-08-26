@@ -971,6 +971,62 @@ input.searchButton {
     border: 1px solid black;
 }
 
+.record-heading {
+    padding-bottom: 10px;
+    position:relative;
+    
+}
+body.cover-image .record-heading {
+    padding-top: 0;
+}
+body.cover-image .record-heading-cover-image {
+    height: 200px;
+}
+@media only screen and (max-width:768px) {
+    body.cover-image .record-heading {
+        padding-top: 120px;
+    }
+    body.cover-image .record-heading-cover-image {
+        height: 120px;
+    }
+}
+
+
+.record-heading .record-heading-logo {
+    padding: 10px 10px 0 0;
+    float:left;
+}
+
+.record-heading .dataface-record-title {
+    margin-bottom: 5px;
+}
+
+body.cover-image .record-heading-logo {
+    max-width: 64px;
+    width: auto;
+    border: 3px solid white;
+    border-radius: 32px;
+    padding:0;
+    background-color:white;
+    margin-top: -32px;
+    margin-left: 10px;
+}
+
+.record-heading .record-heading-description {
+    font-size: 80%;
+    color: #666;
+    padding-left: 42px;
+    padding-top: 0;
+    margin:0;
+}
+
+@media only screen and (max-width:768px) {
+    .record-heading .record-heading-description {
+        padding-top: 10px;
+    }
+}
+
+
 .listing,
 .stx table {
     /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
@@ -2750,6 +2806,9 @@ th.sorted-column-desc a {
 	vertical-align:text-top;
 	font-style:italic;
 }
+table.listing {
+    width:100%;
+}
 
 table.listing td.resultListCell.decimal,
 table.listing td.resultListCell.int,
@@ -3557,6 +3616,25 @@ body.two-col #status-bar .responsive-content,
           display:none !important;
       }
       
+      .documentContent {
+          background-color:transparent;
+      }
+      
+      .record-heading-cover-image  {
+          width:100%;
+          background-size:cover;
+          background-repeat:no-repeat;
+          background-position:center center;
+          z-index:-1;
+          background-color: rgba(0,0,0,0);
+          position:absolute;
+          top:0;
+          left:0;
+          height: 120px;
+      }
+      
+      
+      
       #login-logo {
           width: 100%;
           text-align:center;
@@ -3686,6 +3764,7 @@ body.two-col #status-bar .responsive-content,
           top:0;
           left:0;
           right:0;
+          
           
       }
       
@@ -3929,9 +4008,11 @@ body.two-col #status-bar .responsive-content,
     .dataface-record-title {
         display:none;
     }
+    /*
     .documentContent > .responsive-content > .tabs_wrapper {
         display:none;
     }
+    */
     
     div.dataface-sections-top {
         
@@ -4339,6 +4420,11 @@ div.mobile-list-settings-wrapper.active {
 }
 
 @media only screen and (max-width:768px) {
+    
+    body.no-record-heading .record-heading {
+        display:none;
+    }
+    
     .mobile-record-relationships {
         margin-left:-20px;
         margin-right:-5px;
@@ -4386,3 +4472,25 @@ div.mobile-list-settings-wrapper.active {
     overflow-x:scroll;
     margin-right:30px;
 }
+
+@media only screen and (max-width:768px) {
+    .mobile-overflow-menu {
+        position:absolute;
+        top:10px;
+        right:10px;
+        color:white;
+        background-color: transparent;
+        
+    }
+    .mobile-overflow-menu > nav.personal-tools-menu > ul > li {
+        background-color: transparent;
+        border:none;
+        color:white;
+    }
+    
+    .mobile-overflow-menu > nav.personal-tools-menu > ul > li > a > i {
+        color:white;
+    }
+    
+}
+

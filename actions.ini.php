@@ -158,9 +158,7 @@
 	subcategory=record_actions
 	category="record_actions_menu"
 	
-[record_actions_mobile > record_actions]
-    category=mobile_record_actions
-    materialIcon="more_horiz"
+
     
 
 [view_xml]
@@ -331,8 +329,6 @@
 	order=-1
 	materialIcon=create
 	
-[edit_mobile > edit]
-    category=mobile_record_actions
 
 ;; Translate a record
 [translate]
@@ -347,8 +343,6 @@
 	order=3
 	materialIcon=translate
 	
-[translate_mobile > translate]
-    category = mobile_record_actions
 
 ;; History for a record
 [history]
@@ -362,8 +356,6 @@
 	order=4
 	materialIcon=history
 	
-[history_mobile > history]
-    category=mobile_record_actions
 
 [view_history_record_details]
 	mode = browse
@@ -682,9 +674,6 @@
 	subcategory=record_actions
 	category="record_actions_menu"
 	
-[record_actions_mobile > record_actions]
-    category=mobile_record_actions
-    materialIcon="more_horiz"
     
 
 [view_xml]
@@ -855,8 +844,6 @@
 	order=-1
 	materialIcon=create
 	
-[edit_mobile > edit]
-    category=mobile_record_actions
 
 ;; Translate a record
 [translate]
@@ -871,9 +858,6 @@
 	order=3
 	materialIcon=translate
 	
-[translate_mobile > translate]
-    category = mobile_record_actions
-
 ;; History for a record
 [history]
 	url = "{$this->url('-action=history')}"
@@ -886,8 +870,6 @@
 	order=4
 	materialIcon=history
 	
-[history_mobile > history]
-    category=mobile_record_actions
 
 [view_history_record_details]
 	mode = browse
@@ -1633,3 +1615,6 @@
     label="Back"
     category=mobile_app_back
     
+[mobile_edit > edit]
+    category=mobile_edit
+    featured=1

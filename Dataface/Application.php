@@ -2456,7 +2456,8 @@ END
 			// Do whatever we need to do before the request is handled.
 			$applicationDelegate->beforeHandleRequest();
 		}
-
+        
+        
 
 
 		//$table->setSecurityFilter();
@@ -2555,6 +2556,28 @@ END
 			//import('I18Nv2/I18Nv2.php');
      		//I18Nv2::autoConv();
      	//}
+
+        $record = $this->getRecord();
+        if ($record and $record->getTableAttribute('no_view_tab') and $query['-action'] == 'view') {
+            $relationshipActions = $record->table()->getRelationshipsAsActions();
+            $recordActions = $actionTool->getActions([
+                'record' => $record, 
+                'category' => 'record_tabs', 
+                'exclude' => 'edit view',
+                'actions' => $relationshipActions,
+                'with' => 'url'
+            ]);
+            
+            $recordActions = array_merge($recordActions, $relationshipActions);
+            if (count($recordActions) > 0) {
+                foreach ($recordActions as $recordAction) {
+
+                    header('Location: '.$recordAction['url']);
+                    exit;
+                }
+            }
+            
+        }
 
 		$params = array(
 			'table'=>$query['-table'],

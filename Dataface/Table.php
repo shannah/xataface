@@ -3296,6 +3296,7 @@ class Dataface_Table {
         }
         return 'auto';
     }
+    
 	
 	/**
 	 * Gets the name of the table used for the new record form on this

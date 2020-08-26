@@ -113,6 +113,14 @@
             {/if}
             
             <div class="mobile page-title">{define_slot name="html_title_mobile"}{$ENV.APPLICATION_OBJECT->getPageTitle('mobile')|escape}{/define_slot}</div>
+            
+            <div class="mobile-overflow-menu">
+                {define_slot name="mobile_overflow_menu"}
+				
+                {/define_slot}
+            </div>
+
+                
         </div>
         {if $ENV.prefs.mobile_nav_style=='hamburger' and !$back_action}
             {*

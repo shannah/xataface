@@ -82,7 +82,7 @@
 			<tr>
 				
 				<td colspan="2" id="dataface-sections-top-column">
-					
+					{if false}
 					<div class="dataface-sections-top {if $ENV.prefs.hide_record_view_logo}dataface-sections-top-no-logo{/if}">
 						<h3 class="dataface-record-view-title">{$record->getTitle()|escape}</h3>
 						<script>{literal}
@@ -103,6 +103,7 @@
                         
 						
 					</div>
+                    {/if}
 				</td>
 			</tr>
 			{/if}

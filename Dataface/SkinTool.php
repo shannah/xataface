@@ -761,19 +761,17 @@ END;
 
 		if ( isset( $params['actions'] ) ){
 			$addon_actions = & $params['actions'];
+            unset($params['actions']);
 		} else {
 			$addon_actions = null;
 		}
-
-
-
 
 		//$params['var'] = 'actions';
 		//$this->actions($params, $smarty);
 		//print_r($
 		import( XFROOT.'Dataface/ActionTool.php');
 		$actionTool =& Dataface_ActionTool::getInstance();
-		$actions = $actionTool->getActions($params);
+		$actions = count($params) > 0 ? $actionTool->getActions($params) : [];
 		if ( $addon_actions !== null ){
 			$p2 = $params;
 			unset($p2['category']);
@@ -809,6 +807,28 @@ END;
 		//print_r($actions);
 		$context['actions'] =& $actions;
 		//$smarty->assign($context);
+        if (isset($params['mincount_class'])) {
+            $tmp = $params['mincount_class'];
+            $pos = strpos($tmp, ' ');
+            if ($pos !== false) {
+                $cnt = intval(substr($tmp, 0, $pos));
+                $cls = substr($tmp, $pos+1);
+                if ($cnt <= count($context['actions'])) {
+                    $context['class'] = trim(@$context['class'] .' '.$cls);
+                }
+            }
+        }
+        if (isset($params['maxcount_class'])) {
+            $tmp = $params['maxcount_class'];
+            $pos = strpos($tmp, ' ');
+            if ($pos !== false) {
+                $cnt = intval(substr($tmp, 0, $pos));
+                $cls = substr($tmp, $pos+1);
+                if ($cnt > count($context['actions'])) {
+                    $context['class'] = trim(@$context['class'] .' '.$cls);
+                }
+            }
+        }
 		if ( isset($params['mincount']) and intval($params['mincount']) > count($context['actions']) ) return;
 		if ( isset($params['maxcount']) and intval($params['maxcount']) < count($context['actions']) ){
 			$more = array(
@@ -850,7 +870,9 @@ END;
         }
         //echo print_r($context);exit;
             
-        
+        foreach ($context['actions'] as $actionDef) {
+            $context['class'] .= ' with-'.$actionDef['name'];
+        }
         
 		$smarty->display($context, 'Dataface_ActionsMenu.html');
 
@@ -870,6 +892,7 @@ END;
 		$params2 = array();
 
 		$params['actions'] = $table->getRelationshipsAsActions($params2);
+
 		return $this->actions_menu($params, $smarty);
 
 	}
