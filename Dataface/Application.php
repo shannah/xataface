@@ -3254,6 +3254,25 @@ END
 
 
 
+    /**
+     * Gets a table attribute.  Table attributes are defined in the fields.ini file in the global
+     * scope.  They can be overridden in the delegate class via the attribute__attname methods.
+     * @since 3.0
+     */
+    function getTableAttribute($attname) {
+        $query = $this->getQuery();
+        $table = Dataface_Table::loadTable($query['-table']);
+        
+        $del = $table->getDelegate();
+        $method = 'attribute__'.$attname;
+        if ($del and method_exists($del, $method)) {
+            $out = $del->$method($this);
+            if (isset($out)) {
+                return $out;
+            }
+        }
+        return @$table->_atts[$attname];
+    }
 
 
 

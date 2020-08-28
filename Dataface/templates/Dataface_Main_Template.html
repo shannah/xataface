@@ -111,9 +111,16 @@
                     </a>
                 </div>
             {/if}
-            
+            {if $ENV.action == 'list' and $ENV.APPLICATION_OBJECT->getTableAttribute('search_field_header')}
+            {script src='xataface/search_field_header.js'}
+            <div class="mobile page-title-search">
+                <i class='material-icons search-icon'>search</i>
+                <input type="text" placeholder="{$ENV.APPLICATION_OBJECT->getTableAttribute('search_field_placeholder')|default:'Search for content'|escape}" class='search-field-header' value="{$ENV.search|escape}"/>
+                <i class='material-icons cancel-btn'>cancel</i>
+            </div>
+            {else}
             <div class="mobile page-title">{define_slot name="html_title_mobile"}{$ENV.APPLICATION_OBJECT->getPageTitle('mobile')|escape}{/define_slot}</div>
-            
+            {/if}
             <div class="mobile-overflow-menu">
                 {define_slot name="mobile_overflow_menu"}
 				

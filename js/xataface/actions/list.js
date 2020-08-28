@@ -29,7 +29,9 @@
             });
         }
             
-       
+       $('.external-link-preview[data-href]').click(function() {
+           window.open($(this).attr('data-href'));
+       });
         
     }
     

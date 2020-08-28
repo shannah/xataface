@@ -1787,6 +1787,12 @@ div#relatedActionsWrapper {
 	margin-bottom: 1em;
 }
 
+@media only screen and (max-width:768px) {
+    div#relatedActionsWrapper {
+        display:none;
+    }
+}
+
 ul#relatedActions {
 	list-style-image: url(images/file_icon.gif);
 	list-style: visible;
@@ -3278,6 +3284,10 @@ body.two-col #status-bar .responsive-content,
   	padding-bottom: 1em;
   }
   
+  #list-window {
+      max-width: 100vw;
+  }
+  
   body.large #list-window {
       overflow-x: scroll;
       width: 1000px;
@@ -4494,3 +4504,91 @@ div.mobile-list-settings-wrapper.active {
     
 }
 
+.page-title-search {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+    box-sizing:border-box;
+    padding: 5px;
+}
+.page-title-search input.search-field-header {
+    flex-grow:1;
+    background-color: transparent;
+    color: white;
+    border:none;
+    outline:none;
+
+}
+
+.page-title-search i.material-icons {
+    color:white;
+}
+
+p.no-matches-text {
+    text-align:center;
+}
+
+.no-matches-icon {
+    font-size: 72px;
+    text-align:center;
+    color: #ccc;
+}
+
+div.resultlist-parent.non-empty .no-results-found {
+    display:none;
+}
+
+div.no-matches-menu ul {
+    list-style-type:none;
+    list-style-image:none;
+    padding:0;
+    margin:0;
+}
+
+div.no-matches-menu ul li {
+    padding:0;
+    margin:0;
+}
+
+div.no-matches-menu ul li a {
+    text-decoration:none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display:block;
+    box-sizing:border-box;
+    margin:10px;
+    padding:10px;
+    
+}
+
+div.no-matches-menu ul li a > i {
+    font-size: 32px;
+    vertical-align:middle;
+}
+
+.external-link-preview {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing:border-box;
+    clear:left;
+    padding: 10px;
+    font-size: 80%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    cursor:pointer;
+}
+
+.external-link-preview > img {
+    max-width: 100%;
+}
+
+.external-link-preview > span.external-link-host {
+    display:block;
+    color: #aaa;
+    font-size: 70%;
+}
+
+.external-link-preview .external-link-title {
+    display:block;
+}

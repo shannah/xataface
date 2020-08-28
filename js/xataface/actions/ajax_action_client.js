@@ -2,10 +2,13 @@
 //require <jquery.noty.js>
 //require <jquery-ui.min.js>
 //require-css <jquery-ui/jquery-ui.css>
+//require <xataface/actions/core.js>
 (function() {
     var $ = jQuery;
     
     window.xataface = window.xataface || {};
+    var isElement = xataface.isElement;
+    var isNode = xataface.isNode;
     window.xataface.post = post;
     
     /**
@@ -19,8 +22,8 @@
      *
      * @returns void
      */
-    function post(actionName, arg) {
-        return postAction(actionName, arg).then(displayActionResult).catch(displayActionResult);
+    function post(actionName, arg, removeClass, addClass) {
+        return postAction(actionName, arg, removeClass, addClass).then(displayActionResult).catch(displayActionResult);
     }
     
     function displayActionResult(data) {
@@ -42,8 +45,9 @@
         return data;
     }
     
-    function postAction(actionName, arg) {
-
+    
+    
+    function postAction(actionName, arg, removeClass, addClass) {
         if (isElement(arg)) {
             // Case 1. This is an element.  We'll look for the xf-record-id attribute
             // If it exists we'll call ourself with that ID.
@@ -55,15 +59,39 @@
             var el = arg;
             
             if ($(el).attr('xf-record-id')) {
+                
                 if ($(el).hasClass('disabled')) {
                     return new Promise(function(resolve, reject) {
                         return reject({code: 299, message:'Button disabled.  Action may already be in progress'});
                     });
                 }
+                
                 $(el).addClass('disabled');
+                var classRemoved = false;
+                if (removeClass) {
+                    if ($(el).hasClass(removeClass)) {
+                        $(el).removeClass(removeClass);
+                        classRemoved = true;
+                    }
+                    
+                }
+                var classAdded = false;
+                if (addClass) {
+                    if (!$(el).hasClass(addClass)) {
+                        $(el).addClass(addClass);
+                        classAdded = true;
+                    }
+                    
+                }
                 
                 return postAction(actionName, $(el).attr('xf-record-id')).catch(function(error) {
                     $(el).removeClass('disabled');
+                    if (addClass && classAdded) {
+                        $(el).removeClass(addClass);
+                    }
+                    if (removeClass && classRemoved) {
+                        $(el).addClass(removeClass);
+                    }
                     return error;
                 }).then(function(data) {
                     $(el).removeClass('disabled');
@@ -76,7 +104,7 @@
                         return reject({code: 500, message:'No elements found with xf-record-id attribute'});
                     });
                 }
-                return postAction(actionName, matchingParent.get(0));
+                return postAction(actionName, matchingParent.get(0), removeClass, addClass);
             }
         }
         
@@ -115,21 +143,6 @@
     }
     
     
-    //Returns true if it is a DOM node
-    function isNode(o){
-      return (
-        typeof Node === "object" ? o instanceof Node : 
-        o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string"
-      );
-    }
-
-    //Returns true if it is a DOM element    
-    function isElement(o){
-      return (
-        typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-        o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
-    );
-    }
     
     function showProgress(msg) {
         msg = msg + '<progress/>';

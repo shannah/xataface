@@ -2573,6 +2573,10 @@ class Dataface_Table {
 				$this->_filters=$value;
 
 			}
+            
+            else if (strpos($key, 'table.') === 0) {
+                $this->_atts[substr($key, 6)] = $value;
+            }
 
 			else if ($key == "__title__"){
 				$this->_atts['title'] = $value;
@@ -3327,6 +3331,7 @@ class Dataface_Table {
 	 * @return string
 	 */
 	function getSingularLabel(){
+            
             if ( !@$this->_atts['singular_label'] ){
                 $this->_atts['singular_label'] = df_singularize($this->getLabel());
             }

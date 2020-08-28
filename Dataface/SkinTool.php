@@ -226,6 +226,7 @@ class Dataface_SkinTool extends Smarty{
 		$this->register_function('records', array(&$this, 'records'));
 		$this->register_function('form_context', array(&$this, 'form_context'));
         $this->register_function('cancel_back_button', array(&$this, 'cancel_back_button'));
+        $this->register_function('script', array(&$this, 'script'));
 		$this->register_block('translate', array(&$this, 'translate'));
 		$this->register_block('use_macro',array(&$this,'use_macro'));
 		$this->register_block('define_slot', array(&$this,'define_slot'));
@@ -632,6 +633,11 @@ END;
 
 	}
 
+    function script($params, &$smarty) {
+        if (@$params['src']) {
+            xf_script($params['src']);
+        }
+    }
 
 	/**
 	 * Returns an associative array of actions matching the criteria.
@@ -698,6 +704,7 @@ END;
         
 		$context = array();
         $navicon = null;
+        $record = null;
         if (isset($params['navicon'])) {
             $navicon = $params['navicon'];
             unset($params['navicon']);
@@ -858,6 +865,7 @@ END;
 			}
 			$existing['more'] = $more;
 			$context['actions'] = $existing;
+            
 		}
         
         
@@ -873,7 +881,9 @@ END;
         foreach ($context['actions'] as $actionDef) {
             $context['class'] .= ' with-'.$actionDef['name'];
         }
-        
+        if ($record) {
+            $context['actionsRecordId'] = $record->getId();
+        }
 		$smarty->display($context, 'Dataface_ActionsMenu.html');
 
 	}

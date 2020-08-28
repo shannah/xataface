@@ -259,6 +259,7 @@ import(XFROOT.'Dataface/QueryTool.php');
  	}
  	
  	function toHtml($mode = 'all'){
+        
         xf_script('xataface/actions/list.js');
  	    import(XFROOT.'Dataface/ActionTool.php');
  	    $mobile = $mode == 'mobile';
@@ -339,7 +340,7 @@ import(XFROOT.'Dataface/QueryTool.php');
  		
  		
  		
- 		if ( $this->_resultSet->found() > 0 ) {
+ 		if (true or $this->_resultSet->found() > 0 ) {
  		
  			
  			if  ($desktop and @$app->prefs['use_old_resultlist_controller'] ){
@@ -525,7 +526,10 @@ import(XFROOT.'Dataface/QueryTool.php');
 					continue;
 				}
 				$rowClass .= ' '.$this->getRowClass($record);
-				
+				$status = $record->getStatus();
+                if ($status) {
+                    $rowClass .= ' xf-record-status-'.$status;
+                }
 				
 				
 				$query = array_merge( $baseQuery, array( "-action"=>"browse", "-relationship"=>null, "-cursor"=>$cursor++) );
@@ -642,8 +646,9 @@ import(XFROOT.'Dataface/QueryTool.php');
 						unset($thisField);
 					}
 				} else if ($mobile) {
-				    echo "<div class='mobile-row-content $rowClass' >";
+				    echo "<div class='mobile-row-content' >";
 				    $logoField = $record->table()->getLogoField();
+                    $rowStyle = $record->getTableAttribute('row_style');
                     $aOpen = '';
                     $aClose = '';
                     if ($link) {
@@ -653,15 +658,39 @@ import(XFROOT.'Dataface/QueryTool.php');
 				    if ($logoField and $record->val($logoField) and $record->checkPermission('view', array('field' => $logoField))) {
 				        echo "<div class='mobile-logo'>$aOpen".$record->htmlValue($logoField)."$aClose</div>";
 				    } else {
-				        echo "<div class='mobile-logo'>$aOpen<i class='material-icons'>description</i>$aClose</div>";
+                        if ($rowStyle != 'external-link') {
+                            echo "<div class='mobile-logo'>$aOpen<i class='material-icons'>description</i>$aClose</div>";
+                        }
+				        
 				    }
                     $byLine = $record->getByLine();
                     if ($byLine) {
                         // getByLine returns HTML content so we don't escape it.
                         echo "<div class='mobile-byline'>".$byLine."</div>";
                     }
-				    echo "<div class='mobile-title'>$aOpen".df_escape($record->getTitle())."$aClose</div>";
-				    echo "<div class='mobile-description'>$aOpen".df_escape($record->getDescription())."$aClose</div>";
+                    
+                    
+                    if ($rowStyle == 'external-link') {
+                        $externalLink = $record->val('external_link');
+                        if ($externalLink) {
+                            echo '<div class="external-link-preview" data-href="'.htmlspecialchars($externalLink['url']).'">';
+                            if (@$externalLink['cover_image']) {
+                                echo '<img class="external-link-cover-image" src="'.htmlspecialchars($externalLink['cover_image']).'"/>';
+                            }
+                            if (@$externalLink['title']) {
+                                echo '<span class="external-link-title">'.htmlspecialchars($externalLink['title']).'</span>';
+                            }
+                            
+                            echo '<span class="external-link-host">'.htmlspecialchars(parse_url($externalLink['url'], PHP_URL_HOST)).'</span>';
+                            echo '</div>';
+                        }
+                    } else {
+    				    echo "<div class='mobile-title'>$aOpen".df_escape($record->getTitle())."$aClose</div>";
+                    }
+    				echo "<div class='mobile-description'>$aOpen".df_escape($record->getDescription())."$aClose</div>";
+                    
+                    
+				    
                     $actions = $at->getActions(array('category'=>'list_row_actions', 'record'=>&$record));
                     if ( count($actions)>0){
                         echo ' <div class="mobile-row-actions">';
@@ -760,7 +789,11 @@ END;
 			
 			$out = ob_get_contents();
 			ob_end_clean();
-		} else {
+		}
+        
+        if ($desktop) {
+            // Just to prevent from running twice.
+            // In actuality this is used for both mobile and desktop
 			if ( @$app->prefs['use_old_resultlist_controller'] ){
 				ob_start();
 				df_display(array(), 'Dataface_ResultListController.html');
@@ -769,8 +802,15 @@ END;
 			} else {
 				$out = '';
 			}
-			$out .= "<p style=\"clear:both\">".df_translate('scripts.GLOBAL.MESSAGE_NO_MATCH', "No records matched your request.")."</p>";
-		}
+            ob_start();
+            df_display([], 'xataface/actions/list/no_results_found.html');
+            $out .= ob_get_contents();
+            ob_end_clean();
+        }
+		
+
+		$out = '<div class="resultlist-parent ' . ($this->_resultSet->found()>0?'non-empty':'empty').'">'.$out.'</div>';
+		
  		
  		return $out;
  	}

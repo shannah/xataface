@@ -544,6 +544,8 @@ class Dataface_RelatedList {
     				    $logoField = $this->_relationship->getLogoField();
                         $aOpen = '';
                         $aClose = '';
+                        $domRec = $rrec->toRecord();
+                        $rowStyle = $domRec->getTableAttribute('row_style');
                         if ($link) {
                             $aOpen = '<a href="'.df_escape($link).'">';
                             $aClose = '</a>';
@@ -551,14 +553,35 @@ class Dataface_RelatedList {
     				    if ($logoField and $rrec->val($logoField) and $rrec->checkPermission('view', array('field' => $logoField))) {
     				        echo "<div class='mobile-logo'>$aOpen".$rrec->htmlValue($logoField)."$aClose</div>";
     				    } else {
-    				        echo "<div class='mobile-logo'>$aOpen<i class='material-icons'>description</i>$aClose</div>";
+                            if ($rowStyle != 'external-link') {
+    				            echo "<div class='mobile-logo'>$aOpen<i class='material-icons'>description</i>$aClose</div>";
+                            }
     				    }
                         $byLine = $rrec->getByLine();
                         if ($byLine) {
                             // getByLine returns HTML content so we don't escape it.
                             echo "<div class='mobile-byline'>".$byLine."</div>";
                         }
-    				    echo "<div class='mobile-title'>$aOpen".df_escape($rrec->getTitle())."$aClose</div>";
+                        
+                        if ($rowStyle == 'external-link') {
+                            $externalLink = $domRec->val('external_link');
+                            if ($externalLink) {
+                                echo '<div class="external-link-preview" data-href="'.htmlspecialchars($externalLink['url']).'">';
+                                if (@$externalLink['cover_image']) {
+                                    echo '<img class="external-link-cover-image" src="'.htmlspecialchars($externalLink['cover_image']).'"/>';
+                                }
+                                if (@$externalLink['title']) {
+                                    echo '<span class="external-link-title">'.htmlspecialchars($externalLink['title']).'</span>';
+                                }
+                            
+                                echo '<span class="external-link-host">'.htmlspecialchars(parse_url($externalLink['url'], PHP_URL_HOST)).'</span>';
+                                echo '</div>';
+                            }
+                        } else {
+                            echo "<div class='mobile-title'>$aOpen".df_escape($rrec->getTitle())."$aClose</div>";
+                        }
+                        
+    				    
     				    echo "<div class='mobile-description'>$aOpen".df_escape($rrec->getDescription())."$aClose</div>";
                         $actions = $at->getActions([
                             'category'=>'related_list_row_actions', 

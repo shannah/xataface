@@ -353,7 +353,20 @@ class Dataface_ActionTool {
             $action['label'] = df_translate($keyBase.'label', @$action['label']);
             $action['description'] = df_translate($keyBase.'description', @$action['description']);
             $action['materialIcon'] = df_translate($keyBase.'materialIcon', @$action['materialIcon']);
+            if (@$action['ajax'] and !@$action['ajax_action']) {
+                $action['ajax_action'] = $action['name'];
+            }
+            if (@$action['ajax_action']) {
+        		xf_script('xataface/actions/ajax_action_client.js');
+                $removeClass = 'undefined';
+                if (@$action['ajax.on']) $removeClass = '\''.$action['ajax.on'].'\'';
+                $addClass = 'undefined';
+                if (@$action['ajax.off']) $addClass = '\''.$action['ajax.off'].'\'';
+                $action['onclick'] = 'xataface.post(\''.$action['ajax_action'].'\',this, '.$removeClass.', '.$addClass.')';
+                $action['url'] = 'javascript:void(0)';
                 
+                
+            }
             
 			$out[$key] =& $action;
 			

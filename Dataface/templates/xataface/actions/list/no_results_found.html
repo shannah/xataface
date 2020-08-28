@@ -1,0 +1,12 @@
+{assign var="nonEmpty" value=$ENV.resultSet->cardinality()}
+<div class='no-results-found {if !$nonEmpty}table-empty{/if}'>
+{block name="before_no_results_found"}
+{define_slot name="no_results_found"}
+<p class='no-matches-icon'><i class='material-icons '>warning</i></p>
+<p style="clear:both" class='no-matches-text'>{translate id='scripts.GLOBAL.MESSAGE_NO_MATCH'}No records matched your request{/translate}</p>
+{/define_slot}
+<div class='no-matches-menu'>
+{actions_menu category="no_matches_menu"}
+</div>
+{block name="after_no_results_found"}
+</div>

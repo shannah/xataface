@@ -19,7 +19,8 @@
  *}
 {define_slot name="actions_menu"}
 {if $actions|@count > 0}
-<ul {if $class}class="{$class|escape}"{/if} {if $id}id="{$id|escape}"{/if} data-actions-count="{$actions|@count}">
+<ul {if $class}class="{$class|escape}"{/if} {if $id}id="{$id|escape}"{/if} data-actions-count="{$actions|@count}"
+    {if $actionsRecordId}xf-record-id="{$actionsRecordId|escape}"{/if}>
 	{block name="actions_menu_head"}
 {foreach item=action from=$actions key=name}
             {if $action.subcategory and !$action.subactions}
