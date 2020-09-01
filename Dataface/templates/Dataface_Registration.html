@@ -25,11 +25,13 @@
             <a class="cancel-back-button" href="{$ENV.BACK_LINK|escape}"><i class="material-icons">clear</i></a>
         </div>
         {/define_slot}
+		
 		{block name="before_registration_form"}
 		{define_slot name="registration_form"}
 
 		{define_slot name="registration_form_label"}<h1>{translate id="Dataface_Registration.label"}Registration Form{/translate}</h1>{/define_slot}
 		{$registration_form}
+        <a href='{$ENV.DATAFACE_SITE_HREF|escape}'>Home</a>
 		{/define_slot}
 		{block name="after_registration_form"}
     </div>
