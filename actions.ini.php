@@ -81,18 +81,7 @@
 [post]
 	permission = post
 
-;; Show all records in the current table
-[show_all]
-	label = Show All
-	description = Show all records in table
-	url = "{$site_href}?-action=list&-table={$table}"
-	icon = "{$dataface_url}/images/zoom-out.gif"
-	accessKey = a
-	category = table_actions
-	mode = list
-	permission = show all
-	order=4
-	tags="#large#"
+
 
 [copy_replace] 
     label="Copy Set"
@@ -597,18 +586,7 @@
 [post]
 	permission = post
 
-;; Show all records in the current table
-[show_all]
-	label = Show All
-	description = Show all records in table
-	url = "{$site_href}?-action=list&-table={$table}"
-	icon = "{$dataface_url}/images/zoom-out.gif"
-	accessKey = a
-	category = table_actions
-	mode = list
-	permission = show all
-	order=4
-	tags="#large#"
+
 
 [copy_replace] 
     label="Copy Set"
