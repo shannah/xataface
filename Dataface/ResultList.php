@@ -405,8 +405,8 @@ import(XFROOT.'Dataface/QueryTool.php');
 
 			$jt->import('list.js');
 			$results =& $this->getResults();
+
 			if ($desktop) {
-			
 			
                 echo '
                     <table data-xataface-query="'.df_escape($sq).'" id="result_list" class="listing resultList resultList--'.$this->_tablename.' list-style-'.$this->listStyle.'">
@@ -797,10 +797,10 @@ END;
 			if ( @$app->prefs['use_old_resultlist_controller'] ){
 				ob_start();
 				df_display(array(), 'Dataface_ResultListController.html');
-				$out = ob_get_contents();
+				$out .= ob_get_contents();
 				ob_end_clean();
 			} else {
-				$out = '';
+				//$out = '';
 			}
             ob_start();
             df_display([], 'xataface/actions/list/no_results_found.html');
