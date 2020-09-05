@@ -261,7 +261,7 @@ class Dataface_FeedTool {
 		//item->descriptionTruncSize = 500;
 		//item->descriptionHtmlSyndicated = true;
 		
-		$item->date = $data['date']; 
+		$item->date = strtotime($data['date']); 
 
 		$item->source = $data['source']; 
 		$item->author = $data['author'];
