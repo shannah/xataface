@@ -100,7 +100,7 @@ class dataface_actions_register {
 		$validationResults = $this->validateRegistrationForm($_POST);
 		if ( count($_POST) > 0 and PEAR::isError($validationResults) ){
 			$app->addMessage($validationResults->getMessage());
-			$this->form->_errors[$app->_conf['_auth']['username_column']] = $validationResults->getMessage();
+			//$this->form->_errors[$app->_conf['_auth']['username_column']] = $validationResults->getMessage();
 		}
 		if ( !PEAR::isError($validationResults) and $this->form->validate() ){
 			// The form input seems OK.  Let's process the form

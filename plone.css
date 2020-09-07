@@ -2887,7 +2887,6 @@ nav.personal-tools-menu a {
       border: 1px solid rgb(218, 220, 224);
       border-radius: 4px;
       display: block;
-      float: right;
       padding: 0.25em;
         padding-left: 10px;
         padding-right: 10px;
@@ -2896,6 +2895,22 @@ nav.personal-tools-menu a {
     transition-duration: 0.5s;
         margin-bottom: 0;
   }
+  @media only screen and (min-width:768px) {
+      div.xf-button-bar-actions li.mobile,
+      nav.tables li.mobile,
+      nav.personal-tools-menu  li.mobile {
+          display:none;
+      }
+  }
+  @media only screen and (max-width:768px) {
+      div.xf-button-bar-actions li.desktop,
+      nav.tables li.desktop,
+      nav.personal-tools-menu  li.desktop {
+          display:none;
+      }
+  }
+  body.large div.xf-button-bar-actions li,
+  body.large nav.tables li,
   nav.tables li {
       float:left;
   }
@@ -3004,6 +3019,9 @@ div.xf-button-bar-actions > ul > li.featured-action,
     opacity: 1;
     display: block
   }
+  
+  
+  
   div.xf-button-bar-actions ul li ul li,
   nav.tables ul li ul li,
   nav.personal-tools-menu ul li ul li {
@@ -3016,6 +3034,12 @@ div.xf-button-bar-actions > ul > li.featured-action,
     padding:0.5em;;
   }
 
+  nav.personal-tools-menu {
+      float:right;
+  }
+  nav.personal-tools-menu > ul {
+      display:flex;
+  }
 
 
 /*table tabs*/

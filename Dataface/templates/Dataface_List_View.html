@@ -31,11 +31,13 @@
 		{/if}
 		<div id="list-window">
 		{if !$ENV.prefs.use_old_resultlist_controller}
+            {if $ENV.resultSet->found() > 0}
 			{if !$ENV.prefs.hide_resultlist_controller}
 			{if $ENV.resultSet->found() > $ENV.resultSet->limit() or !$ENV.APPLICATION_OBJECT->prefs.show_resultlist_controller_only_when_needed}
 				{result_controller}
 			{/if}
 			{/if}
+            {/if}
 		{/if}
 		<div style="clear:both">
 		{block name="before_result_list_content"}
@@ -45,11 +47,13 @@
 		{block name="after_result_list_content"}
 		</div>
 		{if !$ENV.prefs.use_old_resultlist_controller}
+            {if $ENV.resultSet->found() > 0}
 			{if !$ENV.prefs.hide_resultlist_controller}
 			{if ($ENV.resultSet->found() > $ENV.resultSet->limit()) or !$ENV.APPLICATION_OBJECT->prefs.show_resultlist_controller_only_when_needed}
 				{result_controller}
 			{/if}
 			{/if}
+            {/if}
 		{/if}
 		</div>
 		{/define_slot}

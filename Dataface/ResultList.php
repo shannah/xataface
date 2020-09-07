@@ -339,11 +339,10 @@ import(XFROOT.'Dataface/QueryTool.php');
  		// where Direction is "asc" or "desc"
  		
  		
- 		
  		if (true or $this->_resultSet->found() > 0 ) {
  		
  			
- 			if  ($desktop and @$app->prefs['use_old_resultlist_controller'] ){
+ 			if  ($desktop and @$app->prefs['use_old_resultlist_controller'] and $this->_resultSet->found() > 0){
 				ob_start();
 				df_display(array(), 'Dataface_ResultListController.html');
 				$controller = ob_get_contents();
@@ -373,7 +372,7 @@ import(XFROOT.'Dataface/QueryTool.php');
 			}
 			unset($query);
 			
-			if ( @$app->prefs['use_old_resultlist_controller'] ){
+			if ( @$app->prefs['use_old_resultlist_controller'] and $this->_resultSet->found() > 0){
 				echo '<div class="resultlist-controller" id="resultlist-controller-top">';
 	
 				echo $controller;
@@ -735,7 +734,7 @@ import(XFROOT.'Dataface/QueryTool.php');
                 }
                 echo "</tbody>
                     </table>";
-                if ( $canSelect ){
+                if ( $canSelect and $this->_resultSet->found() > 0){
                     echo  '<form id="result_list_selected_items_form" method="post" action="'.df_absolute_url(DATAFACE_SITE_HREF).'">';
                     $app =& Dataface_Application::getInstance();
                     $q =& $app->getQuery();
@@ -777,7 +776,7 @@ END;
                     }
                 }
         
-                if ( @$app->prefs['use_old_resultlist_controller'] ){
+                if ( @$app->prefs['use_old_resultlist_controller'] and $this->_resultSet->found() > 0){
                     echo '<div class="resultlist-controller" id="resultlist-controller-bottom">';
     
                     echo $controller;
@@ -794,7 +793,7 @@ END;
         if ($desktop) {
             // Just to prevent from running twice.
             // In actuality this is used for both mobile and desktop
-			if ( @$app->prefs['use_old_resultlist_controller'] ){
+			if ( @$app->prefs['use_old_resultlist_controller'] and $this->_resultSet->found() > 0){
 				ob_start();
 				df_display(array(), 'Dataface_ResultListController.html');
 				$out .= ob_get_contents();
