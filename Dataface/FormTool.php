@@ -1225,7 +1225,7 @@ class Dataface_FormTool {
         }
         foreach ($tabforms as $tabname=>$currForm) {
 			$currForm->_flagSubmitted = true;
-			if ( !$currForm->validate($submittedValues) ){
+			if ( !$currForm->validate(($currForm === $form) ? null : $submittedValues) ){
                 if ($currForm !== $form) {
                     $errorMessage = df_translate('classes.FormTool.errors.ERROR_IN_TAB', 'A validation error occurred in the '.$tabs[$tabname]['label'].' tab.  Please verify that this tab\'s input is correct before saving.', array('tab'=>$tabs[$tabname]['label']));
                     foreach ($currForm->_errors as $error) {
