@@ -1180,13 +1180,13 @@ class Dataface_FormTool {
 		if (!$form->isSubmitted()) return false;
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
-
+        
 		$targets = preg_grep('/^--session:target:/', array_keys($query));
         
 		if ( count($targets) > 0 ) return true;
-
+        
 		$tabs = $record->tabs();
-
+        
 		if ( count($tabs) <= 1 ) return $form->validate();
 			// There is only one tab so we don't have to do anything fancy.
 		$session_data = $this->getSessionData();
@@ -1215,6 +1215,10 @@ class Dataface_FormTool {
                 $this->pushField($clone, $clone->table()->getField($field), $currForm, $field, $new, false);
                 $submittedValues[$field] = $clone->val($field);
 			}
+        }
+        $currTabName = @$query['--tab'];
+        if ($currTabName and !@$tabforms[$currTabName]) {
+            $tabforms[$currTabName] = $form;
         }
         if (count($tabforms) === 0) {
             $tabforms[] = $form;
