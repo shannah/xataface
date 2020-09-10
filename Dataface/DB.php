@@ -673,7 +673,7 @@ class Dataface_DB {
 			if ( preg_match('/^dataface__view_(.*)_[a-z0-9]{32}$/', $table, $matches) ){
 				$tables[$tid] = $table = $matches[1];
 			}
-			$tobj =& Dataface_Table::loadTable($table,null,true);
+			$tobj =& Dataface_Table::loadTable($table);
 			if ( is_a($tobj, 'Dataface_Table') and isset($tobj->_atts['__dependencies__']) ){
 				$deps = array_map('trim', explode(',', $tobj->_atts['__dependencies__']));
 				$tables = array_merge($tables, $deps);
