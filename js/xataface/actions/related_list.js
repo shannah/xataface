@@ -24,6 +24,15 @@
             });
         } 
 	});
+    
+    
+    function decoratePreviews(root) {
+        $('.external-link-preview[data-href]', root).click(function() {
+            window.open($(this).attr('data-href'));
+        });
+    }
+    registerXatafaceDecorator(decoratePreviews);
+    
     $(window).on('xf-viewport-changed', updateSettingsButtonPosition);
 	// Decorate the show/hide columns action
 	$('li.show-hide-related-list-columns-action a').click(function(){

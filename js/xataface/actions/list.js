@@ -29,10 +29,14 @@
             });
         }
             
-       $('.external-link-preview[data-href]').click(function() {
-           window.open($(this).attr('data-href'));
-       });
+       
         
+    }
+    
+    function decoratePreviews(root) {
+        $('.external-link-preview[data-href]', root).click(function() {
+            window.open($(this).attr('data-href'));
+        });
     }
     
     /**
@@ -94,4 +98,5 @@
     // When the viewport changes, we may need to update settings buttons position.
     $(window).on('xf-viewport-changed', updateSettingsButtonPosition);
     $(document).ready(init);
+    registerXatafaceDecorator(decoratePreviews);
 })();
