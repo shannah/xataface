@@ -23,8 +23,8 @@ class HttpClient {
      * @return \StdObject with properties status, code, data, and headers
      */
     public static function get($url, $headers=array()) {
-        if (strpos($url, 'http://') !== 0 and strpos($url, 'https://')) {
-            throw new Exception("Only http:// and https:// URLs are supported but found ".$url);
+        if (strpos($url, 'http://') !== 0 and strpos($url, 'https://') !== 0) {
+            throw new \Exception("Only http:// and https:// URLs are supported but found ".$url);
         }
         // use key 'http' even if you send the request to https://...
         $headerStr = '';
@@ -42,7 +42,7 @@ class HttpClient {
         $context  = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
         if (!@$http_response_header) {
-            throw new Exception("There was a problem with the request.  No response header received");
+            throw new \Exception("There was a problem with the request.  No response header received");
         }
         $status_line = self::status_line($http_response_header);
         preg_match('{HTTP\/\S*\s(\d{3})}', $status_line, $match);
