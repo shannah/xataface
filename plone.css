@@ -4601,10 +4601,28 @@ div.no-matches-menu ul li a > i {
     margin-top: 10px;
     margin-bottom: 10px;
     cursor:pointer;
+    display:flex;
+    flex-direction:column;
 }
+
+
 
 .external-link-preview > img {
     max-width: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+    .external-link-preview {
+        max-width: 640px;
+        max-height: 400px;
+        margin:auto;
+    }
+    
+    .external-link-preview > img {
+        max-height: 320px;
+        margin:auto;
+    }
+    
 }
 
 .external-link-preview > span.external-link-host {
