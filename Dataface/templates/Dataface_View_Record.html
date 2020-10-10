@@ -108,6 +108,7 @@
 			</tr>
 			{/if}
 			<tr>
+                {if !$ENV.prefs.hide_view_tab_left_column}
 				<td id="dataface-sections-left-column" valign="top">
 					<div class="dataface-sections-left{if $rv->showLogo} dataface-sections-left-with-logo{/if}" id="dataface-sections-left">
 						{if $rv->showLogo}
@@ -215,6 +216,7 @@
 					</div>
 					
 				</td>
+                {/if}
 				<td id="dataface-sections-main-column" valign="top">
 						<script>
 								{literal}

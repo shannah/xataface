@@ -601,7 +601,9 @@ class Dataface_Table {
 		$this->_atts = array();
 		$this->_atts['name'] = $this->tablename;
 
-		$this->_atts['label'] = (isset( $this->app->_tables[$this->tablename] ) ? $this->app->_tables[$this->tablename] : $this->tablename);
+		$this->_atts['label'] = (isset( $this->app->_tables[$this->tablename] ) ? 
+            $this->app->_tables[$this->tablename] : 
+            ucwords(str_replace('_', ' ', $this->tablename)));
 
 		$mod_times =& self::getTableModificationTimes();
 
@@ -2152,7 +2154,7 @@ class Dataface_Table {
 		$schema = array("Field"=>$fieldname, "Type"=>$type, "Null"=>'', "Key"=>'', "Default"=>'', "Extra"=>'');
 		$schema = array_merge_recursive_unique($this->_global_field_properties, $schema);
 		$widget = array();
-		$widget['label'] = ucfirst($schema['Field']);
+		$widget['label'] = ucwords(str_replace('_', ' ', $schema['Field']));
 		$widget['description'] = '';
 		$widget['label_i18n'] = $tablename.'.'.$fieldname.'.label';
 		$widget['description_i18n'] = $tablename.'.'.$fieldname.'.description';
@@ -2534,7 +2536,7 @@ class Dataface_Table {
 					}
 				}
 
-				if ( !isset( $grp['label'] ) ) $grp['label'] = ucfirst($grp['name']);
+				if ( !isset( $grp['label'] ) ) $grp['label'] = ucwords(str_replace('_', ' ', $grp['name']));
 				if ( !isset( $grp['description']) ) $grp['description'] = '';
 				if ( !isset( $grp['display_style']) ) $grp['display_style'] = "block";
 				if ( !isset( $grp['element_label_visible'])) {
@@ -2560,7 +2562,7 @@ class Dataface_Table {
 				$tabarr =& $this->_tabs[$tabname];
 				$tabarr['name'] = $tabname;
 
-				if ( !isset($tabarr['label']) ) $tabarr['label'] = ucfirst($tabname);
+				if ( !isset($tabarr['label']) ) $tabarr['label'] = ucwords(str_replace('_', ' ', $tabname));
 				if ( !isset($tabarr['description']) ) $tabarr['description'] = '';
 
 				unset($tabarr);
@@ -3283,7 +3285,7 @@ class Dataface_Table {
 	 */
 	function getLabel(){
             if ( !@$this->_atts['label'] ){
-                $this->_atts['label'] = $this->tablename;
+                $this->_atts['label'] = ucwords(str_replace('_', ' ', $this->tablename));
             }
             if ( !@$this->_atts['label__translated']){
                 $this->_atts['label__translated'] = true;
