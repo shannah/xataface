@@ -27,6 +27,9 @@
 /*  (not this either :) */
 
 /* The basic elements: */
+
+
+
 @font-face {
     font-family: 'Material Icons';
     font-style: normal;
@@ -42,12 +45,91 @@
 :root {
     --main-bg-color: rgb(231, 234, 237);
     --light-bg-color:#f6f8fa;
+    
+    /* Main background color for app.  This would be the body background. */
+    --mainBgColor: white;
+    --mainTextColor: black;
+    --secondaryTextColor: #666666;
+    --linkTextColor: #0366d6;
+    --linkTextVisitedColor: Purple;
+    --linkTextActiveColor: Red;
+    
+    --highlightColor: rgb(225, 228, 232);
+    --highlightColorLight: rgb(236, 239, 241);
+    
+    /* Background color of trim sections.  Such as the status bar, even/odd rows, etc..
+       Generally a light color. */
+    --trimBgColor:#f6f8fa;
+    
+    /* Background color for top status bar stripe */
+    --stripeBgColor: #f6f8fa;
+    
+    /** Color of text in main buttons and menu items **/
+    --buttonColor: rgb(118, 118, 118);
+    --buttonBgColor: #28a745;
+    
+    /** Color of text in main buttons and menu items when selected */
+    --buttonSelectedColor: black;
+    
+    /** Navigation tab top border color when tab is selected */
+    --tabRidgeSelectedColor: darkorange;
+    --menuSelectedColor: black;
+    --menuBorderColor: rgb(218, 220, 224);
+    --menuBgColor:#fefefe;
+    --menuColor: #888888;
+    
+    /** Navigation tab top border color when hovering over the tab. */
+    --tabRidgeHoverColor: purple;
+    
+    /** The navigation tab ridge color when not selected. */
+    --tabRidgeColor: #eeeeee;
+    
+    /** Bg color of tab when hovering */
+    --tabHoverBgColor: rgb(244, 246, 250);
+    
+    --inputBgColor: var(--mainBgColor);
+    --inputTextColor: var(--mainTextColor);
+    --inputBorderColor: #666666;
+    --inputFocusedBorderColor: #ffa500;
+    
+    
+    --loginFieldBgColor: #f5f5f5;
+    --loginFieldUnderlineColor: #666666;
+    --loginFieldUnderlineFocusedColor: #28a745;
+    --loginFieldLabelColor: #888888;
+    --loginFieldLabelFocusedColor: #28a745;
+    --submitButtonBgColor: #28a745;
+    --submitButtonBgImage: linear-gradient(-180deg,#34d058,#28a745 90%);
+    --submitButtonTextColor: #fff;
+    
+    --messageBorderColor: #222;
+    --messageBgColor: #eaeaea;
+    --messageTextColor: #333;
+    
+    --mobileFooterBgColor: #fefefe;
+    --mobileFooterBorderColor: #666666;
+    --mobileTabIconColor: #999999;
+    --mobileTabLabelColor: #999999;
+    --mobileTabIconSelectedColor: rgb(10,132,255);
+    --mobileTabLabelSelectedColor: rgb(10,132,255);
+    
+    --mobileStatusBarBgColor: black;
+    --mobileStatusBarBorderColor: black;
+    --mobileTitleTextColor: white;
+    
+    --sidebarMenuTextColor: #fff;
+    --sidebarTextColor: rgba(255, 255, 255, 0.50);
+    
 }
+
+
+
+
 
 body {
     font: 100% Arial,"Helvetica Neue",Helvetica,sans-serif;
-    background-color: White;
-    color: Black;
+    background-color: var(--mainBgColor);
+    color: var(--mainTextColor);
     margin: 0;
     padding: 0;
 }
@@ -58,7 +140,7 @@ table {
 
 a {
     text-decoration: none;
-    color: #0366d6;
+    color: var(--linkTextColor);
     background-color: transparent;
 }
 img {
@@ -73,11 +155,11 @@ p a {
     text-decoration: underline;
 }
 p a:visited {
-    color: Purple;
+    color: var(--linkTextVisitedColor);
     background-color: transparent;
 }
 p a:active {
-    color: Red;
+    color: var(--linkTextActiveColor);
     background-color: transparent;
 }
 p img {
@@ -93,7 +175,7 @@ hr {
 
 
 h1, h2, h3, h4, h5, h6 {
-    color: Black;
+    color: var(--mainTextColor);
     background-color: transparent;
     font-family: "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
     font-size: 100%;
@@ -108,7 +190,7 @@ h3 a,
 h4 a,
 h5 a,
 h6 a {
-    color: Black ! important; 
+    color: var(--mainTextColor) ! important; 
 }
 
 h1 {
@@ -180,7 +262,7 @@ dd a {
 
 dd.link a {
     text-decoration: none;
-    color: Black;
+    color: var(--mainTextColor);
 }
 
 fieldset {
@@ -191,7 +273,7 @@ fieldset {
     width: auto;
 }
 legend {
-    background: White;
+    background: var(--mainBgColor);
     padding: 0.5em;
     font-size: 90%;
 }
@@ -203,8 +285,8 @@ form {
 textarea {
     font: 110% "Courier New", Courier, monospace; 
     border: 1px solid #8cacbb;  
-    color: Black;
-    background-color: white;
+    color: var(--mainTextColor);
+    background-color: var(--mainBgColor);
     width: 100%;
 }
 input {
@@ -212,16 +294,22 @@ input {
         padding: 6px 8px;
         font-size: 100%;
         line-height: 20px;
-        color: #24292e;
+        color: var(--inputTextColor);
         vertical-align: middle;
-        background-color: #fff;
+        background-color: var(--inputBgColor);
         background-repeat: no-repeat;
         background-position: right 8px center;
-        border: 1px solid #d1d5da;
+        border: 1px solid var(--inputBorderColor);
         border-radius: 3px;
         outline: none;
         box-shadow: inset 0 1px 2px rgba(27,31,35,.075);
     
+}
+
+input[type='submit'] {
+    color: var(--submitButtonTextColor);
+    background-color: var(--submitButtonBgColor);
+    background-image: var(--submitButtonBgImage);
 }
 td.Dataface_QuickForm-label-cell {
     padding: 8px;
@@ -230,13 +318,13 @@ td.Dataface_QuickForm-label-cell {
 
 select {
     border: 1px solid #8cacbb;  
-    color: Black;
-    background-color: White;
+    color: var(--mainTextColor);
+    background-color: var(--mainBgColor);
     vertical-align: top;
 }
 abbr, acronym, .explain {
     border-bottom: 1px dotted Black;
-    color: Black;
+    color: var(--mainTextColor);
     background-color: transparent;
     cursor: help;
 }
@@ -253,7 +341,7 @@ blockquote {
 code {
     font-family: "Courier New", Courier, monospace;
     font-size: 120%;
-    color: Black;
+    color: var(--mainTextColor);
     background-color: #dee7ec;
     border: 1px dashed #8cacbb;
     padding: 0 0.1em;
@@ -263,7 +351,7 @@ pre {
     font-size: 120%;
     padding: 1em;
     border: 1px dashed #8cacbb;
-    color: Black;
+    color: var(--mainTextColor);
     background-color: #dee7ec;
     overflow: auto;
 }
@@ -437,7 +525,7 @@ del {
     border-bottom-style: solid;
     border-bottom-width: 1px;
     line-height: 1.3em;
-    color: Black;
+    color: var(--mainTextColor);
     padding: 0em 3em 0em 3em;
     margin: 0;
     text-align: right;
@@ -450,7 +538,7 @@ del {
 }
 
 #portal-personaltools .portalNotLoggedIn {
-    color: Black;
+    color: var(--mainTextColor);
     padding: 0;
     background: transparent;
     background-image: none;
@@ -509,7 +597,7 @@ del {
 
 .contentActions {
     background-color: transparent;
-    color: #666666;
+    color: var(--secondaryTextColor);
     text-align: left;
     
     padding: 0 0 0 1em;
@@ -527,7 +615,7 @@ del {
     list-style: none;
     list-style-image: none;
     display: inline;
-    color: Black;
+    color: var(--mainTextColor);
     text-align: left;
     line-height: 1.2em;
 }
@@ -692,7 +780,7 @@ del {
 .documentContent {
     font-size: 110%;
     
-    background: White;
+    background: var(--mainBgColor);
 }
 
 .documentEditable .documentContent {
@@ -727,19 +815,19 @@ del {
 .portalMessageWrapper {
     margin:0;
     padding:1em;
-    background-color: var(--light-bg-color);
+    background-color: var(--stripeBgColor);
 }
 
 .portalMessage,
 .system-message,  /* These two last ones are reST error indicators */
 #error-handling {
-    background-color: #ffce7b;
-    border: 1px solid #ffa500;
-    color: Black;
+    background-color: var(--messageBgColor);
+    border: 1px solid var(--messageBorderColor);
+    color: var(--messageTextColor);
     font-size: 85%;
     font-weight: bold;
     margin: 0em 0em 0em 0em;
-    margin-right: 2em;
+    
     padding: 0.5em 1em 0.5em 3em;
     vertical-align: middle;
     background-image: url(images/info_icon.gif);
@@ -760,7 +848,7 @@ del {
 	list-style-image: none;
 }
 .portalMessage a {
-    color: Black;
+    color: var(--mainTextColor);
     text-decoration: underline;
 }
 .documentDescription {
@@ -816,7 +904,7 @@ del {
     list-style: none;
     display: inline;
     text-decoration: none;
-    color: Black;
+    color: var(--mainTextColor);
 }
 
 #portal-colophon ul li {
@@ -861,7 +949,7 @@ del {
 input.searchButton {
     font-size: 100%;
     margin-bottom: 1px ! important;
-    background: White url(images/search_icon.gif) 2px 1px no-repeat;
+    background: var(--mainBgColor) url(images/search_icon.gif) 2px 1px no-repeat;
     cursor: pointer;
     padding: 1px 1px 1px 15px;
     
@@ -922,7 +1010,7 @@ input.searchButton {
 }
 
 .formHelp:hover {
-    color: Black;
+    color: var(--mainTextColor);
     cursor: default;
 }
 
@@ -1007,7 +1095,7 @@ body.cover-image .record-heading-logo {
     border: 3px solid white;
     border-radius: 32px;
     padding:0;
-    background-color:white;
+    background-color:var(--mainBgColor);
     margin-top: -32px;
     margin-left: 10px;
 }
@@ -1031,13 +1119,13 @@ body.cover-image .record-heading-logo {
 .stx table {
     /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
     border-collapse: collapse;
-    border: 1px solid rgb(236, 239, 241);
+    border: 1px solid var(--highlightColorLight);
     font-size: 100%;
     margin: 0.5em 0em 0.5em 0em;
 }
 .listing th,
 .stx table th {
-    background-color:var(--light-bg-color);
+    background-color:var(--trimBgColor);
     
     border-top: none;
     border-bottom: none;
@@ -1091,19 +1179,19 @@ body.cover-image .record-heading-logo {
 }
 .listing .even,
 .listing > tbody > tr.even > td{
-    background-color:var(--light-bg-color);
+    background-color:var(--trimBgColor);
 }
 .listing .listingCheckbox {
     text-align: center;
 }
 
 .listing tbody tr {
-    border: 1px solid rgb(236, 239, 241);
+    border: 1px solid var(--highlightColorLight);
 }
 
 .listing td,
 .stx table td {
-    border-right: 1px solid rgb(236, 239, 241);
+    border-right: 1px solid var(--highlightColorLight);
     padding: 0em 1em;
     text-align: left;
 }
@@ -1219,7 +1307,7 @@ ol.visualNoMarker {
 }
 
 .portlet .even {
-    background-color: var(--light-bg-color);
+    background-color: var(--trimBgColor);
 }
 .portlet .odd {
     background-color: transparent;
@@ -1416,7 +1504,7 @@ ol.visualNoMarker {
     
 }
 .even {
-    background-color: var(--light-bg-color);
+    background-color: var(--trimBgColor);
 }
 .odd {
     background-color: transparent;
@@ -1574,7 +1662,7 @@ ol.visualNoMarker {
 
 .optionsToggle {
     border: 1px solid #8cacbb;
-    color: Black;
+    color: var(--mainTextColor);
     background-color: #dee7ec;
     font-weight: normal !important;
     font-size: 85%;
@@ -1584,7 +1672,7 @@ ol.visualNoMarker {
 
 #portal-column-content fieldset > * input:focus,
 #portal-column-content fieldset > * textarea:focus {
-    border-color: #ffa500; 
+    border-color: var(--inputFocusedBorderColor); 
     border-width: 1px;
 }
 
@@ -1828,7 +1916,7 @@ ul#relatedActions li#import {
 }
 
 tr.even, td.even {
-	background-color: var(--light-bg-color);
+	background-color: var(--trimBgColor);
 }
 
 .status-bar {
@@ -1908,8 +1996,8 @@ tr.even, td.even {
 #status-bar, .resultlist-controller {
 	/*background-image: url(images/blue-gradient.jpg);
 	background-repeat: repeat-x;*/
-	background-color: var(--light-bg-color);
-    border-top: 1px solid rgb(236, 239, 241);
+	background-color: var(--trimBgColor);
+    border-top: 1px solid var(--highlightColorLight);
    	border-bottom: none;
  
     
@@ -1919,6 +2007,10 @@ tr.even, td.even {
     padding: 2px;
 }
 
+#status-bar {
+    background-color: var(--stripeBgColor);
+}
+
 .resultlist-controller {
 	clear: none;
 }
@@ -1926,7 +2018,7 @@ tr.even, td.even {
 #top-result-stats, #limit-field, .result-stats, .limit-field {
 	display: inline;
 	float: left;
-	 color: black;
+	 color: var(--mainTextColor);
 	font-size: 80%;
 	/*border-bottom: 1px dotted #8cacbb;*/
 	border-right: 1px dotted #8cacbb;
@@ -1976,7 +2068,7 @@ tr.even, td.even {
 #user-status {
 	float: right;
 	display: inline;
-	color: black;
+	color: var(--mainTextColor);
 	padding-right: 0.5em;
 }
 
@@ -2023,7 +2115,7 @@ tr.even, td.even {
 
 .resultlist-controller, #details-controller {
 
-    background-color: var(--light-bg-color);
+    background-color: var(--trimBgColor);
     
     font-weight: normal;
     font-size: 80%;
@@ -2119,7 +2211,7 @@ h1.page-header {
 .level4 { padding-left: 3em; }
 
 table.treetable tr, table.treetable td {
-	background-color: var(--light-bg-color);
+	background-color: var(--trimBgColor);
 	border-bottom: 1px solid #fff;
 	border-top: 1px solid #ccc;
 	
@@ -2131,7 +2223,7 @@ table.treetable thead tr {
 
 table.treetable {
 	 border: 1px solid #8cacbb;
-	 background-color: var(--light-bg-color);
+	 background-color: var(--trimBgColor);
 	 border-spacing: 0;
 }
 
@@ -2360,7 +2452,7 @@ div#selected-records-list {
 	float: left;
 	padding: 1em;
 	margin-right: 1em;
-	background-color: white;
+	background-color: var(--mainBgColor);
 	border-right: 1px solid #ccc;
 }
 
@@ -2475,7 +2567,7 @@ div.Dataface_Summary_List-item-actions a:hover {
 	padding: 5px 5px 5px 10px;
 }
 .Dataface_SummaryLIst-record-status:hover {
-	color: black;
+	color: var(--mainTextColor);
 }
 
 
@@ -2522,7 +2614,7 @@ div.Dataface_Summary_List-item-actions a:hover {
 h3.Dataface_collapsible_sidebar {
 	font-size: 11px;
 	font-weight: bold;
-	background-color: var(--light-bg-color);
+	background-color: var(--trimBgColor);
 	padding-left: 15px;
 	padding-right: 3px;
 	/*background-image: url(images/treeExpanded.gif);*/
@@ -2583,7 +2675,7 @@ table.record-view-table th {
 }
 
 table.record-view-table td {
-	color: black;
+	color: var(--mainTextColor);
 	font-weight: normal;
     font-size: 90%;
     padding:5px;
@@ -2619,7 +2711,7 @@ td#dataface-sections-main-column {
 	padding-left: 15px;
 }
 div.dataface-sections-main h3.Dataface_collapsible_sidebar, .dataface-sections-left h3.Dataface_collapsible_sidebar {
-	background-color:  var(--light-bg-color);
+	background-color:  var(--trimBgColor);
 	border-top: 1px solid #8cacbb;
 	/*margin-top: 5px;*/
 }
@@ -2629,7 +2721,7 @@ div.dataface-sections-main h3.Dataface_collapsible_sidebar, .dataface-sections-l
 div.dataface-sections-top{
 	/*padding: 10px 2em 10px 247px;
 	margin: 0 -12px 5px -12px;*/
-	background-color: var(--light-bg-color);
+	background-color: var(--trimBgColor);
 	border-bottom: 1px solid #ccc;
 	font-size: 11px;
 	padding: 1em;
@@ -2756,7 +2848,7 @@ div.resultlist-filters ul {
 
 div.resultlist-filters-buttons {
     text-align: right;
-    background-color: var(--light-bg-color);
+    background-color: var(--trimBgColor);
 }
 
 div.resultlist-filters-buttons button {
@@ -2874,17 +2966,18 @@ nav.personal-tools-menu a {
   div.xf-button-bar-actions ul,
   nav.tables ul,
   nav.personal-tools-menu  ul {
-    background: rgb(245, 245, 245);
+    background: var(--menuBgColor);
       list-style: none;
       margin: 0;
       padding-left: 0;
   }
+  
   div.xf-button-bar-actions li,
   nav.tables li,
   nav.personal-tools-menu  li {
       color: #fff;
-    background: white;
-      border: 1px solid rgb(218, 220, 224);
+    background: var(--menuBgColor);
+      border: 1px solid var(--menuBorderColor);
       border-radius: 4px;
       display: block;
       padding: 0.25em;
@@ -2895,6 +2988,11 @@ nav.personal-tools-menu a {
     transition-duration: 0.5s;
         margin-bottom: 0;
   }
+  
+  nav.tables li, nav.tables ul {
+      background: var(--mainBgColor);
+  }
+  
   @media only screen and (min-width:768px) {
       div.xf-button-bar-actions li.mobile,
       nav.tables li.mobile,
@@ -2917,19 +3015,19 @@ nav.personal-tools-menu a {
 
 nav.tables li {
     border: none;
-    border-top: 4px solid #eaeaea;
+    border-top: 4px solid var(--tabRidgeColor);
     border-radius: 0;
 }
 
-na.tables li > a {
+nav.tables li > a {
     color: #999999;
 }
 nav.tables li.selected  {
-    border-top: 4px solid darkorange;
+    border-top: 4px solid var(--tabRidgeSelectedColor);
 }
 
 nav.tables li.selected > a {
-    color:black;
+    color:var(--menuSelectedColor);
 }
 div.xf-button-bar-actions > ul > li.featured-action,
   nav.personal-tools-menu > ul > li.featured-action {
@@ -2955,7 +3053,7 @@ div.xf-button-bar-actions > ul > li.featured-action,
   div.xf-button-bar-actions li a,
   nav.tables li a, 
   nav.personal-tools-menu li a {
-    color: rgb(118, 118, 118);
+    color: var(--menuColor);
     white-space: nowrap;
     
   }
@@ -2974,14 +3072,14 @@ div.xf-button-bar-actions > ul > li.featured-action,
   nav.tables li:focus-within,
   nav.personal-tools-menu  li:hover,
   nav.personal-tools-menu li:focus-within {
-      background: rgb(244, 246, 250);
+      background: var(--tabHoverBgColor);
       border: 1px solid rgb(205, 221, 244);
       cursor: pointer;
   }
   nav.tables li:hover,
   nav.tables li:focus-within {
       border: none;
-      border-top: 4px solid purple;
+      border-top: 4px solid var(--tabRidgeHoverColor);
   }
   div.xf-button-bar-actions a,
   nav.tables li:focus-within a ,
@@ -2991,7 +3089,7 @@ div.xf-button-bar-actions > ul > li.featured-action,
   div.xf-button-bar-actions li ul,
   nav.tables ul li ul,
   nav.personal-tools-menu ul li ul {
-      background: orange;
+      background: var(--menuBgColor); foobar
       visibility: hidden;
     opacity: 0;
     min-width: 5rem;
@@ -3048,8 +3146,8 @@ div.xf-button-bar-actions > ul > li.featured-action,
     
     margin:0;
     padding:0;
-    border-bottom: 1px solid rgb(225, 228, 232);
-    background-color: var(--light-bg-color);
+    border-bottom: 1px solid var(--highlightColor);
+    background-color: var(--trimBgColor);
     padding-left: 25px;
     
 }
@@ -3077,7 +3175,7 @@ nav.table_tabs a {
   }
 
   nav.table_tabs li.selected > a > i {
-      color: black;
+      color: var(--mainTextColor);
   }
 
   nav.table_tabs li.selected > a {
@@ -3095,12 +3193,12 @@ nav.table_tabs a {
   }
 
   nav.table_tabs li.selected > a > span {
-      color: black;
+      color: var(--mainTextColor);
   }
   
   
   nav.table_tabs  ul {
-    background: white;
+    background: var(--mainBgColor);
       list-style: none;
       margin: 0;
       padding-left: 0;
@@ -3123,7 +3221,7 @@ nav.table_tabs a {
 
 
   nav.table_tabs li.selected {
-      border-top: 4px solid darkorange;
+      border-top: 4px solid var(--tabRidgeSelectedColor);
       border-bottom: 1px solid white;
       border-left: 1px solid rgb(222, 224, 229);
       border-right: 1px solid rgb(222, 224, 229);
@@ -3201,7 +3299,7 @@ nav.table_tabs a {
       bottom:0;
       right:0;
       overflow: scroll;
-      background-color:white;
+      background-color:var(--mainBgColor);
   }
 
   .dataface-current-record-prelabel {
@@ -3242,8 +3340,8 @@ body.two-col #status-bar .responsive-content,
     padding-left: 16px !important;
     color: #586069;
     width: auto !important;
-    background-color: var(--light-bg-color) !important;
-    border: 1px solid #d1d5da !important;
+    background-color: var(--trimBgColor) !important;
+    border: 1px solid var(--highlightColor) !important;
     border-top-left-radius: 3px !important;
     border-top-right-radius: 3px !important;
     margin-left: -1px !important;
@@ -3260,7 +3358,7 @@ body.two-col #status-bar .responsive-content,
  .resultlist-filters,
   .xf-form-group-wrapper,
   .movable {
-    border: 1px solid #d1d5da;
+    border: 1px solid var(--highlightColor);
     border-radius: 3px;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -3277,10 +3375,10 @@ body.two-col #status-bar .responsive-content,
     padding: 0px;
     padding-right: 16px;
     padding-left: 16px !important;
-    color: #586069;
+    color: var(--mainTextColor);
     width: auto !important;
-    background-color: var(--light-bg-color) !important;
-    border: 1px solid #d1d5da !important;
+    background-color: var(--trimBgColor) !important;
+    border: 1px solid var(--highlightColor) !important;
     border-top-left-radius: 3px !important;
     border-top-right-radius: 3px !important;
     margin-top: 8px;
@@ -3318,9 +3416,11 @@ body.two-col #status-bar .responsive-content,
   }
   
   #login-window .reset-password-field-wrapper {
-      border-bottom: 2px solid #666666;
-      background-color: #f5f5f5;
+      border-bottom: 2px solid var(--loginFieldUnderlineColor);
+      background-color: var(--loginFieldBgColor);
   }
+  
+   
   
   #login-window .reset-password-field-wrapper input {
       border:none;
@@ -3363,9 +3463,9 @@ body.two-col #status-bar .responsive-content,
   
   #login-window input#Login-submit,
   #login-window input#reset-password-submit-button {
-      color: #fff;
-      background-color: #28a745;
-      background-image: linear-gradient(-180deg,#34d058,#28a745 90%);
+      color: var(--submitButtonTextColor);
+      background-color: var(--submitButtonBgColor);
+      background-image: var(--submitButtonBgImage);
       width:100%;
       box-sizing:border-box;
       margin: 10px 0 10px 0;
@@ -3474,10 +3574,10 @@ body.two-col #status-bar .responsive-content,
       
       #Login-Username,
       #Login-Password {
-          background-color: #f5f5f5;
+          background-color: var(--loginFieldBgColor);
           padding: 10px;
           border-radius:2px;
-          border-bottom: 2px solid #666666;
+          border-bottom: 2px solid var(--loginFieldUnderlineColor);
           padding-top: 0;
           margin: 20px 0 20px 0;
           
@@ -3485,7 +3585,7 @@ body.two-col #status-bar .responsive-content,
       
       #Login-Username.focused,
       #Login-Password.focused {
-          border-bottom: 2px solid #28a745;
+          border-bottom: 2px solid var(--loginFieldUnderlineFocusedColor);
       }
       
       div#Login-Username > label,
@@ -3502,11 +3602,11 @@ body.two-col #status-bar .responsive-content,
       div#Login-Username > label,
       div#Login-Password > label  {
           font-size: 60%;
-          color: #888888;
+          color: var(--loginFieldLabelColor);
       }
       div#Login-Username.focused > label,
       div#Login-Password.focused > label  {
-          color: #28a745;
+          color: var(--loginFieldLabelFocusedColor);
       }
       
       div#Login-Username > input,
@@ -3520,8 +3620,8 @@ body.two-col #status-bar .responsive-content,
       
       #login-window input#Login-submit {
           color: #fff;
-          background-color: #28a745;
-          background-image: linear-gradient(-180deg,#34d058,#28a745 90%);
+          background-color: var(--submitButtonBgColor);
+          background-image: var(--submitButtonBgImage);
           width:100%;
           box-sizing:border-box;
           margin: 10px 0 10px 0;
@@ -3573,13 +3673,13 @@ body.two-col #status-bar .responsive-content,
         font-weight: bold;
         font-size: 12pt;
         line-height: 18pt;
-        color: black;
+        color: var(--mainTextColor);
       }
   
       .mobile-description,
       .mobile-description > a {
         font-weight: normal;
-        color: #666666;
+        color: var(--secondaryTextColor);
         font-size: 10pt;
         line-height: 16pt;
     
@@ -3623,7 +3723,7 @@ body.two-col #status-bar .responsive-content,
     
       .mobile-listing.list-style-mobile .mobile-row-actions a {
           flex-grow: 1;
-          color: #666666;
+          color: var(--buttonColor);
       }
     
       .mobile-listing.list-style-mobile .mobile-row-actions a i {
@@ -3712,10 +3812,10 @@ body.two-col #status-bar .responsive-content,
       
       #Login-Username,
       #Login-Password {
-          background-color: #f5f5f5;
+          background-color: var(--loginFieldBgColor);
           padding: 10px;
           border-radius:2px;
-          border-bottom: 2px solid #666666;
+          border-bottom: 2px solid var(--loginFieldUnderlineColor);
           padding-top: 0;
           margin: 10px 0 10px 0;
           
@@ -3789,8 +3889,8 @@ body.two-col #status-bar .responsive-content,
           bottom:0;
           left:0;
           right:0;
-          border-top: 1px solid #cccccc;
-          background-color: #fefefe;
+          border-top: 1px solid var(--mobileFooterBorderColor);
+          background-color: var(--mobileFooterBgColor);
       }
       
       .mobile-header {
@@ -3863,13 +3963,13 @@ body.two-col #status-bar .responsive-content,
     font-weight: bold;
     font-size: 12pt;
     line-height: 18pt;
-    color: black;
+    color: var(--mainTextColor);
   }
   
   .mobile-description,
   .mobile-description > a {
     font-weight: normal;
-    color: #666666;
+    color: var(--secondaryTextColor);
     font-size: 10pt;
     line-height: 16pt;
     
@@ -3920,7 +4020,7 @@ body.two-col #status-bar .responsive-content,
     }
     
     .mobile.page-title {
-        color: white;
+        color: var(--mobileTitleTextColor);
         padding: 20px;
         text-align: center;
 
@@ -3961,7 +4061,7 @@ body.two-col #status-bar .responsive-content,
     
     .mobile-row-actions a {
         flex-grow: 1;
-        color: #666666;
+        color: var(--secondaryTextColor);
     }
     
     .mobile-row-actions a i {
@@ -4025,18 +4125,20 @@ body.two-col #status-bar .responsive-content,
     nav.table_tabs_mobile > ul > li > a > span {
         font-size: 50%;
         text-align:center;
-        color: #aaaaaa;
+        color: var(--mobileTabLabelColor);
     }
     
     nav.table_tabs_mobile > ul > li > a > i {
         font-size: 200%;
         text-align:center;
-        color: #999999;
+        color: var(--mobileTabIconColor);
     }
     
-    nav.table_tabs_mobile > ul > li.selected > a > span,
+    nav.table_tabs_mobile > ul > li.selected > a > span {
+        color: var(--mobileTabLabelSelectedColor);
+    }
     nav.table_tabs_mobile > ul > li.selected > a > i  {
-        color: rgb(10,132,255);
+        color: var(--mobileTabIconSelectedColor);
     }
 
     .dataface-record-title {
@@ -4104,7 +4206,7 @@ body.two-col #status-bar .responsive-content,
         right:0;
         box-sizing:border-box;
         margin:0;
-        background-color:white;
+        background-color:var(--mainBgColor);
     }
     .xf-form-group-wrapper.button-section tr,
     .xf-form-group-wrapper.button-section td {
@@ -4431,7 +4533,7 @@ div.mobile-list-settings-wrapper.active {
     position:absolute;
     right:0;
     height:100%;
-    background-color:white;
+    background-color:var(--mobileFooterBgColor);
     display:flex;
     padding-top:15px;
     padding-right: 10px;

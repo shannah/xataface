@@ -23,7 +23,7 @@ body.large #openSidebarMenu
 }
 
 body.small {
-    background: #fff;
+    background: var(--mainBgColor);
     padding: 0;
     margin: 0;
     font-family: 'Varela Round', sans-serif;
@@ -34,11 +34,12 @@ body.small .sidemenu.header {
     width: 100%;
     max-width: 100%;
     box-shadow: none;
-    background-color: black;
+    background-color: var(--mobileStatusBarBgColor);
     position: fixed;
     height: 60px!important;
     /*overflow: hidden;*/
     z-index: 10;
+    border-bottom: 1px solid var(--mobileStatusBarBorderColor);
 }
 body.small .sidemenu.main {
     margin: 0 auto;
@@ -67,7 +68,8 @@ body.small #sidebarMenu {
     top: 60px;
     transform: translateX(-250px);
     transition: transform 250ms ease-in-out;
-    background-color: black;
+    background-color: var(--mobileStatusBarBgColor);
+    border-bottom: 1px solid var(--mobileStatusBarBorderColor);
     z-index:1;
 }
 body.small .sidebarMenuInner{
@@ -77,7 +79,7 @@ body.small .sidebarMenuInner{
 }
 body.small .sidebarMenuInner li{
     list-style: none;
-    color: #fff;
+    color: var(--sidebarMenuTextColor);
     text-transform: uppercase;
     font-weight: bold;
     padding: 20px;
@@ -87,10 +89,10 @@ body.small .sidebarMenuInner li{
 body.small .sidebarMenuInner li span{
     display: block;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.50);
+    color: var(--sidebarTextColor);
 }
 body.small .sidebarMenuInner li a{
-    color: #fff;
+    color: var(--sidebarMenuTextColor);
     text-transform: uppercase;
     font-weight: bold;
     cursor: pointer;
@@ -124,7 +126,7 @@ body.small .spinner {
     position: absolute;
     height: 3px;
     width: 100%;
-    background-color: #fff;
+    background-color: var(--mainBgColor);
 }
 body.small .horizontal {
     transition: all 0.3s;

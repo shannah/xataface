@@ -109,7 +109,7 @@
  * The close button.
  */
 .xf-sheet-close {
-    color: black;
+    color: var(--buttonColor);
     position:absolute;
     top:15px;
     left:15px;

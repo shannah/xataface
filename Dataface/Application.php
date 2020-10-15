@@ -2502,11 +2502,35 @@ END
 		if ( isset($applicationDelegate) and method_exists($applicationDelegate, 'getPreferences') ){
 			$this->prefs = array_merge($this->prefs, $applicationDelegate->getPreferences());
 		}
+        if (class_exists('Dataface_AuthenticationTool')) {
+            $auth = Dataface_AuthenticationTool::getInstance();
+            $userRecord = $auth->getLoggedInUser();
+            if ($userRecord) {
+                $stylesheetField = null;
+                // Fill in preferences with those found in the user record.
+                foreach ($userRecord->table()->fields(false, true, true) as $fld) {
+                    if (isset($fld['prefs.key'])) {
+                        $this->prefs[$fld['prefs.key']] = $userRecord->val($fld['name']);
+                    }
+                }
+                
+            }
+        }
+        
         foreach ($this->prefs as $k=>$v) {
             if ($v === '0') {
                 $this->prefs[$k] = 0;
             } else if ($v === '1') {
                 $this->prefs[$k] = 1;
+            }
+        }
+        
+        if (isset($this->prefs['user_stylesheet'])) {
+            $userStylesheet = basename($this->prefs['user_stylesheet']);
+            if (file_exists(XFAPPROOT.'css/'.$userStylesheet)) {
+                xf_stylesheet(DATAFACE_SITE_URL .'/css/'.$userStylesheet, false);
+            } else if (file_exists(XFROOT.'css/'.$userStylesheet)) {
+                xf_stylesheet(DATAFACE_URL.'/css/'.$userStylesheet, false);
             }
         }
 		
