@@ -1029,6 +1029,44 @@ function df_tz_or_offset(){
 		return Dataface_ActionTool::getInstance()->countActions($params, $actions);
 	}
 	
+    function df_http_parse_headers($headers) {
+        $head = array();
+        foreach( $headers as $k=>$v ) {
+            $t = explode( ':', $v, 2 );
+            if( isset( $t[1] ) ) {
+                $head[ trim($t[0]) ] = trim( $t[1] );
+            } else {
+                $head[] = $v;
+                if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) ) {
+                    $head['response_code'] = intval($out[1]);
+                }
+            }
+        }
+        //print_r($head);
+        return $head;
+    }
+    
+    
+    function df_http_response_code() {
+        import(XFROOT.'xf/io/HttpClient.php');
+		return xf\io\df_http_response_code();
+    }
+    
+    function df_http_response_headers() {
+        import(XFROOT.'xf/io/HttpClient.php');
+		return xf\io\df_http_response_headers();
+    }
+    
+    function df_http_post($url, $data=array(), $json=true) {
+        import(XFROOT.'xf/io/HttpClient.php');
+		return xf\io\df_http_post($url, $data, $json);
+    }
+    
+    function df_http_get($url, $headers = null, $json = true) {
+        import(XFROOT.'xf/io/HttpClient.php');
+		return xf\io\df_http_get($url, $headers, $json);
+    }
+	
 	
         
 } // end if ( !defined( DATAFACE_PUBLIC_API_LOADED ) ){

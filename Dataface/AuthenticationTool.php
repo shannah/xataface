@@ -87,6 +87,11 @@ class Dataface_AuthenticationTool {
 	}
 		function Dataface_AuthenticationTool($params=array()) { self::__construct($params); }
 	
+		public function getUsersTable() {
+			if (!$this->usersTable) return null;
+			return Dataface_Table::loadTable($this->usersTable);
+		}
+	
 	function setAuthType($type){
 		if ( isset( $type ) and $type != $this->authType ){
 			$this->authType = $type;
@@ -625,6 +630,21 @@ class Dataface_AuthenticationTool {
 		}
 		return $this->emailColumn;
 	}
+	
+	function findUser($query) {
+        return df_get_record($this->usersTable, $query);
+    }
+
+    function findUserByUsername($username) {
+        return $this->findUser(array($this->usernameColumn => '='.$username));
+    }
+
+    function findUserByEmail($email) {
+        $emailColumn = $this->getEmailColumn();
+        if (isset($emailColumn)) {
+            return $this->findUser(array($emailColumn => "=".$email));
+        }
+    }
 	
 	function getUserGroupNames(){
 	    return array("FOO","BAR");

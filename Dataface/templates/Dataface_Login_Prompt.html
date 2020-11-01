@@ -153,7 +153,7 @@
 		{actions category="login_actions" var="login_actions"}
 		<ul class="login-actions">
 		{foreach from=$login_actions item="action"}
-		 	<li><a href="{$action.url|escape}">{if $action.materialIcon}<i class="material-icons">{$action.materialIcon|escape}</i>{/if}<span>{$action.label|escape}</span></a></li>
+		 	<li><a href="{$action.url|escape}" {if $action.target}target="{$action.target|escape}"{/if}>{if $action.materialIcon}<i class="material-icons">{$action.materialIcon|escape}</i>{/if}<span>{$action.label|escape}</span></a></li>
 		{/foreach}
 		</ul>
 		{/define_slot}
