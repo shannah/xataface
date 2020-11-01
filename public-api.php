@@ -920,6 +920,9 @@ function df_tz_or_offset(){
 	function df_q($sql){
 	
 		if ( is_array($sql) ){
+			if (count($sql) == 0) {
+				throw new Exception("df_q cannot take an empty sql query but received ".json_encode($sql));
+			}
 			foreach ($sql as $q){
 				$res = df_q($q);
 			}
@@ -1025,5 +1028,7 @@ function df_tz_or_offset(){
 		import(XFROOT.'Dataface/ActionTool.php');
 		return Dataface_ActionTool::getInstance()->countActions($params, $actions);
 	}
+	
+	
         
 } // end if ( !defined( DATAFACE_PUBLIC_API_LOADED ) ){
