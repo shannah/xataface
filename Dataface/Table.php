@@ -2261,8 +2261,29 @@ class Dataface_Table {
 		return $this->_atts['title'];
 
 	}
+	
+	private $taggedFieldCache = [];
 
-
+	function getFieldsWithTag($tag) {
+		if (!isset($this->taggedFieldCache[$tag])) {
+			$this->taggedFieldCache[$tag] = [];
+			foreach ($this->fields(false, true, true) as $$key => $field) {
+				if (@$field[$tag]) {
+					$this->taggedFieldCache[$tag][] =& $this->getField($key);
+				}
+			}
+		}
+		return $this->taggedFieldCache[$tag];
+		
+		
+		
+	}
+	
+	function getFieldWithTag($tag) {
+		$fields = $this->getFieldsWithTag($tag);
+		if ($fields) return $fields[0];
+		return null;
+	}
 
 	/**
 	 * @brief Returns a field structure with the given name.  This can also be related field. Simply prepend
