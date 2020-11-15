@@ -2549,6 +2549,9 @@ class Dataface_Record {
 	 *
 	 */
 	function display($fieldname, $index=0, $where=0, $sort=0, $urlencode=true){
+		if (!is_string($fieldname)) {
+			throw new Exception("Expected fieldname to be string but found ".$fieldname);
+		}
 		if ( isset($this->cache[__FUNCTION__][$fieldname][$index][$where][$sort]) ){
 			return $this->cache[__FUNCTION__][$fieldname][$index][$where][$sort];
 		}
@@ -2587,6 +2590,9 @@ class Dataface_Record {
 		}
 
 		$field =& $this->_table->getField($fieldname);
+		if (@$field['displayField']) {
+			return $this->display($field['displayField'], $index, $where, $sort, $urlencode);
+		}
 		if ( $this->_table->isBlob($fieldname) or ($this->_table->isContainer($fieldname) and @$field['secure'])  ){
 			if ($this->getLength($fieldname) > 0) {
 				unset($table);
