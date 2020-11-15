@@ -2265,9 +2265,18 @@ class Dataface_Table {
 	private $taggedFieldCache = [];
 
 	function getFieldsWithTag($tag) {
+		if (strpos($tag, ',') !== false) {
+			$tags = explode(',', $tag);
+			$out = [];
+			foreach ($tags as $tag) {
+				$tag = trim($tag);
+				$out = array_merge($out, $this->getFieldsWithTag($tag));
+			}
+			return $out;
+		}
 		if (!isset($this->taggedFieldCache[$tag])) {
 			$this->taggedFieldCache[$tag] = [];
-			foreach ($this->fields(false, true, true) as $$key => $field) {
+			foreach ($this->fields(false, true, true) as $key => $field) {
 				if (@$field[$tag]) {
 					$this->taggedFieldCache[$tag][] =& $this->getField($key);
 				}
