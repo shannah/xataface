@@ -266,6 +266,56 @@ class Dataface_QueryBuilder {
 
 
 	}
+	
+	function select_groups($groupBy, $query=array(), $tablename=null) {
+		$this->action='select_groups';
+		$query = array_merge( $this->_query, $query);
+		if (is_array($groupBy)) {
+			$ret = 'SELECT ';
+			$first = true;
+			foreach ($groupBy as $fname) {
+				if ($first) {
+					$first = false;
+				} else {
+					$ret .= ', ';
+				}
+				$ret .= '`'.addslashes($fname).'`'; 
+			}
+			$ret .= ', COUNT(*) as num';
+			
+		} else {
+			$ret = 'SELECT `'.addslashes($groupBy).'` COUNT(*) as num';
+		}
+		
+		$from = $this->_from($this->tablename($tablename));
+		$where = $this->_where($query);
+		$where = $this->_secure($where);
+		$groupByStr = '';
+		if (!is_array($groupBy)) {
+			$groupByStr = 'group by `'.addslashes($groupBy).'`';
+		} else {
+			$groupByStr = 'group by ';
+			$first = true;
+			foreach ($groupBy as $fname) {
+				if ($first) {
+					$first = false;
+				} else {
+					$groupByStr .= ', ';
+				}
+				$groupByStr .= '`'.addslashes($fname).'`';
+			}
+			
+		}
+		
+		$having = 'having `num` > 0';
+
+		if ( strlen($from)>0 ) $ret .= ' '.$from;
+		if ( strlen($where)>0 ) $ret .= ' '.$where;
+		if ( strlen($groupByStr)>0) $ret .= ' '.$groupByStr;
+		$ret .= ' '.$having;
+		$this->action = null;
+		return trim($ret);
+	}
 
         function select_totals($query=array(), $tablename=null, $fields = array()){
             $tablename = $this->tablename($tablename);
@@ -567,7 +617,7 @@ class Dataface_QueryBuilder {
 
 	function wc($tablename, $colname, $collate = ''){
         if ($collate) $collate = ' COLLATE '.$collate;
-		if ( in_array($this->action, array('select','delete', 'select_num_rows', 'select_totals')) ){
+		if ( in_array($this->action, array('select','delete', 'select_num_rows', 'select_totals', 'select_groups')) ){
 			return "`{$tablename}`.`{$colname}`".$collate;
 		} else {
 			return "`{$colname}`".$collate;
