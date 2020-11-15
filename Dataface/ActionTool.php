@@ -367,6 +367,31 @@ class Dataface_ActionTool {
                 
                 
             }
+			
+			$cssClass = @$action['class'];
+			if ($cssClass) {
+				if (strpos($cssClass, ' ')) {
+					$cssClassArray = explode(' ', $cssClass);
+				} else {
+					$cssClassArray = [$cssClass];
+				}
+				
+				$classChanged = false;
+				foreach ($cssClassArray as $k=>$cssClass) {
+
+					if (isset($action['class.'.$cssClass.'_condition'])) {
+						$cond = $action['class.'.$cssClass.'_condition'];
+						if (!$app->testCondition($cond, $params)) {
+							unset($cssClassArray[$k]);
+							$classChanged = true;
+						}
+					}
+				}
+				if ($classChanged) {
+					$action['class'] = trim(implode(' ', $cssClassArray));
+				}
+				
+			}
             
 			$out[$key] =& $action;
 			
