@@ -70,7 +70,7 @@
                 var classRemoved = false;
                 if (removeClass) {
                     if ($(el).hasClass(removeClass)) {
-                        $(el).removeClass(removeClass);
+                        removeClassGlobal(el, removeClass);
                         classRemoved = true;
                     }
                     
@@ -78,7 +78,7 @@
                 var classAdded = false;
                 if (addClass) {
                     if (!$(el).hasClass(addClass)) {
-                        $(el).addClass(addClass);
+                        addClassGlobal(el, addClass);
                         classAdded = true;
                     }
                     
@@ -87,10 +87,10 @@
                 return postAction(actionName, $(el).attr('xf-record-id')).catch(function(error) {
                     $(el).removeClass('disabled');
                     if (addClass && classAdded) {
-                        $(el).removeClass(addClass);
+                        removeClassGlobal(el, addClass);
                     }
                     if (removeClass && classRemoved) {
-                        $(el).addClass(removeClass);
+                        addClassGlobal(el, removeClass);
                     }
                     return error;
                 }).then(function(data) {
@@ -169,5 +169,21 @@
     function showError(msg, timeout) {
         showMessage(msg, 'error', timeout);
     }
+	
+	function removeClassGlobal(el, className) {
+		$(el).removeClass(className);
+		var recId = $(el).attr('xf-record-id');
+		if (recId) {
+			$('[xf-record-id="'+recId+'"]').removeClass(className);
+		}
+	}
+	
+	function addClassGlobal(el, className) {
+		$(el).addClass(className);
+		var recId = $(el).attr('xf-record-id');
+		if (recId) {
+			$('[xf-record-id="'+recId+'"]').addClass(className);
+		}
+	}
     
 })();
