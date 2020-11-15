@@ -131,7 +131,7 @@
             .replace(/&-related%3Astart=[^&]*/, '')
             .replace(/&-related%3Alimit=[^&]*/, '')
             .replace(/\?-related%3Alimit=[^&]*/, '?');
-            console.log("Query", currentQuery);
+            //console.log("Query", currentQuery);
         currentQuery += '&' + encodeURIComponent('-related:start') + '='+skip+'&'+encodeURIComponent('-related:skip')+'='+skip+'&' +encodeURIComponent('-related:limit')+'='+pageSize + '&-action=' + encodeURIComponent(action);
         console.log('q=',currentQuery);
         return currentQuery;
