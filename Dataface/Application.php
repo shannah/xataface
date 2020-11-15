@@ -1494,6 +1494,14 @@ END
 		return $this->queryTool;
 
 	}
+	
+	
+	function &getRecords() {
+		$rs =& $this->getResultSet();
+		$rs->loadSet();
+		$out = $rs->getRecordsArray();
+		return $out;
+	}
 
 	/**
 	 * @brief Gets the current record based on the current query.
