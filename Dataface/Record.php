@@ -2548,7 +2548,7 @@ class Dataface_Record {
 	 * @see http://xataface.com/wiki/Delegate_class_methods
 	 *
 	 */
-	function display($fieldname, $index=0, $where=0, $sort=0, $urlencode=true){
+	function display($fieldname, $index=0, $where=0, $sort=0, $urlencode=true, $thumbnail=null){
 		if (!is_string($fieldname)) {
 			throw new Exception("Expected fieldname to be string but found ".$fieldname);
 		}
@@ -2593,7 +2593,7 @@ class Dataface_Record {
 		if (@$field['displayField']) {
 			return $this->display($field['displayField'], $index, $where, $sort, $urlencode);
 		}
-		if ( $this->_table->isBlob($fieldname) or ($this->_table->isContainer($fieldname) and @$field['secure'])  ){
+		if ( $this->_table->isBlob($fieldname) or ($this->_table->isContainer($fieldname) and (@$field['secure'] or @$field['transform']))){
 			if ($this->getLength($fieldname) > 0) {
 				unset($table);
 				$table =& Dataface_Table::loadTable($field['tablename']);
@@ -2602,12 +2602,24 @@ class Dataface_Record {
 				foreach ($keys as $key){
 					$qstr .= "&$key"."=".$this->strval($key,$index,$where,$sort);
 				}
+                $query = Dataface_Application::getInstance()->getQuery();
+                
+                $thumb = (!$thumbnail and @$query['-action'] and @$field['transform']) ? $this->getThumbnailTypeForAction($fieldname, $query['-action']) : null;
+                if ($thumbnail) {
+                    $thumb = $thumbnail;
+                }
+                if ($thumb) {
+                    $qstr .= '&-thumb='.urlencode($thumb);
+                }
 				$out = DATAFACE_SITE_HREF."?-action=getBlob&-table=".$field['tablename']."&-field=$fieldname&-index=$index$qstr";
 			} else {
 				$out = '';
 			}
 			
 			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
+			if (!$out and @$field['display.fallback']) {
+				$out = $field['display.fallback'];
+			}
 			return $out;
 		}
 
@@ -2623,14 +2635,13 @@ class Dataface_Record {
 				$out = substr($out,1);
 			}
 			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
+			if (!$out and @$field['display.fallback']) {
+				$out = $field['display.fallback'];
+			}
 			return $out;
 		}
 
 		else { //if ( !$this->_table->isBlob($fieldname) ){
-
-			$field =& $this->_table->getField($fieldname);
-
-
 			if ( PEAR::isError($field) ){
 				$field->addUserInfo("Failed to get field '$fieldname' while trying to display its value in Record::display()");
 				return $field;
@@ -2704,6 +2715,9 @@ class Dataface_Record {
 
 
 				$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
+				if (!$out and @$field['display.fallback']) {
+					$out = $field['display.fallback'];
+				}
 				return $out;
 			}
 
@@ -2764,7 +2778,7 @@ class Dataface_Record {
 	 *
 	 */
 	function htmlValue($fieldname, $index=0, $where=0, $sort=0,$params=array()){
-		$recid = $this->getId();
+        $recid = $this->getId();
 		$uri = $recid.'#'.$fieldname;
 		$domid = $uri.'-'.rand();
         if (is_string($params)) {
@@ -2784,25 +2798,39 @@ class Dataface_Record {
 			return $res;
 		}
 
-                $event = new StdClass;
-                $event->record = $this;
-                $event->fieldname = $fieldname;
-                $event->index = $index;
-                $event->where = $where;
-                $event->sort = $sort;
-                $event->params = $params;
-                $event->out = null;
+        $event = new StdClass;
+        $event->record = $this;
+        $event->fieldname = $fieldname;
+        $event->index = $index;
+        $event->where = $where;
+        $event->sort = $sort;
+        $event->params = $params;
+        $event->out = null;
 
-                Dataface_Application::getInstance()->fireEvent('Dataface_Record__htmlValue', $event);
-                if ( isset($event->out) ){
-                    return $event->out;
-                }
+        Dataface_Application::getInstance()->fireEvent('Dataface_Record__htmlValue', $event);
+        if ( isset($event->out) ){
+            return $event->out;
+        }
 
 		$parent =& $this->getParentRecord();
 		if ( isset($parent) and $parent->_table->hasField($fieldname) ){
 			return $parent->htmlValue($fieldname, $index, $where, $sort, $params);
 		}
-		$val = $this->display($fieldname, $index, $where, $sort);
+        if (!@$params['thumbnail']) {
+            $val = $this->display($fieldname, $index, $where, $sort);
+        } else {
+            $thumb = @$params['thumbnail'];
+            $orBust = true;
+            if ($thumb{-1} == '?') {
+                $orBust = false;
+                $thumb = substr($thumb, 0, -1);
+            }
+            $val = $this->thumbnail($fieldname, $thumb);
+            if (!$val and !$orBust) {
+                $val = $this->display($fieldname, $index, $where, $sort);
+            }
+        }
+		
         $strval = $this->strval($fieldname, $index, $where, $sort);
 		$field = $this->_table->getField($fieldname);
 		if ( !@$field['passthru'] and $this->escapeOutput) {
@@ -2826,7 +2854,8 @@ class Dataface_Record {
 		if ($isImage or $this->_table->isBlob($fieldname) or $this->_table->isContainer($fieldname) ){
 			if ( $this->getLength($fieldname, $index,$where,$sort) > 0 ){
 				if ( $isImage ){
-					$val = '<img src="'.$val.'"';
+                    
+					$val = '<img class="xf-container-field" src="'.$val.'"';
                                         if ( !isset($parmas['alt']) ){
                                             $params['alt'] = $strval;
                                         }
@@ -2842,7 +2871,7 @@ class Dataface_Record {
 						$this->getMimetype($fieldname,$index,$where,$sort).' file icon',
 						df_absolute_url(DATAFACE_URL).'/images/document_icon.gif'
 						);
-					$val = '<img src="'.df_escape($file_icon).'"/><a href="'.$val.'" target="_blank"';
+					$val = '<img class="xf-container-field" src="'.df_escape($file_icon).'"/><a href="'.$val.'" target="_blank"';
 					foreach ($params as $pkey=>$pval){
 						$val .= ' '.df_escape($pkey).'="'.df_escape($pval).'"';
 					}
@@ -2911,6 +2940,8 @@ class Dataface_Record {
 	 * @returns string The URL to the image.
 	 *
 	 * <h3>Parameters</h3>
+	 * <p> Since 3.0 you can use a thumbnail name in the parameters.  This should correspond to 
+	 *	a thumbnail defined in the 'transform' property. </p>
 	 * <p>The @c $params argument can contain the following parameters:</p>
 	 * <table>
 	 *		<tr><th>Name</th><th>Type</th><th>Description</th><th>Default</th></tr>
@@ -2919,14 +2950,163 @@ class Dataface_Record {
 	 *	</table>
 	 */
 	function thumbnail($fieldname, $params='', $index=0, $where=0, $sort=0){
+		
 		if ( is_array($params) ) $params = http_build_query($params);
 		if ( !$params ) $params = 'max_width=75&max_height=100';
-		$out = $this->display($fieldname, $index, $where, $sort);
-		if ( strpos($out, '?') === false ) $out .= '?';
-		else $out .= '&';
-		$out .= $params;
+        $thumb = null;
+		if ($params and strpos($params, '=') === false) {
+			$thumb = $params;
+            $params = '';
+		}
+		$out = $this->display($fieldname, $index, $where, $sort, $thumb);
+        if ($params) {
+    		if ( strpos($out, '?') === false ) $out .= '?';
+    		else $out .= '&';
+    		$out .= $params;
+        }
+		
 		return $out;
 
+	}
+	
+    /**
+     * Gets the thumbnail to use in the view action.  This can be configured
+     * using the thumbnail.view fields.ini property.
+     * 
+     * This is a wrapper around `getThumbnailForAction($fieldname, 'view')`
+     * 
+     * NOTE: If no thumbnail is specifically defined for this type, then it will 
+     * just use the first thumbnail type defined in the `transform` directive.
+     * 
+     * @param string $fieldname The field name
+     * @return string? The URL for the thumbnail or null if there is no thumbnail of this type.
+     */
+	public function getViewThumbnail($fieldname) {
+		$type = $this->getViewThumbnailType($fieldname);
+		if ($type) {
+			return $this->thumbnail($fieldname, $type);
+		}
+		return null;
+	}
+    
+    /**
+     * Gets the thumbnail to use in the given action.  This can be configured
+     * using the thumbnail.$actionName fields.ini property.
+     * 
+     * NOTE: If no thumbnail is specifically defined for this type, then it will 
+     * just use the first thumbnail type defined in the `transform` directive.
+     * 
+     * @param string $fieldname The field name
+     * @return string? The URL for the thumbnail or null if there is no thumbnail of this type.
+     */
+    public function getThumbnailForAction($fieldname, $actionName) {
+		$type = $this->getThumbnailTypeForAction($fieldname, $actionName);
+		if ($type) {
+			return $this->thumbnail($fieldname, $type);
+		}
+		return null;
+    }
+    
+    /**
+     * Gets the thumbnail type for the given action.  This basically wraps
+     * the fields.ini property "thumbnail.$actionName" e.g. thumbnail.list or
+     * thumbnail.view which specifies which thumbnail to use in which action.
+     *
+     * @param string $fieldname The field name
+     * @param string $actionName The action name.  This should correspond to the fields.ini
+     * file thumbnail.$actionName directive.  E.g. If $actionName is "view", then this would 
+     * look for the value defined in the thumbnail.view fields.ini directive for the given field.
+     * @return string The thumbnail type, which should correspond with a thumbnail type defined
+     * in the `transform` directive of the fields.ini file.
+     */
+    public function getThumbnailTypeForAction($fieldname, $actionName) {
+		$field = $this->_table->getField($fieldname);
+		$types = $this->getThumbnailTypes($fieldname);
+		$key= 'thumbnail.'.$actionName;
+        
+		if (@$field[$key] and in_array($field[$key], $types)) {
+			return $field[$key];
+		} else {
+			if (count($types) > 0) {
+				return $types[0];
+			}
+		}
+		return null;
+    }
+	
+    /**
+     * Wrapper for `getThumbnailTypeForAction($fieldname, 'view')`
+     */
+	public function getViewThumbnailType($fieldname) {
+		return $this->getThumbnailTypeForAction($fieldname, 'view');
+	}
+    
+    /**
+     * Wrapperfor `getThumbnailTypeForAction($fieldname, 'list')`
+     */
+    public function getListThumbnailType($fieldname) {
+        return $this->getThumbnailTypeForAction($fieldname, 'list');
+    }
+	
+    /**
+     * Checks if the field name has the specified thumbnail type.  Thumbnail types
+     * are defined in the transform directive of the fields.ini file.
+     * 
+     * @param string $fieldname The name of the field.
+     * @param string $thumbName the thumbnail type.  Should correspond to the name in the transform
+     *      directive.
+     * @return boolean True only if the field has the given thumbnail type defined AND the record has
+     *  a thumbnail of that type.
+     */
+	function hasThumbnail($fieldname, $thumbName) {
+		return in_array($thumbName, $this->getThumbnailTypes($fieldname));
+	}
+	
+    /**
+     * Gets the thumbnail types that are available for a given field.
+     * 
+     * @param string $fieldname The field name on which the thumbnail types are defined.
+     * @return string[] An array of thumbnail types, corresponding to those types defined 
+     *  in the transform directive.  Only types that *actually* have a thumbnail saved for this
+     *  record are returned.
+     */
+	function getThumbnailTypes($fieldname) {
+		$field = $this->_table->getField($fieldname);
+		if (!$field) {
+			throw new Exception("Attempt to get thumbnail types for nonexistent field $fieldname");
+		}
+		$event = new StdClass;
+		$event->table = $this->_table;
+		$event->record = $this;
+		$event->field =& $field;
+		$event->consumed = false;
+		$event->out = [];
+		Dataface_Application::getInstance()->fireEvent('Dataface_Record.getThumbnailTypes', $event);
+		if ($event->consumed) {
+			return $event->out;
+		}
+		$types = $this->_table->getThumbnailTypes($fieldname);
+		$filename = $this->val($fieldname);
+		$out = [];
+		if (!$filename) {
+			return $out;
+		}
+		foreach ($types as $thumbName) {
+			$thumbDir = $field['savepath'].'/'.basename($thumbName);
+			
+			
+			if (!file_exists($thumbDir)) {
+				continue;
+			}
+
+			$thumbPath = $thumbDir.'/'.$filename;
+			if (file_exists($thumbPath)) {
+				$out[] = $thumbName;
+			}
+		}
+		
+		return $out;
+		
 	}
 
 	/**

@@ -332,16 +332,11 @@ class Dataface_IO {
                     if ( PEAR::isError($sql) ) return $sql;
 
                     //$res = xf_db_query($sql);
-                    //echo "Running ".$sql;
                     $res = $this->dbObj->query($sql, null, $this->lang);
                     if ( !$res || PEAR::isError($res)){
 
                             if ( PEAR::isError($res) ) $msg = $res->getMessage();
                             else $msg = xf_db_error(df_db());
-                            //echo "Error";
-                            //echo $msg;
-                            //print_r($res);
-                            //exit;
                             error_log($msg);
                             return PEAR::raiseError(
 
@@ -434,7 +429,6 @@ class Dataface_IO {
 
 				// Update the existing records in the relationship.
 				// We use the __id__ parameter in each row for this.
-				//echo "About to save related records";
 				foreach ($trecords as $trec){
 					$tid = $trec->getId();
 
@@ -453,7 +447,6 @@ class Dataface_IO {
 						if ( $changed ){
 							$trec->setValues($tval_existing[$tid]);
 							if ( $orderCol ) $trec->setValue( $orderCol, $tval_existing[$tid]['__order__']);
-							//echo "Saving ";print_r($trec->vals());
 							$res_t = $trec->save($this->lang, $secure);
 
 							if ( PEAR::isError($res_t) ){
@@ -689,7 +682,6 @@ class Dataface_IO {
 		if ( !$forceNew and $this->recordExists($record, $keys, $this->tablename($tablename)) ){
 			$res = $this->_update($record, $keys, $this->tablename($tablename), $secure);
 		} else {
-
 			$res = $this->_insert($record, $this->tablename($tablename), $secure);
 
 		}
@@ -1695,7 +1687,6 @@ class Dataface_IO {
 					return $domainRec2;
 				}
 				foreach ( array_keys($fkeys[$domainRec2->_table->tablename]) as $fkey){
-					//echo $fkey;
 
 					if ( $domainRec2->val($fkey) ){
 						return PEAR::raiseError("Could not add existing related record '".$domainRec2->getTitle()."' because it can only belong to a single relationship and it already belongs to one.  FKEY($fkey=".$domainRec2->val($fkey).")");

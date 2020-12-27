@@ -278,19 +278,37 @@
 										<tbody>
 										{foreach from=$section.fields item=field key=fieldname}
 											{if $field.visibility.browse != 'hidden'}
+												
 												{if $section.record}
 													{assign var="field_value" value=$section.record->htmlValue($field.name)}
+													
 												{else}
 													{assign var="field_value" value=$record->htmlValue($field.name)}
-												
+			
 												{/if}
+
 												{if !empty($field_value)}
 													<tr><th class="record-view-label">
 															{if $field.label_link}<a href="{$field.label_link|escape}" target="_blank" class="field-label-link no-link-icon">{/if}
 																{$field.widget.label|escape}
 															{if $field.label_link}</a>{/if}
 														</th>
-														<td class="record-view-value">{$field_value}</td></tr>
+														<td class="record-view-value">
+														{if $field.Type == 'container'}
+															
+																{assign var="view_thumb" value=$record->getViewThumbnail($field.name)}
+																{if $view_thumb}
+																	<img class='xf-container-field xf-thumbnail' data-xf-full-size-image='{$record->display($field.name)|escape}'
+																		src='{$view_thumb|escape}'
+																	/>
+																{else}
+																	{$field_value}
+																{/if}
+															
+														{else}
+															{$field_value}
+														{/if}
+														</td></tr>
 												{/if}
 											{/if}
 										{/foreach}

@@ -124,9 +124,9 @@ import(XFROOT.'Dataface/QueryTool.php');
  			return $del->$method($record);
  			//return call_user_func(array(&$del, $fieldname.'__renderCell'), $record); 
  		}
-                if ( $record->table()->isContainer($fieldname) or $record->table()->isBlob($fieldname) ){
-                    return $record->htmlValue($fieldname, 0, 0, 0, array('class'=>'blob-preview'));
-                }
+        if ( $record->table()->isContainer($fieldname) or $record->table()->isBlob($fieldname) ){
+            return $record->htmlValue($fieldname, 0, 0, 0, array('class'=>'blob-preview'));
+        }
 		$field =& $record->_table->getField($fieldname);
 		$maxcols = 50;
 		if ( @$field['list'] and @$field['list']['maxcols'] ){

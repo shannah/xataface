@@ -5,11 +5,11 @@ class Crop {
     var $jpegImageQuality = 90;
     var $pngImageQuality = 9;
 
-    function fit($srcPath, $destPath, $width, $height) {
-        $this->crop($srcPath, $destPath, 0, 0, 0, 0, null, $width, $height);
+    function fit($srcPath, $destPath, $width, $height, $mimetype=null) {
+        return $this->crop($srcPath, $destPath, 0, 0, 0, 0, null, $width, $height, $mimetype);
     }
 
-    function fill($srcPath, $destPath, $width, $height) {
+    function fill($srcPath, $destPath, $width, $height, $mimetype=null) {
         $size = getimagesize($srcPath);
         $imgW = $size[0];
         $imgH = $size[1];
@@ -20,7 +20,8 @@ class Crop {
         $y0 = 0;
         $y1 = $imgH;
         $aspectOut = $width/(float)$height;
-
+		$aspectIn = $imgW/(float)$imgH;
+		/*
         if ($rx < 1 and $rx >= $ry) {
             $y1 = $imgW / $aspectOut;
             $diff = $imgH - $y1;
@@ -33,8 +34,26 @@ class Crop {
             $x0 += $diff/2;
             $x1 -= $diff/2;
         }
-
-        $this->crop($srcPath, $destPath, $x0, $x1, $y0, $y1, null, $width, $height);
+		*/
+		if ($aspectIn > $aspectOut) {
+			// input aspect is wider than output aspect
+			// so output will be scaled to height.
+			$scale = $ry;
+			
+			$scaledWidth = $width / $scale;
+			
+			$x0 = abs(($imgW - $scaledWidth)/2);
+			$x1 -= $x0;
+		} else {
+			// input aspect is narrower than output aspect
+			// so output will be scaled to width
+			$scale = $rx;
+			$scaledHeight = $height / $scale;
+			$y0 = abs(($imgH - $scaledHeight)/2);
+			$y1 -= $y0;
+		}
+		
+        return $this->crop($srcPath, $destPath, $x0, $y0, $x1, $y1, null, $width, $height, $mimetype);
     }
 
     function crop(
@@ -46,7 +65,8 @@ class Crop {
             $y2,
             $refWidth = null,
             $maxWidth = null,
-            $maxHeight = null) {
+            $maxHeight = null,
+			$mimetype = null) {
         $image = $srcPath;
     	$file_name = $srcPath;
     	$cachedir = dirname($destPath);
@@ -55,9 +75,20 @@ class Crop {
     	}
 
     	$cachepath = $destPath;
+		
         $type = strtolower(substr(strrchr($file_name, '.'), 1));
-
-    	$mimetype = null;
+		if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png'])) {
+			if ($mimetype) {
+				switch ($mimetype) {
+					case 'image/jpg': $type = 'jpg'; break;
+					case 'image/jpeg': $type = 'jpg'; break;
+					case 'image/png': $type = 'png'; break;
+					case 'image/gif': $type = 'gif'; break;
+					default: $type = 'png';
+				}
+			}
+		}
+    	//$mimetype = null;
     	switch ($type) {
     		case 'jpg':
     		case 'jpeg':
@@ -79,6 +110,7 @@ class Crop {
     			$mimetype = 'image/png';
     			break;
     		default:
+				error_log("Failed to crop image.  Could not find type.  mimetype=$mimetype, srcPath=$srcPath");
     			return false;
     	}
 
@@ -122,14 +154,13 @@ class Crop {
     		}
     	}
     	//convert image -resize "275x275^" -gravity center -crop 275x275+0+0 +repage resultimage
-
+		
     	if ($x1 == 0 and $y1 == 0 and $x2 == $width and $y2 == $height) {
     	    // just copy the image... it's already the right size
             if (!copy($srcPath, $destPath)) {
                 throw new \Exception("Failed to copy image to destination");
             }
-
-            return;
+			return true;
     	}
 
     	if ( $width != $x2-$x1 or $height != $y2-$y1 ){
@@ -140,8 +171,11 @@ class Crop {
     		imagecopy($dest, $src, 0, 0, $x1, $y1, $x2-$x1, $y2-$y1);
 
     	}
-
+		
     	$write_func($dest, $cachepath, $image_quality);
+		if (!file_exists($cachepath)) {
+			throw new Exception("Failed to write to $cachepath");
+		}
     	if ($type == 'jpg' or $type == 'jpeg') {
     		// For jpegs we need to restore the color profile
     		try {
@@ -151,5 +185,6 @@ class Crop {
     			$o->SaveToJPEG($cachepath);
     		} catch (\Exception $ex){}
     	}
+		return true;
     }
 }

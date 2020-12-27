@@ -887,12 +887,10 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 *
 	 */
 	function pushField($fieldname){
-
 		$formTool =& Dataface_FormTool::getInstance();
 		$field =& $this->_table->getField($fieldname);
 
 		$res = $formTool->pushField($this->_record, $field, $this, $fieldname, $this->_new);
-
 		return $res;
 
 	}
@@ -911,7 +909,6 @@ class Dataface_QuickForm extends HTML_QuickForm {
 	 * Extracts value from the form ready to be stored in the table.
 	 */
 	function pushValue($fieldname, &$metaValues, $element=null){
-
 		$formTool =& Dataface_FormTool::getInstance();
 		$field =& $this->_table->getField($fieldname);
 		if ( !isset($element) ) $element =& $formTool->getElement($this, $field, $fieldname);
@@ -1167,7 +1164,6 @@ END;
 		$io->lang = $this->_lang;
 		if ( $this->_new ) $keys = null;
 		else $keys = $values['__keys__'];
-
 		$res = $io->write($this->_record,$keys,null,true /*Adding security!!!*/, $this->_new);
 		if ( PEAR::isError($res) ){
 			if ( Dataface_Error::isDuplicateEntry($res) ){

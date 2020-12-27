@@ -4736,3 +4736,13 @@ div.no-matches-menu ul li a > i {
 .external-link-preview .external-link-title {
     display:block;
 }
+
+img.xf-container-field {
+	max-width: 50vw;
+	max-height: 100vh;
+}
+
+td.resultListCell img.xf-container-field {
+	max-width: 100px;
+	max-height: 100px;
+}

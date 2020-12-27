@@ -717,7 +717,6 @@ class Dataface_Table {
 			$fieldnames = array_keys($this->_fields);
 			foreach ($fieldnames as $key){
 				$matches = array();
-
 				if ( preg_match( '/^(.*)_mimetype$/', $key, $matches) and
 					isset( $this->_fields[$matches[1]] ) /*and
 					($this->isBlob($matches[1]) or $this->isContainer($matches[1]))*/ ){
@@ -726,8 +725,8 @@ class Dataface_Table {
 					$this->_fields[$matches[1]]['mimetype'] = $key;
 					$this->_fields[$key]['metafield'] = true;
 				} else if ( preg_match( '/^(.*)_filename$/', $key, $matches) and
-					isset( $this->_fields[$matches[1]] ) and
-					$this->isBlob($matches[1]) ){
+					isset( $this->_fields[$matches[1]] ) /*and
+					$this->isBlob($matches[1])*/ ){
 					$this->_fields[$key]['widget']['type'] = 'hidden';
 					$this->_fields[$matches[1]]['filename'] = $key;
 					$this->_fields[$key]['metafield'] = true;
@@ -1547,6 +1546,7 @@ class Dataface_Table {
 				 	$field['metafield'] = true;
 				 	break;
 				 }
+				 
 			}
 			if ( !isset($field['metafield']) ){
 				$field['metafield'] = false;
@@ -2262,8 +2262,16 @@ class Dataface_Table {
 
 	}
 	
+	/**
+	 * Cache used for the getFieldsWithTag() and getFieldWithTag() methods.
+	 */
 	private $taggedFieldCache = [];
 
+	/**
+	 * Gets all fields containing the given tag.
+	 * @param string $tag The tag to search for
+	 * @return array list of field definitions of fields containing the given tag.
+	 */
 	function getFieldsWithTag($tag) {
 		if (strpos($tag, ',') !== false) {
 			$tags = explode(',', $tag);
@@ -2288,10 +2296,53 @@ class Dataface_Table {
 		
 	}
 	
+	/**
+	 * Gets a field with the given tag.
+	 * @param string $tag The tag to search for. If a field contains this property in its field definition, that field will be returned.
+	 * @return array Field definition or null if no field field.
+	 */
 	function getFieldWithTag($tag) {
 		$fields = $this->getFieldsWithTag($tag);
 		if ($fields) return $fields[0];
 		return null;
+	}
+	
+	/**
+     * Gets a list of the types of thumbnails that are defined for this field.
+     * Types of thumbnails are defined in the "transform" directive of the fields.ini file,
+     * and thumbnails are generated at the time that the file is uploaded.
+     * @since 3.0
+     */ 
+	function getThumbnailTypes($fieldname) {
+		$field = $this->getField($fieldname);
+		if (!$field) {
+			throw new Exception("Field not found $fieldname when looking for thumbnail types");
+		}
+		$out = [];
+		if (@$field['transform']) {
+			
+			// Transform format example
+			// itunes300 fill:300x300; itunes1400 fill:1400x1400
+			$commands = array_map('trim', explode(';', $field['transform']));
+			foreach ($commands as $command) {
+				if (!trim($command)) {
+					continue;
+				}
+				list($nameAndOp, $arg) = array_map('trim', explode(':', $command));
+				if (!$nameAndOp) {
+					continue;
+				}
+				
+				$op = null;
+				list($thumbName, $op) = @explode(' ', $nameAndOp);
+				if (!$thumbName) {
+					continue;
+				}
+				$out[] = $thumbName;
+			}
+		}
+		return $out;
+				
 	}
 
 	/**
@@ -2776,7 +2827,7 @@ class Dataface_Table {
 				 * If no save path is specified we will create a directory by the name
 				 * of this field inside the table's directory.
 				 */
-				if ( $field['widget']['type'] == 'text' ) $field['widget']['type'] = 'file';
+				if ( $field['widget']['type'] == 'text' or $field['widget']['type'] == 'textarea') $field['widget']['type'] = 'file';
 				if ( !isset( $field['savepath'] ) ){
 					$field['savepath'] = $this->basePath().'/tables/'.$this->tablename.'/'.$key;
 				} else if ( strpos($field['savepath'], '/') !== 0 and !preg_match('/^[a-z0-9]{1,5}:\/\//', $field['savepath']) ) {

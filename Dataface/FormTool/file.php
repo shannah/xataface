@@ -3,12 +3,26 @@
  * @ingroup widgetsAPI
  */
 class Dataface_FormTool_file {
+	
+	private $pushValues = [];
+	
 	function pushValue(&$record, &$field, &$form, &$element, &$metaValues){
 		// The widget is a file upload widget
 		$formTool =& Dataface_FormTool::getInstance();
 		$formFieldName = $element->getName();
 		$table =& $record->_table;
 		$app =& Dataface_Application::getInstance();
+		
+		if (isset($this->pushValues[$formFieldName])) {
+			$vals = $this->pushValues[$formFieldName];
+			if (is_array($metaValues) and @$vals['metaValues']) {
+				foreach ($vals['metaValues'] as $k=>$v) {
+					$metaValues[$k] = $v;
+				}
+			}
+			return $vals['out'];
+		}
+		
 		if ( $element->isUploadedFile() ){
 		    $cachePath = $app->_conf['cache_dir'].'/'.basename($app->_conf['_database']['name']).'-'.basename($table->tablename).'-'.basename($field['name']).'-';
 
@@ -48,9 +62,40 @@ class Dataface_FormTool_file {
 				$app->fireEvent('fileUpload', $event);
 				if ($event->consumed) {
 					$out = $event->out;
-					//echo "out=$out";exit;
 					$element->last_pushed_value = $out;
 					//@unlink($val['tmp_name']);
+					if (!PEAR::isError($out)) {
+						$this->pushValues[$formFieldName] = [
+							'out' => $out,
+							'metaValues' => []
+							
+						];
+					}
+					
+					
+					if (!PEAR::isError($out) and is_array( $metaValues ) ){
+						if ( isset( $field['filename'] ) ){
+							// store the file name in another field if one is specified
+							$metaValues[$field['filename']] = $event->file_name;
+							$this->pushValues[$formFieldName]['metaValues'][$field['filename']] = $event->file_name;
+
+						}
+						if ( isset( $field['mimetype'] ) ){
+							// store the file mimetype in another field if one is specified
+							$metaValues[$field['mimetype']] = $event->mimetype;
+							$this->pushValues[$formFieldName]['metaValues'][$field['mimetype']] = $event->mimetype;
+
+						}
+						if (@$event->metaValues) {
+							foreach ($event->metaValues as $k=>$v) {
+								$metaValues[$k] = $v;
+								$this->pushValues[$formFieldName]['metaValues'][$k] = $v;
+							}
+						}
+					}
+					$tempFile = tempnam(sys_get_temp_dir(), 'uploaded_file');
+					move_uploaded_file($val['tmp_name'], $tempFile);
+					@unlink($tempFile);
 					return $out;
 				}
 				$src = $record->getContainerSource($field['name']);
@@ -110,13 +155,16 @@ class Dataface_FormTool_file {
 				chmod($filePath, 0744);
 
 				// Now transform the image
+				
 				if (@$field['transform']) {
+					// Transform format example
+					// itunes300 fill:300x300; itunes1400 fill:1400x1400
 					$commands = array_map('trim', explode(';', $field['transform']));
 					foreach ($commands as $command) {
 						if (!trim($command)) {
 							continue;
 						}
-						list($nameAndOp, $arg) = array_map('trim', explode(':', $field['transform']));
+						list($nameAndOp, $arg) = array_map('trim', explode(':', $command));
 						if (!$nameAndOp) {
 							throw new Exception("No name/op specified for field transform.");
 						}
@@ -134,8 +182,9 @@ class Dataface_FormTool_file {
 							$op = $thumbName;
 							$thumbName = "default";
 						}
-
 						$thumbDir = $field['savepath'].'/'.basename($thumbName);
+						
+						
 						if (!file_exists($thumbDir)) {
 							if (!mkdir($thumbDir)) {
 								throw new Exception("Failed to create directory ".$thumbDir);
@@ -155,18 +204,20 @@ class Dataface_FormTool_file {
 						list($dimensions) = array_map('trim', explode(' ', $arg));
 						list($maxWidth, $maxHeight) = array_map('intval', explode('x', $dimensions));
 
-
+						$cropResult = false;
 						switch ($op) {
 							case 'fit' :
 								// we fit the image to the given dimensions
-								$crop->fit($filePath, $thumbPath, $maxWidth, $maxHeight);
+								$cropResult = $crop->fit($filePath, $thumbPath, $maxWidth, $maxHeight, $val['type']);
 								break;
 							case 'fill' :
 								// we fill the given dimensions with the image
-								$crop->fill($filePath, $thumbPath, $maxWidth, $maxHeight);
+								$cropResult = $crop->fill($filePath, $thumbPath, $maxWidth, $maxHeight, $val['type']);
 								break;
 						}
-
+						if (!$cropResult) {
+							continue;
+						}
 						if ($thumbName == 'default') {
 							copy($thumbPath, $filePath);
 							unlink($thumbPath);
@@ -200,20 +251,26 @@ class Dataface_FormTool_file {
 				}
 				$element->last_pushed_value = $out;
 			}
-
+			$this->pushValues[$formFieldName] = [
+				'out' => $out
+			];
 			if ( is_array( $metaValues ) ){
+				$this->pushValues[$formFieldName]['metaValues'] = [];
 				if ( isset( $field['filename'] ) ){
 					// store the file name in another field if one is specified
 					$metaValues[$field['filename']] = $val['name'];
+					$this->pushValues[$formFieldName]['metaValues'][$field['filename']] = $val['name'];
 
 				}
-				if ( isset( $field['mimetype'] ) ){
+				if ( isset( $field['mimetype'] ) and @$val['type'] ){
 					// store the file mimetype in another field if one is specified
 					$metaValues[$field['mimetype']] = $val['type'];
+					$this->pushValues[$formFieldName]['metaValues'][$field['mimetype']] = $val['type'];
 
 				}
 			}
-
+			
+			
 			return $out;
 
 
@@ -247,12 +304,10 @@ class Dataface_FormTool_file {
 				$element->setProperty('image_preview', df_absolute_url($record->q($field['name'])));
 			}
 			$element->setProperty('preview', df_absolute_url($record->q($field['name'])));
-			//echo "Adding preview for field '$fieldname':".$record->qq($fieldname);
-		} else {
-			//echo "No data in field '$fieldname'";
 		}
 
 		return $val;
 	}
+	
 
 }

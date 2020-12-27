@@ -232,7 +232,7 @@ class Dataface_FormTool {
 		}
 
 		$value = $this->pushValue($record, $field, $form, $element, $metaValues);
-
+		
 
         
 		$params = array();
@@ -261,9 +261,6 @@ class Dataface_FormTool {
 
 
 		if ( !$table->isMetaField($field['name']) ){
-
-
-
 			/*
 			 *
 			 * A MetaField is a field that should not be updated on its own merit.
@@ -292,7 +289,11 @@ class Dataface_FormTool {
 		 * If this field has any meta fields, then we will set them now.
 		 *
 		 */
+		
 		foreach ($metaValues as $key=>$value){
+			if (!isset($value)) {
+				continue;
+			}
 			$res = $record->setValue($key, $value);
 			if ( PEAR::isError($res) ){
 				$res->addUserInfo(
@@ -306,8 +307,6 @@ class Dataface_FormTool {
 
 			}
 		}
-
-
 
 	}
 

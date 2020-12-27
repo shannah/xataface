@@ -101,13 +101,10 @@ class Dataface_Application_blob {
 		$lastTableUpdate = strtotime($lastTableUpdate);
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
-		//echo $table->tablename;
-		//print_r($query);exit;
+
 		$rec = df_get_record($table->tablename, $query);
 		if ( !$rec ){
-				//print_r($rec);
-				//echo "FUCK!!";exit;
-				throw new Exception("No record found to match the request.", E_USER_ERROR);
+			throw new Exception("No record found to match the request.", E_USER_ERROR);
 		}
 		$field =& $table->getField($fieldname);
 		if ( PEAR::isError($field) ){
@@ -137,26 +134,37 @@ class Dataface_Application_blob {
 			$event->table = $table;
 			$event->field = $field;
 			$event->record = $rec;
+			$event->request = $request;
 			$event->consumed = false;
 			$app->fireEvent('handleGetBlob', $event);
 			if ($event->consumed) {
-				echo "event was cosumed";
 				exit;
-			} else {
-				echo "Event was not consumed!!!";
-			}
+			} 
 
+			if (@$request['-thumb']) {
+				$thumbName = basename($request['-thumb']);
+				$thumbPath = $savepath . '/' . $thumbName;
+				if (is_readable($thumbPath . '/' . basename($rec->val($fieldname)))) {
+					$savepath = $thumbPath;
+				}
+			}
+			$fullPath = $savepath.'/'.basename($rec->val($fieldname));
+			if (!is_readable($fullPath)) {
+				header('HTTP/1.0 404 Not Found');
+				echo '<h1>404 File Not Found</h1>';
+				exit;
+			}
 			header('Content-type: '.$rec->getMimetype($fieldname));
       if (!@$field['contentDisposition'] or $field['contentDisposition'] == 'attachment') {
 			     header('Content-disposition: attachment; filename="'.basename($rec->val($fieldname)).'"');
       }
-			readfile($savepath.'/'.basename($rec->val($fieldname)));
+			readfile($fullPath);
 			exit;
 
 		}
-		if ( !$table->isBlob($fieldname) ) die("blob.php can only be used to load BLOB or Binary columns.  The requested field '$fieldname' is not a blob");
-		//$field =& $table->getField($fieldname);
-
+		if ( !$table->isBlob($fieldname) ) {
+			die("blob.php can only be used to load BLOB or Binary columns.  The requested field '$fieldname' is not a blob");
+		}
 		if ( isset($request['-index']) ) $index = $request['-index'];
 		else $index = 0;
 
