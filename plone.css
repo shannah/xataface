@@ -4141,6 +4141,47 @@ body.two-col #status-bar .responsive-content,
         color: var(--mobileTabIconSelectedColor);
     }
 
+    nav.table_tabs_mobile ul li ul {
+        background: var(--menuBgColor);
+        visibility: hidden;
+      opacity: 0;
+      min-width: 5rem;
+        position: fixed;
+      transition: all 0.5s ease;
+        
+        bottom:5.2rem;
+        left: 0;
+        right:0;
+      display: none;
+      border-top: 1px solid var(--menuBorderColor);
+    }
+  
+    nav.table_tabs_mobile ul li:focus-within > ul,
+    nav.table_tabs_mobile ul li ul:hover,
+    nav.table_tabs_mobile ul li ul:focus {
+      visibility: visible;
+      opacity: 1;
+      display: block;
+      margin:0
+      
+    }
+  
+    nav.table_tabs_mobile ul li ul li {
+        clear: both;
+      width: 100%;
+      display:block;
+      text-align:center;
+      border:none;
+      color: var(--menuColor);
+      
+    }
+    
+    nav.table_tabs_mobile ul li ul li a {
+        border:none;
+        color: var(--menuColor);
+    }
+    
+
     .dataface-record-title {
         display:none;
     }
@@ -4608,6 +4649,7 @@ div.mobile-list-settings-wrapper.active {
     overflow-x:scroll;
     margin-right:30px;
 }
+
 
 @media only screen and (max-width:768px) {
     .mobile-overflow-menu {
