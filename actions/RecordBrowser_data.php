@@ -71,7 +71,12 @@ class dataface_actions_RecordBrowser_data {
 		$app =& Dataface_Application::getInstance();
 		//$out = array();
 		$query =& $app->getQuery();
-		$records = df_get_records_array($query['-table'], $query);
+        if (@$query['-single']) {
+            $records = [ $app->getRecord() ];
+        } else {
+            $records = $app->getRecords();
+        }
+		
 		header("Content-type: text/html; charset=".$app->_conf['oe']);
 		echo '<option value="">(None)</option>'."\n";
 		foreach ($records as $record){
@@ -83,7 +88,19 @@ class dataface_actions_RecordBrowser_data {
 				$value = $record->getId();
 			} else if ( @$query['-value'] ){
 				// We have an explicitly specified column to use as the key.
-				$value = $record->val($query['-value']);
+                if (strpos($query['-value'], ':') !== false) {
+                    list($op, $field) = explode(':', $query['-value']);
+                    switch ($op) {
+                        case 'display':
+                        $value = $record->display($field);
+                        break;
+                        default:
+                        $value = $record->val($field);
+                    }
+                } else {
+                    $value = $record->val($query['-value']);
+                }
+				
 				
 			} else if ( count($record->_table->keys()) > 1 ){
 				// This record has a compound key and no value column was specified
@@ -110,11 +127,42 @@ class dataface_actions_RecordBrowser_data {
 					break;
 			
 			}
-			echo '<option value="'.df_escape($value).'">'.df_escape($text).'</option>'."\n";
+            
+            $image = null;
+            $imageWidth = 100;
+            $imageHeight = 100;
+            if (@$query['-image']) {
+                $image = $record->display($query['-image']);
+                
+            }
+            if (@$query['-image-width']) {
+                $imageWidth = intval($query['-image-width']);
+            }
+            if (@$query['-image-height']) {
+                $imageHeight = intval($query['-image-height']);
+            }
+            
+            $style = "";
+            if ($image) {
+                $padding = 10;
+                $paddingPx = $padding.'px';
+                $backgroundPosition = "$paddingPx $paddingPx";
+                $paddingLeftPx = ''.($imageWidth + 2*$padding).'px';
+                $heightPx = ''.($imageHeight + 2*$padding).'px';
+                $style = 'border-bottom: 1px solid #ccc; padding-top: '.htmlspecialchars($paddingPx).'; background-position:'.htmlspecialchars($backgroundPosition).'; background-repeat: no-repeat; background-image:url('.htmlspecialchars($image).'); padding-left:'.htmlspecialchars($paddingLeftPx).'; height:'.htmlspecialchars($heightPx).'; background-size:'.htmlspecialchars($imageWidth.'px').' auto';
+            }
+            if (!@$query['-image'] or $image) {
+                echo '<option value="'.df_escape($value).'" style="'.$style.'">'.df_escape($text).'</option>'."\n";
+            }
+			
 			
 		}
 		exit;
 		
 		
 	}
+    
+    private function strip_unit($val) {
+        
+    }
 }

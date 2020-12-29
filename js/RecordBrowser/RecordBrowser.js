@@ -205,6 +205,37 @@
 		 * @var string
 		 */
 		this.text = null;
+        
+		/**
+		 * @name image
+		 * @memberOf xataface.RecordBrowser#
+		 * @description
+		 * The name of the column to use as the image in the option list.
+		 *
+		 * @var string
+		 */
+        this.image = null;
+        
+		/**
+		 * @name imageWidth
+		 * @memberOf xataface.RecordBrowser#
+		 * @description
+		 * The name of the column to use as the image width in the option list.
+		 *
+		 * @var string
+		 */
+        this.imageWidth = null;
+        
+		/**
+		 * @name imageHeight
+		 * @memberOf xataface.RecordBrowser#
+		 * @description
+		 * The name of the column to use as the image height in the option list.
+		 *
+		 * @var string
+		 */
+        this.imageHeight = null;
+        
 		
 		/**
 		 * @name filters
@@ -300,8 +331,13 @@
 		display : function(){
 			var rb = this;
 			$('body').append(this.el);
+            try {
+                throw new Error("Here");
+            } catch (e) {
+                console.log(e);
+            }
 			$(this.el).load(this.baseURL+'/templates/RecordBrowser.html', function(){
-				var dialog = this;
+                var dialog = this;
 				var searchChangeHandler = function(){
 				    var val = $(this).val();
 				    var self = this;
@@ -324,28 +360,10 @@
 					//.blur(searchChangeHandler);
 				//$(this).find('.xf-RecordBrowser-select').css('height', '90%');
 				$(this).find('.xf-RecordBrowser-select-field')
-					.css('width', '100%')
-					.attr('size', 8);
-				if (rb.allowAddNew) {
-    				$(this).find('.xf-RecordBrowser-addnew-button').RecordDialog({
-    					table: rb.table,
-    					callback: function(){
-    						rb.dirty=true;
-    						rb.updateRecords();
-    					},
-    					params : rb.newParams,
-    					width : rb.width,
-    					height : rb.height,
-    					marginW : rb.marginW,
-    					marginH : rb.marginH
-    				});
-                } else {
-                    $(this).find('.xf-RecordBrowser-addnew-button').hide();
-                }
-				
-				$(this).dialog({
-					'title': 'Select Record',
-					'buttons' : {
+                .css('width', '100%');
+					//.attr('size', 8);
+                    
+                var buttons = {
 						'Select' : function(){
 							var out = {};
 							$(dialog).find('.xf-RecordBrowser-select-field :selected').each(function(i, selected){
@@ -359,15 +377,55 @@
 						'Cancel' : function(){
 							$(this).dialog("close");
 						
-						}
+						},
+                        
 						
-					},
+					};
+				if (rb.allowAddNew) {
+                    buttons['Add New'] = function() {
+                        new xataface.RecordDialog({
+        					table: rb.table,
+        					callback: function(data){
+        						rb.dirty=true;
+                                if (data && data.__id__) {
+                                    rb.filterRecords({
+                                        '-recordid' : data.__id__,
+                                        '-single' : '1'
+                                    });
+                                } else {
+                                    rb.updateRecords();
+                                }
+        						//rb.updateRecords();
+                                
+        					},
+        					params : rb.newParams,
+        					width : rb.width,
+        					height : rb.height,
+        					marginW : rb.marginW,
+        					marginH : rb.marginH
+        				}).display();
+                    }
+                    $(this).find('.xf-RecordBrowser-addnew-button').hide();
+                } else {
+                    $(this).find('.xf-RecordBrowser-addnew-button').hide();
+                }
+				
+                var isMobile = $('body').hasClass('small');
+
+                
+				$(this).dialog({
+					'title': 'Select Record',
+					'buttons' : buttons,
 					//'position': 'center',
 					'modal' : true,
 					'resize': function(event, ui){
-						$(dialog).find('.xf-RecordBrowser-select-field').css('height', ($(dialog).height()-60)+'px');
+						//$(dialog).find('.xf-RecordBrowser-select-field').css('height', ($(dialog).height()-60)+'px');
+  
 						
-					}
+					},
+                    
+                    'width' : isMobile ? $(window).width() : Math.min($(window).width() * 0.8, 480),
+                    'height' : isMobile ? $(window).height() : Math.min($(window).height() * 0.8, 640)
 				});
 				
 				rb.updateRecords();
@@ -400,6 +458,9 @@
 			var url = DATAFACE_SITE_HREF+'?-action=RecordBrowser_data&-table='+encodeURIComponent(this.table);
 			if ( this.value ) url += '&-value='+encodeURIComponent(this.value);
 			if ( this.text ) url += '&-text='+encodeURIComponent(this.text);
+            if ( this.image ) url += '&-image='+encodeURIComponent(this.image);
+            if ( this.imageWidth ) url += '&-imageWidth='+encodeURIComponent(this.imageWidth);
+            if (this.imageHeight) url += '&-imageHeight='+encodeURIComponent(this.imageHeight);
 			for ( var i in this.filters ){
 				url += '&'+encodeURIComponent(i)+'='+encodeURIComponent(this.filters[i]);
 			}

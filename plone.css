@@ -2370,6 +2370,15 @@ ul.field_actions {
 	display: inline;
 }
 
+@media only screen and (max-width: 768px) {
+    
+    ul.field_actions  {
+        display:block;
+        margin-top: 2mm;
+
+    }
+}
+
 ul.field_actions li {
 	list-style-type: none;
 	list-style-image: none;
@@ -2925,6 +2934,23 @@ table.listing td.resultListCell.datetime,
 table.listing td.resultListCell.time,
 table.listing td.resultListCell.timestamp {
 	white-space: nowrap;
+}
+
+.xf-RecordBrowser-wrapper {
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    overflow:auto;
+}
+.xf-RecordBrowser-select {
+    overflow:auto;
+}
+.xf-RecordBrowser-select-field {
+    width:100%;
+    height:100%;
+    overflow:auto;
+    
+    ;
 }
 
 .xf-RecordBrowser-button img,
@@ -3746,6 +3772,8 @@ body.two-col #status-bar .responsive-content,
   
   
   @media only screen and (max-width: 768px) {
+      
+      
       .desktop {
           display:none !important;
       }
