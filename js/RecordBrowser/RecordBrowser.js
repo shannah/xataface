@@ -175,7 +175,7 @@
 	 */
 	xataface.RecordBrowser = function(o){
 		/**
-		 * @name title
+		 * @name table
 		 * @memberOf xataface.RecordBrowser#
 		 * @description The name of the table to browse for records in.
 		 * @var string
