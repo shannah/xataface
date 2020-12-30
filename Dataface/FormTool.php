@@ -436,6 +436,21 @@ class Dataface_FormTool {
 
 	}
 
+    private function expandAjaxPreview(&$field) {
+        if (@$field['ajax_preview']) {
+            $preview = $field['ajax_preview'];
+            $prefix = 'field:';
+            $len = strlen($prefix);
+            if (strlen($preview) > $len and substr($preview, 0, $len) == $prefix) {
+                list($pre, $fieldName) = explode(':', $preview);
+                $app = Dataface_Application::getInstance();
+                $url = $app->url('-action=xf_field_preview&-field='.urlencode($fieldName)).'&--trigger={'.$fieldName.'}';
+                $field['ajax_preview'] = $url;
+                //print_r($field['ajax_preview']);
+            }
+        }
+    }
+
 	/**
 	 * @brief Builds a widget that can be added to a form.  This will delegate
 	 * to the WidgetHandler::buildWidget() method if defined for the field's widget
@@ -478,6 +493,7 @@ class Dataface_FormTool {
 		if ( PEAR::isError($el) ){
 			throw new Exception($el->toString(), E_USER_ERROR);
 		}
+        $this->expandAjaxPreview($field);
 		$el->setFieldDef($field);
 		if ( isset( $record ) && $record && $record->_table->hasField($field['name']) ){
 			if ( $link = $record->getLink($field['name']) ){

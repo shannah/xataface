@@ -2552,7 +2552,7 @@ class Dataface_Record {
 		if (!is_string($fieldname)) {
 			throw new Exception("Expected fieldname to be string but found ".$fieldname);
 		}
-		if ( isset($this->cache[__FUNCTION__][$fieldname][$index][$where][$sort]) ){
+		if ( !$thumbnail and isset($this->cache[__FUNCTION__][$fieldname][$index][$where][$sort]) ){
 			return $this->cache[__FUNCTION__][$fieldname][$index][$where][$sort];
 		}
 		if ( strpos($fieldname,'.') === false ){
@@ -2608,6 +2608,7 @@ class Dataface_Record {
                 if ($thumbnail) {
                     $thumb = $thumbnail;
                 }
+                
                 if ($thumb) {
                     $qstr .= '&-thumb='.urlencode($thumb);
                 }
@@ -2615,8 +2616,10 @@ class Dataface_Record {
 			} else {
 				$out = '';
 			}
+			if (!$thumbnail) {
+			    $this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
+			}
 			
-			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
 			if (!$out and @$field['display.fallback']) {
 				$out = $field['display.fallback'];
 			}
@@ -2958,7 +2961,7 @@ class Dataface_Record {
 			$thumb = $params;
             $params = '';
 		}
-		$out = $this->display($fieldname, $index, $where, $sort, $thumb);
+		$out = $this->display($fieldname, $index, $where, $sort, true, $thumb);
         if ($params) {
     		if ( strpos($out, '?') === false ) $out .= '?';
     		else $out .= '&';

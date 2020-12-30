@@ -1,0 +1,13 @@
+{use_macro file="Dataface_Main_Template.html"}
+	{fill_slot name="main_section"}
+	{foreach from=$rows item=row}
+	<div class='xf-grouped-list-group' data-group-by='{$row.key|escape}' data-group-by-group-content-url='{$row.contentUrl|escape}'>
+		<h3>{$row.label|escape}</h3>
+		<ul class='xf-grouped-list-group-content'>
+			
+		</ul>
+		<a href='{$row.allUrl|escape}'>Show all</a>
+	</div>
+	{/foreach}
+	{/fill_slot}
+{/use_macro}

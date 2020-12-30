@@ -1,0 +1,13 @@
+{foreach from=$rows item=row}
+	<li data-row-title="{$row.title|escape}" 
+		data-row-details-url="{$row.detailsUrl|escape}" 
+		data-row-image="{$row.image|escape}"
+		class="{$row.class|escape}"
+		xf-record-id="{$row.recordId|escape}">
+		<h4>{$row.title|escape}</h4>
+		<img src="{$row.image|escape}"/>
+		<div class="xf-grouped-list-row-description">{$row.description|escape}</div>
+		<a href="{$row.detailsUrl|escape}">Details</a>
+		{actions_menu category=record_actions record=$row.record}
+	</li>
+{/foreach}
