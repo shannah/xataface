@@ -115,6 +115,10 @@ class Crop {
     	}
 
     	$src = @$src_func($file_name);
+        if ($src and $type == 'png') {
+            imagealphablending($src, false);
+            imagesavealpha($src, true);
+        }
     	if (!$src) {
     		$src = imagecreatefromstring(file_get_contents($file_name));
     	}
@@ -165,9 +169,22 @@ class Crop {
 
     	if ( $width != $x2-$x1 or $height != $y2-$y1 ){
     		$dest = imagecreatetruecolor($width, $height);
+            //$transparentColor = imagecolortransparent($src);
+            //echo "Transparent color $transparentColor";exit;
+            if($type == "gif" or $type == "png"){
+                imagecolortransparent($dest, imagecolorallocatealpha($dest, 0, 0, 0, 127));
+                imagealphablending($dest, false);
+                imagesavealpha($dest, true);
+              }
     		imagecopyresampled($dest, $src, 0, 0, $x1, $y1, $width, $height, $x2-$x1, $y2-$y1);
+            
     	} else {
     		$dest = imagecreatetruecolor($x2-$x1, $y2-$y1);
+            if($type == "gif" or $type == "png"){
+                imagecolortransparent($dest, imagecolorallocatealpha($dest, 0, 0, 0, 127));
+                imagealphablending($dest, false);
+                imagesavealpha($dest, true);
+              }
     		imagecopy($dest, $src, 0, 0, $x1, $y1, $x2-$x1, $y2-$y1);
 
     	}
@@ -186,5 +203,65 @@ class Crop {
     		} catch (\Exception $ex){}
     	}
 		return true;
+    }
+    
+    function imagecopyresampledalpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h) {
+        if (!imageistruecolor($src_im)) {
+          $original_transparency = imagecolortransparent($src_im);
+          //we have a transparent color
+          if ($original_transparency >= 0) {
+            //get the actual transparent color
+            $rgb = imagecolorsforindex($src_im, $original_transparency);
+            $original_transparency = ($rgb['red'] << 16) | ($rgb['green'] << 8) | $rgb['blue'];
+            //change the transparent color to black, since transparent goes to black anyways (no way to remove transparency in GIF)
+            imagecolortransparent($src_im, imagecolorallocate($src_im, 0, 0, 0));
+          }
+
+          imagealphablending($src_im, false);
+          imagesavealpha($src_im, true);
+          imagecopyresampled($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h);
+          $img = $dst_im;
+          //remake transparency (if there was transparency)
+          if ($original_transparency >= 0) {
+            imagealphablending($img, false);
+            imagesavealpha($img, true);
+            for ($x = $dst_x; $x < $dst_x+$dst_w; $x++)
+              for ($y = $dst_y; $y < $dst_y+$dst_h; $y++)
+                if (imagecolorat($img, $x, $y) == $original_transparency)
+                  imagesetpixel($img, $x, $y, 127 << 24);
+          }
+        } else {
+            imagecopyresampled($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h);
+        }
+    }
+    
+    function imagecopyalpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h) {
+        if (!imageistruecolor($src_im)) {
+          $original_transparency = imagecolortransparent($src_im);
+          //we have a transparent color
+          if ($original_transparency >= 0) {
+            //get the actual transparent color
+            $rgb = imagecolorsforindex($src_im, $original_transparency);
+            $original_transparency = ($rgb['red'] << 16) | ($rgb['green'] << 8) | $rgb['blue'];
+            //change the transparent color to black, since transparent goes to black anyways (no way to remove transparency in GIF)
+            imagecolortransparent($src_im, imagecolorallocate($src_im, 0, 0, 0));
+          }
+
+          imagealphablending($src_im, false);
+          imagesavealpha($src_im, true);
+          imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
+          $img = $dst_im;
+          //remake transparency (if there was transparency)
+          if ($original_transparency >= 0) {
+            imagealphablending($img, false);
+            imagesavealpha($img, true);
+            for ($x = $dst_x; $x < $dst_x+$src_w; $x++)
+              for ($y = $dst_y; $y < $dst_y+$src_h; $y++)
+                if (imagecolorat($img, $x, $y) == $original_transparency)
+                  imagesetpixel($img, $x, $y, 127 << 24);
+          }
+        } else {
+            imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
+        }
     }
 }

@@ -3718,7 +3718,8 @@ body.two-col #status-bar .responsive-content,
   
   
   
-      .mobile-logo img {
+      .mobile-logo img,
+      .mobile-logo img.xf-container-field {
           max-width: 50px;
           max-height: 50px;
           float:left;
