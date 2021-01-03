@@ -474,4 +474,4 @@ $application_name built using Xataface version $dataface_version (http://www.xat
 actions.register.MESSAGE_REGISTRATION_ACTIVATION_EMAIL_SUBJECT = "$site_title : Activate your account"
 actions.activate.MESSAGE_REGISTRATION_NOT_FOUND = "No registration information could be found to match this code.  Please try registering again."
 actions.register.MESSAGE_THANKYOU_PLEASE_VALIDATE = "Thank you. An email has been sent to your email with instructions on how to complete the registration process"
-actions.activate.MESSAGE_REGISTRATION_COMPLETE = "Registration complete. Now you can log in."
+actions.activate.MESSAGE_REGISTRATION_COMPLETE = "Registration complete. Now you are now logged in."

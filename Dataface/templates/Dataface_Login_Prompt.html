@@ -35,6 +35,7 @@
 	</style>
 	{/fill_slot}
 	{fill_slot name="main_section"}
+        {script src="xataface/actions/login_form.js"}
         <script>{literal}
         // hide sidemenu
             (function() {
@@ -115,8 +116,18 @@
 		{define_slot name="login_form"}
         {define_slot name="login_logo"}<div id="login-logo">{include file="Dataface_Logo.html"}</div>{/define_slot}
 		{define_slot name="login_heading"}<h1>{translate id="Please Login"}Please Login to access this section of the site{/translate}</h1>{/define_slot}
+        {assign var="allow_email_login" value=$ENV.auth->isEmailLoginAllowed()}
+        {assign var="allow_password_login" value=$ENV.auth->isPasswordLoginAllowed()}
+        {assign var="auto_register" value=false}
+        {if $ENV.APPLICATION._auth.auto_register and $allow_email_login and !$allow_password_login}
+            {assign var="auto_register" value=true}
+        {/if}
 		{if $msg}<div class="portalMessage">{$msg}</div>{/if}
-		<form action="{$ENV.DATAFACE_SITE_HREF}" method="post" class="xataface-login-form">
+		<form action="{$ENV.DATAFACE_SITE_HREF}" method="post" 
+            class="xataface-login-form 
+                {if $allow_email_login}xf-allow-email-login xf-email-login{else}xf-password-login{/if}
+                {if $allow_password_login}xf-allow-password-login{/if}
+                ">
 		<input type="hidden" name="-action" value="login" />
 		{if !$redirect}
 			{assign var=rkey1 value="-redirect"}
@@ -136,24 +147,43 @@
 		<legend>{translate id="Login Form"}Login Form{/translate}</legend>
 			{block name="before_login_username}
 			<div id="Login-Username">
-				<label>{translate id="Username"}Username{/translate}:</label>
+				<label>{translate id="Email or Username"}Email or Username{/translate}:</label>
 				<input type="text" name="UserName" value="{$ENV.REQUEST.UserName|escape}">
 			</div>
 			{block name="after_login_username"}
-			<div id="Login-Password">
-				<label>{translate id="Password"}Password{/translate}:</label>
-				<input type="password" name="Password" value="{$ENV.REQUEST.Password|escape}">
-			</div>
-			{block name="after_login_password"}
-			<input id="Login-submit" name="-submit" type="submit" value="{translate id="scripts.GLOBAL.LABEL_LOGIN"}Log in{/translate}"/>
-			{block name="after_login_submit"}
+            {if $allow_password_login}
+            <div class="login-with-password">
+    			<div id="Login-Password">
+    				<label>{translate id="Password"}Password{/translate}:</label>
+    				<input type="password" name="Password" value="{$ENV.REQUEST.Password|escape}">
+    			</div>
+    			{block name="after_login_password"}
+    			<input id="Login-submit" name="-submit" type="submit" value="{translate id="scripts.GLOBAL.LABEL_LOGIN"}Log in{/translate}"/>
+                {if $allow_email_login}
+                <div class="login-with-email-button-wrapper">
+                    <span>or</span>
+                    <a id="Login-with-email-button">log in with email</a>
+                </div>
+                {/if}
+    			{block name="after_login_submit"}
+            </div>
+            {/if}
+            {if $allow_email_login}
+            <div class="login-with-email">
+                <button id="Login-with-email-submit" class="xf-submit-button">Email Login Link</button>
+                {if $allow_password_login}
+                <span>or</span>
+                <a id="Login-with-password-button">log in with password</a>
+                {/if}
+            </div>
+            {/if}
 		</fieldset>
 		
 		</form>
 		{actions category="login_actions" var="login_actions"}
-		<ul class="login-actions">
+		<ul class="login-actions {if $auto_register}xf-auto-register{/if}">
 		{foreach from=$login_actions item="action"}
-		 	<li><a href="{$action.url|escape}" {if $action.target}target="{$action.target|escape}"{/if}>{if $action.materialIcon}<i class="material-icons">{$action.materialIcon|escape}</i>{/if}<span>{$action.label|escape}</span></a></li>
+		 	<li><a class="xf-login-action-{$action.name|escape}" href="{$action.url|escape}" {if $action.target}target="{$action.target|escape}"{/if}>{if $action.materialIcon}<i class="material-icons">{$action.materialIcon|escape}</i>{/if}<span>{$action.label|escape}</span></a></li>
 		{/foreach}
 		</ul>
 		{/define_slot}

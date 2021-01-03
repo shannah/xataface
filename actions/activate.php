@@ -8,6 +8,11 @@
 class dataface_actions_activate {
 	function handle(&$params){
 		$app = Dataface_Application::getInstance();
+        $auth = Dataface_AuthenticationTool::getInstance();
+        if ($auth->isLoggedIn()) {
+            header('Location: '.DATAFACE_SITE_HREF.'?--msg='.urlencode("You are already logged in"));
+            exit;
+        }
 		if ( !isset($_GET['code']) ){
 			// We need this parameter or we can do nothing.
 			return PEAR::raiseError(
@@ -85,11 +90,12 @@ class dataface_actions_activate {
 			if ( PEAR::isError($res) ){
 				$msg = $res->getMessage();
 				$app->redirect($url.'&--msg='.urlencode($msg));
+                exit;
 			}
 		} else {
 			$res = xf_db_query("select count(*) from 
-				`".str_replace('`','',$app->_conf['_auth']['users_table'])."` 
-				where `".str_replace('`','',$app->_conf['_auth']['username_column'])."` = '".addslashes($values[$app->_conf['_auth']['username_column']])."'
+				`".str_replace('`','',$auth->usersTable)."` 
+				where `".str_replace('`','',$auth->usernameColumn)."` = '".addslashes($values[$auth->usernameColumn])."'
 				", df_db());
 			if ( !$res ){
 				error_log(xf_db_error(df_db()));
@@ -103,12 +109,33 @@ class dataface_actions_activate {
 					'Registration failed because a user already exists by that name.  Try registering again with a different name.'
 					);
 				$app->redirect($url.'&--msg='.urlencode($msg));
+                exit;
 			}
+            if (@$app->_conf['allow_email_login']) {
+    			$res = xf_db_query("select count(*) from 
+    				`".str_replace('`','',$auth->usersTable)."` 
+    				where `".str_replace('`','',$auth->getEmailColumn())."` = '".addslashes($values[$auth->getEmailColumn()])."'
+    				", df_db());
+    			if ( !$res ){
+    				error_log(xf_db_error(df_db()));
+    				throw new Exception("Failed to find user records due to an SQL error.  See error log for details.", E_USER_ERROR);
+				
+    			}
+    			list($num) = xf_db_fetch_row($res);
+    			if ( $num > 0 ){
+    				$msg = df_translate(
+    					'actions.activate.MESSAGE_DUPLICATE_USER',
+    					'Registration failed because a user already exists by that name.  Try registering again with a different name.'
+    					);
+    				$app->redirect($url.'&--msg='.urlencode($msg));
+                    exit;
+    			}
+            }
 		}
 		
 		
 		// Step 4: Save the registration data and log the user in.
-		$record = new Dataface_Record($app->_conf['_auth']['users_table'], array());
+		$record = new Dataface_Record($auth->usersTable, array());
 		$record->setValues($values);
 		$res = $record->save();
 		if ( PEAR::isError($res) ){
@@ -128,7 +155,7 @@ class dataface_actions_activate {
 			$msg = df_translate(
 				'actions.activate.MESSAGE_REGISTRATION_COMPLETE',
 				'Registration complete.  You are now logged in.');
-			$_SESSION['UserName'] = $record->strval($app->_conf['_auth']['username_column']);
+			$_SESSION['UserName'] = $record->strval($auth->usernameColumn);
 			
 			
 			import(XFROOT.'Dataface/Utilities.php');
@@ -136,6 +163,7 @@ class dataface_actions_activate {
 			Dataface_Utilities::fireEvent('after_action_activate', array('record'=>$record));
 
 			$app->redirect($url.'&--msg='.urlencode($msg));
+            exit;
 			
 		}
 		

@@ -12,6 +12,12 @@ class dataface_actions_forgot_password {
 	public static $EX_NO_USERS_FOUND_WITH_USERNAME = 508;
 	public static $EX_MULTIPLE_USERS_WITH_SAME_USERNAME = 509;
 	
+    /**
+     * If the email login flag is set, then this action will act like "Email Login Link" instead
+     * of "Forgot Password"
+     */
+    private $emailLoginLink = false;
+    
 	function handle($params){
 		
 		
@@ -65,9 +71,7 @@ class dataface_actions_forgot_password {
 				
 				
 			} else {
-			
-				
-				df_display(array(), 'xataface/forgot_password/form.html');
+                df_display(array(), 'xataface/forgot_password/form.html');
 				exit;
 			}
 		} catch ( Exception $ex ){

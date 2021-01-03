@@ -28,6 +28,8 @@
  */
 import(XFROOT.'Dataface/Table.php');
 class Dataface_AuthenticationTool {
+    
+    const TOKEN_TABLE = 'dataface__login_tokens';
 
 	var $authType = 'basic';
 
@@ -85,12 +87,39 @@ class Dataface_AuthenticationTool {
 		
 		$this->setAuthType(@$params['auth_type']); 
 	}
-		function Dataface_AuthenticationTool($params=array()) { self::__construct($params); }
+	function Dataface_AuthenticationTool($params=array()) { self::__construct($params); }
 	
-		public function getUsersTable() {
-			if (!$this->usersTable) return null;
-			return Dataface_Table::loadTable($this->usersTable);
-		}
+	public function getUsersTable() {
+		if (!$this->usersTable) return null;
+		return Dataface_Table::loadTable($this->usersTable);
+	}
+    
+    /**
+     * Checks if email authentication is allowed.  Email auth is where the user enters email address
+     * and presses "Email Login Link".  This sends an email to the user with a single-use login link.
+     * The user clicks on this link in their email, and they are logged in.  They are never asked for a 
+     * password.
+     *
+     * This is enabled via the allow_email_login directive in the _auth section of the conf.ini file.
+     *
+     * @return boolean
+     * @since 3.0
+     */
+    public function isEmailLoginAllowed() {
+        return @$this->conf['allow_email_login'];
+    }
+    
+    /**
+     * Checks if password login is allowed.  Password login is allowed by default but can be disabled 
+     * via the allow_password_login directive (set to 0 or false) of the _auth section of the conf.ini
+     * file.
+     *
+     * @return boolean
+     * @since 3.0
+     */
+    public function isPasswordLoginAllowed() {
+        return !$this->isEmailLoginAllowed() or (isset($this->conf['allow_password_login']) and $this->conf['allow_password_login']);
+    }
 	
 	function setAuthType($type){
 		if ( isset( $type ) and $type != $this->authType ){
@@ -198,16 +227,135 @@ class Dataface_AuthenticationTool {
 	    return $this->groups;
 	}
 	
+    private $_credentials = null;
+    
+    /**
+     * Creates a login token that is valid for 10 minutes.
+     * @param string $username The username or email that this login token is for.  
+     * @param string $redirectUrl The URL that the user should be redirected to after logging in with this token.
+     * @return string The token or false if there is no account with the provided username/email address.
+     * @since 3.0
+     */
+    function createLoginToken($username, $redirectUrl = null) {
+        if (!$redirectUrl) {
+            $redirectUrl = DATAFACE_SITE_HREF;
+        }
+        
+        // We need to verify the username
+        if ($this->usernameColumn) {
+            $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->usernameColumn."` LIKE '".addslashes($username)."'", df_db());
+            if (!$res) {
+                $id = df_error_log("SQL error: ".xf_db_error(df_db()));
+                throw new Exception("SQL error checking users table: ".$id);
+            }
+            
+            list($num) = xf_db_fetch_row($res);
+            
+            xf_db_free_result($res);
+            if (intval($num) !== 1) {
+                if (!$this->getEmailColumn()) {
+                    return false;
+                }
+                $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->getEmailColumn()."` LIKE '".addslashes($username)."'", df_db());
+                list($num) = xf_db_fetch_row($res);
+                xf_db_free_result($res);
+                if (intval($num) !== 1) {
+                    return false;
+                }
+            }
+        }
+        
+        
+        if (!self::table_exists(self::TOKEN_TABLE)) {
+            $sql = "CREATE TABLE `dataface__login_tokens` ( `token_id` BIGINT(20) NOT NULL AUTO_INCREMENT , `username` VARCHAR(100) NOT NULL , `token` CHAR(36) NOT NULL , `expires` DATETIME NOT NULL, `redirect_url` TEXT, PRIMARY KEY (`token_id`)) ENGINE = MyISAM;";
+            $res = xf_db_query($sql, df_db());
+            if (!$res) {
+                throw new Exception("SQL error creating tokens table: ".xf_db_error(df_db()));
+            }
+            
+        }
+        
+        
+        
+        $tok = df_uuid();
+        
+        $res = xf_db_query("INSERT INTO `".self::TOKEN_TABLE."` (`username`, `token`, `expires`, `redirect_url`) VALUES ('".addslashes($username)."', '".addslashes($tok)."', NOW() + INTERVAL 10 MINUTE, '".addslashes($redirectUrl)."')", df_db());
+        if (!$res) {
+            $id = df_error_log(xf_db_error(df_db()));
+            throw new Exception("SQL error inserting token: ".$id);
+        }
+        
+        return $tok;
+    }
+    
+    
 	function getCredentials(){
-	
+	    if (isset($this->_credentials)) {
+	        return $this->_credentials;
+	    }
 		if ( isset($this->delegate) and method_exists($this->delegate, 'getCredentials') ){
-			return $this->delegate->getCredentials();
+			$this->_credentials = $this->delegate->getCredentials();
+            return $this->_credentials;
 		} else {
 			$username = (isset($_REQUEST['UserName']) ? $_REQUEST['UserName'] : null);
 			$password = (isset($_REQUEST['Password']) ? $_REQUEST['Password'] : null);
-			return array('UserName'=>$username, 'Password'=>$password);
+            $token = (isset($_REQUEST['--token']) ? $_REQUEST['--token'] : null);
+            
+            if (isset($token)) {
+                $tokenTable = self::TOKEN_TABLE;
+                if (self::table_exists($tokenTable)) {
+                    $res = xf_db_query("delete from `".$tokenTable."` where expires < NOW()", df_db());
+                    
+                    $res = xf_db_query("select `username` from `".$tokenTable."` where `token` LIKE '".addslashes($token)."'", df_db());
+                    if (!$res) {
+                        throw new Exception("SQL error checking token");
+                    }
+                    list($username) = xf_db_fetch_row($res);
+                    xf_db_free_result($res);
+                } 
+            }
+            if ($username and self::is_email_address($username) and $this->usersTable and $this->getEmailColumn()) {
+                // The username could be an email address
+                // If the username doesn't exist, then we can check the email column
+                $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->usernameColumn."` LIKE '".addslashes($username)."'", df_db());
+                if (!$res) {
+                    throw new Exception("SQL failure checking for username");
+                }
+                list($numUsernames) = xf_db_fetch_row($res);
+                xf_db_free_result($res);
+                if ($numUsernames == 0) {
+                    // No usernames found
+                    // Let's try to find an email address.
+                    $res = xf_db_query("select `".$this->usernameColumn."` from `".$this->usersTable."` where `".$this->getEmailColumn()."` LIKE '".addslashes($username)."'", df_db());
+                    if (!$res) {
+                        throw new Exception("SQL failure checking email address");
+                    }
+                    if (xf_db_num_rows($res) > 1) {
+                        df_error_log("WARNING: There is more than one username with email address ".$username.".  These users cannot login using their email address.");
+                    } else if (xf_db_num_rows($res) == 1) {
+                        // One to one match
+                        list($username) = xf_db_fetch_row($res);
+                    }
+                    xf_db_free_result($res);
+                }
+            }
+			$this->_credentials = array('UserName'=>$username, 'Password'=>$password, 'Token' => $token);
+            return $this->_credentials;
 		}
 	}
+    
+    private static function is_email_address($email) {
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
+    }
+    
+    private static function table_exists($tablename) {
+        $res = xf_db_query("SELECT 1 from `".$tablename."` LIMIT 1", df_db());
+        if ($res !== FALSE) {
+            xf_db_free_result($res);
+            return true;
+        }
+        return false;
+    }
 	
 	function checkCredentials(){
 		$app =& Dataface_Application::getInstance();
@@ -217,6 +365,28 @@ class Dataface_AuthenticationTool {
 		} else {
 			// The user is attempting to log in.
 			$creds = $this->getCredentials();
+            if (@$creds['Token']) {
+                
+                // A token was supplied.  Let's check against that
+                $tokenTable = self::TOKEN_TABLE;
+                if (self::table_exists($tokenTable)) {
+                    $res = xf_db_query("delete from `".$tokenTable."` where expires < NOW()", df_db());
+                    
+                    $res = xf_db_query("select COUNT(*) from `".$tokenTable."` where `token` LIKE '".addslashes($creds['Token'])."'", df_db());
+                    if (!$res) {
+                        throw new Exception("SQL error checking token");
+                    }
+                    list($numTokens) = xf_db_fetch_row($res);
+                    xf_db_free_result($res);
+                    
+                    xf_db_query("delete from `".$tokenTable."` where `token` LIKE '".addslashes($creds['Token'])."'", df_db());
+                    if (intval($numTokens) === 1) {
+                        return true;
+                    }
+
+                }
+            }
+            
 			if ( !isset( $creds['UserName'] ) || !isset($creds['Password']) ){
 				// The user did not submit a username of password for login.. trigger error.
 				//throw new Exception("Username or Password Not specified", E_USER_ERROR);
@@ -275,6 +445,9 @@ class Dataface_AuthenticationTool {
 		}
 	}
 
+    /**
+     * Creates a session token.
+     */
 	function createToken() {
 		if (session_id() == '') {
 			return null;
@@ -370,6 +543,7 @@ class Dataface_AuthenticationTool {
 				}
 
 			}
+            
 			// The user is attempting to log in.
 			$creds = $this->getCredentials();
 			$approved = $this->checkCredentials();

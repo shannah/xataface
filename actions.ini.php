@@ -446,6 +446,7 @@
 	mode = browse
 	label = Forgot password
 	url="{$this->url('-action=forgot_password')}"
+    condition="class_exists('Dataface_AuthenticationTool') and Dataface_AuthenticationTool::getInstance()->isPasswordLoginAllowed()"
 
 
 ;; An action to activate an account after it has been verified by email.
@@ -538,7 +539,7 @@
 	materialIcon="account_circle"
 	
 [change_password]
-	condition="(df_is_logged_in())"
+	condition="(df_is_logged_in()) and Dataface_AuthenticationTool::getInstance()->isPasswordLoginAllowed()"
 	url="{$app->url('-action=change_password')}"
 	label="Change Password"
 	category=personal_tools

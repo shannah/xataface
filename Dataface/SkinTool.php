@@ -182,7 +182,9 @@ class Dataface_SkinTool extends Smarty{
 			if ( isset($user) ){
 				$this->ENV['user'] = &$user;
 				$this->ENV['username'] = $authTool->getLoggedInUsername();
+                
 			}
+            $this->ENV['auth'] = $authTool;
 		}
 		$context = array();
 		$context['APP'] =& $this->app;

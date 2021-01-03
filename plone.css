@@ -291,18 +291,18 @@ textarea {
 }
 input {
     
-        padding: 6px 8px;
-        font-size: 100%;
-        line-height: 20px;
-        color: var(--inputTextColor);
-        vertical-align: middle;
-        background-color: var(--inputBgColor);
-        background-repeat: no-repeat;
-        background-position: right 8px center;
-        border: 1px solid var(--inputBorderColor);
-        border-radius: 3px;
-        outline: none;
-        box-shadow: inset 0 1px 2px rgba(27,31,35,.075);
+    padding: 6px 8px;
+    font-size: 100%;
+    line-height: 20px;
+    color: var(--inputTextColor);
+    vertical-align: middle;
+    background-color: var(--inputBgColor);
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    border: 1px solid var(--inputBorderColor);
+    border-radius: 3px;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(27,31,35,.075);
     
 }
 
@@ -310,6 +310,21 @@ input[type='submit'] {
     color: var(--submitButtonTextColor);
     background-color: var(--submitButtonBgColor);
     background-image: var(--submitButtonBgImage);
+}
+
+button.xf-submit-button {
+
+    color: var(--submitButtonTextColor);
+    background-color: var(--submitButtonBgColor);
+    background-image: var(--submitButtonBgImage);
+
+    box-sizing:border-box;
+    margin: 10px 0 10px 0;
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    
 }
 td.Dataface_QuickForm-label-cell {
     padding: 8px;
@@ -3496,6 +3511,24 @@ body.two-col #status-bar .responsive-content,
       box-sizing:border-box;
       margin: 10px 0 10px 0;
       padding: 15px;
+  }
+  
+  form.xataface-login-form.xf-email-login div.login-with-password {
+      display:none;
+  }
+  form.xataface-login-form.xf-password-login div.login-with-email {
+      display:none;
+  }
+  
+  form.xataface-login-form.xf-password-login div.login-with-email-button-wrapper {
+      text-align:center;
+  }
+  form.xataface-login-form .login-with-email, form.xataface-login-form .login-with-password {
+      margin-bottom: 2em;
+  }
+  
+  #Login-with-email-button, #Login-with-password-button {
+      cursor: pointer;
   }
   
   div.cancel-back-button {

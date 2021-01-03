@@ -203,23 +203,8 @@ class dataface_actions_register {
 	 * Creates a table to hold the temporary user registrations.
 	 */
 	function createRegistrationTable(){
-		if ( !Dataface_Table::tableExists('dataface__registrations', false) ){
-			$sql = "create table `dataface__registrations` (
-				registration_code varchar(32) not null,
-				registration_date timestamp not null,
-				registration_data longtext not null,
-				primary key (registration_code)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-				// registration_code stores an md5 code used to identify the registration
-				// registration_date is the date that the registration was made
-				// registration_data is a serialized array of the data from getValues()
-				// on the record.
-				
-				
-			$res = xf_db_query($sql, df_db());
-			if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
-		}
-		return true;
-	
+        import(XFROOT.'xf/registration/createRegistrationTable.func.php');
+        return xf\registration\createRegistrationTable();
 	}
 	
 	/**
@@ -297,7 +282,7 @@ class dataface_actions_register {
 		return PEAR::raiseError("No delegate method found named '$name'.", DATAFACE_E_REQUEST_NOT_HANDLED);
 	}
 
-	
+
 	
 	function processRegistrationForm($values){
 		
@@ -308,42 +293,10 @@ class dataface_actions_register {
 		
 		if ( @$this->params['email_validation'] ){
 			
-			// Let's try to create the registration table if it doesn't already
-			// exist
-			$this->createRegistrationTable();
-			
-			// Now we will store the registration attempt
-			
-			// A unique code to be used as an id
-			$code = null;
-			do {
-				$code = md5(rand());
-			} while ( 
-				xf_db_num_rows(
-					xf_db_query(
-						"select registration_code 
-						from dataface__registrations 
-						where registration_code='".addslashes($code)."'", 
-						df_db()
-						)
-					) 
-				);
-			
-			// Now that we have a unique id, we can insert the value
-			
-			$sql = "insert into dataface__registrations 
-					(registration_code, registration_data) values
-					('".addslashes($code)."',
-					'".addslashes(
-						serialize(
-							$this->form->_record->getValues()
-							)
-						)."')";
-			$res = xf_db_query($sql, df_db());
-			if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
-			
-			$activation_url = $_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?--enable-sessions=1&-action=activate&code='.urlencode($code);
-			
+            $values = $this->form->_record->getValues();
+            import(XFROOT.'xf/registration/createActivationLink.func.php');
+            $activation_url = xf\registration\createActivationLink($values);
+            
 			// Now that the registration information has been inserted, we need
 			// to send the confirmation email
 			// Let's try to send the email if possible.
