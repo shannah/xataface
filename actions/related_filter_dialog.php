@@ -206,7 +206,9 @@ class dataface_actions_related_filter_dialog {
                     } else if ($float) {
                         $type = 'range';
                     } else {
-                        if ($filterVocabulary or $text or $date or $time) {
+                        if ($filterVocabulary) {
+                            $type = 'range';
+                        } else if ($text or $date or $time) {
                             $type = 'text';
                         } else {
                             $type = 'filter';
