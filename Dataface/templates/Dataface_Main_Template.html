@@ -435,7 +435,10 @@
             have materialIcon, it won't be included in the FAB.
     
         *}
-         {actions var="menus" category="table_actions_menu" flatten="1" sanstags="#large#" with="materialIcon"}  
+         {assign var="fab_menu_category" value=$ENV.APPLICATION_OBJECT->getTableAttribute('fab_menu_category')|default:'table_actions_menu'}
+         
+         
+         {actions var="menus" category="$fab_menu_category" flatten="1" sanstags="#large#" with="materialIcon"}  
 
          {if $menus|@count>0}
 
