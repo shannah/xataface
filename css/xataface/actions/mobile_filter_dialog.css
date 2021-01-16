@@ -46,7 +46,7 @@ h1 {
 
 .xf-buttons {
     position:fixed;
-    height:40px;
+    /*height:40px;*/
     bottom:0;
     left:0;
     right:0;

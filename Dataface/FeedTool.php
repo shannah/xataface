@@ -291,6 +291,11 @@ class Dataface_FeedTool {
 		//$rss->useCached(); // use cached version if age<1 hour
 		$rss->title = $feed_data['title']; 
 		$rss->description = $feed_data['description'];
+        if (@$feed_data['author']) {
+            $rss->author = $feed_data['author'];
+        } else {
+            $rss->author= $app->getSiteTitle();
+        }
 		
 		//optional
 		//$rss->descriptionTruncSize = 500;

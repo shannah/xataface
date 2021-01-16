@@ -916,7 +916,7 @@ class RSSCreator091 extends FeedCreator {
 		$now = new FeedDate();
 		$feed.= "        <lastBuildDate>".df_escape($now->rfc822())."</lastBuildDate>\n";
 		$feed.= "        <generator>".FEEDCREATOR_VERSION."</generator>\n";
-
+        $feed.= "        <author>".df_escape($this->author)."</author>\n";
 		if ($this->image!=null) {
 			$feed.= "        <image>\n";
 			$feed.= "            <url>".$this->image->url."</url>\n"; 
@@ -1049,6 +1049,7 @@ class PIECreator01 extends FeedCreator {
 		$this->truncSize = 500;
 		$feed.= "    <subtitle>".$this->getDescription()."</subtitle>\n";
 		$feed.= "    <link>".$this->link."</link>\n";
+        //$feed.= "    <author>".df_escape($this->author)."</author>\n";
 		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <entry>\n";
 			$feed.= "        <title>".FeedCreator::iTrunc(df_escape(strip_tags($this->items[$i]->title)),100)."</title>\n";
