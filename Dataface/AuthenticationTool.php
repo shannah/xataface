@@ -445,6 +445,12 @@ class Dataface_AuthenticationTool {
 		}
 	}
     
+    /**
+     * Checks if the user has a password set.  Users might not have a password set if they 
+     * have never used password login - e.g. if they use email login or CAS login or some 
+     * other mechanism that doesn't require username/password comparison.
+     * @return boolean True ifthe user has a password.
+     */
     function userHasPassword() {
         $user = $this->getLoggedInUser();
         if ($user) {
