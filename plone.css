@@ -4850,3 +4850,20 @@ td.resultListCell img.xf-container-field {
 	max-width: 100px;
 	max-height: 100px;
 }
+
+ul.xf-horizontal-menu {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+ul.xf-horizontal-menu > li {
+    list-style-type: none;
+    list-style-image: none;
+    display: block;
+    
+}
+
+ul.xf-horizontal-menu > li a {
+    text-decoration: none;
+}

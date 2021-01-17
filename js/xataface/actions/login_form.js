@@ -4,7 +4,7 @@
     var $ = jQuery;
 
     registerXatafaceDecorator(function() {
-
+        loadLoginType();
         // Login with email button should trigger an email to the user with a login link.
         $('#Login-with-email-submit').click(function() {
             var self = this;
@@ -58,12 +58,15 @@
         
         
         
+        
         $('#Login-with-password-button').click(function() {
-            $('form.xataface-login-form').addClass('xf-password-login').removeClass('xf-email-login');
+            toggleLoginType('password');
+            //$('form.xataface-login-form').addClass('xf-password-login').removeClass('xf-email-login');
         });
         
         $('#Login-with-email-button').click(function() {
-            $('form.xataface-login-form').removeClass('xf-password-login').addClass('xf-email-login');
+            toggleLoginType('email');
+            //$('form.xataface-login-form').removeClass('xf-password-login').addClass('xf-email-login');
         });
         
         $('ul.xf-auto-register a.xf-login-action-register').click(function() {
@@ -83,5 +86,43 @@
             return false;
         });
     });
+   
+   
+    function getOtherLoginType(type) {
+        return (type == 'email') ? 'password' : 'email';
+    }
+   
+    function toggleLoginType(type) {
+        var form = $('form.xataface-login-form');
+        if (form.hasClass('xf-allow-'+type+'-login')) {
+            form.addClass('xf-'+type+'-login').removeClass('xf-'+getOtherLoginType(type)+'-login');
+            setCookie("__xf_login_type__", type, 1);
+        }
+        
+    }
+    
+    function loadLoginType() {
+        var loginType = getCookie('__xf_login_type__');
+        if (loginType) {
+            toggleLoginType(loginType);
+        }
+    }
+   
+   
+    function setCookie(key, value, expiry) {
+        var expires = new Date();
+        expires.setTime(expires.getTime() + (expiry * 24 * 60 * 60 * 1000));
+        document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+    }
+
+    function getCookie(key) {
+        var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+        return keyValue ? keyValue[2] : null;
+    }
+
+    function eraseCookie(key) {
+        var keyValue = getCookie(key);
+        setCookie(key, keyValue, '-1');
+    }
    
 })();

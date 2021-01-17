@@ -6,8 +6,8 @@ class dataface_actions_change_password {
 		$auth = Dataface_AuthenticationTool::getInstance();
 		$user = $auth->getLoggedInUser();
 		$username = $auth->getLoggedInUsername();
-		
-		if ( !$user or !$username ){
+		$hasPassword = intval($user->getLength($auth->passwordColumn)) > 0;
+        if ( !$user or !$username ){
 			return Dataface_Error::permissionDenied('You must be logged in to change your password');
 		}
 		
@@ -18,18 +18,24 @@ class dataface_actions_change_password {
 				if ( !@$_POST['--password1'] || !@$_POST['--password2'] ){
 					throw new Exception("Please enter your new password in both fields provided.");
 				}
-				
-				if ( !@$_POST['--current-password'] ){
-					throw new Exception("Please enter your current password in the field provided.");
+                if ($hasPassword) {
+                    // If the user has an existing password, we need to check and make
+                    // sure that it matches.
+                    // They may not have a password if they have only used email login to this point.
+    				if (!@$_POST['--current-password'] ){
+    					throw new Exception("Please enter your current password in the field provided.");
 					
-				}
+    				}
 				
-				$_REQUEST['UserName'] = $username;
-				$_REQUEST['Password'] = $_POST['--current-password'];
+    				$_REQUEST['UserName'] = $username;
+    				$_REQUEST['Password'] = $_POST['--current-password'];
 				
-				if ( !$auth->checkCredentials() ){
-					throw new Exception("The password you entered is incorrect.  Please try again.");
-				}
+    				if ( !$auth->checkCredentials() ){
+    					throw new Exception("The password you entered is incorrect.  Please try again.");
+    				}
+				
+                    
+                }
 				
 				if ( strcmp($_POST['--password1'], $_POST['--password2'])!==0 ){
 					throw new Exception("Your new passwords don't match.  Please ensure that you retype your new password correctly.");
@@ -55,8 +61,10 @@ class dataface_actions_change_password {
 		
 			$jt = Dataface_JavascriptTool::getInstance();
 			$jt->import('change_password.js');
+            
+            
 			
-			df_display(array(), 'change_password.html');
+			df_display(['hasPassword' => $hasPassword], 'change_password.html');
 		}
 		
 		

@@ -444,6 +444,14 @@ class Dataface_AuthenticationTool {
 			return true;
 		}
 	}
+    
+    function userHasPassword() {
+        $user = $this->getLoggedInUser();
+        if ($user) {
+            return $user->getLength($this->passwordColumn) > 0;
+        }
+        return false;
+    }
 
     /**
      * Creates a session token.

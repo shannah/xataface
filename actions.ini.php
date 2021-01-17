@@ -539,11 +539,15 @@
 	materialIcon="account_circle"
 	
 [change_password]
-	condition="(df_is_logged_in()) and Dataface_AuthenticationTool::getInstance()->isPasswordLoginAllowed()"
+	condition="(df_is_logged_in()) and Dataface_AuthenticationTool::getInstance()->isPasswordLoginAllowed() and Dataface_AuthenticationTool::getInstance()->userHasPassword()"
 	url="{$app->url('-action=change_password')}"
 	label="Change Password"
 	category=personal_tools
 	materialIcon="security"
+    
+[create_password > change_password]
+    condition="(df_is_logged_in()) and Dataface_AuthenticationTool::getInstance()->isPasswordLoginAllowed() and !Dataface_AuthenticationTool::getInstance()->userHasPassword()"
+    label="Create Password"
 
 [personal_tools_logout]
 	condition="(df_is_logged_in())"
@@ -807,3 +811,9 @@
 [mobile_edit > edit]
     category=mobile_edit
     featured=1
+    
+[password_changed_home]
+    category=password_changed_actions
+    label=Home
+    url="{$site_href}"
+    materialIcon=home
