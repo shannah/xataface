@@ -178,9 +178,11 @@
                 {/if}
             </div>
             {/if}
+            {if $ENV.APPLICATION._auth.autologin}
             <div class='remember-me'>
                 <input type="checkbox" id='remember-me-cb' name="--remember-me"><label for='remember-me-cb'>Remember me</label>
             </div>
+            {/if}
             
 		</fieldset>
 		
