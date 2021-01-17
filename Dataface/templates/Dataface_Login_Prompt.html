@@ -159,6 +159,7 @@
     			</div>
     			{block name="after_login_password"}
     			<input id="Login-submit" name="-submit" type="submit" value="{translate id="scripts.GLOBAL.LABEL_LOGIN"}Log in{/translate}"/>
+                
                 {if $allow_email_login}
                 <div class="login-with-email-button-wrapper">
                     <span>or</span>
@@ -177,6 +178,10 @@
                 {/if}
             </div>
             {/if}
+            <div class='remember-me'>
+                <input type="checkbox" id='remember-me-cb' name="--remember-me"><label for='remember-me-cb'>Remember me</label>
+            </div>
+            
 		</fieldset>
 		
 		</form>

@@ -3527,6 +3527,11 @@ body.two-col #status-bar .responsive-content,
       margin-bottom: 2em;
   }
   
+  form.xataface-login-form .remember-me {
+      margin-top: -2em;
+      margin-bottom: 2em;
+  }
+  
   #Login-with-email-button, #Login-with-password-button {
       cursor: pointer;
   }

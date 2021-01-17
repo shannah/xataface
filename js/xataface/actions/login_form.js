@@ -14,9 +14,15 @@
             }, 1000);
             var email = $('#Login-Username input[name="UserName"]').val();
             var redirect = $('input[name="-redirect"]').val();
+            var rememberMe = $('input[name="--remember-me"]');
+            var rememberMeChecked = rememberMe.is(':checked');
             
             if (email) {
-                $.post(DATAFACE_SITE_HREF, {'-action' : 'xf_email_login', '--email' : email, '--redirectUrl' : redirect}, function(res) {
+                var params = {'-action' : 'xf_email_login', '--email' : email, '--redirectUrl' : redirect};
+                if (rememberMeChecked) {
+                    params['--remember-me'] = '1';
+                }
+                $.post(DATAFACE_SITE_HREF, params, function(res) {
                     if (!res) {
                         res = {code : 500, message: 'Email failed'};
                     }

@@ -1855,6 +1855,87 @@ END
 		}
 		return null;
 	}
+    
+    /**
+     * Creates the autologin table.
+     */
+    private function createAutologinTable() {
+        $createSql = "create table dataface__autologin (`username` varchar(100) NOT NULL, `token` varchar(36) NOT NULL PRIMARY KEY) Engine MyISAM";
+        $res = xf_db_query($createSql, df_db());
+        if (!$res) {
+            error_log("Failed to create autologin table: ". xf_db_erorr(df_db()));
+            throw new Exception("Failed to create autologin table.");
+        }
+    }
+    
+    /**
+     * Inserts an autologin token into the autologins table.
+     */
+    public function insertAutologinToken($token, $tryCreateTableOnFail = true) {
+        $insertSql = "replace into dataface__autologin (`username`,`token`) values ('".addslashes($_SESSION['UserName'])."', '".$token."')";
+        $res = xf_db_query($insertSql, df_db());
+        if (!$res) {
+            if ($tryCreateTableOnFail) {
+                $this->createAutologinTable();
+                $this->insertAutologinToken($token, false);
+            } else {
+                error_log("Failed to insert autologin token for user ".$_SESSION['UserName'].' due to SQL error: '.xf_db_error(df_db()));
+                throw new Exception("Failed to insert autologin token due to SQL error");
+            }
+        }
+    }
+    
+    /**
+     * Get the username for the given autologin token.
+     */
+    private function getAutologinUserForToken($token) {
+        
+        $res = xf_db_query("select username from dataface__autologin where token='".addslashes($token)."' limit 1", df_db());
+        if ($res) {
+            if ($row = xf_db_fetch_row($res)) {
+                return $row[0];
+            }
+            xf_free_result($res);
+        } 
+        return null;
+         
+    }
+    
+    
+    /**
+     * Removes the current autologin cookie.  Generally called when logging out.
+     */
+    public function clearAutologinCookie() {
+        $cookieName = $this->getAutologinCookieName();
+        $token = @$_COOKIE[$cookieName];
+        if ($token) {
+            $res = xf_db_query("delete from dataface__autologin where token='".addslashes($token)."' limit 1", df_db());
+            if (!$res) {
+                error_log("Failed to delete autologin cookie due to sql error: ".xf_db_error(df_db()));
+                
+            }
+            unset($_COOKIE[$cookieName]);
+            setcookie($cookieName, '', -1);
+        }
+        
+    }
+    
+    /**
+     * Gets the cookie named used for autologin.
+     * 
+     * Default is xf_pulse, but can be overridden with the autologin_cookie conf.ini property in the _auth section.
+     */
+    public function getAutologinCookieName() {
+        $conf = @$this->_conf['_auth'];
+        if (!$conf) {
+            $conf = [];
+        }
+        $cookieName = 'xf_pulse';
+        if (@$conf['autologin_cookie']) {
+            $cookieName = $conf['autologin_cookie'];
+        }
+        return $cookieName;
+    }
 
 	/**
 	 * @brief Starts a session if one does not already exist.  If you are writing code
@@ -1974,9 +2055,23 @@ END
 				if ( @$conf['session_name'] ) session_name($conf['session_name']);
 				//echo "Starting session with ".session_name();
 				session_start();	// start the session
+                
 				if (defined('REQUEST_PUBLIC_URL_USERNAME')) {
 					$_SESSION['UserName'] = REQUEST_PUBLIC_URL_USERNAME;
 				}
+                if (!@$_SESSION['UserName'] and @$conf['autologin']) {
+                    
+                    $autologinCookieVal = @$_COOKIE[$this->getAutologinCookieName()];
+                    if ($autologinCookieVal) {
+                        $foundUser = $this->getAutologinUserForToken($autologinCookieVal);
+                        if ($foundUser) {
+                            $_SESSION['UserName'] = $foundUser;
+                            setcookie($this->getAutologinCookieName(), $autologinCookieVal, time() + (10 * 365 * 24 * 60 * 60)); // 10 years
+                        }
+                        
+                    }
+                } 
+                
 				header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
 
 				// This updates the session timeout on page load

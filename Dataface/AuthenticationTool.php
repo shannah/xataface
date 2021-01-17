@@ -29,7 +29,7 @@
 import(XFROOT.'Dataface/Table.php');
 class Dataface_AuthenticationTool {
     
-    const TOKEN_TABLE = 'dataface__login_tokens';
+    const TOKEN_TABLE = 'dataface__login_tokens_v2';
 
 	var $authType = 'basic';
 
@@ -267,7 +267,7 @@ class Dataface_AuthenticationTool {
         
         
         if (!self::table_exists(self::TOKEN_TABLE)) {
-            $sql = "CREATE TABLE `dataface__login_tokens` ( `token_id` BIGINT(20) NOT NULL AUTO_INCREMENT , `username` VARCHAR(100) NOT NULL , `token` CHAR(36) NOT NULL , `expires` DATETIME NOT NULL, `redirect_url` TEXT, PRIMARY KEY (`token_id`)) ENGINE = MyISAM;";
+            $sql = "CREATE TABLE `".self::TOKEN_TABLE."` ( `token_id` BIGINT(20) NOT NULL AUTO_INCREMENT , `username` VARCHAR(100) NOT NULL , `token` CHAR(36) NOT NULL , `expires` DATETIME NOT NULL, `redirect_url` TEXT, `autologin` TINYINT(1), PRIMARY KEY (`token_id`)) ENGINE = MyISAM;";
             $res = xf_db_query($sql, df_db());
             if (!$res) {
                 throw new Exception("SQL error creating tokens table: ".xf_db_error(df_db()));
@@ -278,8 +278,9 @@ class Dataface_AuthenticationTool {
         
         
         $tok = df_uuid();
+        $autologin = ($this->conf['autologin'] and @$_REQUEST['--remember-me']) ? 1 : 0;
         
-        $res = xf_db_query("INSERT INTO `".self::TOKEN_TABLE."` (`username`, `token`, `expires`, `redirect_url`) VALUES ('".addslashes($username)."', '".addslashes($tok)."', NOW() + INTERVAL 10 MINUTE, '".addslashes($redirectUrl)."')", df_db());
+        $res = xf_db_query("INSERT INTO `".self::TOKEN_TABLE."` (`username`, `token`, `expires`, `redirect_url`, `autologin`) VALUES ('".addslashes($username)."', '".addslashes($tok)."', NOW() + INTERVAL 10 MINUTE, '".addslashes($redirectUrl)."', $autologin)", df_db());
         if (!$res) {
             $id = df_error_log(xf_db_error(df_db()));
             throw new Exception("SQL error inserting token: ".$id);
@@ -300,17 +301,19 @@ class Dataface_AuthenticationTool {
 			$username = (isset($_REQUEST['UserName']) ? $_REQUEST['UserName'] : null);
 			$password = (isset($_REQUEST['Password']) ? $_REQUEST['Password'] : null);
             $token = (isset($_REQUEST['--token']) ? $_REQUEST['--token'] : null);
-            
             if (isset($token)) {
                 $tokenTable = self::TOKEN_TABLE;
                 if (self::table_exists($tokenTable)) {
                     $res = xf_db_query("delete from `".$tokenTable."` where expires < NOW()", df_db());
                     
-                    $res = xf_db_query("select `username` from `".$tokenTable."` where `token` LIKE '".addslashes($token)."'", df_db());
+                    $res = xf_db_query("select `username`, `autologin` from `".$tokenTable."` where `token` LIKE '".addslashes($token)."'", df_db());
                     if (!$res) {
                         throw new Exception("SQL error checking token");
                     }
-                    list($username) = xf_db_fetch_row($res);
+                    list($username, $autologin) = xf_db_fetch_row($res);
+                    if ($autologin and @$this->conf['autologin']) {
+                        $_REQUEST['--remember-me'] = 1;
+                    }
                     xf_db_free_result($res);
                 } 
             }
@@ -489,7 +492,11 @@ class Dataface_AuthenticationTool {
 		
 		if ( isset( $_REQUEST['-action'] ) and $_REQUEST['-action'] == 'logout' ){
 			$app->startSession();
-			// the user has invoked a logout request.
+			// the user has invoked a logout request.'
+            if (@$this->conf['autologin']) {
+                $app->clearAutologinCookie();
+            }
+            
 			
 			if ( isset($appdel) and method_exists($appdel, 'before_action_logout' ) ){
 				$res = $appdel->before_action_logout();
@@ -532,6 +539,9 @@ class Dataface_AuthenticationTool {
 			
 			$json = @$_REQUEST['--no-prompt'];
 			$app->startSession();
+            
+            
+            
 			if ( $this->isLoggedIn() ){
 				if ($json) {
 					df_write_json(array(
@@ -599,6 +609,16 @@ class Dataface_AuthenticationTool {
 			// If we are this far, then the login worked..  We will store the 
 			// userid in the session.
 			$_SESSION['UserName'] = $creds['UserName'];
+            
+            
+            if (@$_SESSION['UserName'] and @$this->conf['autologin'] and @$_REQUEST['--remember-me']) {
+                // User is logged in, and autologin is enabled in the app.
+                // We should check if the token is currently set
+                $token = df_uuid();
+                $app->insertAutologinToken($token);
+                setcookie($app->getAutologinCookieName(), $token, time() + (10 * 365 * 24 * 60 * 60)); // 10 years
+                
+            }
 			
 			if ($json) {
 				df_write_json(array(
