@@ -1917,6 +1917,16 @@ END
             unset($_COOKIE[$cookieName]);
             setcookie($cookieName, '', -1);
         }
+        if (@$_SESSION['UserName']) {
+            if (@$this->_conf['_auth'] and @$this->_conf['_auth']['autologin.logout_all_devices']) {
+                $res = xf_db_query("delete from dataface_autologin where username = '".addslashes($_SESSION['UserName'])."'", df_db());
+                if (!$res) {
+                    error_log("Failed ot delete autologin tokens for user ".$_SESSION['UserName'].": ". xf_db_error(df_db()));
+                    throw new Exception("Failed to delete tokens due to SQL error");
+                }
+            }
+        }
+        
         
     }
     

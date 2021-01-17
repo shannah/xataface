@@ -243,7 +243,7 @@ class Dataface_AuthenticationTool {
         
         // We need to verify the username
         if ($this->usernameColumn) {
-            $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->usernameColumn."` LIKE '".addslashes($username)."'", df_db());
+            $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->usernameColumn."` = '".addslashes($username)."'", df_db());
             if (!$res) {
                 $id = df_error_log("SQL error: ".xf_db_error(df_db()));
                 throw new Exception("SQL error checking users table: ".$id);
@@ -256,7 +256,7 @@ class Dataface_AuthenticationTool {
                 if (!$this->getEmailColumn()) {
                     return false;
                 }
-                $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->getEmailColumn()."` LIKE '".addslashes($username)."'", df_db());
+                $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->getEmailColumn()."` = '".addslashes($username)."'", df_db());
                 list($num) = xf_db_fetch_row($res);
                 xf_db_free_result($res);
                 if (intval($num) !== 1) {
@@ -306,7 +306,7 @@ class Dataface_AuthenticationTool {
                 if (self::table_exists($tokenTable)) {
                     $res = xf_db_query("delete from `".$tokenTable."` where expires < NOW()", df_db());
                     
-                    $res = xf_db_query("select `username`, `autologin` from `".$tokenTable."` where `token` LIKE '".addslashes($token)."'", df_db());
+                    $res = xf_db_query("select `username`, `autologin` from `".$tokenTable."` where `token` = '".addslashes($token)."'", df_db());
                     if (!$res) {
                         throw new Exception("SQL error checking token");
                     }
@@ -320,7 +320,7 @@ class Dataface_AuthenticationTool {
             if ($username and self::is_email_address($username) and $this->usersTable and $this->getEmailColumn()) {
                 // The username could be an email address
                 // If the username doesn't exist, then we can check the email column
-                $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->usernameColumn."` LIKE '".addslashes($username)."'", df_db());
+                $res = xf_db_query("select count(*) from `".$this->usersTable."` where `".$this->usernameColumn."` = '".addslashes($username)."'", df_db());
                 if (!$res) {
                     throw new Exception("SQL failure checking for username");
                 }
@@ -329,7 +329,7 @@ class Dataface_AuthenticationTool {
                 if ($numUsernames == 0) {
                     // No usernames found
                     // Let's try to find an email address.
-                    $res = xf_db_query("select `".$this->usernameColumn."` from `".$this->usersTable."` where `".$this->getEmailColumn()."` LIKE '".addslashes($username)."'", df_db());
+                    $res = xf_db_query("select `".$this->usernameColumn."` from `".$this->usersTable."` where `".$this->getEmailColumn()."` = '".addslashes($username)."'", df_db());
                     if (!$res) {
                         throw new Exception("SQL failure checking email address");
                     }
@@ -375,14 +375,14 @@ class Dataface_AuthenticationTool {
                 if (self::table_exists($tokenTable)) {
                     $res = xf_db_query("delete from `".$tokenTable."` where expires < NOW()", df_db());
                     
-                    $res = xf_db_query("select COUNT(*) from `".$tokenTable."` where `token` LIKE '".addslashes($creds['Token'])."'", df_db());
+                    $res = xf_db_query("select COUNT(*) from `".$tokenTable."` where `token` = '".addslashes($creds['Token'])."'", df_db());
                     if (!$res) {
                         throw new Exception("SQL error checking token");
                     }
                     list($numTokens) = xf_db_fetch_row($res);
                     xf_db_free_result($res);
                     
-                    xf_db_query("delete from `".$tokenTable."` where `token` LIKE '".addslashes($creds['Token'])."'", df_db());
+                    xf_db_query("delete from `".$tokenTable."` where `token` = '".addslashes($creds['Token'])."'", df_db());
                     if (intval($numTokens) === 1) {
                         return true;
                     }
