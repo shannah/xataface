@@ -406,7 +406,7 @@ class Dataface_Relationship {
 			
 			
 			foreach ($tables as $table){
-				$from .= $table.', ';
+				$from .= '`'.$table.'`, ';
 			}
 			
 			$from = substr( $from, 0, strlen($from)-2);
