@@ -1,0 +1,70 @@
+= Xataface Scaffold Project
+
+This project was generated using the Xataface CLI, using a command like:
+
+[souce,bash]
+----
+xataface create project-name
+----
+
+== Usage Instructions
+
+[#start]
+=== Starting the Development Server
+
+[source,bash]
+----
+xataface start
+----
+
+[#stop]
+=== Stopping the Development Server
+
+[source,bash]
+----
+xataface stop
+----
+
+[#status]
+=== Show Status of All Xataface Development Servers
+
+[source,bash]
+----
+xataface service
+----
+
+.Example Output
+[source,listing]
+----
+   mysql |    httpd |   port | path
+ STOPPED |  STOPPED |   9090 | /Users/shannah/.xataface/tmp/test/testapp
+ RUNNING |  RUNNING |   9090 | /Users/shannah/cn1_files/spokenpage/narrated_news
+ STOPPED |  STOPPED |   9090 | /Users/shannah/tmp/xftest
+----
+
+[#open]
+=== Open Application
+
+. <<start,Start>> the development server.
+. Open your browser to http://localhost:PORT where PORT is the port number listed when you run the <<status,`xataface service`>> command.  Default port is 9090
+
+[#phpmyadmin]
+=== Open PHP MyAdmin
+
+. <<start,Start>> the development server.
+. Open your browser to http://localhost:PORT/phpmyadmin where PORT is theport number listed when you run the <<status,`xataface service`>> command.  Default port is 9090.
+
+[#port]
+=== Change Server Port
+
+By default the development server runs on port 9090.  You can change this by setting the `XFServerPort` property of the link:www/conf.ini.php[conf.ini.php] file.  E.g:
+
+[source,ini]
+----
+XFServerPort=9091
+----
+
+TIP: Make sure you <<stop,stop>> the server before changing the port value.  Then <<start,restart>> the server after changing the port value.
+
+
+
