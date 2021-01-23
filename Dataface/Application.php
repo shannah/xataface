@@ -1790,7 +1790,7 @@ END
 	 * to not rack up huge amounts of Session files unnecessarily.
 	 *
 	 * @see disableSessions()
-	 * @see sessionsEnabled()
+	 * @see sessionEnabled()
 	 */
 	function enableSessions(){
 		setcookie($this->sessionCookieKey, 1, 0, DATAFACE_SITE_URL);
@@ -1818,6 +1818,10 @@ END
 	 * @see startSession()
 	 */
 	function sessionEnabled(){
+        if (@$this->_conf['_auth'] and @$this->_conf['_auth']['autologin'] and @$_COOKIE[$this->getAutologinCookieName()]) {
+            // If autologin is enabled and the user has logged in, then sessions are enabled.
+            return true;
+        }
 		return @$_COOKIE[$this->sessionCookieKey] or $this->getBearerToken() !== null;
 	}
 
