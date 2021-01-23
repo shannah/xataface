@@ -6,13 +6,37 @@ define("XF_LOG_LEVEL_WARNING", 4);
 define("XF_LOG_LEVEL_INFO", 3);
 define("XF_LOG_LEVEL_DEBUG", 1);
 
-// THe minimum level of a log messagse (see nn_log()) that will result 
+// THe minimum level of a log messagse (see xf_log()) that will result 
 // in a logged message.
-define("XF_MIN_LOG_LEVEL", 3);
+//if (!defined('XF_MIN_LOG_LEVEL')) define("XF_MIN_LOG_LEVEL", 3);
 
+function init_logging() {
+    if (defined('XF_LOGGING_INITIALIZED')) {
+        return;
+    }
+    define('XF_LOGGING_INITIALIZED', 1);
+    if (!defined('XF_MIN_LOG_LEVEL')) {
+        $app = \Dataface_Application::getInstance();
+        if (@$app->_conf['_logging'] and @$app->_conf['_logging']['level']) {
+            $level = $app->_conf['_logging']['level'];
+            $levelNum = XF_LOG_LEVEL_INFO;
+            switch (strtolower($level)) {
+                case 'error': $levelNum = XF_LOG_LEVEL_ERROR; break;
+                case 'warning': $levelNum = XF_LOG_LEVEL_WARNING; break;
+                case 'debug': $levelNum = XF_LOG_LEVEL_DEBUG; break;
+            }
+            define('XF_MIN_LOG_LEVEL', $levelNum);
+        
+        }    
+    }
+    
+    
+    
+}
 
 function xf_log($level, $message, $tags=null, $includeContext=false) {
-    if ($level < NN_MIN_LOG_LEVEL) {
+    init_logging();
+    if ($level < XF_MIN_LOG_LEVEL) {
         // Log message does not meet minimum threshold, so we do nothing here.
         return;
     }
