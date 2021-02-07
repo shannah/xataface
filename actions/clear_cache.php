@@ -13,31 +13,61 @@ if ( !function_exists('scandir') ){
 }
 
 class dataface_actions_clear_cache {
-	function handle(&$params){
-		$templates_dirs = array(
-			DATAFACE_SITE_PATH.'/templates_c',
-			DATAFACE_PATH.'/templates_c'
-			);
-		foreach ( $templates_dirs as $f ){
-			if ( is_dir($f) ){
-				foreach ( scandir($f) as $dir ){
-					if ( $dir == '.' or $dir == '..' ) continue;
-					$this->deltree($f.'/'.$dir);
-				}
-			}
-		}
+    
+    
+    function handle($params) {
+        $this->clear_cache($params);
+        header('Content-type: application/json; charset=UTF-8');
+        echo json_encode(array('code' => 200, 'message' => 'success'));
+    }
+    
+	function clear_cache(&$params){
+        $liveCache = DATAFACE_SITE_PATH . DIRECTORY_SEPARATOR . "templates_c";
+        //echo $liveCache;exit;
+        $app = Dataface_Application::getInstance();
+        $query = $app->getQuery();
+        //print_r($query);exit;
+        import(XFROOT.'Dataface/Table.php');
+        $table = Dataface_Table::loadTable($query['-table']);
+        //print_r($table);exit;
+        
+        self::rrmdir($liveCache, array('.htaccess'), false);
+        
+        import(XFROOT.'actions/clear_views.php');
+        $clearViews = new dataface_actions_clear_views();
+        $clearViews->clear_views();
+        
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+        if ( function_exists('apc_clear_cache') ){
+            apc_clear_cache('user');
+        }
+        
+        // Output Cache
+        @xf_db_query("truncate table `__output_cache`", df_db());
+        
+        
 	}
 	
-	function deltree( $f ){
-		if ( is_dir($f) ){
-			foreach (scandir($f) as $item){
-				if ( $item == '.' or $item == '..') continue;
-				$this->deltree($f.'/'.$item);
-			}
-			rmdir($f);
-		} else {
-			unlink($f);
-		}
-	
-	}
+    static function rrmdir($dir, $excludes=array(), $deleteRootDir=false) { 
+        $sep = DIRECTORY_SEPARATOR;
+       if (is_dir($dir)) { 
+         $objects = scandir($dir); 
+         foreach ($objects as $object) { 
+            if (in_array($object, $excludes)) {
+                continue;
+            }
+           if ($object != "." && $object != "..") { 
+             if (is_dir($dir.$sep.$object))
+               self::rrmdir($dir.$sep.$object, $excludes, true);
+             else
+               unlink($dir.$sep.$object); 
+           } 
+         }
+         if ($deleteRootDir) {
+            rmdir($dir); 
+         }
+       } 
+    }
 }

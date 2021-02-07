@@ -117,54 +117,7 @@ class Dataface_ValuelistTool {
 	}
 	
 	
-	function _loadValuelistsIniFile_old(){
-		if ( !isset( $this->_valuelists ) ){
-			$this->_valuelists = array();
-		}
-		$valuelists =& $this->_valuelists;
-		
-		if ( $this->_hasValuelistsIniFile() ){
-			
-			
-			$conf = parse_ini_file( $this->_valuelistsIniFilePath(), true);
-			
-			foreach ( $conf as $vlname=>$vllist ){
-				$valuelists[$vlname] = array();
-				if ( is_array( $vllist ) ){
-					foreach ( $vllist as $key=>$value ){
-						
-						if ( $key == '__sql__' ) {
-							// we perform the sql query specified to produce our valuelist.
-							// the sql query should return two columns only.  If more are 
-							// returned, only the first two will be used.   If one is returned
-							// it will be used as both the key and value.
-							$res = df_query($value, null, true, true);
-							if ( is_array($res) ){
-								//while ($row = xf_db_fetch_row($res) ){
-								foreach ($res as $row){
-									$valuekey = $row[0];
-									$valuevalue = count($row)>1 ? $row[1] : $row[0];
-									$valuelists[$vlname][$valuekey] = $valuevalue;
-									
-									if ( count($row)>2 ){
-										$valuelists[$vlname.'__meta'][$valuekey] = $row[2];
-									}
-								}
-							} else {
-								throw new Exception('Valuelist sql query failed: '.$value.': '.xf_db_error(), E_USER_NOTICE);
-							}
-						
-						} else {
-							$valuelists[$vlname][$key] = $value;
-						}
-					}
-				}
-				
-				
-			}
-			
-		} 
-	}
+	
 	
 	
 	public static function &getInstance(){

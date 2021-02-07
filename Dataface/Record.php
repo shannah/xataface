@@ -2738,15 +2738,7 @@ class Dataface_Record {
      * @since 3.0
      */
     function getTableAttribute($attname) {
-        $del = $this->_table->getDelegate();
-        $method = 'attribute__'.$attname;
-        if ($del and method_exists($del, $method)) {
-            $out = $del->$method($this);
-            if (isset($out)) {
-                return $out;
-            }
-        }
-        return @$this->_table->_atts[$attname];
+        return $this->_table->getAttribute($attname);
     }
 
 

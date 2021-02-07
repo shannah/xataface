@@ -144,12 +144,12 @@ class Dataface_Application_blob {
 			if (@$request['-thumb']) {
 				$thumbName = basename($request['-thumb']);
 				$thumbPath = $savepath . '/' . $thumbName;
-				if (is_readable($thumbPath . '/' . basename($rec->val($fieldname)))) {
+				if (xf_is_readable($thumbPath . '/' . basename($rec->val($fieldname)))) {
 					$savepath = $thumbPath;
 				}
 			}
 			$fullPath = $savepath.'/'.basename($rec->val($fieldname));
-			if (!is_readable($fullPath)) {
+			if (!xf_is_readable($fullPath)) {
 				header('HTTP/1.0 404 Not Found');
 				echo '<h1>404 File Not Found</h1>';
 				exit;

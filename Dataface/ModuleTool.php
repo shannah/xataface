@@ -29,20 +29,29 @@ class Dataface_ModuleTool {
 		if ( !isset($this->_db_versions) ){
 			$this->_db_versions = array();
 			$sql = "select module_name, module_version from dataface__modules";
-			$res = xf_db_query($sql, df_db());
-			if ( !$res ){
-				$res = xf_db_query("create table dataface__modules (
-					`module_name` varchar(255) not null primary key,
-					`module_version` int(11)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
-				if ( !$res ) throw new Exception(xf_db_error(df_db()));
-				$res = xf_db_query($sql, df_db());
-			}
-			if ( !$res ) throw new Exception(xf_db_error(df_db()));
-			while ($row = xf_db_fetch_assoc($res) ){
-				$this->_db_versions[$row['module_name']] = $row['module_version'];
-			}
-			@xf_db_free_result($res);
+            if (XF_USE_OPCACHE and xf_opcache_is_query_cached($sql)) {
+                include(xf_opcache_query_path($sql));
+                $this->_db_versions = $xf_opcache_export;
+            } else {
+    			$res = xf_db_query($sql, df_db());
+    			if ( !$res ){
+    				$res = xf_db_query("create table dataface__modules (
+    					`module_name` varchar(255) not null primary key,
+    					`module_version` int(11)
+    				) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
+    				if ( !$res ) throw new Exception(xf_db_error(df_db()));
+    				$res = xf_db_query($sql, df_db());
+    			}
+    			if ( !$res ) throw new Exception(xf_db_error(df_db()));
+    			while ($row = xf_db_fetch_assoc($res) ){
+    				$this->_db_versions[$row['module_name']] = $row['module_version'];
+    			}
+    			@xf_db_free_result($res);
+                if (XF_USE_OPCACHE) {
+                    xf_opcache_cache_query($sql, $this->_db_versions);
+                }
+            }
+			
 			
 		}
 		$out = @$this->_db_versions[$modname];

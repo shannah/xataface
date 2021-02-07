@@ -254,7 +254,7 @@ class Dataface_ConfigTool {
 			if ( !isset( $this->iniLoaded[$path] ) ){
 				$this->iniLoaded[$path] = true;
 				
-				if ( is_readable($path) || strstr($path,'db:') == $path ){
+				if ( xf_is_readable($path) || strstr($path,'db:') == $path ){
 					
 					
 					$config = $this->parse_ini_file($path, true);
@@ -511,6 +511,17 @@ class Dataface_ConfigTool {
 			return $config[$path];
 			
 		} else {
+            if (XF_USE_OPCACHE) {
+                if (xf_opcache_is_script_cached($path)) {
+                    include(xf_opcache_path($path));
+                    $config[$path] = $xf_opcache_export;
+                } else {
+                    $config[$path] = INIParser::parse_ini_file($path, $sections);
+                    if (XF_USE_OPCACHE) {
+                        xf_opcache_cache_array($path, $config[$path]);
+                    }
+                }
+            }
 			if ( @$_GET['--refresh-apc'] or !(DATAFACE_EXTENSION_LOADED_APC && (filemtime($path) < apc_fetch($this->apc_hash().$path.'__mtime')) && ( $config[$path]=apc_fetch($this->apc_hash().$path) ) ) ){
 				
 				

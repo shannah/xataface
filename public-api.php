@@ -34,6 +34,9 @@ if ( !defined( 'DATAFACE_PUBLIC_API_LOADED' ) ){
 define('DATAFACE_PUBLIC_API_LOADED', true);
 define('XFROOT', dirname(__FILE__).DIRECTORY_SEPARATOR);
 define('XFLIB', XFROOT.'lib'.DIRECTORY_SEPARATOR);
+if (!defined('XF_USE_OPCACHE')) {
+    define('XF_USE_OPCACHE', false);
+}
 /**
  * 
  * Initializes the dataface framework.
@@ -288,32 +291,24 @@ function df_append_query($url, $query){
 	return $url;
 }
 
-
+/**
+ * Clears all of the calculated views in the database.
+ */
 function df_clear_views(){
-
-
-	
-	
-	$res = xf_db_query("show tables like 'dataface__view_%'", df_db());
-	$views = array();
-	while ( $row = xf_db_fetch_row($res) ){
-		$views[] = $row[0];
-	}
-	if ( $views ) {
-		$sql = "drop view `".implode('`,`', $views)."`";
-		//echo $sql;
-		//echo "<br/>";
-		$res = xf_db_query("drop view `".implode('`,`', $views)."`", df_db());
-		if ( !$res ) throw new Exception(xf_db_error(df_db()));
-	}
-	
-	
+    import(XF_ROOT.'actions/clear_views.php');
+    $action = new dataface_actions_clear_views();
+    $action->clear_views();
 }
 
+/**
+ * Clears all of the caches in this application.  This includes opcache, views,
+ * templates_c directory, and output_cache.
+ */
 function df_clear_cache(){
-	$res = @xf_db_query("truncate table __output_cache", df_db());
-	//if ( !$res ) throw new Exception(xf_db_error(df_db()));
-	return $res;
+    import(XFROOT.'actions/clear_cache.php');
+    $action = new dataface_actions_clear_cache();
+    $params = [];
+    $action->clear_cache($params);
 }
 
 
@@ -514,6 +509,11 @@ function df_save_record(&$record, $keys=null, $lang=null, $secure=false){
 
 }
 
+/**
+ * Adds a javascript script dependency in the current response.
+ * @param string $script The path or URL of the script to include.
+ * @param boolean $useJavascriptTool Whether to use the javascript tool.
+ */
 function xf_script($script, $useJavascriptTool=true) {
     $app = Dataface_Application::getInstance();
     if ($useJavascriptTool) {
@@ -540,6 +540,11 @@ function xf_script($script, $useJavascriptTool=true) {
     }
 }
 
+/**
+ * Adds a CSS stylesheet dependency to the current response.
+ * @param string $sheet The path or URL of the stylesheet.
+ * @param $useCSSTool Whether to use the CSS tool.
+ */
 function xf_stylesheet($sheet, $useCSSTool=true) {
     $app = Dataface_Application::getInstance();
     if ($useCSSTool) {
@@ -566,6 +571,12 @@ function xf_stylesheet($sheet, $useCSSTool=true) {
     }
 }
 
+/**
+ * Gets a valuelist (an associative array of key-value pairs) for the given table.
+ * @param string $tablename The name of the table.
+ * @param string $valuelistname The name of the valuelist.
+ * @return [string => string] Values in the valuelist as associative array.
+ */
 function &df_get_valuelist($tablename, $valuelistname){
 	$table = Dataface_Table::loadTable($tablename);
 	$vl =& $table->getValuelist($valuelistname);
@@ -580,7 +591,11 @@ function &df_get_relationship_info($tablename, $relationshipname){
 	return $relationship;
 }
 
-
+/**
+ * Registers a skin with the skin tool.
+ * @param string $name The name of the skin.
+ * @param string $template_dir The path to the templates directory for this skin.
+ */
 function df_register_skin($name, $template_dir){
 	import( XFROOT.'Dataface/SkinTool.php');
 	$st = Dataface_SkinTool::getInstance();
@@ -588,6 +603,12 @@ function df_register_skin($name, $template_dir){
 
 }
 
+/**
+ * Displays a template.
+ * @param string $context Context info to pass to the template
+ * @param string The path to the template in the template include path.
+ * @see Dataface_SkinTool::display()
+ */
 function df_display($context, $template_name){
 	import( XFROOT.'Dataface/SkinTool.php');
 	$st = Dataface_SkinTool::getInstance();
@@ -615,41 +636,89 @@ function df_display($context, $template_name){
 	}
 }
 
+/**
+ * Gets a value from the app's config.
+ */
 function df_config_get($varname){
 	$app = Dataface_Application::getInstance();
 	return $app->_conf[$varname];
 }
 
+/**
+ * Sets a value in the app's config.
+ */
 function df_config_set($varname, $value){
 	$app = Dataface_Application::getInstance();
 	$app->_conf[$varname] = $value;
 }
 
+/**
+ * Gets a reference to the app's database handle.
+ */
 function df_db(){
 	$app = Dataface_Application::getInstance();
 	return $app->_db;
 }
 
+/**
+ * Executes an SQL query.  This is higher-level than xf_db_query() as it
+ * will be subject to query caching, logging, internationalization, etc..
+ * @param string $sql The SQL query.
+ * @param string $lang The language of the query.  If query translation is enabled, the query 
+ *  will be translated to the appropriate language.
+ * @param boolean $as_array If true, return the result as an associative array.
+ * @param boolean $enumerated If $as_array is true, this dictates whether to use fetch_row or fetch_assoc
+ *  for each row.  Default is false (fetch_assoc).
+ * @return mixed.  A database result handle if $as_array is false.  An array if $as_array is true.  If
+ * the query failed. This will return false.
+ *
+ */
 function df_query($sql, $lang=null, $as_array=false, $enumerated=false){
 	import(XFROOT.'Dataface/DB.php');
 	$db = Dataface_DB::getInstance();
 	return $db->query($sql,null,$lang,$as_array, $enumerated);
 }
 
+/**
+ * A wrapper for xf_db_insert_id() that will work correctly when query translation is enabled.
+ * When query translation is enabled, a single insert query may be split up into multiple inserts
+ * as it needs to insert into the translation tables as well.  Therefore xf_db_insert_id() won't 
+ * work as expected.  Use this function to get the insert id of the main table.
+ * @return int The insert ID of the last database query.
+ */
 function df_insert_id(){
 	import(XFROOT.'Dataface/DB.php');
 	$db = Dataface_DB::getInstance();
 	return $db->insert_id();
 }
 
+/**
+ * Translates a phrase using Xataface's internationalization support.
+ * @param string $id The phrase identifier.
+ * @param string $default Default value if no tranlsation is found.
+ * @param [string => string] $params parameters to inject into the translation.
+ * @param string $lang The language-code of the language to retrieve the translation for.
+ * @return string The translated phrase.
+ */
 function df_translate($id, $default=null, $params=array(), $lang=null){
 	return Dataface_LanguageTool::getInstance($lang)->translate($id,$default,$params, $lang);
 }
 
+/**
+ * Loads a translation realm.  This loads some translations that would not normally be 
+ * loaded.
+ */
 function df_load_realm($realm, $lang=null){
 	Dataface_LanguageTool::getInstance($lang)->loadRealm($realm);
 }
 
+/**
+ * Checks to see if the user is granted a permission on the given object.
+ * @param string The permission to check.  E.g. view, edit, etc..
+ * @param mixed The object to check the permission against.  Supports Dataface_Table and Dataface_Record
+ * @param array $params Added parameters to pass to the permission tool.  Supported keys include 'field', and 'relationship'.
+ * @return [string => int] Associative array of permissions that are granted. Keys are permissions, Values are 0 or 1.
+ */
 function df_check_permission($permission, &$object, $params=array() ){
 	return Dataface_PermissionsTool::checkPermission($permission, $object, $params);
 }
@@ -664,6 +733,16 @@ function df_permission_names_as_string(&$perms){
 	return $ptool->namesAsString($perms);
 }
 
+/**
+ * Displays a block with the given parameters.
+ * @param [string => mixed] $params The parameters for the block.
+ * @param string $params.table The table name on which the block is executed.  This dictates,
+ *      which table's delegate class is checked first for the block definition.
+ * @param Dataface_Record $params.record The record on which the block is run.
+ * @param string $params.name The block name.  Required.  This is used to look up the correct
+ *  method of the delegate class.
+ *
+ */
 function df_block($params){
 	$app = Dataface_Application::getInstance();
 	$query =& $app->getQuery();
@@ -804,10 +883,17 @@ if ( !function_exists('array_merge_recursive_unique') ){
 	}
 }
 
+/**
+ * Checks if the user is currently logged in.
+ * @return boolean True if the user is logged in.
+ */
 function df_is_logged_in(){
 	return ( class_exists('Dataface_AuthenticationTool') and ($auth = Dataface_AuthenticationTool::getInstance()) and $auth->isLoggedIn());
 }
 
+/**
+ * Converts the given URL to an absolute URL.
+ */
 function df_absolute_url($url){
 	if ( !$url ) return $_SERVER['HOST_URI'];
 	else if ( $url{0} == '/' ){
@@ -861,13 +947,14 @@ function df_tz_or_offset(){
 	 * easy to apply patches and updates for new versions.
 	 * @return int The version number on the file system.
 	 */
-	function df_get_file_system_version(){
+	function df_get_file_system_version($refresh = false){
 		static $version = -1;
 		
 		if ( $version == -1 ){
+            
 			if ( file_exists('version.txt') ){
 				$varr = file('version.txt');
-				
+			
 				$fs_version='0';
 				if ( $varr ){
 					list($fs_version) = $varr;
@@ -875,10 +962,13 @@ function df_tz_or_offset(){
 			} else {
 				$fs_version = '0';
 			}
-			
+		
 			$fs_version = explode(' ', $fs_version);
 			$fs_version = intval($fs_version[count($fs_version)-1]);
 			$version = $fs_version;
+                
+            
+			
 		} 
 		if ( !$version ) return df_get_database_version();
 		
@@ -890,11 +980,12 @@ function df_tz_or_offset(){
 	 * Returns the application version in the database.
 	 * @return int The version number in the database.
 	 */
-	function df_get_database_version($db=null){
+	function df_get_database_version($db=null, $refresh = false){
 		if (!$db ) $db = df_db();
 		static $version = -1;
 		if ( $version == -1 ){
 			$sql = "select `version` from dataface__version limit 1";
+            
 			$res = @xf_db_query($sql, $db);
 			if ( !$res ){
 				$res = xf_db_query("create table dataface__version ( `version` int(5) not null default 0)", $db);
@@ -902,14 +993,18 @@ function df_tz_or_offset(){
 				//$fs_version = df_get_file_system_version();
 				$res = xf_db_query("insert into dataface__version values ('0')", $db);
 				if ( !$res ) throw new Exception(xf_db_error($db), E_USER_ERROR);
-				
+			
 				$res = xf_db_query($sql, $db);
 				if ( !$res ){
 					throw new Exception(xf_db_error($db), E_USER_ERROR);
 				}
-			
+		
 			}
 			list($version) = xf_db_fetch_row($res);
+            xf_db_free_result($res);
+               
+            
+			
 		}
 		return $version;
 	}
@@ -1067,6 +1162,71 @@ function df_tz_or_offset(){
 		return xf\io\df_http_get($url, $headers, $json);
     }
 	
+    
+    function xf_opcache_path($filepath) {
+        return XFAPPROOT . 'templates_c' . DIRECTORY_SEPARATOR . 'xf_opcache' . DIRECTORY_SEPARATOR . basename($filepath) . md5($filepath) . '.php';
+    }
+    
+    function xf_opcache_query_path($sql) {
+        return XFAPPROOT . 'templates_c' . DIRECTORY_SEPARATOR . 'xf_opcache_queries' . DIRECTORY_SEPARATOR . md5($sql) . '.php';
+    }
+    
+    function xf_opcache_is_query_cached($sql) {
+        return opcache_is_script_cached(xf_opcache_query_path($sql));
+    }
+    
+    function xf_opcache_is_script_cached($filepath) {
+        return opcache_is_script_cached(xf_opcache_path($filepath));
+    }
+    
+    function xf_opcache_cache_array($filePath, $array) {
+        $varname = '$xf_opcache_export';
+        $opcachePath = xf_opcache_path($filePath);
+        if (file_exists($opcachePath)) {
+            // For some it doesn't work to compile the file directly after adding it to the opcache.
+            // This is because the timestamp has a resolution of 1 second so if the file was just written
+            // it wont' be seen as eligible.
+            // So this case is basically catching the 2nd time after loading the page to the disk cache.
+            include($opcachePath);
+            return;
+        }
+        $dirPath = dirname($opcachePath);
+        if (!is_dir($dirPath)) mkdir($dirPath, 0777, true);
+        file_put_contents($opcachePath, '<'.'?php'."\n$varname = ".var_export($array, true).';?>', LOCK_EX );
+        opcache_compile_file($opcachePath);
+        
+    }
+    
+    function xf_opcache_cache_query($sql, $array) {
+        $varname = '$xf_opcache_export';
+        $opcachePath = xf_opcache_query_path($sql);
+        if (file_exists($opcachePath)) {
+            // For some it doesn't work to compile the file directly after adding it to the opcache.
+            // This is because the timestamp has a resolution of 1 second so if the file was just written
+            // it wont' be seen as eligible.
+            // So this case is basically catching the 2nd time after loading the page to the disk cache.
+            include($opcachePath);
+            return;
+        }
+        $dirPath = dirname($opcachePath);
+        if (!is_dir($dirPath))  mkdir($dirPath, 0777, true);
+        file_put_contents($opcachePath, '<'.'?php'."\n$varname = ".var_export($array, true).';?>');
+        opcache_compile_file($opcachePath);
+    }
+    
+    function xf_opcache_reset() {
+        opcache_reset();
+        
+    }
+    
+    function xf_is_readable($file) {
+        return is_readable($file);
+        
+    }
+    
+    
+    
+    
 	
         
 } // end if ( !defined( DATAFACE_PUBLIC_API_LOADED ) ){

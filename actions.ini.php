@@ -569,7 +569,8 @@
 	url="{$app->url('-action=manage')}"
 	template=manage.html
 	materialIcon="settings"
-	
+    
+
 [manage_migrate]
 	permission=manage_migrate
 	category=management_actions
@@ -586,22 +587,24 @@
 	
 	
 [clear_views]
-	permission=clear views
-	category=management_actions
+	permission=manage
 	url="{$app->url('-action=clear_views')}"
 	label="Clear __sql__ Views"
 	description="Clears all of the cached views of the form dataface_view__xxx in the database.  This is necessary if you have added or removed columns from tables that also specify a custom __sql__ directive in the fields.ini file."
 	
-[clear_templates_c]
-	permission=clear views
-	category=management_actions
-	url="{$app->url('-action=clear_templates_c')}"
-	label="Clear templates_c"
-	description="Clears all of the cached templates.  May be necessary if you have updated Xataface"
+[clear_cache]
+    permission=manage
+    category=management_actions
+    url="{$app->url('-action=clear_cache')}"
+    label="Clear Cache"
+    description="Clear all caches, such as opcache, templates, output cache, etc.."
+	
+[clear_templates_c > clear_cache]
+    category=
 	
 	
 [manage_output_cache]
-	permission=manage_output_cache
+	permission=manage
 	category=management_actions
 	url="{$app->url('-action=manage_output_cache')}"
 	label="Output cache"

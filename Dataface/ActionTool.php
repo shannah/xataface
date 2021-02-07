@@ -228,7 +228,9 @@ class Dataface_ActionTool {
             }
             return $table->getRelationshipsAsActions([]);
         }
-        
+        if ($tablename === null) {
+            $tablename = $app->getQuery()['-table'];
+        }
 		if ( $tablename !== null ){
 			// Some actions are loaded from the table's actions.ini file and must be loaded before we return the actions.
 			$table =& Dataface_Table::loadTable($tablename);
@@ -236,6 +238,21 @@ class Dataface_ActionTool {
 				$tparams = array();
 				$table->getActions($tparams, true);
 			}
+            $tableExcludes = $table->getAttribute('actions.exclude');
+            if (isset($tableExcludes)) {
+                if (is_string($tableExcludes)) {
+                    $tableExcludes = explode(' ', $tableExcludes);
+                    $table->setAttribute('actions.exclude', $tableExcludes);
+                }
+                if (!@$params['exclude']) {
+                    $params['exclude'] = $tableExcludes;
+                } else {
+                    if (is_string($params['exclude'])) {
+                        $params['exclude'] = explode(' ', $params['exclude']);
+                    }
+                    $params['exclude'] = array_merge($params['exclude'], $tableExcludes);
+                }
+            }
 			unset($table);
 		}
 		

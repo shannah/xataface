@@ -558,8 +558,17 @@ class Dataface_Table {
 			
 			$sqlQuery = null;
 			//echo "ini path $iniPath ".$this->tablename;
-            if (file_exists($iniPath)) {
-                $conf = parse_ini_file($iniPath, true);
+            if ((XF_USE_OPCACHE and xf_opcache_is_script_cached($iniPath)) or file_exists($iniPath)) {
+                if (XF_USE_OPCACHE and xf_opcache_is_script_cached($iniPath)) {
+                    include(xf_opcache_path($iniPath));
+                    $conf = $xf_opcache_export;
+                } else {
+                    $conf = parse_ini_file($iniPath, true);
+                    if (XF_USE_OPCACHE) {
+                        xf_opcache_cache_array($iniPath, $conf);
+                    }
+                }
+                
                 if (isset($conf['__sql__'])) {
                     $sqlQuery = $conf['__sql__'];
                 }
@@ -604,14 +613,16 @@ class Dataface_Table {
 		$this->_atts['label'] = (isset( $this->app->_tables[$this->tablename] ) ? 
             $this->app->_tables[$this->tablename] : 
             ucwords(str_replace('_', ' ', $this->tablename)));
+        if (!XF_USE_OPCACHE and DATAFACE_EXTENSION_LOADED_APC) {
+    		$mod_times =& self::getTableModificationTimes();
 
-		$mod_times =& self::getTableModificationTimes();
-
-		$apc_key = DATAFACE_SITE_PATH.'-Table.php-'.$this->tablename.'-columns';
-		$apc_key_fields = $apc_key.'-fields';
-		$apc_key_keys = $apc_key.'-keys';
-		$apc_key_mtime = $apc_key.'__mtime';
-		if ( DATAFACE_EXTENSION_LOADED_APC
+    		$apc_key = DATAFACE_SITE_PATH.'-Table.php-'.$this->tablename.'-columns';
+    		$apc_key_fields = $apc_key.'-fields';
+    		$apc_key_keys = $apc_key.'-keys';
+    		$apc_key_mtime = $apc_key.'__mtime';
+        }
+		
+		if (!XF_USE_OPCACHE and DATAFACE_EXTENSION_LOADED_APC
 			and
 				( !@$_GET['--refresh-apc'] )
 			and
@@ -627,20 +638,36 @@ class Dataface_Table {
 		} else {
 
 
+            $sql = "SHOW COLUMNS FROM `".$this->tablename."`";
+            if (XF_USE_OPCACHE and xf_opcache_is_query_cached($sql)) {
+                include(xf_opcache_query_path($sql));
+                $showColumnsRows = $xf_opcache_export;
+            } else {
+    			$res = xf_db_query($sql, $this->db);
+    			if ( !$res ){
+    				if ( $quiet ){
+    					return PEAR::raiseError("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".xf_db_error($this->db));
+    				} else {
+    					throw new Exception("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".xf_db_error($this->db), E_USER_ERROR);
+    				}
 
+    			}
+                $showColumnsRows = [];
+    			if ( xf_db_num_rows($res) > 0 ){
+    				while ( $row = xf_db_fetch_assoc($res) ){
+                        $showColumnsRows[] = $row;
+                    }
+                    xf_db_free_result($res);
+                    if (XF_USE_OPCACHE) {
+                        xf_opcache_cache_query($sql, $showColumnsRows);
+                    }
+                }
+                
+            }
+			
 
-			$res = xf_db_query("SHOW COLUMNS FROM `".$this->tablename."`", $this->db);
-			if ( !$res ){
-				if ( $quiet ){
-					return PEAR::raiseError("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".xf_db_error($this->db));
-				} else {
-					throw new Exception("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".xf_db_error($this->db), E_USER_ERROR);
-				}
-
-			}
-
-			if ( xf_db_num_rows($res) > 0 ){
-				while ( $row = xf_db_fetch_assoc($res) ){
+			if ( $showColumnsRows){
+				foreach ($showColumnsRows as $row){
 					/*
 					 Example row as follows:
 					 Array
@@ -706,8 +733,6 @@ class Dataface_Table {
 					unset($widget);
 				}
 			}
-
-			xf_db_free_result($res);
 
 
 
@@ -1436,25 +1461,35 @@ class Dataface_Table {
 	function &getIndexes(){
 		if ( !isset( $this->_indexes) ){
 			$this->_indexes = array();
-			$res = xf_db_query("SHOW index FROM `".$this->tablename."`", $this->db);
-			if ( !$res ){
-				throw new Exception("Failed to get index list due to a mysql error: ".xf_db_error($this->db), E_USER_ERROR);
-			}
+            $sql = "SHOW index FROM `".$this->tablename."`";
+            if (XF_USE_OPCACHE and xf_opcache_is_query_cached($sql)) {
+                include(xf_opcache_query_path($sql));
+                $this->_indexes = $xf_opcache_export;
+            } else {
+    			$res = xf_db_query($sql, $this->db);
+    			if ( !$res ){
+    				throw new Exception("Failed to get index list due to a mysql error: ".xf_db_error($this->db), E_USER_ERROR);
+    			}
 
-			while ( $row = xf_db_fetch_array($res) ){
-				if ( !isset( $this->_indexes[ $row['Key_name'] ] ) )
-					$this->_indexes[ $row['Key_name'] ] = array();
-				$index =& $this->_indexes[$row['Key_name']];
-				$index['name'] = $row['Key_name'];
-				if ( !isset( $index['columns'] ) )
-					$index['columns'] = array();
-				$index['columns'][] = $row['Column_name'];
-				$index['unique'] = ( $row['Non_unique'] ? false : true );
-				$index['type'] = $row['Index_type'];
-				$index['comment'] = $row['Comment'];
-				unset($index);
-			}
-			xf_db_free_result($res);
+    			while ( $row = xf_db_fetch_array($res) ){
+    				if ( !isset( $this->_indexes[ $row['Key_name'] ] ) )
+    					$this->_indexes[ $row['Key_name'] ] = array();
+    				$index =& $this->_indexes[$row['Key_name']];
+    				$index['name'] = $row['Key_name'];
+    				if ( !isset( $index['columns'] ) )
+    					$index['columns'] = array();
+    				$index['columns'][] = $row['Column_name'];
+    				$index['unique'] = ( $row['Non_unique'] ? false : true );
+    				$index['type'] = $row['Index_type'];
+    				$index['comment'] = $row['Comment'];
+    				unset($index);
+    			}
+    			xf_db_free_result($res);
+                if (XF_USE_OPCACHE) {
+                    xf_opcache_cache_query($sql, $this->_indexes);
+                }
+            }
+			
 
 		}
 
@@ -1572,19 +1607,29 @@ class Dataface_Table {
 		if ( !isset($this->metadataColumns) ){
 			$metatablename = $this->tablename.'__metadata';
 			$sql = "SHOW COLUMNS FROM `{$metatablename}`";
-			$res = xf_db_query($sql, $this->db);
-			if ( !$res || xf_db_num_rows($res) == 0){
-				Dataface_MetadataTool::refreshMetadataTable($this->tablename);
-				$res = xf_db_query($sql, $this->db);
-			}
-			if ( !$res ) throw new Exception(xf_db_error($this->db), E_USER_ERROR);
-			if ( xf_db_num_rows($res) == 0 ) throw new Exception("No metadata table set up for table '{$this->tablename}'", E_USER_ERROR);
-			$this->metadataColumns = array();
-			while ($row = xf_db_fetch_assoc($res) ){
-				if ( substr($row['Field'],0,2) == '__' ){
-					$this->metadataColumns[] =  $row['Field'];
-				}
-			}
+            if (XF_USE_OPCACHE and xf_opcache_is_query_cached($sql)) {
+                include(xf_opcache_query_path($sql));
+                $this->metadataColumns = $xf_opcache_export;
+            } else {
+    			$res = xf_db_query($sql, $this->db);
+    			if ( !$res || xf_db_num_rows($res) == 0){
+    				Dataface_MetadataTool::refreshMetadataTable($this->tablename);
+    				$res = xf_db_query($sql, $this->db);
+    			}
+    			if ( !$res ) throw new Exception(xf_db_error($this->db), E_USER_ERROR);
+    			if ( xf_db_num_rows($res) == 0 ) throw new Exception("No metadata table set up for table '{$this->tablename}'", E_USER_ERROR);
+    			$this->metadataColumns = array();
+    			while ($row = xf_db_fetch_assoc($res) ){
+    				if ( substr($row['Field'],0,2) == '__' ){
+    					$this->metadataColumns[] =  $row['Field'];
+    				}
+    			}
+                xf_db_free_result($res);
+                if (XF_USE_OPCACHE) {
+                    xf_opcache_cache_query($sql, $this->metadataColumns);
+                }
+            }
+			
 
 		}
 		return $this->metadataColumns;
@@ -1988,23 +2033,39 @@ class Dataface_Table {
 		// Check if view already exists
 		//$res = xf_db_query("select TABLE_NAME from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."' and TABLE_NAME='".addslashes($viewName)."' limit 1", df_db());
 
-		$res = xf_db_query("show tables like '".addslashes($viewName)."'", df_db());
-		if ( !$res ) throw new Exception(xf_db_error(df_db()));
-		if ( xf_db_num_rows($res) < 1 ){
-			@xf_db_free_result($res);
-			// The view doesn't exist yet
-			$res = xf_db_query("create view `".str_replace('`','', $viewName)."` as ".$sql, df_db());
-			if ( !$res ){
-				error_log(xf_db_error(df_db()));
-				$this->_proxyViews[$viewName] = false;
-				return null;
-			}
+        $showSql = "show tables like '".addslashes($viewName)."'";
+        if (XF_USE_OPCACHE and xf_opcache_is_query_cached($showSql)) {
+            include(xf_opcache_query_path($showSql));
+            list($this->_proxyViews[$viewName]) = $xf_opcache_export;
+            if (!@$this->_proxyViews[$viewName]) {
+                return null;
+            }
+        } else {
+    		$res = xf_db_query($showSql, df_db());
+    		if ( !$res ) throw new Exception(xf_db_error(df_db()));
+    		if ( xf_db_num_rows($res) < 1 ){
+    			@xf_db_free_result($res);
+    			// The view doesn't exist yet
+    			$res = xf_db_query("create view `".str_replace('`','', $viewName)."` as ".$sql, df_db());
+    			if ( !$res ){
+    				error_log(xf_db_error(df_db()));
+    				$this->_proxyViews[$viewName] = false;
+                    if (XF_USE_OPCACHE) {
+                        xf_opcache_cache_query($showSql, [false]);
+                    }
+    				return null;
+    			}
 
 
-		} else {
-			@xf_db_free_result($res);
-		}
-		$this->_proxyViews[$viewName] = true;
+    		} else {
+    			@xf_db_free_result($res);
+    		}
+    		$this->_proxyViews[$viewName] = true;
+            if (XF_USE_OPCACHE) {
+                xf_opcache_cache_query($showSql, [true]);
+            }
+        }
+		
 
 		return $viewName;
 
@@ -3245,45 +3306,55 @@ class Dataface_Table {
 	function &getTranslations(){
         if ( $this->translations === null ){
 			$this->translations = array();
-			$res = xf_db_query("SHOW TABLES LIKE '".addslashes($this->tablename)."%'", $this->db);
-			if ( !$res ){
+            $sql = "SHOW TABLES LIKE '".addslashes($this->tablename)."%'";
+            if (XF_USE_OPCACHE and xf_opcache_is_query_cached($sql)) {
+                include(xf_opcache_query_path($sql));
+                $this->translations = $xf_opcache_export;
+            } else {
+    			$res = xf_db_query($sql, $this->db);
+    			if ( !$res ){
 
-				throw new Exception(
-					Dataface_LanguageTool::translate(
-						'MySQL query error loading translation tables',
-						'MySQL query error while trying to find translation tables for table "'.addslashes($this->tablename).'". '.xf_db_error($this->db).'. ',
-						array('sql_error'=>xf_db_error($this->db), 'stack_trace'=>'', 'table'=>$this->tablename)
-					),
-					E_USER_ERROR
+    				throw new Exception(
+    					Dataface_LanguageTool::translate(
+    						'MySQL query error loading translation tables',
+    						'MySQL query error while trying to find translation tables for table "'.addslashes($this->tablename).'". '.xf_db_error($this->db).'. ',
+    						array('sql_error'=>xf_db_error($this->db), 'stack_trace'=>'', 'table'=>$this->tablename)
+    					),
+    					E_USER_ERROR
 
-				);
-			}
-			if (xf_db_num_rows($res) <= 0 and substr($this->tablename, 0, 5) != '_tmp_' ){
-				// there should at least be the current table returned.. there is a problem
-				// if nothing was returned.
-				throw new Exception(
-					Dataface_LanguageTool::translate(
-						'Not enough results returned loading translation tables',
-						'No tables were returned when trying to load translation tables for table "'.$this->tablename.'".  This query should have at least returned one record (the current table) so there must be a problem with the query.',
-						array('table'=>$this->tablename)
-					),
-					E_USER_ERROR
-				);
-			}
+    				);
+    			}
+    			if (xf_db_num_rows($res) <= 0 and substr($this->tablename, 0, 5) != '_tmp_' ){
+    				// there should at least be the current table returned.. there is a problem
+    				// if nothing was returned.
+    				throw new Exception(
+    					Dataface_LanguageTool::translate(
+    						'Not enough results returned loading translation tables',
+    						'No tables were returned when trying to load translation tables for table "'.$this->tablename.'".  This query should have at least returned one record (the current table) so there must be a problem with the query.',
+    						array('table'=>$this->tablename)
+    					),
+    					E_USER_ERROR
+    				);
+    			}
 
-			while ( $row = xf_db_fetch_array($res ) ){
-				$tablename = $row[0];
-				if ( $tablename == $this->tablename ){
-					continue;
-				}
+    			while ( $row = xf_db_fetch_array($res ) ){
+    				$tablename = $row[0];
+    				if ( $tablename == $this->tablename ){
+    					continue;
+    				}
 
-				$matches = array();
-				if ( preg_match( '/^'.$this->tablename.'_([a-zA-Z]{2})$/', $tablename, $matches) ){
-					$this->translations[$matches[1]] = 0;
-				}
+    				$matches = array();
+    				if ( preg_match( '/^'.$this->tablename.'_([a-zA-Z]{2})$/', $tablename, $matches) ){
+    					$this->translations[$matches[1]] = 0;
+    				}
 
-			}
-			xf_db_free_result($res);
+    			}
+    			xf_db_free_result($res);
+                if (XF_USE_OPCACHE) {
+                    xf_opcache_cache_query($sql, $this->translations);
+                }
+            }
+			
 
 
 		}
@@ -3303,22 +3374,32 @@ class Dataface_Table {
 			// the translation exists
 			if ( !$translations[$name]  ){
 				// the columns are not loaded yet, we need to load them.
-				$res = xf_db_query("SHOW COLUMNS FROM `".addslashes($this->tablename)."_".addslashes($name)."`", $this->db);
-				if ( !$res ){
-					throw new Exception(
-						Dataface_LanguageTool::translate(
-							'Problem loading columns from translation table',
-							'Problem loading columns from translation table for table "'.$this->tablename.'" in language "'.$name.'". ',
-							array('table'=>$this->tablename,'langauge'=>$name,'stack_trace'=>'','sql_error'=>xf_db_error($this->db))
-						),
-						E_USER_ERROR
-					);
-				}
-				$translations[$name] = array();
-				while ( $row = xf_db_fetch_assoc($res) ){
-					$translations[$name][] = $row['Field'];
-				}
-				xf_db_free_result($res);
+                $sql = "SHOW COLUMNS FROM `".addslashes($this->tablename)."_".addslashes($name)."`";
+                if (XF_USE_OPCACHE and xf_opcache_is_query_cached($sql)) {
+                    include(xf_opcache_query_path($sql));
+                    $translations[$name] = $xf_opcache_export;
+                } else {
+    				$res = xf_db_query($sql, $this->db);
+    				if ( !$res ){
+    					throw new Exception(
+    						Dataface_LanguageTool::translate(
+    							'Problem loading columns from translation table',
+    							'Problem loading columns from translation table for table "'.$this->tablename.'" in language "'.$name.'". ',
+    							array('table'=>$this->tablename,'langauge'=>$name,'stack_trace'=>'','sql_error'=>xf_db_error($this->db))
+    						),
+    						E_USER_ERROR
+    					);
+    				}
+    				$translations[$name] = array();
+    				while ( $row = xf_db_fetch_assoc($res) ){
+    					$translations[$name][] = $row['Field'];
+    				}
+    				xf_db_free_result($res);
+                    if (XF_USE_OPCACHE) {
+                        xf_opcache_cache_query($sql, $translations[$name]);
+                    }
+                }
+				
 			}
 
 			return $translations[$name];
@@ -3473,6 +3554,30 @@ class Dataface_Table {
 		}
 		return $this->_cache[__FUNCTION__];
 	}
+    
+    /**
+     * Gets a table attribute.  Table attributes are defined in the fields.ini file in the global
+     * scope.  They can be overridden in the delegate class via the attribute__attname methods.
+     * @since 3.0
+     */
+    function getAttribute($attname) {
+        if (!array_key_exists($attname, $this->_atts)) {
+            $del = $this->getDelegate();
+            $method = 'attribute__'.$attname;
+            if ($del and method_exists($del, $method)) {
+                $this->_atts[$attname] = $del->$method($this);
+            } else {
+                $this->_atts[$attname] = null;
+            }
+        }
+        
+        return @$this->_atts[$attname];
+    }
+    
+    
+    function setAttribute($attname, $attval) {
+        $this->_atts[$attname] = $attval;
+    }
 
 
 
@@ -3522,18 +3627,32 @@ class Dataface_Table {
 			 * Get the table status - when was it last updated, etc...
 			 */
 			if ( Dataface_Application::getInstance()->getMySQLMajorVersion() < 5 ){
-				$res = xf_db_query("SHOW TABLE STATUS LIKE '".addslashes($this->tablename)."'",$this->db);
+				
+                $sql = "SHOW TABLE STATUS LIKE '".addslashes($this->tablename)."'";
 			} else {
+                
 				$dbname = Dataface_Application::getInstance()->_conf['_database']['name'];
-				$res = xf_db_query("select CREATE_TIME as Create_time, UPDATE_TIME as Update_time from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."' and TABLE_NAME='".addslashes($this->tablename)."' limit 1", df_db());
+                $sql = "select CREATE_TIME as Create_time, UPDATE_TIME as Update_time from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."' and TABLE_NAME='".addslashes($this->tablename)."' limit 1";
+                
 
 			}
-			if ( !$res ){
-				throw new Exception("Error performing mysql query to obtain status for table '".$this->tablename."': ".xf_db_error($this->db), E_USER_ERROR);
-			}
+            if (XF_USE_OPCACHE and xf_opcache_is_query_cached($sql)) {
+                include(xf_opcache_query_path($sql));
+                $this->status = $xf_opcache_export;
+            } else {
+                $res = xf_db_query($sql, df_db());
+            
+    			if ( !$res ){
+    				throw new Exception("Error performing mysql query to obtain status for table '".$this->tablename."': ".xf_db_error($this->db), E_USER_ERROR);
+    			}
 
-			$this->status = xf_db_fetch_array($res);
-			xf_db_free_result($res);
+    			$this->status = xf_db_fetch_array($res);
+    			xf_db_free_result($res);
+                if (XF_USE_OPCACHE) {
+                    xf_opcache_cache_query($sql, $this->status);
+                }
+            }
+            
 		}
 
 		return $this->status;
@@ -3604,22 +3723,28 @@ class Dataface_Table {
 	public static function &getTableModificationTimes($refresh=false){
 		static $mod_times = 0;
 		if ( $mod_times === 0 or $refresh ){
+            $prev_mod_times = $mod_times;
 			$mod_times = array();
 
 			$app = Dataface_Application::getInstance();
 			$dbname = $app->_conf['_database']['name'];
-			//if ( $app->getMySQLMajorVersion() < 5 ){
-			//	$res = xf_db_query("show table status", df_db());
-			//} else {
-			//	$res = xf_db_query("select TABLE_NAME as Name, UPDATE_TIME as Update_time from information_schema.tables where TABLE_SCHEMA='".addslashes($dbname)."'", df_db());
-			//}
-			$res = xf_db_query("show tables", df_db());
+			$sql = "show tables";
+
+			$res = xf_db_query($sql, df_db());
 			if ( !$res ){
 				throw new Exception(xf_db_error(df_db()));
 			}
+            $tables = [];
+            while ($row = xf_db_fetch_row($res) ){
+                $tables[] = $row;
+            }
+            xf_db_free_result($res);
+                
+            
+			
 			$backup_times = null;
 			//while ( $row = xf_db_fetch_assoc($res) ){
-			while ($row = xf_db_fetch_row($res) ){
+			foreach ($tables as $row) {
 				$row['Name'] = $row[0];
 				if ( @$row['Update_time'] ){
 					$mod_times[$row['Name']] = @strtotime($row['Update_time']);
@@ -3835,75 +3960,6 @@ class Dataface_Table {
 
 	}
 
-	function _loadValuelistsIniFile_old(){
-		if ( !isset( $this->_valuelists ) ){
-			$this->_valuelists = array();
-		}
-		$valuelists =& $this->_valuelists;
-
-		import( XFROOT.'Dataface/ConfigTool.php');
-		$configTool =& Dataface_ConfigTool::getInstance();
-		$conf =& $configTool->loadConfig('valuelists', $this->tablename);
-
-
-		foreach ( $conf as $vlname=>$vllist ){
-			$valuelists[$vlname] = array();
-			if ( is_array( $vllist ) ){
-				foreach ( $vllist as $key=>$value ){
-					if ( $key == '__import__' ){
-						// we import the values from another value list.  The value of this
-						// entry should be in the form tablename.valuelistname
-						list( $ext_table, $ext_valuelist ) = explode('.', $value);
-						if ( isset( $ext_table ) && isset( $ext_valuelist ) ){
-							$ext_table =& self::loadTable($ext_table, $this->db);
-						} else if ( isset( $ext_table ) ){
-							$ext_valuelist = $ext_table;
-							$ext_table =& $this;
-						}
-
-						if ( isset( $ext_table ) ){
-							$ext_valuelist = $ext_table->getValuelist( $ext_valuelist );
-							foreach ( $ext_valuelist as $ext_key=>$ext_value ){
-								$valuelists[$vlname][$ext_key] = $ext_value;
-							}
-						}
-						// clean up temp variables so they don't confuse us
-						// in the next iteration.
-						unset($ext_table);
-						unset($ext_table);
-						unset($ext_valuelist);
-					} else if ( $key == '__sql__' ) {
-						// we perform the sql query specified to produce our valuelist.
-						// the sql query should return two columns only.  If more are
-						// returned, only the first two will be used.   If one is returned
-						// it will be used as both the key and value.
-						$res = df_query($value, null, true, true);
-						if ( is_array($res) ){
-							//while ($row = xf_db_fetch_row($res) ){
-							foreach ($res as $row){
-								$valuekey = $row[0];
-								$valuevalue = count($row)>1 ? $row[1] : $row[0];
-								$valuelists[$vlname][$valuekey] = $valuevalue;
-
-								if ( count($row)>2 ){
-									$valuelists[$vlname.'__meta'][$valuekey] = $row[2];
-								}
-							}
-							//xf_db_free_result($res);
-						} else {
-							throw new Exception("Valuelist query '".$value."' failed. ", E_USER_NOTICE);
-						}
-
-					} else {
-						$valuelists[$vlname][$key] = $value;
-					}
-				}
-			}
-
-
-		}
-
-	}
 
 
 	/**

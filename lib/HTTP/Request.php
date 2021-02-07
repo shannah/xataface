@@ -505,11 +505,11 @@ class HTTP_Request {
     */
     function addFile($inputName, $fileName, $contentType = 'application/octet-stream')
     {
-        if (!is_array($fileName) && !is_readable($fileName)) {
+        if (!is_array($fileName) && !xf_is_readable($fileName)) {
             return PEAR::raiseError("File '{$fileName}' is not readable");
         } elseif (is_array($fileName)) {
             foreach ($fileName as $name) {
-                if (!is_readable($name)) {
+                if (!xf_is_readable($name)) {
                     return PEAR::raiseError("File '{$name}' is not readable");
                 }
             }

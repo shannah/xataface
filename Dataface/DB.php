@@ -89,7 +89,7 @@ class Dataface_DB {
 			$filepath = DATAFACE_CACHE_PATH.'/Dataface_DB.cache';
 			//echo "Checking cache... $filepath";
 			
-			if ( is_readable($filepath) and filemtime($filepath) > time()-1 ){
+			if ( xf_is_readable($filepath) and filemtime($filepath) > time()-1 ){
 				//echo "Cache is readable";
 				include DATAFACE_CACHE_PATH.'/Dataface_DB.cache';
 

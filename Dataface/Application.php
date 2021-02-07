@@ -272,15 +272,25 @@ END;
 				$filePath = $p.DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR.$name.'.uilib.html';
 				//echo "Filepath: $filePath;";
 				//echo "BaseUrl: $baseUrl;";
-				if (file_exists($filePath)) {
+				if ((XF_USE_OPCACHE and xf_opcache_is_script_cached($filePath)) or file_exists($filePath)) {
 
 					$fileUrl = $baseUrl .
 						substr($filePath, strlen($basePath));
 					$fileUrl = str_replace(DIRECTORY_SEPARATOR, '/', $fileUrl);
 					$libRoot = substr($fileUrl, 0, strrpos($fileUrl, '/'));
-					$content = file_get_contents($filePath);
-					$content = str_replace('{{LIBROOT}}', $libRoot, $content);
-					$this->addHeadContent($content);
+                    
+                    if (XF_USE_OPCACHE and xf_opcache_is_script_cached($filePath)) {
+                        include(xf_opcache_path($filePath));
+                        list($content) = $xf_opcache_export;
+                    } else {
+    					$content = file_get_contents($filePath);
+    					$content = str_replace('{{LIBROOT}}', $libRoot, $content);
+    					$this->addHeadContent($content);
+                        if (XF_USE_OPCACHE) {
+                            xf_opcache_cache_array($filePath, [$content]);
+                        }
+                    }
+					
 					return true;
 				}
 
@@ -669,25 +679,62 @@ END;
 		}
 		$this->_baseUrl  = $_SERVER['PHP_SELF'];
 		if ( !is_array($conf) ) $conf = array();
+        
         $configPath = DATAFACE_SITE_PATH.'/conf.ini.php';
-        if (!is_readable($configPath)) {
-            $configPath = DATAFACE_SITE_PATH.'/conf.ini';
-        }
-		if ( is_readable($configPath) ){
-			$conf = array_merge(parse_ini_file($configPath, true), $conf);
-			if ( @$conf['__include__'] ){
-				$includes = array_map('trim',explode(',', $conf['__include__']));
-				foreach ($includes as $i){
-                                        
-					if ( is_readable($i) ){
-						$conf = array_merge($conf, parse_ini_file($i, true));
-					} else if ( is_readable($i.'.php') ){
-						$conf = array_merge($conf, parse_ini_file($i.'.php', true));
-					}
-				}
-			}
-		}
+        $configOpcacheKey = $configPath;
 
+        if (XF_USE_OPCACHE and xf_opcache_is_script_cached($configOpcacheKey)) {
+            include(xf_opcache_path($configOpcacheKey));
+            $conf = $xf_opcache_export;
+        } else {
+            if (!is_readable($configPath)) {
+                $configPath = DATAFACE_SITE_PATH.'/conf.ini';
+            }
+    		if ( is_readable($configPath) ){
+    			$conf = array_merge(parse_ini_file($configPath, true), $conf);
+    			if ( @$conf['__include__'] ){
+    				$includes = array_map('trim',explode(',', $conf['__include__']));
+    				foreach ($includes as $i){
+                        if (!$i) continue;
+                        
+                        $lastChar = substr($i, -1);
+                        $optional = false;
+                        if ($lastChar == '?') {
+                            $optional = true;
+                            $i = substr($i, 0, -1);
+                        }
+                        if (strpos($i, '{host}') !== false) {
+                            $host = $_SERVER['HTTP_HOST'];
+                            $port = '80';
+                            if (@$_SERVER['PORT']) {
+                                $port = $_SERVER['PORT'];
+                            }
+                            $colonPos = strpos($host, ':');
+                            if ($colonPos !== false) {
+                                $port = substr($host, $colonPos+1);
+                                $host = substr($host, 0, $colonPos);
+                            }
+                            $port = intval($port);
+                            $i = str_replace('{host}', preg_replace('/[^0-9a-zA-Z\.\-]/','', basename($host)), $i);
+                            $i = str_replace('{port}', $port, $i);
+                        }
+                        
+    					if ( is_readable($i) ){
+    						$conf = array_merge($conf, parse_ini_file($i, true));
+    					} else if ( is_readable($i.'.php') ){
+    						$conf = array_merge($conf, parse_ini_file($i.'.php', true));
+    					} else if (!$optional) {
+    					    throw new Exception("Include directive $i not satisifed.  Cannot find the file $i");
+    					}
+    				}
+    			}
+    		}
+            if (XF_USE_OPCACHE) {
+                xf_opcache_cache_array($configOpcacheKey, $conf);
+            }
+            
+        }
+        
 
 
 		if ( !isset( $conf['_tables'] ) ){
@@ -725,7 +772,7 @@ END;
 				// this might break old apps.
 				$dbinfo['driver'] = 'mysqli';
 			}
-			require_once 'xf/db/drivers/'.basename($dbinfo['driver']).'.php';
+			require_once XFROOT.'xf/db/drivers/'.basename($dbinfo['driver']).'.php';
 			//if ( @$dbinfo['persistent'] ){
 			//	$this->_db = xf_db_pconnect( $dbinfo['host'], $dbinfo['user'], $dbinfo['password'] );
 			//} else {
@@ -820,6 +867,8 @@ END;
 				$this->_conf['languages'][$lang_code] = $lang_code;
 			}
 		}
+        
+        
 
 		if ( @$this->_conf['support_transactions'] ){
 			// We will support transactions
@@ -2498,7 +2547,59 @@ END
 	 * the heaving lifting of displaying a page.
 	 */
 
-
+    /**
+     * Builds an associative array index of all action handlers located in the xataface, xataface/modules,
+     * modules, tables, modules/tables, and xataface/modules/tables directories.
+     * @return [string => boolean] Mapping full file paths of action handlers to boolean value indicating whether it exists.
+     */
+    private function buildActionIndexForOpcache() {
+        $actionsIndex = [];
+        $actionsDirs = [XFAPPROOT . 'actions', XFROOT . 'actions'];
+        $modulesDirs = [XFAPPROOT . 'modules', XFROOT . 'modules'];
+        $tablesDirs = [XFAPPROOT . 'tables', XFROOT . 'tables'];
+        foreach ($modulesDirs as $modulesDir) {
+            if (is_dir($modulesDir)) {
+                foreach (scandir($modulesDir) as $moduleDir) {
+                    if ($moduleDir{0} == '.') {
+                        continue;
+                    }
+                    $moduleDirPath = $modulesDir . DIRECTORY_SEPARATOR . $moduleDir;
+                    if (is_dir($moduleDirPath)) {
+                        $actionsDirs[] = $moduleDirPath . DIRECTORY_SEPARATOR . 'actions';
+                        $tablesDirs[] = $moduleDirPath . DIRECTORY_SEPARATOR . 'tables';
+                    }
+                    
+                }
+            }
+        }
+        foreach ($tablesDirs as $tablesDir) {
+            
+            if (is_dir($tablesDir)) {
+                foreach (scandir($tablesDir) as $tableDir) {
+                    if ($tableDir{0} == '.') {
+                        continue;
+                    }
+                    $tableDirPath = $tablesDir . DIRECTORY_SEPARATOR . $tableDir;
+                    if (is_dir($tableDirPath)) {
+                        $actionsDirs[] = $tableDirPath . DIRECTORY_SEPARATOR . 'actions';
+                    }
+                    
+                }
+            }
+        }
+       
+        foreach ($actionsDirs as $actionsDir) {
+            if (is_dir($actionsDir)) {
+                foreach (scandir($actionsDir) as $actionFile) {
+                    $actionFilePath = $actionsDir . DIRECTORY_SEPARATOR . $actionFile;
+                    if (is_file($actionFilePath) and strlen($actionFile) > 4 and substr($actionFile, -4) === '.php') {
+                        $actionsIndex[ $actionsDir . DIRECTORY_SEPARATOR . $actionFile ] = true;
+                    }
+                }
+            }
+        }
+        return $actionsIndex;
+    }
 
 
 	/**
@@ -2647,9 +2748,11 @@ END
         
         if (isset($this->prefs['user_stylesheet'])) {
             $userStylesheet = basename($this->prefs['user_stylesheet']);
-            if (file_exists(XFAPPROOT.'css/'.$userStylesheet)) {
+            $ssPath = XFAPPROOT.'css/'.$userStylesheet;
+            $ssRootPath = XFROOT.'css/'.$userStylesheet;
+            if ((XF_USE_OPCACHE and xf_opcache_is_script_cached($ssPath)) or file_exists($ssPath)) {
                 xf_stylesheet(DATAFACE_SITE_URL .'/css/'.$userStylesheet, false);
-            } else if (file_exists(XFROOT.'css/'.$userStylesheet)) {
+            } else if ((XF_USE_OPCACHE and xf_opcache_is_script_cached($ssRootPath)) or file_exists($ssRootPath)) {
                 xf_stylesheet(DATAFACE_URL.'/css/'.$userStylesheet, false);
             }
         }
@@ -2695,11 +2798,6 @@ END
         
 
 		$actionTool = Dataface_ActionTool::getInstance();
-
-		//if ( $this->_conf['multilingual_content'] ){
-			//import('I18Nv2/I18Nv2.php');
-     		//I18Nv2::autoConv();
-     	//}
 
         $record = $this->getRecord();
         if ($record and $record->getTableAttribute('no_view_tab') and $query['-action'] == 'view') {
@@ -2828,10 +2926,37 @@ END
 		}
 		$doParams = array('action'=>&$action);
 			//parameters to be passed to the do method of the handler
-
-
+        
+        $foundHandlerClassName = null;
+        $actionsIndex = null;
+        if (false and XF_USE_OPCACHE) {
+            $actionsIndexPath = XFAPPROOT . 'actions.index.php';
+            if (!xf_opcache_is_script_cached($actionsIndexPath)) {
+                if (is_readable(xf_opcache_path($actionsIndexPath))) {
+                    include(xf_opcache_path($actionsIndexPath));
+                    $actionsIndex = $xf_opcache_export;
+                } else {
+                    $actionsIndex = $this->buildActionIndexForOpcache();
+                    xf_opcache_cache_array($actionsIndexPath, $actionsIndex);
+                }
+                
+            } else {
+                include(xf_opcache_path($actionsIndexPath));
+                $actionsIndex = $xf_opcache_export;
+            }
+            
+        }
+       
+        
+        
 		foreach ($locations as $handlerPath=>$handlerClassName){
-			if ( is_readable($handlerPath) ){
+            $handlerPathExists = false;
+            if (XF_USE_OPCACHE and isset($actionsIndex)) {
+                $handlerPathExists = @$actionsIndex[$handlerPath];
+            } else {
+                $handlerPathExists = is_readable($handlerPath);
+            }
+			if ( $handlerPathExists ){
 				import($handlerPath);
 				$handler = new $handlerClassName;
 				$params  = array();
@@ -3540,13 +3665,16 @@ END
 	function &getDelegate(){
 		if ( $this->delegate === -1 ){
 			$delegate_path = DATAFACE_SITE_PATH.'/conf/ApplicationDelegate.php';
-			if ( is_readable($delegate_path) ){
+ 
+			if ( xf_is_readable($delegate_path) ){
 				import($delegate_path);
 				$this->delegate = new conf_ApplicationDelegate();
 			} else {
 				$this->delegate = null;
 			}
-		}
+        }
+			
+		
 		return $this->delegate;
 
 	}

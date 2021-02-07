@@ -100,7 +100,7 @@ class Dataface_Ontology {
 				);
 				$classNames = array('ontologies_'.basename($type), 'Dataface_Ontology_'.basename($type));
 				foreach ($paths as $key=>$path) {
-					if (file_exists($path) and is_readable($path)) {
+					if (file_exists($path) and xf_is_readable($path)) {
 						import($path);
 						if (class_exists($classNames[$key])) {
 							self::registerType($type, $path, $classNames[$key]);

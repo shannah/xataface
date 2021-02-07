@@ -181,7 +181,7 @@ class Dataface_HistoryTool {
 				$savepath = $field['savepath'];
 				if ( $savepath{strlen($savepath)-1} != $s ) $savepath.=$s;
 				if ( !$record->val($fieldname) ) break; // there is no file currently stored in this field.
-				if ( !is_readable($savepath.$record->val($fieldname)) ) break; // the file does not exist
+				if ( !xf_is_readable($savepath.$record->val($fieldname)) ) break; // the file does not exist
 				if ( !file_exists($savepath) || !is_dir($savepath) )
 					trigger_error(
 						df_translate(

@@ -133,7 +133,7 @@ class Dataface_AuthenticationTool {
 				DATAFACE_PATH.'/modules/Auth/'.$module.'/'.$module.'.php'
 				);
 			foreach ( $module_path as $path ){
-				if ( is_readable($path) ){
+				if ( xf_is_readable($path) ){
 					import($path);
 					$classname = 'dataface_modules_'.$module;
 					$this->delegate = new $classname;
@@ -759,6 +759,10 @@ class Dataface_AuthenticationTool {
 		if ( !$this->isLoggedIn() ) return $null;
 		static $user = 0;
 		if ( $user === 0 ){
+            if (!$this->usersTable) {
+                $user = null;
+                return $user;
+            }
 			$user = df_get_record($this->usersTable, array($this->usernameColumn => '='.$_SESSION['UserName']));
 			if ( !$user ){
 				$user = new Dataface_Record($this->usersTable, array($this->usernameColumn => $_SESSION['UserName']));
