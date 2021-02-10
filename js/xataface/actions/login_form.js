@@ -27,6 +27,7 @@
                         res = {code : 500, message: 'Email failed'};
                     }
                     if (res) {
+                        console.log("About to show prompt");
                         var prompt = new duDialog(null, res.message, {
                           buttons: duDialog.OK_CANCEL,
                           okText: 'OK',
