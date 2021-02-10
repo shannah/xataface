@@ -213,11 +213,12 @@
 	permission=export_csv
 	category=related_list_actions
 
-[table_actons]
+[table_actions]
 	label=""
 	materialIcon="more_vert"
 	subcategory=table_actions
 	category=table_actions_menu
+    order=99
 
 ;; Delete the current record
 [delete]

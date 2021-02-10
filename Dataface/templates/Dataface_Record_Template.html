@@ -22,7 +22,15 @@
     {$ENV.APPLICATION_OBJECT->addBodyCSSClass('cover-image')}
 {/if}
 {use_macro file="Dataface_Main_Template.html"}
+    {fill_slot name="page_actions}
+		{actions var="menus" category="record_actions"}  
+		{if $menus|@count > 0 }
 
+			<nav role="navigation" class="personal-tools-menu">
+				{actions_menu category="record_actions_menu"}
+			</nav>
+		{/if}
+    {/fill_slot}
     {fill_slot name="mobile_overflow_menu"}
     	{actions var="menus" category="record_actions"}  
     	{if $menus|@count > 0 }
@@ -91,13 +99,7 @@
                     {/if}
 				</nav>
 				
-				{actions var="menus" category="record_actions"}  
-				{if $menus|@count > 0 }
-
-					<nav role="navigation" class="personal-tools-menu">
-						{actions_menu category="record_actions_menu"}
-					</nav>
-				{/if}
+				
 
 				<div style="height:0px;padding:0;margin:0;clear:both"></div>
 			</div>

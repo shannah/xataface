@@ -1950,6 +1950,14 @@ tr.even, td.even {
     font-weight: bold;
     
 }
+#status-bar > .responsive-content {
+    display:flex;
+}
+
+#status-bar > .responsive-content > .site-title {
+    flex-grow:1;
+}
+
 .bread-crumbs {
     border-bottom:none;
     padding-left: 1em;
@@ -2082,11 +2090,15 @@ tr.even, td.even {
 
 #user-status {
 	float: right;
-	display: inline;
+	display: flex;
 	color: var(--mainTextColor);
 	padding-right: 0.5em;
+    height: 50px;
 }
 
+#user-status > nav {
+    margin:auto;
+}
 
 #personal-tools {
 	float: right;
@@ -2999,6 +3011,24 @@ table.xf-grid-table td {
 
 
 /*Dropdown navigation menus*/
+nav.tables > ul > li {
+    height: 50px;
+    display:flex;
+}
+
+nav.tables > ul > li > a {
+    display:flex;
+}
+
+nav.tables > ul > li > a > * {
+    margin: auto;
+}
+
+nav.tables > ul > li > a > i {
+    max-width: 20px;
+    margin-right: 5px;
+}
+
 div.xf-button-bar-actions a,
 nav.tables a,
 nav.personal-tools-menu a {
@@ -3757,7 +3787,7 @@ body.two-col #status-bar .responsive-content,
   
   
       .mobile-logo img,
-      .mobile-logo img.xf-container-field {
+      .mobile-logo img.xf-container-field{
           max-width: 50px;
           max-height: 50px;
           float:left;
@@ -4376,6 +4406,10 @@ body.two-col #status-bar .responsive-content,
     }
     
     
+    #mobile-top-section > #site_logo > img {
+        width: 50px;
+        height: 50px;
+    }
     
 }
 
@@ -4822,7 +4856,18 @@ div.no-matches-menu ul li a > i {
     max-width: 100%;
 }
 
+#site_logo > img {
+    max-height: 50px;
+    padding: 10px;
+}
+
 @media only screen and (min-width: 768px) {
+    
+    #mobile-top-section {
+        display:none;
+    }
+    
+    
     .external-link-preview {
         max-width: 640px;
         max-height: 400px;

@@ -1416,20 +1416,30 @@ END
 	}
 
 	function getPageTitle($mode='desktop'){
+        $out = '';
 		if ( isset($this->pageTitle) ){
-			return $this->pageTitle;
+			$out = $this->pageTitle;
 		} else {
-			$title = $mode == 'mobile' ? '' : $this->getSiteTitle();
+			
 			$query =& $this->getQuery();
 			if ( ($record = $this->getRecord()) && $query['-mode'] == 'browse'  ){
-                return $record->getTitle().($title?(' - '.$title):'');
+                $out = $record->getTitle();
             } else {
                 $tableLabel = Dataface_Table::loadTable($query['-table'])->getLabel();
-                return $tableLabel.($title?(' - '.$title):'');
+                $out = $tableLabel;
 
             }
 		}
+        $textLength = strlen($out);
+        $maxChars = 32;
+        if ($textLength > $maxChars) {
+            $out = substr_replace($out, '...', $maxChars/2, $textLength-$maxChars);
+        }
+        
+        return $out;
 	}
+    
+    
 
 	function setPageTitle($title){
 		$this->pageTitle = $title;

@@ -17,4 +17,5 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  *}
-<img src="{$ENV.DATAFACE_URL|escape}/logo-small.png" alt="Dataface Web Application Framework"/>
+{assign var="xataface_logo_url" value="`$ENV.DATAFACE_URL`/logo-small.png"}
+<img src="{$ENV.APPLICATION.site_logo|default:$xataface_logo_url|escape}" alt="{$ENV.APPLICATION_OBJECT->getSiteTitle()|escape}"/>
