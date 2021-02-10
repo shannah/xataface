@@ -193,6 +193,28 @@
 		{define_slot name="global_header"}{include file="global_header.html"}{/define_slot}
 		{block name="after_header"}
 			
+		{if !$ENV.prefs.hide_user_status}
+		<div id="user-status">
+				{if !$ENV.prefs.hide_personal_tools}
+				{if $ENV.user}
+					{block name="before_personal_tools"}
+					{define_slot name="personal_tools"}
+						<nav role="navigation" class="personal-tools-menu">
+						{actions_menu category="status_bar_right"}
+							</nav>
+						<!--<div id="personal-tools"><a href="{$ENV.user->getURL()}">My Profile</a></div>-->
+					{/define_slot}
+					{block name="after_personal_tools"}
+				{else}
+				
+					<nav role="navigation" class="personal-tools-menu">
+						{actions_menu category="status_bar_right"}
+							</nav>
+				{/if}
+				{/if}
+				
+		</div>
+		{/if}
 		{if $ENV.prefs.show_search}
 		{block name="before_search"}
 		{define_slot name="search_form"}
@@ -243,28 +265,7 @@
 
 		{/if}
         
-		{if !$ENV.prefs.hide_user_status}
-		<div id="user-status">
-				{if !$ENV.prefs.hide_personal_tools}
-				{if $ENV.user}
-					{block name="before_personal_tools"}
-					{define_slot name="personal_tools"}
-						<nav role="navigation" class="personal-tools-menu">
-						{actions_menu category="status_bar_right"}
-							</nav>
-						<!--<div id="personal-tools"><a href="{$ENV.user->getURL()}">My Profile</a></div>-->
-					{/define_slot}
-					{block name="after_personal_tools"}
-				{else}
-				
-					<nav role="navigation" class="personal-tools-menu">
-						{actions_menu category="status_bar_right"}
-							</nav>
-				{/if}
-				{/if}
-				
-		</div>
-		{/if}
+		
 
 		<div id="status-bar">
 			<div class="responsive-content">

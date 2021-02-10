@@ -478,6 +478,10 @@ del {
 }
 
 
+#table_selection_tabs > li > a {
+    margin:auto;
+}
+
 
 /* searchbox style and positioning */
 #portal-searchbox {
@@ -1956,6 +1960,7 @@ tr.even, td.even {
 
 #status-bar > .responsive-content > .site-title {
     flex-grow:1;
+    padding-bottom: 10px;
 }
 
 .bread-crumbs {
@@ -2093,7 +2098,7 @@ tr.even, td.even {
 	display: flex;
 	color: var(--mainTextColor);
 	padding-right: 0.5em;
-    height: 50px;
+    height: 70px;
 }
 
 #user-status > nav {
