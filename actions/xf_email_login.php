@@ -126,7 +126,7 @@ class dataface_actions_xf_email_login {
         					$subject,
         					$msg,
         					$headers,
-        					$parameters);
+                            '');
             }
 		
         
