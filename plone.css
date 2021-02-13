@@ -3095,11 +3095,19 @@ nav.tables li {
     border-radius: 0;
 }
 
+nav.tables li ul li {
+    border-top: 4px solid transparent;
+}
+
 nav.tables li > a {
     color: #999999;
 }
 nav.tables li.selected  {
     border-top: 4px solid var(--tabRidgeSelectedColor);
+}
+
+nav.tables li ul li.selected {
+    border-top: 4px solid transparent;
 }
 
 nav.tables li.selected > a {
@@ -3156,7 +3164,19 @@ div.xf-button-bar-actions > ul > li.featured-action,
   nav.tables li:focus-within {
       border: none;
       border-top: 4px solid var(--tabRidgeHoverColor);
+
   }
+  nav.tables li:hover ul li,
+  nav.tables li:focus-within ul li,
+  nav.tables li ul li:focus-within,
+  nav.tables li:focus-within ul li:focus-within {
+      border-top: 4px solid transparent !important;
+      border-right: 1px solid #ccc;
+      border-left: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      margin:0;
+  }
+
   div.xf-button-bar-actions a,
   nav.tables li:focus-within a ,
   nav.personal-tools-menu li:focus-within a {
@@ -3179,6 +3199,7 @@ div.xf-button-bar-actions > ul > li.featured-action,
   nav.tables ul li ul {
       left: 0;
       right:auto;
+      margin-top: 50px;
   }
   div.xf-button-bar-actions ul li:hover > ul,
   nav.tables ul li:hover > ul,
@@ -3301,6 +3322,11 @@ nav.table_tabs a {
       border-bottom: 1px solid white;
       border-left: 1px solid rgb(222, 224, 229);
       border-right: 1px solid rgb(222, 224, 229);
+  }
+  
+  nav.table_tabs li ul li.selected {
+      border-top: 4px solid transparent;
+
   }
     
   nav.table_tabs li a {
@@ -3633,7 +3659,7 @@ body.two-col #status-bar .responsive-content,
       }
       
       #login-logo img {
-          
+          max-width: 480px;
       }
       
       #login-window {
@@ -3842,7 +3868,7 @@ body.two-col #status-bar .responsive-content,
       }
   }
   
- 
+  
   
   
   @media only screen and (max-width: 768px) {
@@ -3879,7 +3905,7 @@ body.two-col #status-bar .responsive-content,
       }
       
       #login-logo img {
-          
+          max-width: 480px;
       }
       
       
@@ -4424,6 +4450,10 @@ body.two-col #status-bar .responsive-content,
 
         max-width: 650px;
     }
+    
+
+       
+    
 }
 
 @media only screen and (max-width: 650px) {
@@ -4456,6 +4486,10 @@ body.two-col #status-bar .responsive-content,
 
         max-width: 450px;
     }
+    
+    #login-logo img {
+        max-width: 400px;
+    }
 }
 
 @media only screen and (max-width: 450px) {
@@ -4482,6 +4516,10 @@ body.two-col #status-bar .responsive-content,
 
         max-width: 325px;
     }
+    
+    #login-logo img {
+        max-width: 300px;
+    }
 }
 
 @media only screen and (max-width: 350px) {
@@ -4497,6 +4535,10 @@ body.two-col #status-bar .responsive-content,
     table.record-view-table > tbody > tr > td {
 
         max-width: 275px;
+    }
+    
+    #login-logo img {
+        max-width: 250px;
     }
 }
 

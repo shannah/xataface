@@ -31,9 +31,19 @@
         .mobile-footer, .zoom {
             display:none;
         }
+        
+        #mobile-top-section {
+            display:none;
+        }
 	{/literal}
 	</style>
 	{/fill_slot}
+    {fill_slot name="html_title"}
+        {$ENV.APPLICATION_OBJECT->getSiteTitle()|escape}
+    {/fill_slot}
+    {fill_slot name="h1"}
+        <h1>{$ENV.APPLICATION_OBJECT->getSiteTitle()|escape}</h1>
+    {/fill_slot}
 	{fill_slot name="main_section"}
         {script src="xataface/actions/login_form.js"}
         <script>{literal}
