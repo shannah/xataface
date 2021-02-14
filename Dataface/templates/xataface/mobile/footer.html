@@ -26,11 +26,11 @@
             {block name="after_table_tabs_mobile"}
         {/if}
         
-    {elseif $ENV.prefs.mobile_nav_style=='tabs' or !$ENV.prefs.mobile_nav_style}
+    {else}
     	{block name="before_table_tabs_mobile"}
  		{define_slot name="table_tabs_mobile"}
  			<div class="tabs_wrapper_mobile" id="table_tabs_wrapper_mobile">
-                    <a class='mobile-app-menu-trigger' href="{$ENV.APPLICATION_OBJECT->url('-action=xf_mobile_app_menu')|escape}" data-xf-sheet-position="fill"><i class='material-icons'>menu</i></a>
+                    <a class='mobile-app-menu-trigger' href="{$ENV.APPLICATION_OBJECT->url('-action=xf_mobile_app_menu')|escape}" data-xf-sheet-position="{$ENV.prefs.mobile_app_menu_sheet_position}"><i class='material-icons'>menu</i></a>
  					<nav role="navigation" class="table_tabs_mobile">
  						{actions_menu  class="contentViews" category="_tables" selected_action=$ENV.mode}
 

@@ -1183,7 +1183,10 @@ END;
 
 		$this->rawQuery = $query;
 
-		if ( !isset( $query['-table'] ) ) $query['-table'] = $this->_conf['default_table'];
+		if ( !isset( $query['-table'] ) ) {
+		    $query['-table'] = $this->_conf['default_table'];
+            $this->_conf['using_default_table'] = true;
+		}
 		$this->_currentTable = $query['-table'];
 
 
@@ -1422,6 +1425,9 @@ END
 		} else {
 			
 			$query =& $this->getQuery();
+			if (@$this->_conf['using_default_table'] or @$this->_conf['default_table'] == $query['-table']) {
+			    return $this->getSiteTitle();
+			}
 			if ( ($record = $this->getRecord()) && $query['-mode'] == 'browse'  ){
                 $out = $record->getTitle();
             } else {
@@ -2700,6 +2706,7 @@ END
 		if ( isset($this->_conf['_prefs']) and is_array($this->_conf['_prefs']) ){
 			$this->prefs = array_merge($this->prefs,$this->_conf['_prefs']);
 		}
+
 		if ( @$this->_conf['hide_nav_menu'] ){
 			$this->prefs['show_tables_menu'] = 0;
 		}
@@ -2724,7 +2731,7 @@ END
 			$this->prefs['disable_ajax_record_details'] = 1;
 		}
         if (!isset($this->prefs['mobile_nav_style'])) {
-            $this->prefs['mobile_nav_style'] = 'hamburger';
+            $this->prefs['mobile_nav_style'] = 'tabs';
         }
 
 		if ( $query['-action'] == 'login_prompt' ) $this->prefs['no_history'] = 1;
@@ -2755,6 +2762,20 @@ END
                 $this->prefs[$k] = 1;
             }
         }
+        if (!isset($this->prefs['mobile_app_menu_position'])) {
+            $this->prefs['mobile_app_menu_position'] = 'ne';
+        }
+        $mobileAppMenuPosition = $this->prefs['mobile_app_menu_position'];
+        if (!isset($this->prefs['mobile_app_menu_sheet_position'])) {
+            
+            $this->prefs['mobile_app_menu_sheet_position'] = $mobileAppMenuPosition == 'ne' ? 'right' : 'fill';
+        }
+        
+        $this->addBodyCSSClass('mobile-app-menu-trigger-'.$mobileAppMenuPosition);
+
+            
+        
+
         
         if (isset($this->prefs['user_stylesheet'])) {
             $userStylesheet = basename($this->prefs['user_stylesheet']);

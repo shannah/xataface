@@ -39,6 +39,7 @@ class dataface_actions_new {
 		
 		$app->addBodyCSSClass('no-table-tabs');
         $app->addBodyCSSClass('no-mobile-header');
+         $app->addBodyCSSClass('no-app-menu');
         $app->addBodyCSSClass('no-fab');
 		$new = true;
 

@@ -1963,6 +1963,8 @@ tr.even, td.even {
     padding-bottom: 10px;
 }
 
+
+
 .bread-crumbs {
     border-bottom:none;
     padding-left: 1em;
@@ -2016,10 +2018,12 @@ tr.even, td.even {
 	border: none;
 }
 
+
 #site_logo {
 	float: left;
 	margin-bottom: 0.5em;
 }
+
 
 #status-bar, .resultlist-controller {
 	/*background-image: url(images/blue-gradient.jpg);
@@ -2098,7 +2102,7 @@ tr.even, td.even {
 	display: flex;
 	color: var(--mainTextColor);
 	padding-right: 0.5em;
-    height: 70px;
+    height: 50px;
 }
 
 #user-status > nav {
@@ -3199,7 +3203,7 @@ div.xf-button-bar-actions > ul > li.featured-action,
   nav.tables ul li ul {
       left: 0;
       right:auto;
-      margin-top: 50px;
+      margin-top: 40px;
   }
   div.xf-button-bar-actions ul li:hover > ul,
   nav.tables ul li:hover > ul,
@@ -3855,6 +3859,7 @@ body.two-col #status-bar .responsive-content,
       .mobile-listing.list-style-mobile .mobile-row-actions a i {
           font-size: 150%;
       }
+      
   }
   
   @media only screen and (max-width:1000px) {
@@ -3873,6 +3878,11 @@ body.two-col #status-bar .responsive-content,
   
   @media only screen and (max-width: 768px) {
       
+      #site_logo {
+      	float: none;
+
+        margin-bottom:0;
+      }
       
       .desktop {
           display:none !important;
@@ -4211,6 +4221,11 @@ body.two-col #status-bar .responsive-content,
         box-sizing: border-box;
     }
     
+    .responsive-content > p {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    
     table.Dataface_FindForm-table-wrapper > tbody > tr > td {
         width:100%;
         display:block;
@@ -4436,12 +4451,31 @@ body.two-col #status-bar .responsive-content,
         display:none;
     }
     
+    #mobile-top-section {
+        display:flex;
+    }
     
     #mobile-top-section > #site_logo > img {
-        width: 50px;
+        
         height: 50px;
     }
     
+    #mobile-top-section > div.site-title {
+        display:flex;
+    }
+    
+    #mobile-top-section > div.site-title > h1 {
+        padding:0;
+        margin:0;
+        margin:auto;
+    }
+    
+
+    
+}
+
+body.no-app-menu .mobile-app-menu-trigger {
+    display:none;
 }
 
 @media only screen and (max-width: 700px) {
@@ -4727,6 +4761,19 @@ div.mobile-list-settings-wrapper.active {
     padding-top:15px;
     padding-right: 10px;
 }
+
+body.mobile-app-menu-trigger-ne .mobile-app-menu-trigger {
+    position:fixed;
+    top:0;
+    height: auto;
+    background-color:transparent;
+}
+
+body.mobile-app-menu-trigger-ne.xf-viewport-scrolled .mobile-app-menu-trigger {
+    display:none;
+}
+
+
 
 .mobile-app-menu-trigger > i {
     font-size: 200%;

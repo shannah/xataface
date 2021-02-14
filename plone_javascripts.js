@@ -297,4 +297,33 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     
 })();
 
+(function() {
+    var isScrolled = false;
+    function onReady() {
+        var body = document.querySelector('body');
+        var runOnScroll = function(evt) {
+            //console.log("scrolling ", body.scrollTop);
+            
+            if (body.scrollTop < 100) {
+                if (isScrolled) {
+                    body.classList.remove('xf-viewport-scrolled');
+                    isScrolled = false;
+                }
+                
+            } else {
+                if (!isScrolled) {
+                    body.classList.add('xf-viewport-scrolled');
+                    isScrolled = true;
+                }
+                
+            }
+            
+        };
+    
+        body.addEventListener('scroll', runOnScroll, {passive:true});
+    }
+    window.addEventListener('DOMContentLoaded', onReady);
+    
+})();
+
 

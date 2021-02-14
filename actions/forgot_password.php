@@ -27,6 +27,7 @@ class dataface_actions_forgot_password {
 		$jt->import('forgot_password.js');
 		$app->addBodyCSSClass('no-table-tabs');
         $app->addBodyCSSClass('no-mobile-header');
+         $app->addBodyCSSClass('no-app-menu');
         $app->addBodyCSSClass('no-fab');
 				
 		try {

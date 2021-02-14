@@ -53,6 +53,7 @@ class dataface_actions_register {
         
 		$app->addBodyCSSClass('no-table-tabs');
         $app->addBodyCSSClass('no-mobile-header');
+         $app->addBodyCSSClass('no-app-menu');
         $app->addBodyCSSClass('no-fab');
 		
 		import(XFROOT.'Dataface/Ontology.php');
