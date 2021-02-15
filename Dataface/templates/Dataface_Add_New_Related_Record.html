@@ -18,8 +18,12 @@
  *-------------------------------------------------------------------------------
  *}
 {load_record}
-{use_macro file="Dataface_Record_Template.html"}
-	{fill_slot name="record_content"}
+{use_macro file="Dataface_Main_Template.html"}
+    {fill_slot name="h1"}
+
+        <h1>Add New {relationship_label count=1|escape}</h1>
+    {/fill_slot}
+	{fill_slot name="main_section"}
 		{block name="before_add_new_related_record_form"}
 		{block name="before_add_new_related_`$ENV.relationship`_form"}
 		{define_slot name="add_new_related_`$ENV.relationship`_form"}

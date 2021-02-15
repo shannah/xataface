@@ -92,7 +92,7 @@ class dataface_actions_delete {
 				Dataface_Utilities::fireEvent('after_action_delete', array('record'=>&$record));
 				$append = '';
 				$append .= '&--master-detail-delete-row=1';
-				header('Location: '.$_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?-table='.$query['-table'].$append.'&--msg='.$msg);
+				$app->redirect($_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?-table='.$query['-table'].$append.'&--msg='.$msg);
 				exit;
 			} else {
 			    if (@$query['-response'] == 'json') {

@@ -27,7 +27,7 @@ class dataface_actions_xf_grouped_list {
 		if (!$groupBy) {
 			// No fields found to group by.  Just show list view.
 			$url = $app->url('-action=list');
-			header('Location: '.$url);
+			$app->redirect($url);
 			exit;
 		}
 		$groupByField = $table->getField($groupBy);

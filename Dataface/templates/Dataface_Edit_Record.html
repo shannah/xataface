@@ -18,9 +18,8 @@
  *-------------------------------------------------------------------------------
  *}
 {if $ENV.resultSet->found() > 0 }
-	{use_macro file="Dataface_Record_Template.html"}
-        
-		{fill_slot name="record_content"}
+	{use_macro file="Dataface_Main_Template.html"}
+		{fill_slot name="main_section"}
             {define_slot name="edit_record_back_button"}
             {cancel_back_button}
             {/define_slot}

@@ -239,6 +239,7 @@ class Dataface_SkinTool extends Smarty{
 		$this->register_block('master_detail', array(&$this, 'master_detail'));
 		$this->register_block('master', array(&$this, 'master'));
 		$this->register_block('detail', array(&$this, 'detail'));
+        $this->register_function('relationship_label', array(&$this, 'relationship_label'));
 
 
 	}
@@ -263,6 +264,30 @@ class Dataface_SkinTool extends Smarty{
 
 		return $this->resultController;
 	}
+    
+    function relationship_label($params) {
+        $app = Dataface_Application::getInstance();
+        $query = $app->getQuery();
+        if (!@$query['-relationship']) {
+            return '';
+        }
+        $table = Dataface_Table::loadTable($query['-table']);
+        if (!$table or PEAR::isError($table)) return '';
+        $relationship = $table->getRelationship($query['-relationship']);
+        if (!$relationship or PEAR::isError($relationship)) {
+            return '';
+        }
+        if (@$params['count']) {
+            if ($params['count'] == 0 or $params['count'] > 1) {
+                return $relationship->getLabel();
+            } else {
+                return $relationship->getSingularLabel();
+            }
+        } else {
+            return $relationship->getLabel();
+        }
+
+    }
     
     function getBackLink() {
         $app = Dataface_Application::getInstance();

@@ -10,7 +10,7 @@ class dataface_actions_activate {
 		$app = Dataface_Application::getInstance();
         $auth = Dataface_AuthenticationTool::getInstance();
         if ($auth->isLoggedIn()) {
-            header('Location: '.DATAFACE_SITE_HREF.'?--msg='.urlencode("You are already logged in"));
+            $app->redirect(DATAFACE_SITE_HREF.'?--msg='.urlencode("You are already logged in"));
             exit;
         }
 		if ( !isset($_GET['code']) ){

@@ -182,9 +182,11 @@
     		{define_slot name="global_header"}{include file="global_header.html"}{/define_slot}
     		{block name="after_header"}
             <div class='site-title'>
+            <div class='h1-wrapper'>
             {define_slot name="h1"}
                 <h1>{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}</h1>
             {/define_slot}
+            </div>
             </div>
             
             
@@ -272,9 +274,11 @@
 		<div id="status-bar">
 			<div class="responsive-content">
                 <div class='site-title'>
+                    <div class='h1-wrapper'>
                 {define_slot name="h1"}
                     <h1>{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}</h1>
                 {/define_slot}
+            </div>
                 </div>
 				{if !$ENV.prefs.hide_language_selector}
 				{block name="before_language_selector"}

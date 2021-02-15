@@ -7,7 +7,7 @@ class dataface_actions_existing_related_record {
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 		$resultSet =& $app->getResultSet();
-		
+		$app->_conf['page_menu_category'] = 'existing_related_record_actions_menu';
 		//$record =& $app->getRecord();	// loads the current record 
 		
 		if ( !isset( $query['-relationship'] ) ){

@@ -46,7 +46,7 @@ class dataface_actions_edit {
         $app->addBodyCSSClass('no-mobile-header');
         $app->addBodyCSSClass('no-fab');
         $app->addBodyCSSClass('no-record-heading');
-    
+        $app->_conf['page_menu_category'] = 'edit_record_actions_menu';
 		
         
 		if (!$currentRecord) {
@@ -262,7 +262,7 @@ class dataface_actions_edit {
                                         
 					$link = $_SERVER['HOST_URI'].DATAFACE_SITE_HREF.'?'.$vals['-query'].'&--saved=1&--msg='.$msg;
 					
-					
+
 					/*
 					 *
 					 * Redirect the user to the appropriate record.

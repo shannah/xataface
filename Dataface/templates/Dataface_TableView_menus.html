@@ -16,10 +16,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
- *}    
- {actions var="menus" category="table_actions_menu"}  
+ *}
+ {assign var="table_actions_menu_category" value=$ENV.APPLICATION_OBJECT->getPageMenuCategory()}
+ {actions var="menus" category=$table_actions_menu_category}  
  {if $menus|@count > 0 }
  <nav role="navigation" class="personal-tools-menu ">
-        {actions_menu category="table_actions_menu"}
+        {actions_menu category="$table_actions_menu_category"}
     </nav>
 {/if}

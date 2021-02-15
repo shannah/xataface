@@ -41,6 +41,7 @@ class dataface_actions_new {
         $app->addBodyCSSClass('no-mobile-header');
          $app->addBodyCSSClass('no-app-menu');
         $app->addBodyCSSClass('no-fab');
+        $app->_conf['page_menu_category'] = 'new_record_actions_menu';
 		$new = true;
 
                 $includedFields = null; // Null for all fields
@@ -58,7 +59,7 @@ class dataface_actions_new {
 		if (!$_POST) {
 			$newRecordTableName = $currentTable->getNewRecordFormTable();
 			if ($newRecordTableName != $currentTable->tablename) {
-				header('Location: '.$app->url(array('-table' => $newRecordTableName), true, true));
+				$app->redirect($app->url(array('-table' => $newRecordTableName), true, true));
 				exit;
 			}
 		}

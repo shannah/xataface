@@ -3,6 +3,7 @@ class dataface_actions_view_related_record {
 	function handle($params){
 		$app = Dataface_Application::getInstance();
 		$query =& $app->getQuery();
+        $app->_conf['page_menu_category'] = 'record_actions_menu';
 		
 		$related_record = df_get_record_by_id($query['-related-record-id']);
 		if ( !$related_record || PEAR::isError($related_record) ){

@@ -1478,6 +1478,28 @@ END
 	}
 
 
+    function getPageMenuCategory() {
+        if (@$this->_conf['page_menu_category']) {
+            return $this->_conf['page_menu_category'];
+        }
+        $query = $this->_query;
+        $action = $query['-action'];
+        if ($action == 'list') {
+            return 'table_actions_menu';
+        } else if ($action == 'view' and @$query['-mode'] == 'browse') {
+            return 'record_actions_menu';
+        }
+        return $query['-action'] . '_actions_menu';
+        /*
+        if (@$query['-mode'] == 'browse') {
+            return 'record_actions_menu';
+        } else {
+            return 'table_actions_menu';
+        }
+        */
+        
+    }
+
 	// @}
 	// END CONFIGURATION
 
@@ -2844,8 +2866,7 @@ END
             $recordActions = array_merge($recordActions, $relationshipActions);
             if (count($recordActions) > 0) {
                 foreach ($recordActions as $recordAction) {
-
-                    header('Location: '.$recordAction['url']);
+                    $this->redirect($recordAction['url']);
                     exit;
                 }
             }
@@ -2913,6 +2934,9 @@ END
 			$action = array('name'=>$query['-action'], 'label'=>$query['-action']);
 		}
 
+        if (@$action['page_menu_category']) {
+            $this->_conf['page_menu_category'] = $action['page_menu_category'];
+        }
 		// Step 1:  See if the delegate class has a handler.
 
 		$delegate = $table->getDelegate();
@@ -3661,6 +3685,20 @@ END
 	 * You can assign your own redirect behavior by setting the redirect handler fo the application.
 	 */
 	function redirect($url){
+        if (stripos($url, 'location:') === 0) {
+            $url = substr($url, strpos(':', $url)+1);
+        }
+        $url = trim($url);
+        //print_r($_SERVER);exit;
+        $isInSite = ((strpos($url, DATAFACE_SITE_HREF) === 0) or (strpos($url, $_SERVER['HOST_URI']) === 0)) ? true : false;
+        $currentRequestHasMessage = @$this->_query['--msg'] ? true : false;
+        $urlHasMessage = strpos($url, '--msg') !== false;
+        $sessionHasMessage = @$_SESSION['--msg'] ? true : false;
+        
+        if ($isInSite and $currentRequestHasMessage and !$urlHasMessage and !$sessionHasMessage) {
+
+            $_SESSION['--msg'] = htmlspecialchars($this->_query['--msg']);
+        }
 		if ( isset($this->redirectHandler) and method_exists('redirect', $this->redirectHandler) ){
 			$this->redirectHandler->redirect($url);
 			throw new Dataface_Application_RedirectException($url);

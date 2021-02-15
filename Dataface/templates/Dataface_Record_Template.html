@@ -41,10 +41,36 @@
         
     	{/if}
     {/fill_slot}
-
+    {fill_slot name="h1"}
+        {if $ENV.record and $ENV.table_object->getLogoField() and $ENV.record->val($ENV.table_object->getLogoField())}
+            <div class='record-heading-logo'>
+            {$ENV.record->htmlValue($ENV.table_object->getLogoField(), 0, 0, 0, 'width=32')}
+            </div>
+        {/if}
+		<h1 class="dataface-record-title">{if $ENV.record}<span class="dataface-current-record-prelabel"><b>{translate id="templates.Dataface_Record.LABEL_CURRENT_RECORD"}Current Record{/translate}:</b> </span>{$ENV.record->getTitle()|escape}
+			{assign var=pkey value=$ENV.record->getPrimaryKeyValue()}
+			{if $ENV.record->getTitle() != $pkey and is_numeric($pkey)}
+				<span class="id-field">#{$pkey|escape}</span>
+			{/if}
+			{else}Not Found{/if}</h1>
+            
+            {if $ENV.record}
+                {assign var="recordDescription" value=$ENV.record->getDescription()}
+                
+                <div class='record-heading-description'>
+                    {if $recordDescription and $recordDescription != $ENV.record->getTitle()}
+                    
+                        {$recordDescription}
+                    {else}
+                        {$ENV.table_object->getLabel()|escape}
+                    {/if}
+                </div>
+                
+            {/if}
+    {/fill_slot}
 	{fill_slot name="main_section"}
 		
-		{if $ENV.prefs.show_result_controller}
+		{if $ENV.prefs.show_result_controller and $ENV.prefs.show_details_controller}
 		
 		{block name="before_details_controller"}
 		<div id="details-controller">{include file="Dataface_Details_Controller.html"}</div>
@@ -58,21 +84,10 @@
                    
                 </div>
                 {/if}
-			    {if $ENV.record and $ENV.table_object->getLogoField() and $ENV.record->val($ENV.table_object->getLogoField())}
-                    <div class='record-heading-logo'>
-                    {$ENV.record->htmlValue($ENV.table_object->getLogoField(), 0, 0, 0, 'width=32')}
-                    </div>
-                {/if}
-				<h2 class="dataface-record-title">{if $ENV.record}<span class="dataface-current-record-prelabel"><b>{translate id="templates.Dataface_Record.LABEL_CURRENT_RECORD"}Current Record{/translate}:</b> </span>{$ENV.record->getTitle()|escape}
-					{assign var=pkey value=$ENV.record->getPrimaryKeyValue()}
-					{if $ENV.record->getTitle() != $pkey and is_numeric($pkey)}
-						<span class="id-field">#{$pkey|escape}</span>
-					{/if}
-					{else}No Records Matched your Request{/if}</h2>
+			    
+				
                 {if $ENV.record}
-                    <div class='record-heading-description'>
-                        {$ENV.record->getDescription()}
-                    </div>
+                    
                     {actions var=actions category="record_actions|mobile_edit" with="featured"}
                     {if $actions|@count>0}
     				<div class="mobile mobile-record-actions">

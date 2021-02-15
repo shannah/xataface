@@ -65,7 +65,7 @@
 
 ;; Create a new record
 [new]
-	label = New Record
+	label = "New Record"
 	breadcrumb_label="New"
 	description = Create a new record
 	url = "{$this->url('-action=new', false)}"
@@ -159,8 +159,74 @@
 	subcategory=record_actions
 	category="record_actions_menu"
 	
-
+[edit_record_actions]
+	label=""
+	materialIcon="more_vert"
+	subcategory=edit_record_actions
+	category="edit_record_actions_menu"
     
+[save_record]
+    label="Save"
+    category=edit_record_actions_menu
+    class="featured-action"
+    materialIcon="save"
+    url="javascript:jQuery('input[type="submit"]').each(function(e){ if (jQuery(this).attr('name') == '--session:save') {this.click();}});"
+    
+[cancel_edit_record]
+    label="Cancel"
+    category=edit_record_actions_menu
+    materialIcon="cancel"
+    url="{$app->url('-action=browse')}"
+    
+[new_record_actions]
+	label=""
+	materialIcon="more_vert"
+	subcategory=new_record_actions
+	category="new_record_actions_menu"
+    
+[new_related_record_actions]
+	label=""
+	materialIcon="more_vert"
+	subcategory=new_related_record_actions
+	category="new_related_record_actions_menu"
+    
+[existing_related_record_actions]
+	label=""
+	materialIcon="more_vert"
+	subcategory=existing_related_record_actions
+	category="existing_related_record_actions_menu"
+
+
+[save_new_record > save_record]
+    category=new_record_actions_menu
+    
+[cancel_new_record > cancel_edit_record]
+    url="{$app->url('-action=list')}"
+    category=new_record_actions_menu
+    
+    
+[save_new_related_record > save_record]
+    category=new_related_record_actions_menu
+    url="javascript:jQuery('input[type="submit"]').each(function(e){ if (jQuery(this).attr('name') == '-Save') {this.click();}});"
+    
+[save_existing_related_record > save_record]
+    category=existing_related_record_actions_menu
+    url="javascript:jQuery('input[type="submit"]').each(function(e){ if (jQuery(this).attr('name') == '-Save') {this.click();}});"
+    
+[cancel_save_existing_record]
+    category=existing_related_record_actions_menu
+    url="{$app->url('-action=related_records_list')}"
+    label="Cancel"
+    materialIcon=cancel
+    
+[cancel_new_related_record]
+    category=new_related_record_actions_menu
+    url="{$app->url('-action=related_records_list')}"
+    label="Cancel"
+    materialIcon=cancel
+    
+
+
 
 [view_xml]
 	label = Export XML
@@ -226,7 +292,7 @@
 	description = Delete current record
 	url = "{$this->url('-action=delete&-delete-one=1')}"
 	materialIcon="delete"
-	category = table_actions
+	category = record_actions
 	accessKey = d
 	mode = browse
 	condition = "$query['-mode']=='browse'"
@@ -318,6 +384,7 @@
 	category = record_tabs
 	selected_condition = "$query['-action'] == 'view'"
 	order=-2
+    page_menu_category=record_actions_menu
 
 ;; Edit the details of the current record.
 [edit]
@@ -325,11 +392,12 @@
 	url = "{$this->url('-action=edit&-relationship=')}"
 	template = Dataface_Edit_Record.html
 	mode = browse
-	category = record_tabs
+	category = record_actions_menu
 	selected_condition = "$query['-action'] == 'edit'"
 	permission = edit
 	order=-1
 	materialIcon=create
+    class="featured-action"
 	
 
 ;; Translate a record
@@ -338,7 +406,7 @@
 	url = "{$this->url('-action=translate&-relationship=')}"
 	template = Dataface_Translate_Record.html
 	mode = browse
-	category = record_tabs
+	category = record_actions
 	selected_condition = "$query['-action'] == 'translate'"
 	condition = "($tableobj =& Dataface_Table::loadTable($table)) and count($tableobj->getTranslations()) > 0"
 	permission = translate
@@ -351,12 +419,13 @@
 	url = "{$this->url('-action=history')}"
 	template = Dataface_Record_History.html
 	mode = browse
-	category = record_tabs
+	category = record_actions
 	selected_condition = "$query['-action'] == 'history'"
 	condition = "is_array($this->_conf['history'])"
 	permission = history
 	order=4
 	materialIcon=history
+    page_menu_category=record_actions_menu
 	
 
 [view_history_record_details]
@@ -379,6 +448,7 @@
 	permission = view
 	related=1
 	allow_override="relationships.ini"
+    page_menu_category=record_actions_menu
 
 ;;------------------------------------------------------------------------------
 ;; Relationship Actions

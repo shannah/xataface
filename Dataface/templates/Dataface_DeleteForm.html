@@ -17,12 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-------------------------------------------------------------------------------
  *}
-<h2>
+{fill_slot name="h1"}
+<h1>
 {define_slot name="delete_form_heading"}
 	{translate id="templates.Dataface_DeleteForm.DELETE_RECORDS"}Delete Records{/translate}
 {/define_slot}	
-</h2>
+</h1>
+{/fill_slot}
 {block name="before_delete_form_message"}
-{define_slot name="delete_form_message"}{$msg}{/define_slot}
+{define_slot name="delete_form_message"}<p>{$msg}</p>{/define_slot}
 {block name="after_delete_form_message"}
 {$form}

@@ -141,7 +141,7 @@ class dataface_actions_xf_email_login {
             
         } else {
             if ($auth->isLoggedIn()) {
-                header('Location: '.DATAFACE_SITE_HREF.'?--msg='.urlencode('You are already logged in'));
+                $app->redirect(DATAFACE_SITE_HREF.'?--msg='.urlencode('You are already logged in'));
                 exit;
             }
             

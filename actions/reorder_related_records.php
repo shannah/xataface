@@ -86,7 +86,7 @@ class dataface_actions_reorder_related_records {
 				return PEAR::raiseError('Invalid input for direction of reordering.  Must be up or down but received "'.$_POST['-reorder:direction'].'"');
 		}
 		if ( PEAR::isError($res) ) return $res;
-		header('Location: '.$_POST['-redirect']);
+		$app->redirect($_POST['-redirect']);
 		exit;
 		
 	

@@ -17,7 +17,7 @@ class dataface_actions_xf_my_profile {
         }
         
         $url = $user->getPublicLink();
-        header("Location: $url");
+        $app->redirect("$url");
         exit;
         
     }

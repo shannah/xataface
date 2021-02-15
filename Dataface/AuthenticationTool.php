@@ -739,7 +739,7 @@ class Dataface_AuthenticationTool {
 				$_SESSION['-redirect'] = $referer;
 			}
 		}
-		header("Location: $url");
+		$app->redirect("$url");
 		exit;
 		//df_display(array('msg'=>$msg, 'redirect'=>@$_REQUEST['-redirect']), 'Dataface_Login_Prompt.html');
 	

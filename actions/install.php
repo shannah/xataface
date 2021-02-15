@@ -47,7 +47,7 @@ class dataface_actions_install {
             df_clear_cache();
             if (XF_USE_OPCACHE and @$_REQUEST['--update'] !== '2') {
                 
-                header('Location: ' . $app->url('-action=install').'&--update=2');
+                $app->redirect($app->url('-action=install').'&--update=2');
                 return;
                 
             }

@@ -1121,12 +1121,12 @@ body.cover-image .record-heading-logo {
     margin-left: 10px;
 }
 
-.record-heading .record-heading-description {
+.record-heading-description {
     font-size: 80%;
     color: #666;
-    padding-left: 42px;
-    padding-top: 0;
-    margin:0;
+
+
+
 }
 
 @media only screen and (max-width:768px) {
@@ -3047,6 +3047,22 @@ nav.tables > ul > li > a > i {
     margin-right: 5px;
 }
 
+div.page-actions {
+    display:flex;
+}
+
+div.page-actions > * {
+    margin:auto;
+}
+
+div.page-actions > nav > ul > li {
+    margin: 10px;
+}
+
+div.page-actions > nav ul {
+    background-color:transparent;
+}
+
 div.xf-button-bar-actions a,
 nav.tables a,
 nav.personal-tools-menu a {
@@ -3429,6 +3445,10 @@ nav.table_tabs a {
       color: #666;
       font-size: 75%;
       
+  }
+  
+  .documentContent .responsive-content > form {
+      padding: 20px 0;
   }
 body.two-col #main_table,
 body.two-col #status-bar .responsive-content,
@@ -4334,9 +4354,14 @@ body.two-col #status-bar .responsive-content,
     }
     
 
-    .dataface-record-title {
+    .documentContent .dataface-record-title {
         display:none;
     }
+    
+    .h1-wrapper .record-heading-description {
+        padding: 5px 30px 10px 0;
+    }
+    
     /*
     .documentContent > .responsive-content > .tabs_wrapper {
         display:none;
