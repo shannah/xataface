@@ -120,6 +120,8 @@
     --sidebarMenuTextColor: #fff;
     --sidebarTextColor: rgba(255, 255, 255, 0.50);
     
+    --navTablesButtonHeight: 70px;
+    
 }
 
 
@@ -2021,7 +2023,11 @@ tr.even, td.even {
 
 #site_logo {
 	float: left;
+    display:flex;
+    box-sizing: border-box;
+    height: var(--navTablesButtonHeight);
 	margin-bottom: 0.5em;
+    padding:10px;
 }
 
 
@@ -2102,7 +2108,7 @@ tr.even, td.even {
 	display: flex;
 	color: var(--mainTextColor);
 	padding-right: 0.5em;
-    height: 50px;
+    height: var(--navTablesButtonHeight);
 }
 
 #user-status > nav {
@@ -3021,12 +3027,15 @@ table.xf-grid-table td {
 
 /*Dropdown navigation menus*/
 nav.tables > ul > li {
-    height: 50px;
+    height: var(--navTablesButtonHeight);
     display:flex;
+    box-sizing: border-box;
+    padding:0;
 }
 
 nav.tables > ul > li > a {
     display:flex;
+    padding: 10px;
 }
 
 nav.tables > ul > li > a > * {
@@ -3203,7 +3212,7 @@ div.xf-button-bar-actions > ul > li.featured-action,
   nav.tables ul li ul {
       left: 0;
       right:auto;
-      margin-top: 40px;
+      margin-top: calc(var(--navTablesButtonHeight) - 4px);
   }
   div.xf-button-bar-actions ul li:hover > ul,
   nav.tables ul li:hover > ul,
@@ -4951,8 +4960,8 @@ div.no-matches-menu ul li a > i {
 }
 
 #site_logo > img {
-    max-height: 50px;
-    padding: 10px;
+    max-height: calc(var(--navTablesButtonHeight) - 20px);
+    margin:auto;
 }
 
 @media only screen and (min-width: 768px) {
