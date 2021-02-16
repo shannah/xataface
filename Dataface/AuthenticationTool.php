@@ -278,7 +278,7 @@ class Dataface_AuthenticationTool {
         
         
         $tok = df_uuid();
-        $autologin = ($this->conf['autologin'] and @$_REQUEST['--remember-me']) ? 1 : 0;
+        $autologin = (@$this->conf['autologin'] and @$_REQUEST['--remember-me']) ? 1 : 0;
         
         $res = xf_db_query("INSERT INTO `".self::TOKEN_TABLE."` (`username`, `token`, `expires`, `redirect_url`, `autologin`) VALUES ('".addslashes($username)."', '".addslashes($tok)."', NOW() + INTERVAL 10 MINUTE, '".addslashes($redirectUrl)."', $autologin)", df_db());
         if (!$res) {
