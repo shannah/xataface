@@ -349,10 +349,14 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     
     
     function addBackButton() {
+        
         if (!window.jQuery) {
+        
+            
             return;
         }
         var referrerIndex = getReferrer();
+        
         
         var $ = jQuery;
         var backButton = $('<button class="back-btn"><i class="material-icons">navigate_before</i> <span>Back</span></button>');
@@ -369,17 +373,21 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     
     function getReferrer() {
         var search = window.location.search;
+        
         var referrerPos = search.indexOf('&--referrer=');
+        
         if (referrerPos < 0) {
-            return -1;;
+            return -1;
         }
         referrerPos = search.indexOf('=', referrerPos)+1;
         var referrerEndPos = search.indexOf('&', referrerPos);
         var referrerIndex = -1;
-        if (referrerPos < 0) {
-            referrerIndex = search.substr(referrerPos);
+        if (referrerEndPos < 0) {
+            referrerIndex = search.substring(referrerPos);
+            
         } else {
-            referrerIndex = search.substr(referrerPos, referrerEndPos);
+            referrerIndex = search.substring(referrerPos, referrerEndPos);
+            
         }
         referrerIndex = parseInt(referrerIndex);
         return referrerIndex;
@@ -404,12 +412,16 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     
     var thisReferrer = getReferrer();
     registerXatafaceDecorator(function(root) {
-
-        if (!window.jQuery) return;
+        
+        if (!window.jQuery) {
+            console.log('jquery not loaded yet');
+            return;
+        }
 
         var $ = jQuery;
 
         $('[rel][href]').each(function() {
+            
             var rel = $(this).attr('rel');
             if (rel == 'child') {
                 $(this).attr('href', addReferrer(this.getAttribute('href')));
