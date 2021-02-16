@@ -76,6 +76,7 @@
 	permission = new
 	order=1
 	class="featured-action"
+    rel=child
 	
 ;; Post a record update using HTTP POST
 [post]
@@ -103,6 +104,7 @@
 	mode = copy_replace
 	order=5
 	icon="{$dataface_url}/images/view.gif"
+    rel=child
 	
 [copy_replace_ui]
 	label="Copy Set"
@@ -114,6 +116,7 @@
 	icon="{$dataface_url}/images/view.gif"
 	category=table_actions
 	permission=copy
+    rel=child
 
 [update_set]
 	label="Update Set"
@@ -125,6 +128,7 @@
 	order=6
 	icon="{$dataface_url}/images/edit.gif"
 	category=table_actions
+    rel=child
 
 
 
@@ -164,6 +168,7 @@
 	materialIcon="more_vert"
 	subcategory=edit_record_actions
 	category="edit_record_actions_menu"
+    
     
 [save_record]
     label="Save"
@@ -298,6 +303,7 @@
 	condition = "$query['-mode']=='browse'"
 	permission = delete
 	order=5
+    rel=child
 
 ;; Delete all records in the current found set
 [delete_found]
@@ -310,6 +316,7 @@
 	condition = "$query['-mode']=='list'"
 	permission = delete found
 	order=5
+    rel=child
 	
 [delete_selected]
 	label="Delete"
@@ -318,6 +325,7 @@
 	category=selected_result_actions
 	confirm="Are you sure you want to delete the selected records?"
 	icon="{$dataface_url}/images/delete.gif"
+    rel=child
 	
 
 ;; Invalidates the current translations and marks a new version
@@ -385,6 +393,7 @@
 	selected_condition = "$query['-action'] == 'view'"
 	order=-2
     page_menu_category=record_actions_menu
+    rel=sibling
 
 ;; Edit the details of the current record.
 [edit]
@@ -398,6 +407,7 @@
 	order=-1
 	materialIcon=create
     class="featured-action"
+    rel=child
 	
 
 ;; Translate a record
@@ -412,6 +422,7 @@
 	permission = translate
 	order=3
 	materialIcon=translate
+    rel=child
 	
 
 ;; History for a record
@@ -426,14 +437,17 @@
 	order=4
 	materialIcon=history
     page_menu_category=record_actions_menu
+    rel=child
 	
 
 [view_history_record_details]
 	mode = browse
 	permission = history
+    rel=child
 	
 [single_record_search]
 	permission=view
+    rel=child
 	
 
 ;;------------------------------------------------------------------------------
@@ -449,6 +463,7 @@
 	related=1
 	allow_override="relationships.ini"
     page_menu_category=record_actions_menu
+    rel=sibling
 
 ;;------------------------------------------------------------------------------
 ;; Relationship Actions
@@ -463,6 +478,7 @@
 	category = relationship_actions
 	label = "Add new {$query['-relationship']} record"
 	related=1
+    rel=child
 
 ;; Show the "Add Existing Related Record" form to add an existing record to a 
 ;; relationship.
@@ -472,6 +488,7 @@
 	permission = add existing related record
 	category = relationship_actions
 	related=1
+    rel=child
 
 ;; Remove record from a relationship
 [remove_related_record]
@@ -481,6 +498,7 @@
 	category=selected_records_actions
 	label = remove
 	related=1
+    rel=child
 	
 	
 
@@ -510,6 +528,7 @@
 	;; By default we use email validation. i.e accounts are not created until
 	;; they have been verified by email.  @see activate
 	email_validation=1
+    rel=child
 	
 [forgot_password]
 	;; This should appear in beneath the login form
@@ -518,6 +537,7 @@
 	label = Forgot password
 	url="{$this->url('-action=forgot_password')}"
     condition="class_exists('Dataface_AuthenticationTool') and Dataface_AuthenticationTool::getInstance()->isPasswordLoginAllowed()"
+    rel=child
 
 
 ;; An action to activate an account after it has been verified by email.
@@ -648,6 +668,7 @@
 	url="{$app->url('-action=manage_migrate')}"
 	label="Migrations"
 	description="A tool to help migrate to newer versions of Dataface."
+    rel=child
 
 [sync_bindings]
 	permission=manage_sync_bindings
@@ -655,6 +676,7 @@
 	url="{$app->url('-action=sync_bindings')}"
 	label="Synchronize Field Bindings"
 	description="Updates the database triggers for the current field bindings, as declared in the fields.ini files."
+    rel=child
 	
 	
 [clear_views]
@@ -681,6 +703,7 @@
 	label="Output cache"
 	description="Management options for the Dataface output cache."
         condition="$app->_conf['_output_cache'] and $app->_conf['_output_cache']['enabled']"
+    rel=child
 	
 [manage_build_index]
 	permission=manage_build_index
@@ -688,6 +711,7 @@
 	url="{$app->url('-action=manage_build_index')}"
 	label="Build Search Index"
 	description="Build and maintain a search index to perform full site searches."
+    rel=child
 
 
 [copy_selected]
@@ -697,6 +721,7 @@
 	category=selected_result_actions
 	permission=copy
 	icon="{$dataface_url}/images/view.gif"
+    rel=child
 
 [update_selected]
 	url="javascript:updateSelected('result_list')"
@@ -705,6 +730,7 @@
 	category=selected_result_actions
 	permission=update_selected
 	icon="{$dataface_url}/images/edit.gif"
+    rel=child
 
 
 [update_selected_related]
@@ -714,6 +740,7 @@
 	category=selected_related_result_actions
 	permission=update related records
 	condition="$record and $record->checkPermission('edit', array('relationship'=>$query['-relationship']))"
+    rel=child
 	
 
 [remove_selected_related]
@@ -723,6 +750,7 @@
 	category=selected_related_result_actions
 	permission=remove related record
 	condition="$record and $record->checkPermission('remove related record', array('relationship'=>$query['-relationship']))"
+    rel=child
 
 [xml_list]
 	permission = xml_view
@@ -738,6 +766,7 @@
 	permission=view
 	url="{$record->getURL('-action=view')}"
 	icon="{$dataface_url}/images/view.gif"
+    rel=child
 	
 [edit_event_details]
 	category=event_actions
@@ -746,6 +775,7 @@
 	permission=edit
 	url="{$record->getURL('-action=edit')}"
 	icon="{$dataface_url}/images/edit.gif"
+    rel=child
 
 [RecordBrowser_data]
 	permission=view
@@ -761,6 +791,7 @@
 	condition="$record"
 	url="{$record->getURL('-action=view')}"
 	url_condition="$record"
+    rel=child
 	
 [edit_related_record]
 	category=view_related_record_actions
@@ -771,6 +802,7 @@
 	class="edit-btn"
 	condition="$record"
 	permission="edit"
+    rel=child
 	
 [cancel_edit_related_record]
 	category=edit_related_record_actions
@@ -885,6 +917,7 @@
 [mobile_edit > edit]
     category=mobile_edit
     featured=1
+    rel=child
     
 [password_changed_home]
     category=password_changed_actions

@@ -1258,7 +1258,7 @@ tr.even, td.even {
 	border: none;
 }
 
-#site_logo {
+.site_logo {
 	float: left;
 	margin-bottom: 0.5em;
 }

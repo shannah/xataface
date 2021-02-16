@@ -229,8 +229,8 @@
 									var children = leftCol.childNodes;
 									while (leftCol.hasChildNodes()) outerLeft.appendChild(leftCol.firstChild);
 								}
-								var leftColumnContent = leftCol.textContent;
-								if (leftColumnContent.trim().length == 0) {
+								var leftColumnContent = leftCol ? leftCol.textContent : '';
+								if (leftCol && leftColumnContent.trim().length == 0) {
 									leftCol.style.width="0";
 									leftCol.style.padding="0";
 									leftCol.style.margin="0";

@@ -626,7 +626,7 @@ import(XFROOT.'Dataface/QueryTool.php');
 						    if (substr($val, 0, 3) != '<a ') {
 						        // If the render cell value is already a link, then don't 
 						        // re-wrap
-							    $val = "<a href=\"$link\" class=\"unmarked_link\">".$val."</a>";
+							    $val = "<a rel='child' href=\"$link\" class=\"unmarked_link\">".$val."</a>";
 							    $editable_class = '';
 							}
 						} else {
@@ -651,7 +651,7 @@ import(XFROOT.'Dataface/QueryTool.php');
                     $aOpen = '';
                     $aClose = '';
                     if ($link) {
-                        $aOpen = '<a href="'.df_escape($link).'">';
+                        $aOpen = '<a rel="child" href="'.df_escape($link).'">';
                         $aClose = '</a>';
                     }
 				    if ($logoField and $record->val($logoField) and $record->checkPermission('view', array('field' => $logoField))) {

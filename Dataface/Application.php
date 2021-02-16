@@ -3703,10 +3703,28 @@ END
 			$this->redirectHandler->redirect($url);
 			throw new Dataface_Application_RedirectException($url);
 		}
+        $url = $this->addURLParams($url, ['--referrer']);
 		header('Location: '.$url);
 		exit;
 
 	}
+    
+    private function addURLParams($url, $params) {
+        
+        foreach ($params as $param) {
+            $isInSite = ((strpos($url, DATAFACE_SITE_HREF) === 0) or (strpos($url, $_SERVER['HOST_URI']) === 0)) ? true : false;
+            $currentRequestHasParam = @$this->_query[$param] ? true : false;
+            $urlHasParam = strpos($url, $param) !== false;
+            if ($isInSite and $currentRequestHasParam and !$urlHasParam) {
+                if (strpos($url, '?') === false) {
+                    $url .= '?';
+                }
+                $url .= '&'.urlencode($param).'='.urlencode($this->_query[$param]);
+            }
+        }
+        return $url;
+        
+    }
 
 	// @}
 	// End Utility Functions

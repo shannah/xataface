@@ -79,11 +79,11 @@ class Dataface_RelatedList {
             return '';
         $query = array('-related:start' => $this->_start + $this->_limit, '-related:limit' => $this->_limit);
         $link = Dataface_LinkTool::buildLink($query);
-        $out = '<a href="' . $link . '" title="Next ' . $this->_limit . ' Results"><img src="' . DATAFACE_URL . '/images/go-next.png" alt="Next" /></a>';
+        $out = '<a rel="sibling" href="' . $link . '" title="Next ' . $this->_limit . ' Results"><img src="' . DATAFACE_URL . '/images/go-next.png" alt="Next" /></a>';
         if (($this->_start + (2 * $this->_limit)) < $numRecords) {
             $query['-related:start'] = $numRecords - ( ($numRecords - $this->_start) % $this->_limit) - 1;
             $link = Dataface_LinkTool::buildLink($query);
-            $out .= '<a href="' . $link . '" title="Last"><img src="' . DATAFACE_URL . '/images/go-last.png" alt="Last" /></a>';
+            $out .= '<a rel="sibling" href="' . $link . '" title="Last"><img src="' . DATAFACE_URL . '/images/go-last.png" alt="Last" /></a>';
         }
         return $out;
     }
@@ -93,11 +93,11 @@ class Dataface_RelatedList {
             return '';
         $query = array('-related:start' => max(0, $this->_start - $this->_limit), '-related:limit' => $this->_limit);
         $link = Dataface_LinkTool::buildLink($query);
-        $out = '<a href="' . $link . '" title="Previous ' . $this->_limit . ' Results"><img src="' . DATAFACE_URL . '/images/go-previous.png" alt="Previous" /></a>';
+        $out = '<a rel="sibling" href="' . $link . '" title="Previous ' . $this->_limit . ' Results"><img src="' . DATAFACE_URL . '/images/go-previous.png" alt="Previous" /></a>';
 
         if (($this->_start - $this->_limit) > 0) {
             $query['-related:start'] = 0;
-            $out = '<a href="' . Dataface_LinkTool::buildLink($query) . '" title="First"><img src="' . DATAFACE_URL . '/images/go-first.png" alt="First" /></a>' . $out;
+            $out = '<a rel="sibling" href="' . Dataface_LinkTool::buildLink($query) . '" title="First"><img src="' . DATAFACE_URL . '/images/go-first.png" alt="First" /></a>' . $out;
         }
 
         return $out;
@@ -148,7 +148,7 @@ class Dataface_RelatedList {
                 $url = 'javascript:void(0);';
                 $onclick = 'onclick="'.htmlspecialchars($onclick).'" ';
             }
-            echo '<a href="'.df_escape($url).'" '.$onclick.
+            echo '<a rel="child" href="'.df_escape($url).'" '.$onclick.
                 'class="'.df_escape($action['class']).' '.
                     ((@$action['icon'] or $materialIcon)?'with-icon':'').'" '.
                         (@$action['icon']?' style="'.df_escape('background-image: url('.$action['icon'].')').'"':'').(@$action['target']?' target="'.df_escape($action['target']).'"':'').' title="'.df_escape(@$action['description']?$action['description']:$action['label']).'">'.$materialIcon.'<span>'.df_escape($action['label']).'</span></a> ';
@@ -467,7 +467,7 @@ class Dataface_RelatedList {
                                     $legend = '<span class="column-legend">' . df_escape($field['column']['legend']) . '</span>';
                                 }
                                 if (!$this->noLinks) {
-                                    echo '<th><a href="' . df_escape($link) . '">' . df_escape($field['widget']['label']) . "</a> $legend</th>\n";
+                                    echo '<th><a rel="sibling" href="' . df_escape($link) . '">' . df_escape($field['widget']['label']) . "</a> $legend</th>\n";
                                 } else {
                                     echo '<th>' . $field['widget']['label'] . '</th>';
                                 }
@@ -547,7 +547,7 @@ class Dataface_RelatedList {
                         $domRec = $rrec->toRecord();
                         $rowStyle = $domRec->getTableAttribute('row_style');
                         if ($link) {
-                            $aOpen = '<a href="'.df_escape($link).'">';
+                            $aOpen = '<a rel="child" href="'.df_escape($link).'">';
                             $aClose = '</a>';
                         }
     				    if ($logoField and $rrec->val($logoField) and $rrec->checkPermission('view', array('field' => $logoField))) {
@@ -679,7 +679,7 @@ class Dataface_RelatedList {
                                 if (isset($renderVal))
                                     $val = $renderVal;
                                 if ($link and !@$field['noLinkFromListView'] and !$this->noLinks and $rrec->checkPermission('link', array('field' => $key)))
-                                    $val = "<a href=\"" . df_escape($link) . "\" title=\"" . df_escape($title) . "\" data-xf-related-record-id=\"" . df_escape($srcRecordId) . "\" class=\"xf-related-record-link\"><span " . $fulltext.">". $val . "</span></a>";
+                                    $val = "<a rel='child' href=\"" . df_escape($link) . "\" title=\"" . df_escape($title) . "\" data-xf-related-record-id=\"" . df_escape($srcRecordId) . "\" class=\"xf-related-record-link\"><span " . $fulltext.">". $val . "</span></a>";
                                 else
                                     $val = "<span ".$fulltext.">".$val."</span>";
                                 echo "<td class=\"$cellClass $rowClass $accessClass\">".$val."</td>\n";

@@ -33,7 +33,7 @@
               	  {foreach from=$action.atts item=actionAttValue key=actionAttName}{$actionAttName|escape}="{$actionAttValue|escape}" {/foreach}
               	  >
                 
-                <a {if $action.subactions}onclick="return false;" {/if}class="{if $action.subactions}trigger{/if}" id="{$id_prefix}{$action.id|escape}-link" href="{$action.url|escape}"{if $action.onclick} onclick="{$action.onclick|escape}"{/if}{if $action.target} target="{$action.target|escape}"{/if}
+                <a {if $action.rel}rel="{$action.rel|escape}"{/if} {if $action.subactions}onclick="return false;" {/if}class="{if $action.subactions}trigger{/if}" id="{$id_prefix}{$action.id|escape}-link" href="{$action.url|escape}"{if $action.onclick} onclick="{$action.onclick|escape}"{/if}{if $action.target} target="{$action.target|escape}"{/if}
                    accesskey="{$action.accessKey|escape}" title="{$action.description|escape}" data-xf-permission="{$action.permission|escape}"
                    {if $action.confirm}data-xf-confirm-message="{$action.confirm|escape}"{/if}
                    >
@@ -56,7 +56,7 @@
 							  {if $subaction.subactions}xf-dropdown{/if}{if $subaction.visible_status} xf-record-visible-status-{$subaction.visible_status}{/if}{if $subaction.hidden_status} xf-record-hidden-status-{$subaction.hidden_status}{/if}"
 							  {foreach from=$subaction.atts item=subactionAttValue key=subactionAttName}{$subactionAttName|escape}="{$subactionAttValue|escape}" {/foreach}
 							  >
-								<a {if $subaction.subactions}onclick="return false;" {/if}class="{if $subaction.subactions}trigger horizontal-trigger{/if}" id="{$id_prefix}{$subaction.id|escape}-link" href="{$subaction.url|escape}"{if $subaction.onclick} onclick="{$subaction.onclick|escape}"{/if}{if $subaction.target} target="{$subaction.target|escape}"{/if}
+								<a {if $subaction.rel}rel="{$subaction.rel|escape}"{/if} {if $subaction.subactions}onclick="return false;" {/if}class="{if $subaction.subactions}trigger horizontal-trigger{/if}" id="{$id_prefix}{$subaction.id|escape}-link" href="{$subaction.url|escape}"{if $subaction.onclick} onclick="{$subaction.onclick|escape}"{/if}{if $subaction.target} target="{$subaction.target|escape}"{/if}
 								   accesskey="{$subaction.accessKey|escape}" title="{$subaction.description|escape}" data-xf-permission="{$subaction.permission|escape}"
 								   {if $subaction.confirm}data-xf-confirm-message="{$subaction.confirm|escape}"{/if}
 								   >
@@ -73,7 +73,7 @@
 												 class="{if $subsubaction.name==$selected_action or $subsubaction.selected}selected {$subsubaction.class|escape}{else}plain {$subsubaction.class|escape}{/if}{if $subsubaction.visible_status} xf-record-visible-status-{$subsubaction.visible_status}{/if}{if $subsubaction.hidden_status} xf-record-hidden-status-{$subsubaction.hidden_status}{/if}"
 												 {foreach from=$subsubaction.atts item=subsubactionAttValue key=subsubactionAttName}{$subsubactionAttName|escape}="{$subsubactionAttValue|escape}" {/foreach}
 												 >
-												<a id="{$id_prefix}{$subsubaction.id|escape}-link" href="{$subsubaction.url|escape}"{if $subsubaction.onclick} onclick="{$subsubaction.onclick|escape}"{/if}{if $subsubaction.target} target="{$subsubaction.target|escape}"{/if}
+												<a {if $subsubaction.rel}rel="{$subsubaction.rel|escape}"{/if} id="{$id_prefix}{$subsubaction.id|escape}-link" href="{$subsubaction.url|escape}"{if $subsubaction.onclick} onclick="{$subsubaction.onclick|escape}"{/if}{if $subsubaction.target} target="{$subsubaction.target|escape}"{/if}
 												   accesskey="{$subsubaction.accessKey|escape}" title="{$subsubaction.description|escape}" data-xf-permission="{$subsubaction.permission|escape}"
 												   {if $subsubaction.confirm}data-xf-confirm-message="{$subsubaction.confirm|escape}"{/if}
 												   

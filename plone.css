@@ -2021,7 +2021,7 @@ tr.even, td.even {
 }
 
 
-#site_logo {
+.site_logo {
 	float: left;
     display:flex;
     box-sizing: border-box;
@@ -3907,7 +3907,7 @@ body.two-col #status-bar .responsive-content,
   
   @media only screen and (max-width: 768px) {
       
-      #site_logo {
+      .site_logo {
       	float: none;
 
         margin-bottom:0;
@@ -4489,7 +4489,7 @@ body.two-col #status-bar .responsive-content,
         display:flex;
     }
     
-    #mobile-top-section > #site_logo > img {
+    #mobile-top-section > .site_logo > img {
         
         height: 50px;
     }
@@ -4984,7 +4984,7 @@ div.no-matches-menu ul li a > i {
     max-width: 100%;
 }
 
-#site_logo > img {
+.site_logo > img {
     max-height: calc(var(--navTablesButtonHeight) - 20px);
     margin:auto;
 }
@@ -5044,4 +5044,27 @@ ul.xf-horizontal-menu > li {
 
 ul.xf-horizontal-menu > li a {
     text-decoration: none;
+}
+
+button.back-btn > span {
+    display:none;
+}
+
+button.back-btn {
+    width: 50px;
+    height: var(--navTablesButtonHeight);
+    border: none;
+    background-color: transparent;
+    font-size: 50px;
+    display:flex;
+    cursor: pointer;
+}
+
+button.back-btn > i {
+    margin:auto;
+    
+}
+
+#top-section > button.back-btn {
+    float:left;
 }

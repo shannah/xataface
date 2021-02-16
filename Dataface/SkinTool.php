@@ -929,6 +929,11 @@ END;
 		$params2 = array();
 
 		$params['actions'] = $table->getRelationshipsAsActions($params2);
+        if ($params['actions']) {
+            foreach ($params['actions'] as $k => $v) {
+                $params['actions'][$k]['rel'] = 'sibling';
+            }
+        }
 
 		return $this->actions_menu($params, $smarty);
 
