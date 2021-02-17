@@ -140,7 +140,7 @@
 	icon = "{$dataface_url}/images/table.gif"
 	mode=list
 	permission=export_csv
-	category=result_list_actions
+	category=table_actions
 	
 [export_xml]
 	label = Export XML
@@ -148,8 +148,8 @@
 	url = "{$this->url('-action=export_xml')}"
 	permission=export_xml
 	mode=list
-	category=result_list_actions
-	icon="{$dataface_url}/images/xml.png"
+	category=table_actions
+    materialIcon=code
 	
 [export_json]
 	label = Export JSON
@@ -251,7 +251,7 @@
 	url="{$this->url('-action=feed&-mode=list')}&--format=RSS2.0"
 	materialIcon="rss_feed"
 	permission=rss
-	category=result_list_actions
+	category=table_actions
 	
 [record_rss > rss]
 	category=record_actions

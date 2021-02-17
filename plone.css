@@ -5068,3 +5068,72 @@ button.back-btn > i {
 #top-section > button.back-btn {
     float:left;
 }
+
+ul.xataface-actions-list-grid > li {
+    list-style-type:none;
+    list-style-image:none;
+    margin:5px;
+    padding:20px;
+    border:1px solid var(--highlightColor);
+    border-radius: 5px;
+    
+}
+
+ul.xataface-actions-list-grid > li span.cell-title {
+    color: var(--mainTextColor);
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+ul.xataface-actions-list-grid > li > a {
+    display:flex;
+    flex-direction:column;
+}
+
+ul.xataface-actions-list-grid a {
+    text-decoration:none;
+}
+
+
+
+ul.xataface-actions-list-grid > li  img {
+    border-radius: 5px;
+
+}
+
+ul.xataface-actions-list-grid img.xf-container-field {
+    max-width: none;
+    max-height: none;
+}
+
+ul.xataface-actions-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: 1fr;
+  list-style-type:none;
+  list-style-image:none;
+  
+}
+
+ul.xataface-actions-list-grid::before {
+  content: '';
+  width: 0;
+  padding-bottom: 100%;
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+}
+
+ul.xataface-actions-list-grid > *:first-child {
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+}
+
+/* Just to make the grid visible */
+
+ul.xataface-actions-list-grid > * {
+
+}
+
+.h1-wrapper .record-heading-description {
+    padding-top: 10px;
+}

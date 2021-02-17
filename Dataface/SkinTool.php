@@ -1184,6 +1184,18 @@ END;
 			$columns = array();
 		}
 		$list = new Dataface_ResultList( $query['-table'], $this->app->db(), $columns, $query);
+        $table = Dataface_Table::loadTable($query['-table']);
+        $listTemplate = $table->getAttribute('list_template');
+        if (@$params['template']) {
+            $listTemplate = $params['template'];
+        }
+        if ($listTemplate == '@grid') {
+            $listTemplate = 'xataface/actions/list/grid.html';
+        }
+        
+        if ($listTemplate) {
+            $list->setTemplate($listTemplate);
+        }
 		echo $list->toHtml();
 
 	}

@@ -1425,7 +1425,7 @@ END
 		} else {
 			
 			$query =& $this->getQuery();
-			if (@$this->_conf['using_default_table'] or @$this->_conf['default_table'] == $query['-table']) {
+			if (@$this->_conf['using_default_table'] and @$this->_conf['using_default_action']) {
 			    return $this->getSiteTitle();
 			}
 			if ( ($record = $this->getRecord()) && $query['-mode'] == 'browse'  ){

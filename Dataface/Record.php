@@ -4917,7 +4917,50 @@ class Dataface_Record {
 		return preg_match('/^image/', $this->getMimetype($fieldname,$index,$where,$sort));
 
 	}
+    
+    function getImageValues($maxNum=0) {
+        $out = [];
+        foreach ($this->_table->getImageFields() as $fld) {
+            $val = $this->val($fld);
+            if ($val) {
+                $out[] = $val;
+                if (count($out) == $maxNum) {
+                    break;
+                }
+            }
+        }
+        return $out;
+    }
+    
+    function getImageDisplayValues($maxNum=0) {
+        $out = [];
+        foreach ($this->_table->getImageFields() as $fld) {
+            $val = $this->val($fld);
+            if ($val) {
+                $out[] = $this->display($fld);
+                if (count($out) == $maxNum) {
+                    break;
+                }
+            }
+        }
+        return $out;
+    }
+    
+    
+    function getImageHtmlValues($maxNum=0) {
+        $out = [];
+        foreach ($this->_table->getImageFields() as $fld) {
+            $val = $this->val($fld);
+            if ($val) {
+                $out[] = $this->htmlValue($fld);
+                if (count($out) == $maxNum) {
+                    break;
+                }
+            }
 
+        }
+        return $out;
+    }
 
 
 	/**

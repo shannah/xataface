@@ -1,0 +1,15 @@
+<ul class='xataface-actions-list-grid'>
+{foreach from=$rows item=row}
+    <li>
+        <a rel="child" href='{$row.link|escape}' title='{$row.record->getTitle()|escape}'>
+            {foreach from=$row.record->getImageHtmlValues(1) item=imgTag} 
+                {$imgTag}
+            {/foreach}  
+            <span class="cell-title">{$row.record->getTitle()|escape}</span>
+        </a>
+        {if $row.actions_category}
+            {actions_menu category=$row.actions_category record=$row.record}
+        {/if}
+    </li>
+{/foreach}
+</ul>

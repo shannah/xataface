@@ -198,8 +198,13 @@
 		{/if}
         
 		
-
+        
 		<div id="status-bar">
+			{if $ENV.prefs.show_bread_crumbs}
+				{block name="before_bread_crumbs"}
+				{define_slot name="bread_crumbs"}<div class="bread-crumbs">{bread_crumbs}</div>{/define_slot}
+				{block name="after_bread_crumbs"}
+			{/if}
 			<div class="responsive-content">
                 <div class='site-title'>
                     <div class='h1-wrapper'>
@@ -220,11 +225,7 @@
 					{block name="after_menus"}
                 </div>
 				
-				{if $ENV.prefs.show_bread_crumbs}
-					{block name="before_bread_crumbs"}
-					{define_slot name="bread_crumbs"}<div class="bread-crumbs">{bread_crumbs}</div>{/define_slot}
-					{block name="after_bread_crumbs"}
-				{/if}
+				
 			</div>
 			<div style="clear:both; height: 1px; padding:0; margin:0"></div>
 		</div>

@@ -77,6 +77,7 @@ class dataface_actions_edit {
 		 */
 		//$form = new Dataface_QuickForm($query['-table'], $app->db(),  $query);
 		if ($currentRecord){
+            $app->setPageTitle($currentRecord->getTitle());
 		//if ($resultSet->found()> @$query['-cursor']){
 
 			$form = $formTool->createRecordForm($currentRecord, false, @$query['--tab'], $query, $includedFields);

@@ -1230,6 +1230,12 @@ class Dataface_Table {
 	
 	private $logoField;
 	
+    /**
+     * Gets the name of the logo field.  The logo field is marked by the 'logo' property in the
+     * fields.ini file.
+     * @return string The nameof the logo field.  Or an empty string for none.
+     *
+     */
 	function getLogoField(){
 		if ( !isset($this->logoField) ){
             $this->logoField = '';
@@ -1244,6 +1250,20 @@ class Dataface_Table {
 		return $this->logoField;
 
 	}
+    
+    private $imageFields;
+    function getImageFields() {
+        if (!isset($this->imageFields)) {
+            $this->imageFields = [];
+    		foreach ($this->fields(false,true) as $field){
+    			if (@$field['logo'] or @$field['image']) {
+    			    $this->imageFields[] = $field['name'];
+                    break;
+    			}
+    		}
+        }
+        return $this->imageFields;
+    }
     
 	private $bylineField;
 	

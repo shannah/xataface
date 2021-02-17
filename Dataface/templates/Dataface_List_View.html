@@ -18,7 +18,12 @@
  *-------------------------------------------------------------------------------
  *}
 {use_macro file="Dataface_Main_Template.html"}
-
+    {fill_slot name="h1"}
+         <h1>{$ENV.APPLICATION_OBJECT->getPageTitle()|escape}</h1>
+         {if $ENV.table_object->getAttribute('description')}
+             <div class='record-heading-description'>{$ENV.table_object->getAttribute('description')|escape}</div>
+         {/if}
+    {/fill_slot}
 	{fill_slot name="main_section"}
 		{if $error}<div id="error">{translate id=$error_i18n}{$error}{/translate}</div>{/if}
 		
