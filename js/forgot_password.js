@@ -66,7 +66,12 @@ jQuery(document).ready(function($){
 	
 	
 	$('#reset-password-submit-button', formDiv).click(function(){
+        // FOr some reason we're getting this event twice per click, so we need to disable the button 
+        // to prevent the second time around.
+        // Can't seem to find the source of this for a proper fix.
+        if (this.disabled) return;
         this.disabled = true;
+
 		if ( getUsername() ){
 			submitFormByUsername(serverCallback);
 		} else if ( getEmail() ){

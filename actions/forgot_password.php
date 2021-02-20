@@ -29,12 +29,13 @@ class dataface_actions_forgot_password {
         $app->addBodyCSSClass('no-mobile-header');
          $app->addBodyCSSClass('no-app-menu');
         $app->addBodyCSSClass('no-fab');
-				
+		$app->setPageTitle(df_translate('actions.forgot_password.title', 'Forgot Password'));	
 		try {
 			if ( isset($query['--uuid']) ){
 				// A uuid was supplied, 
 				$res = $this->reset_password_with_uuid($query['--uuid']);
 				if ( $res ){
+                    $app->setPageTitle(df_translate('actions.forgot_password.password_reset.title', 'Password Reset'));
 					df_display(array(), 'xataface/forgot_password/password_has_been_reset.html');
 					exit;
 				} else {
@@ -51,6 +52,7 @@ class dataface_actions_forgot_password {
 					));
 					exit;
 				} else {
+                    $app->setPageTitle(df_translate('actions.forgot_password.sent_email.title', 'Email Sent'));
 					df_display(array(), 'xataface/forgot_password/sent_email.html');
 					exit;
 				}
@@ -66,12 +68,14 @@ class dataface_actions_forgot_password {
 					));
 					exit;
 				} else {
+                    $app->setPageTitle(df_translate('actions.forgot_password.sent_email.title', 'Email Sent'));
 					df_display(array(), 'xataface/forgot_password/sent_email.html');
 					exit;
 				}
 				
 				
 			} else {
+                $app->setPageTitle(df_translate('actions.forgot_password.title', 'Forgot Password'));
                 df_display(array(), 'xataface/forgot_password/form.html');
 				exit;
 			}
@@ -248,7 +252,7 @@ class dataface_actions_forgot_password {
 		$resetPasswordStr = df_translate('actions.forgot_password.reset_password', 'Reset Password');
         
         
-        $link = '<p style="color:#1a1a1a;font-size:16px;line-height:26px;margin:0 0 1em 0;text-align:center"><a href="'.htmlspecialchars($url).'" style="background-color:#000080;border:solid #000080;border-radius:4px;border-width:12px 20px;box-sizing:content-box;color:#ffffff;display:inline-block;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif,\'Apple Color Emoji\',\'Segoe UI Emoji\',\'Segoe UI Symbol\';font-size:16px;height:auto;line-height:1em;margin:0;opacity:1;outline:none;padding:0;text-decoration:none!important" >'.htmlspecialchars($resetPasswordStr).'</a></p>';
+        $link = '</p><p style="color:#1a1a1a;font-size:16px;line-height:26px;margin:0 0 1em 0;text-align:center"><a href="'.htmlspecialchars($url).'" style="background-color:#000080;border:solid #000080;border-radius:4px;border-width:12px 20px;box-sizing:content-box;color:#ffffff;display:inline-block;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif,\'Apple Color Emoji\',\'Segoe UI Emoji\',\'Segoe UI Symbol\';font-size:16px;height:auto;line-height:1em;margin:0;opacity:1;outline:none;padding:0;text-decoration:none!important" >'.htmlspecialchars($resetPasswordStr).'</a></p><p>';
         
 		$msg = df_translate('actions.forgot_password.reset_password_request_email_body',
 		<<<END
@@ -262,7 +266,7 @@ END
 
         $htmlMsg = str_replace('<{{URL}}>', '{{URL}}', $msg);
 
-        $htmlMsg = '<html><body>'.str_replace('{{URL}}', $link, $htmlMsg).'</body></html>';
+        $htmlMsg = '<html><body><p>'.str_replace('{{URL}}', $link, $htmlMsg).'</p></body></html>';
 
 
 		$subject = df_translate('actions.forgot_password.password_reset',"Password Reset");
@@ -446,13 +450,32 @@ END
 		if ( isset($info['headers']) ) $headers = $info['headers'];
 		
 		
-		if ( @$app->_conf['_mail']['func'] ) $func = $app->_conf['_mail']['func'];
-		else $func = 'mail';
-		$res = $func($email,
-					$subject,
-					$msg,
-					$headers,
-					$parameters);
+		$event = new StdClass;
+		$event->email = $email;
+        $event->subject = $subject;
+        
+        
+        
+        $event->message = array('text/plain' => $msg);
+        
+        $event->headers = $headers;
+        $event->parameters = $parameters;
+		$event->consumed = false;
+        $app->fireEvent('mail', $event);
+        
+        if ($event->consumed) {
+            $res = @$event->out;
+        } else {
+    		if ( @$app->_conf['_mail']['func'] ) $func = $app->_conf['_mail']['func'];
+    		else $func = 'mail';
+    		$res = $func($email,
+    					$subject,
+    					$msg,
+    					$headers,
+    					$parameters);
+        }
+        
+        
 		if ( !$res ){
 			return PEAR::raiseError(df_translate('actions.forgot_password.failed_send_activation',"Failed to send activation email.  Please try again later."), DATAFACE_E_ERROR);
 		} else {
