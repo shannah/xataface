@@ -85,7 +85,7 @@ function init($site_path, $dataface_url){
             if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
                 $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
                 if (strpos($protocol, ',') !== false) {
-                	$protocol = trim(substr($protocol, strpos($protocol, ',')));
+                	$protocol = trim(substr($protocol, 0, strpos($protocol, ',')));
                 }
             }
             if ($protocol == 'https' and "$port" == "80") {

@@ -241,7 +241,7 @@
 	permission=view xml
 	mode=browse
 	category=record_actions
-	icon="{$dataface_url}/images/xml.png"
+	materialIcon=code
 	condition="$record"
 	
 
