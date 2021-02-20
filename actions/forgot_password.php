@@ -245,7 +245,11 @@ class dataface_actions_forgot_password {
 		
 		$url = df_absolute_url(DATAFACE_SITE_HREF.'?-action=forgot_password&--uuid='.$uuid);
 		$site_url = df_absolute_url(DATAFACE_SITE_URL);
-		
+		$resetPasswordStr = df_translate('actions.forgot_password.reset_password', 'Reset Password');
+        
+        
+        $link = '<p style="color:#1a1a1a;font-size:16px;line-height:26px;margin:0 0 1em 0;text-align:center"><a href="'.htmlspecialchars($url).'" style="background-color:#000080;border:solid #000080;border-radius:4px;border-width:12px 20px;box-sizing:content-box;color:#ffffff;display:inline-block;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif,\'Apple Color Emoji\',\'Segoe UI Emoji\',\'Segoe UI Symbol\';font-size:16px;height:auto;line-height:1em;margin:0;opacity:1;outline:none;padding:0;text-decoration:none!important" >'.htmlspecialchars($resetPasswordStr).'</a></p>';
+        
 		$msg = df_translate('actions.forgot_password.reset_password_request_email_body',
 		<<<END
 You have requested to reset the password for the user '$username'.
@@ -254,7 +258,12 @@ Please go to the URL below in order to proceed with resetting your password:
 
 If you did not make this request, please disregard this email.
 END
-, array('username'=>$username, 'url'=>$url));
+, array('username'=>$username, 'url'=>'{{URL}}'));
+
+        $htmlMsg = str_replace('<{{URL}}>', '{{URL}}', $msg);
+
+        $htmlMsg = '<html><body>'.str_replace('{{URL}}', $link, $htmlMsg).'</body></html>';
+
 
 		$subject = df_translate('actions.forgot_password.password_reset',"Password Reset");
 		
@@ -290,7 +299,11 @@ END
 		$event = new StdClass;
 		$event->email = $email;
         $event->subject = $subject;
-        $event->message = array('text/plain' => $msg);
+        
+        
+        
+        $event->message = array('text/plain' => $msg, 'text/html' => $htmlMsg);
+        
         $event->headers = $headers;
         $event->parameters = $parameters;
 		$event->consumed = false;
