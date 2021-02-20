@@ -1986,7 +1986,7 @@ END
             if ($row = xf_db_fetch_row($res)) {
                 return $row[0];
             }
-            xf_free_result($res);
+            xf_db_free_result($res);
         } 
         return null;
          
