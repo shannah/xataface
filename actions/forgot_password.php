@@ -267,7 +267,7 @@ END
         $htmlMsg = str_replace('<{{URL}}>', '{{URL}}', $msg);
 
         $htmlMsg = '<html><body><p>'.str_replace('{{URL}}', $link, $htmlMsg).'</p></body></html>';
-
+        $msg = str_replace('{{URL}}', $url, $msg);
 
 		$subject = df_translate('actions.forgot_password.password_reset',"Password Reset");
 		
