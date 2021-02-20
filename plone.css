@@ -4489,7 +4489,9 @@ body.two-col #status-bar .responsive-content,
         display:flex;
     }
     
-    #mobile-top-section > .site_logo > img {
+    #mobile-top-section > .site_logo > picture > img,
+    #mobile-top-section > .site_logo > img
+     {
         
         height: 50px;
     }
@@ -4984,7 +4986,8 @@ div.no-matches-menu ul li a > i {
     max-width: 100%;
 }
 
-.site_logo > img {
+.site_logo > img,
+.site_logo > picture > img {
     max-height: calc(var(--navTablesButtonHeight) - 20px);
     margin:auto;
 }
