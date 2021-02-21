@@ -2,8 +2,8 @@
 {assign var="xataface_logo_url" value="`$ENV.DATAFACE_URL`/logo-small.png"}
 <picture>
     {if $ENV.APPLICATION.alt_logos}
-        {foreach from=$ENV.APPLICATION.alt_logos key=sourcesrc item=sourcemedia}
-        <source srcset="{$sourcesrc|escape}" media="{$sourcemedia|escape}">
+        {foreach from=$ENV.APPLICATION.alt_logos key=sourcesrc item=atts}
+        <source srcset="{$sourcesrc|escape}" {html_attributes atts=$atts}>
         {/foreach}
     {/if}
     <img src="{$ENV.APPLICATION.site_logo|default:$xataface_logo_url|escape}" alt="{$ENV.APPLICATION_OBJECT->getSiteTitle()|escape}"/>
