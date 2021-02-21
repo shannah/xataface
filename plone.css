@@ -4327,7 +4327,7 @@ body.two-col #status-bar .responsive-content,
       display: none;
       border-top: 1px solid var(--menuBorderColor);
     }
-  
+    nav.table_tabs_mobile ul li:hover-within > ul,
     nav.table_tabs_mobile ul li:focus-within > ul,
     nav.table_tabs_mobile ul li ul:hover,
     nav.table_tabs_mobile ul li ul:focus {

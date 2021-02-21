@@ -26,7 +26,7 @@
             {if $action.subcategory and !$action.subactions}
             	<!-- Omit action because it has no subactions -->
             {else}
-              <li id="{$id_prefix}{$action.id}"
+              <li tabindex="0" id="{$id_prefix}{$action.id}"
               	  class="
               	  {if $action.name==$selected_action or $action.selected}selected {$action.class|escape}{else}plain {$action.class|escape}{/if}
               	  {if $action.subactions}xf-dropdown{/if}{if $action.visible_status} xf-record-visible-status-{$action.visible_status}{/if}{if $action.hidden_status} xf-record-hidden-status-{$action.hidden_status}{/if}"
@@ -50,7 +50,7 @@
 											
 					<ul class="action-sub-menu">
 						{foreach from=$action.subactions item=subaction key=subname}
-							<li id="{$id_prefix}{$subaction.id}"
+							<li tabindex="0" id="{$id_prefix}{$subaction.id}"
 							  class="
 							  {if $subaction.name==$selected_action or $subaction.selected}selected {$subaction.class|escape}{else}plain {$subaction.class|escape}{/if}
 							  {if $subaction.subactions}xf-dropdown{/if}{if $subaction.visible_status} xf-record-visible-status-{$subaction.visible_status}{/if}{if $subaction.hidden_status} xf-record-hidden-status-{$subaction.hidden_status}{/if}"
@@ -69,7 +69,7 @@
 								{if $subaction.subactions}
 									<ul class="action-sub-sub-menu">
 										{foreach from=$subaction.subactions item=subsubaction key=subsubname}
-											<li id="{$id_prefix}{$subsubaction.id|escape}-link" 
+											<li tabindex="0" id="{$id_prefix}{$subsubaction.id|escape}-link" 
 												 class="{if $subsubaction.name==$selected_action or $subsubaction.selected}selected {$subsubaction.class|escape}{else}plain {$subsubaction.class|escape}{/if}{if $subsubaction.visible_status} xf-record-visible-status-{$subsubaction.visible_status}{/if}{if $subsubaction.hidden_status} xf-record-hidden-status-{$subsubaction.hidden_status}{/if}"
 												 {foreach from=$subsubaction.atts item=subsubactionAttValue key=subsubactionAttName}{$subsubactionAttName|escape}="{$subsubactionAttValue|escape}" {/foreach}
 												 >
