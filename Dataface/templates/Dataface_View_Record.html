@@ -268,9 +268,12 @@
 							{foreach from=$rv->sections item=section}
 								{if $section.class == 'main'}
 								{collapsible_sidebar heading=$section.label edit_url=$section.edit_url movable=1 prefix="mainsidebar" id=$section.name onexpand="DatafaceSections.onexpand(this)" oncollapse="DatafaceSections.oncollapse(this)" display=$section.display}
+                                <!-- Section name is {$section.name|escape} -->
 									{define_slot name="`$section.name`_section_content"}
+                                    
 									{if $section.content}
 										<div class="dataface-view-section">
+                                        
 										{$section.content}
 										</div>
 									{elseif $section.fields}
