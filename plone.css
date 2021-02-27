@@ -1600,10 +1600,12 @@ ol.visualNoMarker {
 	padding: 1px 0px 1px 16px;
 }
 
+/*
 .link-https {
     background: transparent url(images/lock_icon.gif) 0px 1px no-repeat;
     padding: 1px 0px 1px 16px;
 }
+*/
 
 .link-mailto {
     background: transparent url(images/mail_icon.gif) 0px 1px no-repeat;

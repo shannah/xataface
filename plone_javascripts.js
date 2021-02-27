@@ -437,12 +437,42 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     });
     
     window.addEventListener('DOMContentLoaded', addBackButton);
+
+})();
+(function() {
+    var $ = jQuery;
+    var xataface = window.xataface || {};
+    window.xataface = xataface;
+    xataface.showInfiniteProgress = showInfiniteProgress;
+    xataface.hideInfiniteProgress = hideInfiniteProgress;
     
+    var globalInfiniteProgress;
+    function showInfiniteProgress(el) {
+        var spinner = el ? $('<div class="spin"></div>') : $('<div class="spin fillscreen"></div>');
+        if (el) {
+            $(el).append(spinner);
+        } else {
+            if (globalInfiniteProgress && jQuery.contains(document, globalInfiniteProgress)) {
+                return globalInfiniteProgress;
+            }
+            $('body').append(spinner);
+            globalInfiniteProgress = spinner.get(0);
+            
+        }
+        return spinner.get(0);
+    }
     
-    
-    
-    
-    
+    function hideInfiniteProgress(el) {
+        if (el) {
+            $(el).remove();
+        } else {
+            if (globalInfiniteProgress) {
+                $(globalInfiniteProgress).remove();
+                globalInfiniteProgress = null;
+            }
+        }
+        
+    }
 })();
 
 
