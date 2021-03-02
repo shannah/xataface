@@ -771,7 +771,13 @@ function df_editable($content, $id){
 	return $skinTool->editable(array('id'=>$id), $content, $skinTool);
 }
 
-function df_offset($date){
+/**
+ * Gets date as an offset (time ago).
+ * @param string $date The date as a string.
+ * @param boolean $long Whether to include the formatted date and the offset in the output.
+ * @return string The date offset.
+ */
+function df_offset($date, $long=true){
 	if ( !$date ){
 		return df_translate('scripts.global.MESSAGE_UNKNOWN','Unknown');
 	}
@@ -791,7 +797,12 @@ function df_offset($date){
 	$end=($offset!=0?($offset>1?sprintf($xWeeksAgoStr, $offset):$aWeekAgoStr):$todayStr);
 	} else
 	$end=($offset!=0?($offset>1?sprintf($xDaysAgoStr, $offset):$yesterdayStr):$todayStr);
-	return strftime("%A, %B %d, %Y",$date)." - ". $end;
+    if ($long) {
+        return strftime("%A, %B %d, %Y",$date)." - ". $end;
+    } else {
+        return $end;
+    }
+	
 }
 /**
  * @see Dataface_IO::getByID()

@@ -557,6 +557,9 @@ class Dataface_Table {
 			$delegateClass = $this->_delegateFilePath();
 			
 			$sqlQuery = null;
+            if ($this->tablename == '_tmp_null') {
+                $sqlQuery = "select NULL as `id`";
+            }
 			//echo "ini path $iniPath ".$this->tablename;
             if ((XF_USE_OPCACHE and xf_opcache_is_script_cached($iniPath)) or file_exists($iniPath)) {
                 if (XF_USE_OPCACHE and xf_opcache_is_script_cached($iniPath)) {
@@ -588,6 +591,8 @@ class Dataface_Table {
                     $sqlQuery = $delObj->__sql__();
                 }
             }
+            
+            
 			//echo "here $sqlQuery";exit;
             if (!isset($sqlQuery)) {
                 throw new Exception("No SQL query found for temp table ".$this->tablename);
@@ -733,8 +738,14 @@ class Dataface_Table {
 					unset($widget);
 				}
 			}
+            if ($tablename == '_tmp_null') {
+                //print_r($this->_fields);
+                //echo "here";exit;
+                $this->_fields['id']['Key'] = 'PRI';
+                $this->_keys = ['id' => $this->_fields['id'] ];
 
-
+            }
+            
 
 
 
@@ -785,6 +796,7 @@ class Dataface_Table {
 			}
 		}
 
+        
 		$this->_loadFieldsIniFile();
 
 		$parent =& $this->getParent();

@@ -66,13 +66,6 @@ if(selectbutton.isSelected==null)
 {initialState=initialState||false;selectbutton.isSelected=initialState;}
 if(selectbutton.isSelected==false){selectbutton.setAttribute('src',portal_url+'/images/select_none_icon.gif');selectbutton.isSelected=true;return selectAll(id,formName);}
 else{selectbutton.setAttribute('src',portal_url+'/images/select_all_icon.gif');selectbutton.isSelected=false;return deselectAll(id,formName);}}
-function scanforlinks(){if(!document.getElementsByTagName){return false};if(!document.getElementById){return false};contentarea=getContentArea()
-if(!contentarea){return false}
-links=contentarea.getElementsByTagName('a');for(i=0;i<links.length;i++){if((links[i].getAttribute('href'))&&(links[i].className.indexOf('link-plain')==-1)){var linkval=links[i].getAttribute('href')
-if(linkval.toLowerCase().indexOf(window.location.protocol+'//'+window.location.host)==0){}else if(linkval.indexOf('http:')!=0){protocols=['mailto','ftp','news','irc','h323','sip','callto','https']
-for(p=0;p<protocols.length;p++){if(linkval.indexOf(protocols[p]+':')==0){wrapNode(links[i],'span','link-'+protocols[p])
-break;}}}else{if(links[i].getElementsByTagName('img').length==0&&!links[i].className.match(/no-link-icon/)){wrapNode(links[i],'span','link-external')}}}}}
-registerPloneFunction(scanforlinks)
 function climb(node,word){if(!node){return false}
 if(node.hasChildNodes){var i;for(i=0;i<node.childNodes.length;i++){climb(node.childNodes[i],word);}
 if(node.nodeType==3){checkforhighlight(node,word);}}

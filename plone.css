@@ -1108,6 +1108,7 @@ body.cover-image .record-heading-cover-image {
 
 .record-heading .dataface-record-title {
     margin-bottom: 5px;
+
 }
 
 body.cover-image .record-heading-logo {
@@ -5141,4 +5142,10 @@ ul.xataface-actions-list-grid > * {
 
 .h1-wrapper .record-heading-description {
     padding-top: 10px;
+    white-space: normal;
 }
+
+.h1-wrapper .dataface-record-title {
+    white-space:normal;
+}
+

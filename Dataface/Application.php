@@ -985,11 +985,23 @@ END;
 
 		if ( !isset($this->_conf['default_table'] ) ){
 			// The default table is the table that is used if no other table is specified.
-			foreach ($this->_tables as $key=>$value){
-				$this->_conf['default_table'] = $key;
-
-				break;
-			}
+            
+            if (isset($this->_conf['default_tables']) and @$_REQUEST['-action']) {
+                $defaultTable = @$this->_conf['default_tables'][$_REQUEST['-action']];
+                if ($defaultTable) {
+                    if ($defaultTable == '_') {
+                        $defaultTable = '_tmp_null';
+                    }
+                    $this->_conf['default_table'] = $defaultTable;
+                }
+            }
+            if (!isset($this->_conf['default_table'])) {
+    			foreach ($this->_tables as $key=>$value){
+    				$this->_conf['default_table'] = $key;
+    				break;
+    			}
+            }
+			
 		}
 
 		if ( !isset($this->_conf['auto_load_results']) ) $this->_conf['auto_load_results'] = false;
