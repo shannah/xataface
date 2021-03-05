@@ -261,15 +261,30 @@
 	description="Subscribe to receive RSS updates when this record is updated"
 
 [related_rss]
-	label=RSS
+	label="RSS"
+    label_prefix="{$app->getRelationship()->getLabel()} "
+    label_prefix_condition="$app->getRelationship()"
 	description="Subscribe to RSS feed of this relationship"
 	url="{$this->url('-action=feed&-mode=list')}&--format=RSS2.0"
-	icon="{$dataface_url}/images/feed-icon-14x14.png"
+	materialIcon=rss_feed
 	permission=rss
-	category=related_list_actions
+	category=record_actions
+    condition="$query['-relationship'] and $query['-action'] == 'related_records_list'"
 	
 [related_xml > export_xml]
-	category=related_list_actions
+	category=related_export_actions
+    
+[related_export_menu]
+    category=record_actions
+    label="Export"
+    label_suffix=" {$app->getRelationship()->getLabel()}"
+    label_suffix_condition="$app->getRelationship()"
+    condition="$query['-action'] == 'related_records_list' and $query['-relationship']"
+    subcategory=related_export_actions
+    order=99
+    materialIcon=file_download
+    
+    
 
 [feed]
 	mode=list
@@ -282,7 +297,8 @@
 	icon = "{$dataface_url}/images/table.gif"
 	mode=list
 	permission=export_csv
-	category=related_list_actions
+	category=related_export_actions
+    condition="$query['-relationship'] and $query['-action'] == 'related_records_list'"
 
 [table_actions]
 	label=""

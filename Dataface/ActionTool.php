@@ -325,7 +325,6 @@ class Dataface_ActionTool {
 					continue;
 				}
 			}
-			
 			if ( @$action['selected_condition'] ) $action['selected'] = $app->testCondition($action['selected_condition'], $params);
 			else {
 				$query = $app->getQuery();
@@ -343,8 +342,9 @@ class Dataface_ActionTool {
 				// ProfileID=10 and ProfileName = 'John Smith', then:
 				// $app->parseString('ID is ${ProfileID} and Name is ${ProfileName}') === 'ID is 10 and Name is John Smith'
 				//if ( strpos($attribute, 'condition') !== false) continue;
-				if ( preg_match('/condition/i',$attribute) ) continue;
+				if ( strstr($attribute, '_condition') === '_condition') continue;
 				if ( is_array($action[$attribute]) ) continue;
+                if ($attribute === 'condition') continue;
 				if ( isset($action[$attribute.'_condition']) and !$app->testCondition($action[$attribute.'_condition'], $params) ){
 
 					$action[$attribute] = null;
@@ -353,7 +353,7 @@ class Dataface_ActionTool {
 				}
 				if ( strpos($attribute, 'atts:') === 0 ){
 					$attAtt = substr($attribute, 5);
-					if ( !preg_match('/_condition$/', $attAtt) ){
+					if (strstr($attAtt, '_condition') !== '_condition') {
 						$action['atts'][$attAtt] = $action[$attribute];
 					}
 				}
@@ -368,6 +368,12 @@ class Dataface_ActionTool {
             
             $keyBase = 'tables.'.$i18nTable.'.actions.'.$action['name'].'.';
             $action['label'] = df_translate($keyBase.'label', @$action['label']);
+            if (@$action['label_prefix']) {
+                $action['label'] = $action['label_prefix'] . $action['label'];
+            }
+            if (@$action['label_suffix']) {
+                $action['label'] = $action['label'] . $action['label_suffix'];
+            }
             $action['description'] = df_translate($keyBase.'description', @$action['description']);
             $action['materialIcon'] = df_translate($keyBase.'materialIcon', @$action['materialIcon']);
             if (@$action['ajax'] and !@$action['ajax_action']) {

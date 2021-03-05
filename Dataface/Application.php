@@ -1594,6 +1594,18 @@ END
 
 	}
 	
+    function getTable() {
+        return Dataface_Table::loadTable($this->_query['-table']);
+    }
+    
+    function getRelationship() {
+        if (!$this->_query['-relationship']) return null;
+        $table = $this->getTable();
+        if (!$table) return null;
+        $relationship = $table->getRelationship($this->_query['-relationship']);
+        //echo "Relationship label ". $relationship->getLabel();
+        return $relationship;
+    }
 	
 	function &getRecords() {
 		$rs =& $this->getResultSet();
@@ -3298,6 +3310,7 @@ END
 		import(XFROOT.'Dataface/Application/blob.php');
 		return Dataface_Application_blob::_handleGetBlob($request);
 	}
+    
 
 
 	// @}
@@ -3425,7 +3438,11 @@ END
 			//unset($tableObj);
 		}
 		if ( !@$app->_conf['debug'] ){
-			@eval('$parsed = "'.$expression.'";');
+            try {
+			    @eval('$parsed = "'.$expression.'";');
+            } catch (ParseError $e) {
+                throw new Exception('Caught exception while parsing expression '.$expression.' for action property.  Error was: '.$e->getMessage()." while evaluating ".$expression."\n");
+            }
 		} else {
 			eval('$parsed = "'.$expression.'";');
 		}

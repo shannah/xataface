@@ -727,29 +727,16 @@ END;
             $params['record'] =& $this->ENV['record'];
 		}
 		$actions = $actionTool->getActions($params);
-        foreach ($actions as $k=>$a) {
-			if ( @$a['subcategory'] ){
-				$p2 = $params;
-				$p2['category'] = $a['subcategory'];
-				$subactions = $actionTool->getActions($p2);
-                if (count($subactions) > 0) {
-                    if (@$params['flatten']) {
-                        foreach ($subactions as $sa) {
-                            $actions[] = $sa;
-                        }
-                        unset($actions[$k]);
-                    } else {
-                        $actions[$k]['subactions'] = $subactions;
-                    }
-    				
-                    
-                } else {
-                    unset($actions[$k]);
-                }
-				
-
-			}
-        }
+        $this->fillSubactions($actions, true);
+        $flatActions = [];
+        $this->flattenActionRefsInto($flatActions, $actions);
+		foreach (array_keys($flatActions) as $k){
+            $a = & $flatActions[$k];
+            if (@$a['hidden_status']) $statuses[] = $a['hidden_status'];
+            if (@$a['visible_status']) $statuses[] = $a['visible_status'];
+            unset($a);
+		}
+       
         if ($firstOnly) {
             $action = null;
             foreach ($actions as $a) {
@@ -766,6 +753,35 @@ END;
 	}
 
     private $statusClassesAddedToCSS = array();
+    
+    private function fillSubactions(&$actions, $recursive = false) {
+        $actionTool = Dataface_ActionTool::getInstance();
+		foreach ($actions as $k=>$a){
+            
+			if ( @$a['subcategory'] ){
+				$p2 = $params;
+				$p2['category'] = $a['subcategory'];
+				$subactions = $actionTool->getActions($p2);
+                if (count($subactions) > 0) {
+                    if ($recursive) {
+                        $this->fillSubactions($subactions);
+                    }
+    				$actions[$k]['subactions'] = $subactions;
+                } else {
+                    unset($actions[$k]);
+                }
+			}
+		}
+    }
+    
+    private function flattenActionRefsInto(&$dest, &$src) {
+        foreach (array_keys($src) as $k) {
+            $dest[$k] =& $src[$k];
+            if (@$src[$k]['subactions']) {
+                $this->flattenActionRefsInto($dest, $src[$k]['subactions']);
+            }
+        }
+    }
 
 	function actions_menu($params, &$smarty){
         
@@ -854,29 +870,15 @@ END;
 		}
 
         $statuses = array();
-		foreach ($actions as $k=>$a){
+        $this->fillSubactions($actions, true);
+        $flatActions = [];
+        $this->flattenActionRefsInto($flatActions, $actions);
+		foreach (array_keys($flatActions) as $k){
+            $a = & $flatActions[$k];
             if (@$a['hidden_status']) $statuses[] = $a['hidden_status'];
             if (@$a['visible_status']) $statuses[] = $a['visible_status'];
-            if ($navicon) $actions[$k]['navicon'] = $navicon; 
-            
-			if ( @$a['subcategory'] ){
-				$p2 = $params;
-				$p2['category'] = $a['subcategory'];
-				$subactions = $actionTool->getActions($p2);
-                if (count($subactions) > 0) {
-    				$actions[$k]['subactions'] = $subactions;
-                    foreach ($subactions as $k=>$sa) {
-                        if (@$sa['hidden_status']) $statuses[] = $sa['hidden_status'];
-                        if (@$sa['visible_status']) $statuses[] = $sa['visible_status'];
-             
-                    }
-                } else {
-                    unset($actions[$k]);
-                }
-				
-
-			}
-
+            if ($navicon) $a['navicon'] = $navicon; 
+            unset($a);
 		}
 		//print_r($actions);
 		$context['actions'] =& $actions;
