@@ -546,7 +546,8 @@ class Dataface_RelatedList {
                         $aClose = '';
                         $domRec = $rrec->toRecord();
                         $rowStyle = $domRec->getTableAttribute('row_style');
-                        if ($link) {
+                        $link = $rrec->getURL();
+                        if ($link and !$this->nolinks and @$rowPerms['link']) {
                             $aOpen = '<a rel="child" href="'.df_escape($link).'">';
                             $aClose = '</a>';
                         }
