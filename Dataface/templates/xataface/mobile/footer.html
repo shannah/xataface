@@ -32,7 +32,28 @@
  			<div class="tabs_wrapper_mobile" id="table_tabs_wrapper_mobile">
                     <a class='mobile-app-menu-trigger' href="{$ENV.APPLICATION_OBJECT->url('-action=xf_mobile_app_menu')|escape}" data-xf-sheet-position="{$ENV.prefs.mobile_app_menu_sheet_position}"><i class='material-icons'>menu</i></a>
  					<nav role="navigation" class="table_tabs_mobile">
- 						{actions_menu  class="contentViews" category="_tables" selected_action=$ENV.mode}
+                         {if df_count_actions('_tables') > 0}
+ 						    {actions_menu  class="contentViews" category="_tables" selected_action=$ENV.mode}
+                         {else}
+                             <ul class='contentViews'>
+                              {foreach from=$ENV.APPLICATION._tables item=label key=table}
+                                  {assign var=nav value=$ENV.APPLICATION_OBJECT->getNavItem($table, $label)}
+                                  {if $nav}
+                             
+                              <li {if $nav.selected}class="selected"{/if}><a href="{$nav.href|escape}"
+                                                  accesskey="accesskeys-navigation"
+                                                  class="table-selection-tab {if $nav.selected}selected{/if}"
+                                                  title="{$nav.label|escape}"
+                                                  id="TableLink_{$table|escape}">
+                                
+                                
+                                                          <span>{$nav.label|escape}</span>
+                                
+                                                  </a></li>
+                                  {/if}
+                              {/foreach}
+                          </ul>
+                         {/if}
 
  					</nav>
 

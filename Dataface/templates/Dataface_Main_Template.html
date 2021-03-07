@@ -394,32 +394,13 @@
             have materialIcon, it won't be included in the FAB.
     
         *}
-         {assign var="fab_menu_category" value=$ENV.APPLICATION_OBJECT->getTableAttribute('fab_menu_category')|default:'table_actions_menu'}
          
-         
-         {actions var="menus" category="$fab_menu_category" flatten="1" sanstags="#large#" with="materialIcon"}  
-
-         {if $menus|@count>0}
-
-             <script type="text/javascript" src="{$ENV.DATAFACE_URL|escape}/js/xataface/fab.js?v={$ENV.APPLICATION_VERSION}"></script>
-             <div class="zoom">
-                 {if $menus|@count < 2}
-
-                     {foreach from=$menus item=action}
-                        
-                         <a class="zoom-fab zoom-btn-large" id="zoomBtn" title="{$action.title|escape}" href="{$action.url|escape}"><i class="material-icons">{$action.materialIcon|escape}</i></a>
-                      {/foreach}
-                 {else}
-                     <a class="zoom-fab zoom-btn-large" id="zoomBtn"><i class="material-icons">menu</i></a>
-                     <ul class="zoom-menu">
-                         {foreach from=$menus item=action}
-                             <li><a class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out zoom-btn-action-{$action.name}" href="{$action.url|escape}"><i class="material-icons">{$action.materialIcon|escape}</i></a></li>
-                         {/foreach}
-                     </ul>
-                {/if}
+             {script src="xataface/fab.js"}
+             <div class="zoom mobile" style="display:none">
+                 <a class="zoom-fab zoom-btn-large" id="zoomBtn"><i class="material-icons">menu</i></a>
                  
                </div>
-         {/if}
+         
         
     {/define_slot}
     

@@ -28,6 +28,10 @@
 		{block name="before_add_existing_related_`$ENV.relationship`_form"}
 		{define_slot name="add_existing_related_`$ENV.relationship`_form"}
 		{define_slot name="add_existing_related_record_form"}
+        {if $addNewLink}
+            <a id='existing-related-record-form-add-new-link' href="{$addNewLink|escape}" style="display:none">Add New</a>
+        {/if}
+        {script src="xataface/actions/add_existing_related_record.js"}
 		{$form}
 		{/define_slot}
 		{/define_slot}

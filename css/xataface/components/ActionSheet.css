@@ -1,0 +1,202 @@
+ul.xataface-components-ActionSheet {
+    display:flex;
+    flex-direction:column;
+    z-index: 1000;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    overflow-x:hidden;
+    overflow-y: scroll;
+    background-color: var(--menuBgColor);
+    color: var(--menuColor);
+    margin:0;
+    padding:0;
+    border:1px solid #666;
+    font-size: 125%;
+    padding-bottom: 20px;
+}
+
+ul.xataface-components-ActionSheet li {
+    
+    box-sizing: border-box;
+    list-style-type:none;
+    list-style-image:none;
+    margin:0;
+    padding:0;
+}
+
+
+
+
+
+ul.xataface-components-ActionSheet li > a {
+    padding:10px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    text-decoration: none;
+    color: var(--menuColor);
+    flex-direction: row;
+    cursor: pointer;
+}
+
+ul.xataface-components-ActionSheet li > a > i.material-icons {
+    margin: auto 15px;
+    margin-right: 0;
+}
+
+ul.xataface-components-ActionSheet li > a > span {
+    flex-grow: 1;
+    margin: auto 15px;
+}
+
+
+
+ul.xataface-components-ActionSheet > li > ul {
+    display:none;
+}
+
+
+/**
+ * Styles for the Sheet component.
+ * @see js/xataface/components/Sheet.js
+ */
+
+/**
+ * Used for displaying progress spinner in center of sheet.
+ */
+.xataface-components-ActionSheet-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -25px;
+}
+
+
+.xataface-components-ActionSheet {
+    max-height:0;         
+    overflow-y: hidden;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+
+    position:fixed;
+
+    bottom:0;
+    left:0;
+    right:0;
+    background-color: white;
+    z-index: 500;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+/**
+ * Style applied when sheet is displayed to get slide-in effect.
+ */
+.xataface-components-ActionSheet.xataface-components-ActionSheet-bottom.slidein, .xataface-components-ActionSheet.xataface-components-ActionSheet-top.slidein {
+    max-height: 80%;
+}
+.xataface-components-ActionSheet.xataface-components-ActionSheet-fill.slidein {
+    max-height: 100%;
+    height:100%;
+    
+}
+/**
+ * Semi-transparent dark background displayed over full page
+ * when sheet is displayed.
+ */
+.xataface-components-ActionSheet-background {
+    z-index:499;
+    background-color: black;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s ease-in-out;
+    -moz-transition: opacity 0.3s ease-in-out;
+    -o-transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
+    position:fixed;
+    top:0; left:0; bottom:0; right:0; width:100%; height:100%;
+}
+
+/**
+ * Applied to sheet background when it is shown to get fade-in effect.
+ */
+.xataface-components-ActionSheet-background.fadein {
+    opacity: 0.5;
+}
+
+.xataface-components-ActionSheet.xataface-components-ActionSheet-bottom {
+
+}
+
+
+.xataface-components-ActionSheet.xataface-components-ActionSheet-top {
+    margin-bottom: 20px;
+}
+
+.xataface-components-ActionSheet.xataface-components-ActionSheet-left {
+    margin-right: 20px;
+    
+}
+
+.xataface-components-ActionSheet.xataface-components-ActionSheet-right {
+    
+    max-height: 100%;
+    max-width: 0;
+    left: auto;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    -webkit-transition: max-width 0.3s ease-in-out;
+    -moz-transition: max-width 0.3s ease-in-out;
+    -o-transition: max-width 0.3s ease-in-out;
+    transition: max-width 0.3s ease-in-out;
+    
+}
+
+.xataface-components-ActionSheet.xataface-components-ActionSheet-right.slidein {
+    max-width: 100vw;
+}
+
+
+
+/**
+ * The close button.
+ */
+.xataface-components-ActionSheet-close {
+
+}
+
+/**
+ * The back icon for the close button isn't shown by default.
+ */
+.xataface-components-ActionSheet-close > i.xataface-components-ActionSheet-back-icon {
+    display:none;
+}
+
+/**
+ * The back button is shown when the xataface-components-ActionSheet-back-btn class is applied
+ * to the close button.  This happens when a 'sub page' is navigated to
+ * inside the sheet.
+ */
+.xataface-components-ActionSheet-close.xataface-components-ActionSheet-back-btn > i.xataface-components-ActionSheet-back-icon {
+    display:block;
+}
+
+/**
+ * The close button is hidden when the xataface-components-ActionSheet-back-btn class is applied
+ * to the close button.
+ */
+.xataface-components-ActionSheet-close.xataface-components-ActionSheet-back-btn > i.xataface-components-ActionSheet-close-icon {
+    display:none;
+}
+
+ul.xataface-components-ActionSheet-bottom li, ul.xataface-components-ActionSheet-top li {
+    width: 100vw;
+}
+ul.xataface-components-ActionSheet-left li, ul.xataface-components-ActionSheet-right li {
+    width: 300px;
+}
+

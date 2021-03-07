@@ -294,7 +294,8 @@
 	label = Export CSV
 	description = "Export the current result set in comma separated value (CSV) format.  CSV is compatible with most spread sheet applications like MS Excel"
 	url = "{$this->url('-action=export_csv')}&--related=1"
-	icon = "{$dataface_url}/images/table.gif"
+	;icon = "{$dataface_url}/images/table.gif"
+    materialIcon=donut_small
 	mode=list
 	permission=export_csv
 	category=related_export_actions
@@ -495,6 +496,14 @@
 	label = "Add new {$query['-relationship']} record"
 	related=1
     rel=child
+    
+[new_related_record_menuitem > new_related_record]
+    condition="$query['-action'] == 'related_records_list' and $query['-relationship'] and $app->getRelationship() and $app->getRelationship()->supportsAddNew() and !$app->getRelationship()->supportsAddExisting()"
+    label = "Add {$app->getRelationship()->getSingularLabel()}"
+    materialIcon=add
+    category=record_actions_menu
+    url="{$app->url('-action=new_related_record')}"
+
 
 ;; Show the "Add Existing Related Record" form to add an existing record to a 
 ;; relationship.
@@ -505,6 +514,13 @@
 	category = relationship_actions
 	related=1
     rel=child
+    
+[existing_related_record_menuitem > existing_related_record]
+    condition="$query['-action'] == 'related_records_list' and $query['-relationship'] and $app->getRelationship() and $app->getRelationship()->supportsAddExisting()"
+    label = "Add {$app->getRelationship()->getSingularLabel()}"
+    materialIcon=add
+    category=record_actions_menu
+    url="{$app->url('-action=existing_related_record')}"
 
 ;; Remove record from a relationship
 [remove_related_record]

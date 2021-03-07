@@ -124,8 +124,12 @@ class dataface_actions_existing_related_record {
 		$out = ob_get_contents();
 		ob_end_clean();
 		
-		
-		$context = array('form'=>$out);
+		$addNewLink = null;
+        if ($app->getRelationship() and $app->getRelationship()->supportsAddNew() and $form->_record->checkPermission('add new related record', ['relationship'=>$query['-relationship']])) {
+            $addNewLink = $app->url('-action=new_related_record');
+        }
+        
+		$context = array('form'=>$out, 'addNewLink' => $addNewLink);
 		if ( isset($query['-template']) ) $template = $query['-template'];
 		else if ( isset( $params['action']['template']) ) $template = $params['action']['template'];
 		else $template = 'Dataface_Add_Existing_Related_Record.html';
