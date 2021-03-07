@@ -1,13 +1,20 @@
+//require <xataface/components/ActionSheet.js>
 (function() {
+    var ActionSheet = window.xataface.ActionSheet;
     function installFab() {
         var $ = jQuery;
+        
         $('#zoomBtn').click(function() {
-          $('.zoom-btn-sm').toggleClass('scale-out');
-          if (!$('.zoom-card').hasClass('scale-out')) {
-            $('.zoom-card').toggleClass('scale-out');
-          }
-        });
 
+            var pageActionsUl = $('div.page-actions > nav > ul').first();
+            if (pageActionsUl.length > 0) {
+                var menu = new ActionSheet(pageActionsUl.get(0));
+                menu.show();
+            }
+            
+        });
+        
+        $('.zoom').css('display', '');
     }
     
     function updatePosition() {
