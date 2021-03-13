@@ -524,6 +524,7 @@ class Dataface_RelatedList {
 
                 for ($i = $this->_start; $i < ($this->_start + $limit); $i++) {
                     $rowClass = $evenRow ? 'even' : 'odd';
+                    
                     $evenRow = !$evenRow;
 
                     if ($default_order_column and @$perms['reorder_related_records']) {
@@ -542,18 +543,29 @@ class Dataface_RelatedList {
                     $rrec = $this->_record->getRelatedRecord($this->_relationship_name, $i, $this->_where, $sort_columns_str); //new Dataface_RelatedRecord($this->_record, $this->_relationship_name, $this->_record->getValues($fullpaths, $i, 0, $sort_columns_str));
                     $rrecid = $rrec->getId();
                     $rowPerms = $rrec->getPermissions();
+                    
+                    
+                    
                     if ( !@$rowPerms['view'] ){
                     	continue;
                     }
+                    $domRec = $rrec->toRecord();
+    				$rowClass .= ' '.$this->getRowClass($domRec);
+                    
+    				$status = $domRec->getStatus();
+                    if ($status) {
+                        $rowClass .= ' xf-record-status-'.$status;
+                    }
                     if ($mobile) {
-                        echo "<div class=\"mobile-listing-row\" id=\"mobile-$row_$rrecid\" xf-record-id=\"$row_$rrecid\">";
+                        
+                        echo "<div class=\"mobile-listing-row $rowClass\" id=\"mobile-$row_$rrecid\" xf-record-id=\"$row_$rrecid\">";
                         
                         
-    				    echo "<div class='mobile-row-content $rowClass' >";
+    				    echo "<div class='mobile-row-content' >";
     				    $logoField = $this->_relationship->getLogoField();
                         $aOpen = '';
                         $aClose = '';
-                        $domRec = $rrec->toRecord();
+                        
                         $rowStyle = $domRec->getTableAttribute('row_style');
                         $link = $rrec->getURL();
                         if ($link and !$this->nolinks and @$rowPerms['link']) {
@@ -770,5 +782,13 @@ class Dataface_RelatedList {
 
         return $out;
     }
+    
+ 	function getRowClass(&$record){
+ 		$del =& $record->_table->getDelegate();
+ 		if ( isset($del) and method_exists($del, 'css__tableRowClass') ){
+ 			return $del->css__tableRowClass($record);
+ 		}
+ 		return '';
+ 	}
 
 }

@@ -1685,6 +1685,17 @@ END
 				$this->currentRecord = $rs->loadCurrent();
 			}
 			if ( $this->currentRecord === null ) $this->currentRecord = -1;
+            
+            if ($this->currentRecord instanceof Dataface_RelatedRecord) {
+                $asRec = $this->currentRecord->toRecord();
+                
+                
+                if (!$this->recordContext) {
+                    $this->recordContext = [];
+                }
+                $this->recordContext[$asRec->getId()] = $this->currentRecord;
+                $this->currentRecord = $asRec;
+            }
 		}
 		if ( $this->currentRecord === -1 || !$this->currentRecord ) return $null;
 		return $this->currentRecord;

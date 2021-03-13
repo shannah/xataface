@@ -3887,10 +3887,13 @@ body.two-col #status-bar .responsive-content,
            padding-right:3mm;
            padding-bottom:3mm;
            color: #ccc;
+
       }
       
       .mobile-listing.list-style-mobile .mobile-row-actions a span {
-          display:none;
+          margin:auto;
+          flex-grow:1;
+          font-size: 50%;
       }
     
       .mobile-listing.list-style-mobile .mobile-row-actions {
@@ -3902,10 +3905,12 @@ body.two-col #status-bar .responsive-content,
       .mobile-listing.list-style-mobile .mobile-row-actions a {
           flex-grow: 1;
           color: var(--buttonColor);
+          display:flex;
       }
     
       .mobile-listing.list-style-mobile .mobile-row-actions a i {
           font-size: 150%;
+          margin:auto 10px;
       }
       
   }

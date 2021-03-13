@@ -405,6 +405,9 @@ var form=document.getElementById("result_list_selected_items_form");form.element
         if (!link) {
             return link;
         }
+        if (link.indexOf('javascript:') === 0) {
+            return link;
+        }
         if (link.indexOf('--referrer') > 0) {
             return link;
         }
