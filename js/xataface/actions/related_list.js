@@ -9,11 +9,11 @@
     var settingsWrapper = document.querySelector('.mobile-list-settings-wrapper');
     
 	$(document).ready(function() {
-        if (window.innerWidth < 768) {
-            
-            
+        if (window.innerWidth < 768 || $('.mobile-listing').hasClass('list-style-mobile')) {
             setTimeout(function() {
-                $('body').on('scroll', showListSettings);
+                document.addEventListener('scroll', function(event) {
+                    showListSettings();
+                }, true);
             }, 1000);
             
             // For mobile we enable infinite scrolling
@@ -95,6 +95,7 @@
      * Update the settings wrapper position to 10 px above the mobile footer.
      */
     function updateSettingsButtonPosition() {
+        console.log("updating settings button position");
         var viewport = xataface.viewport;
         if (viewport) {
             settingsWrapper.style.bottom = (viewport.bottom + 10) + 'px';

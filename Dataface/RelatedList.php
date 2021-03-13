@@ -47,6 +47,9 @@ class Dataface_RelatedList {
     var $hideActions = false;
     var $noLinks = false;
     var $filters = array();
+    // List style allows you to set the style of the list to override default.
+    // Values: auto or mobile
+    var $listStyle = 'auto';
 
     function __construct(&$record, $relname, $db = '') {
         if (!is_a($record, 'Dataface_Record')) {
@@ -58,9 +61,15 @@ class Dataface_RelatedList {
         $this->_relationship_name = $relname;
         $app = & Dataface_Application::getInstance();
         $query = & $app->getQuery();
-
+        
         $this->_table = & $this->_record->_table;
         $this->_relationship = & $this->_table->getRelationship($relname);
+        if ($this->_relationship->isOneToMany()) {
+            $domainTableName = $this->_relationship->getDomainTable();
+            $domainTable = Dataface_Table::loadTable($domainTableName);
+            $this->listStyle = $domainTable->getListStyle();
+        }
+        
 
         $this->_start = isset($query['-related:start']) ? $query['-related:start'] : 0;
         $this->_limit = isset($query['-related:limit']) ? $query['-related:limit'] : 30;
@@ -344,7 +353,7 @@ class Dataface_RelatedList {
         $context['imgIcon'] = $imgIcon;
 
 
-        if (!$this->hideActions) {
+        if (!$this->hideActions and $this->listStyle != 'mobile') {
             $num_related_records = $this->_record->numRelatedRecords($this->_relationship_name, $this->_where);
             $now_showing_start = $this->_start + 1;
             $now_showing_finish = min($this->_start + $this->_limit, $this->_record->numRelatedRecords($this->_relationship_name, $this->_where));
@@ -396,7 +405,7 @@ class Dataface_RelatedList {
                      
                 } else {
                     echo '
-                            <table class="listing relatedList relatedList--' . $this->_tablename . ' relatedList--' . $this->_tablename . '--' . $this->_relationship_name . '" id="relatedList">
+                            <table class="listing relatedList relatedList--' . $this->_tablename . ' relatedList--' . $this->_tablename . '--' . $this->_relationship_name . ' list-style-'.$this->listStyle.'" id="relatedList">
                             <thead>
                             <tr>';
                 
@@ -537,7 +546,7 @@ class Dataface_RelatedList {
                     	continue;
                     }
                     if ($mobile) {
-                        echo "<div class=\"mobile-listing mobile-listing-row\" id=\"mobile-$row_$rrecid\" xf-record-id=\"$row_$rrecid\">";
+                        echo "<div class=\"mobile-listing-row\" id=\"mobile-$row_$rrecid\" xf-record-id=\"$row_$rrecid\">";
                         
                         
     				    echo "<div class='mobile-row-content $rowClass' >";
@@ -754,6 +763,7 @@ class Dataface_RelatedList {
 			->import('xataface/actions/related_list.js');
         ob_start();
         $context['filters'] = $this->filters;
+        $context['listStyle'] = $this->listStyle;
         df_display($context, 'xataface/RelatedList/list.html');
         $out = ob_get_contents();
         ob_end_clean();

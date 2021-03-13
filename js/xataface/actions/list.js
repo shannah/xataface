@@ -18,10 +18,12 @@
     function init() {
         // We will add a scroll listener to the body to show the list settings.
         setTimeout(function() {
-            $('body').on('scroll', showListSettings);
+            document.addEventListener('scroll', function(event) {
+                showListSettings();
+            }, true);
         }, 1000);
         
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < 768 || $('.mobile-listing').hasClass('list-style-mobile')) {
             // For mobile we enable infinite scrolling
             new xataface.InfiniteScroll({
                scrollEl : $('body').get(0),

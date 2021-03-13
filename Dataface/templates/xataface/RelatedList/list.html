@@ -10,7 +10,7 @@
 //$related_list_actions - 
 *}
  		
-{if !$relatedList->hideActions and ($record_editable or $can_add_new_related_record or $can_add_existing_related_record)}
+{if $listStyle != 'mobile' and !$relatedList->hideActions and ($record_editable or $can_add_new_related_record or $can_add_existing_related_record)}
 	
 	<div id="relatedActionsWrapper" class="contentActions">
 		<ul id="relatedActions">
@@ -45,7 +45,7 @@
 	</div>
 	
 {/if}
-{if  !$relatedList->hideActions }
+{if  !$relatedList->hideActions and $listStyle != 'mobile'}
 
 	<div class="result-tools" style="float:left">
 		<script language="javascript" type="text/javascript" src="{$searchSrc|escape}"></script>
@@ -55,7 +55,7 @@
 
 
 {/if}
-{if !$relatedList->hideActions}
+{if !$relatedList->hideActions and $listStyle != 'mobile'}
 	<div class="resultlist-controller related-list-controller">
 		{capture assign="relatedResultController"}
 			{include file="xataface/RelatedList/result_controller.html"}
@@ -97,7 +97,7 @@
 {else}
 	{$moveUpForm}
     {assign var=relatedSearchKey value="-related:search"}
-    {if !$relatedList->hideActions and ($filterQuery.$relatedSearchKey or $filters)}
+    {if $listStyle != 'mobile' and !$relatedList->hideActions and ($filterQuery.$relatedSearchKey or $filters)}
         <div class="desktop related-filters">
         {translate id="scripts.GLOBAL.RECORDS_MATCHED_REQUEST"}Showing matches for query{/translate}
         {if !$relatedList->hideActions and $relatedList->_where and $filterQuery.$relatedSearchKey}
@@ -121,7 +121,7 @@
 		{$related_table_html}
 		
 		
-		{if !$relatedList->hideActions }
+		{if $listStyle != 'mobile' and !$relatedList->hideActions }
 			{$selected_actions_form}
 			
 			{if $selected_actions|@count > 0}

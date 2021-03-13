@@ -196,9 +196,23 @@ var form=document.getElementById("result_list_selected_items_form");form.element
         height : window.innerHeight
          
     };
+    var firedInitialViewportChangedEvent = false;
     function updateBodyPadding() {
-
+        var localFiredInitialViewportChangedEvent = firedInitialViewportChangedEvent;
+        firedInitialViewportChangedEvent = true;
         if (!mobileActivated) {
+            if (viewport.width != window.innerWidth || viewport.height != window.innerHeight) {
+                viewport.width = window.innerWidth;
+                viewport.height = window.innerHeight;
+                var event = new Event('xf-viewport-changed');
+                window.dispatchEvent(event);
+            } else {
+                if (!localFiredInitialViewportChangedEvent) {
+                    var event = new Event('xf-viewport-changed');
+                    window.dispatchEvent(event);
+                }
+            }
+            
             return;
         }
         var body = document.querySelector('body');

@@ -54,16 +54,17 @@
         }
         
         var self = this;
-        $(this.scrollEl).on('scroll', function() {
+
+        document.addEventListener('scroll', function(event) {
             if (self.reachedEnd) {
                 return;
             }
-            //console.log('1', self.scrollEl.scrollTop, self.scrollEl.clientHeight, self.scrollEl.scrollTop + self.scrollEl.clientHeight, self.scrollEl.scrollHeight);
+
             if (self.scrollEl.scrollTop + self.scrollEl.clientHeight >= self.scrollEl.scrollHeight) {
-                //console.log(2);
+
                 self.loadMore();
             }
-        });
+        }, true);
     }
     
     /**
@@ -131,9 +132,9 @@
             .replace(/&-related%3Astart=[^&]*/, '')
             .replace(/&-related%3Alimit=[^&]*/, '')
             .replace(/\?-related%3Alimit=[^&]*/, '?');
-            //console.log("Query", currentQuery);
+          
         currentQuery += '&' + encodeURIComponent('-related:start') + '='+skip+'&'+encodeURIComponent('-related:skip')+'='+skip+'&' +encodeURIComponent('-related:limit')+'='+pageSize + '&-action=' + encodeURIComponent(action);
-        console.log('q=',currentQuery);
+        
         return currentQuery;
     }
     
