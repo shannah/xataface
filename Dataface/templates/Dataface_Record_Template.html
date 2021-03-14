@@ -86,17 +86,7 @@
                 {/if}
 			    
 				
-                {if $ENV.record}
-                    
-                    {actions var=actions category="record_actions|mobile_edit" with="featured"}
-                    {if $actions|@count>0}
-    				<div class="mobile mobile-record-actions">
-
-    				    {actions_menu actions=$actions}
-    				</div>
-                    {/if}
-                    
-                {/if}
+                
 			
 		{/define_slot}
         </div>

@@ -69,10 +69,7 @@
 		{/foreach}
         
 		{if $contentOverridden}		
-			<div class="mobile mobile-record-actions">
-
-			    {actions_menu category="mobile_record_actions"}
-			</div>
+			
             <div class="mobile mobile-record-relationships">
                 {actions_menu category="__relationships__" navicon="arrow_forward_ios"}
             </div>
@@ -96,11 +93,6 @@
 						<div class="dataface-view-status">{$rv->status|escape}</div>
 						
 
-						<div class="mobile mobile-record-actions">
-
-						    {actions_menu category="mobile_record_actions"}
-						</div>
-                        
 						
 					</div>
                     {/if}

@@ -1133,7 +1133,9 @@ body.cover-image .record-heading-logo {
 @media only screen and (max-width:768px) {
     .record-heading .record-heading-description {
         padding-top: 10px;
+        
     }
+    
 }
 
 
@@ -2422,6 +2424,15 @@ ul.field_actions {
         margin-top: 2mm;
 
     }
+    
+    nav.table_tabs > ul > li {
+        font-size: 50%;
+    }
+    
+    nav.table_tabs > ul > li > a {
+        padding:10px;
+    }
+    
 }
 
 ul.field_actions li {
@@ -4511,6 +4522,7 @@ body.two-col #status-bar .responsive-content,
     
     #mobile-top-section {
         display:flex;
+        padding-right: 50px;
     }
     
     #mobile-top-section > .site_logo > picture > img,
@@ -4530,6 +4542,12 @@ body.two-col #status-bar .responsive-content,
         margin:auto;
     }
     
+    
+    .h1-wrapper .record-heading-description {
+        margin-right:-50px;
+        margin-left: -50px;
+        padding-right:0;
+    }
 
     
 }
@@ -5085,7 +5103,10 @@ button.back-btn {
     font-size: 50px;
     display:flex;
     cursor: pointer;
+    padding:0;
+    margin-right: -20px;
 }
+
 
 button.back-btn > i {
     margin:auto;

@@ -13,8 +13,11 @@
             }
             
         });
+        var pageActionsUl = $('div.page-actions > nav > ul').first();
+        if ($('>li', pageActionsUl).length > 0) {
+            $('.zoom').css('display', '');
+        }
         
-        $('.zoom').css('display', '');
     }
     
     function updatePosition() {

@@ -3478,17 +3478,25 @@ class Dataface_Table {
 	 * @return string The table's label.
 	 */
 	function getLabel(){
-            if ( !@$this->_atts['label'] ){
-                $this->_atts['label'] = ucwords(str_replace('_', ' ', $this->tablename));
-            }
-            if ( !@$this->_atts['label__translated']){
-                $this->_atts['label__translated'] = true;
-                $this->_atts['label'] = df_translate('tables.'.$this->tablename.'.label', $this->_atts['label']);
+        if ( !@$this->_atts['label'] ){
+            $this->_atts['label'] = ucwords(str_replace('_', ' ', $this->tablename));
+        }
+        if ( !@$this->_atts['label__translated']){
+            $this->_atts['label__translated'] = true;
+            $this->_atts['label'] = df_translate('tables.'.$this->tablename.'.label', $this->_atts['label']);
 
-            }
-            return $this->_atts['label'];
+        }
+        return $this->_atts['label'];
 
 	}
+    
+    function getPageTitleForAction($actionName) {
+        $key = $actionName.'.pageTitle';
+        if (@$this->_atts[$key]) {
+            return $this->_atts[$key];
+        }
+        return $this->getLabel();
+    }
     
     function getListStyle() {
         if (@$this->_atts) {

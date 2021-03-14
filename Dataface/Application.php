@@ -715,6 +715,7 @@ END;
                                 $host = substr($host, 0, $colonPos);
                             }
                             $port = intval($port);
+                            
                             $i = str_replace('{host}', preg_replace('/[^0-9a-zA-Z\.\-]/','', basename($host)), $i);
                             $i = str_replace('{port}', $port, $i);
                         }
@@ -1443,7 +1444,7 @@ END
 			if ( ($record = $this->getRecord()) && $query['-mode'] == 'browse'  ){
                 $out = $record->getTitle();
             } else {
-                $tableLabel = Dataface_Table::loadTable($query['-table'])->getLabel();
+                $tableLabel = Dataface_Table::loadTable($query['-table'])->getPageTitleForAction($query['-action']);
                 $out = $tableLabel;
 
             }
