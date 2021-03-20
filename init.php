@@ -44,7 +44,7 @@ function init($site_path, $dataface_url){
             if (strpos($dataface_url, 'http:') === 0 or strpos($dataface_url, 'https:') === 0) {
                 // We leave dataface_url alone
             } else {
-                if ($dataface_url{0} !== '/') {
+                if ($dataface_url[0] !== '/') {
                     $dataface_url = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')) . '/' . $dataface_url;
                 }
             }
@@ -108,7 +108,7 @@ function init($site_path, $dataface_url){
                 if (strpos($dataface_url, 'http:') === 0 or strpos($dataface_url, 'https:') === 0) {
                     // We leave dataface_url alone
                 } else {
-                    if ($dataface_url{0} !== '/') {
+                    if ($dataface_url[0] !== '/') {
                         $dataface_url = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')) . '/' . $dataface_url;
                     }
                 }
@@ -135,12 +135,12 @@ function init($site_path, $dataface_url){
 	    $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
 	}
 	$temp_site_url = dirname($_SERVER['PHP_SELF']);
-	if ( $temp_site_url{strlen($temp_site_url)-1} == '/'){
+	if ( $temp_site_url[strlen($temp_site_url)-1] == '/'){
 		$temp_site_url = substr($temp_site_url,0, strlen($temp_site_url)-1);
 	}
 	define('DATAFACE_SITE_URL', str_replace('\\','/',$temp_site_url));
 	define('DATAFACE_SITE_HREF', (DATAFACE_SITE_URL != '/' ? DATAFACE_SITE_URL.'/':'/').basename($_SERVER['PHP_SELF']) );
-	if ( !preg_match('#^https?://#', $dataface_url) and $dataface_url and $dataface_url{0} != '/' ){
+	if ( !preg_match('#^https?://#', $dataface_url) and $dataface_url and $dataface_url[0] != '/' ){
 		$dataface_url = DATAFACE_SITE_URL.'/'.$dataface_url;
 	}
 	define('DATAFACE_URL', str_replace('\\','/',$dataface_url));

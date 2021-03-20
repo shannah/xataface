@@ -37,7 +37,7 @@ class dataface_actions_ajax_insert  {
 			
 			$vals = array();
 			foreach ($query as $k=>$v){
-				if ( $k and $k{0} != '-' ) $vals[$k] = $v;
+				if ( $k and $k[0] != '-' ) $vals[$k] = $v;
 			}
 			
 			$record = new Dataface_Record($_POST['-table'], array());

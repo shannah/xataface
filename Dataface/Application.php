@@ -1128,7 +1128,7 @@ END;
 		if ( isset($_REQUEST['__keys__']) and is_array($_REQUEST['__keys__']) ){
 			$query = $_REQUEST['__keys__'];
 			foreach ( array_keys($_REQUEST) as $key ){
-				if ( $key{0} == '-' and !in_array($key, array('-search','-cursor','-skip','-limit'))){
+				if ( $key[0] == '-' and !in_array($key, array('-search','-cursor','-skip','-limit'))){
 					$query[$key] = $_REQUEST[$key];
 				}
 			}
@@ -2127,7 +2127,7 @@ END
 				}
 
 				if (strlen($cookie_path)==0) $cookie_path = '/';
-				if ( $cookie_path{strlen($cookie_path)-1} != '/' ) $cookie_path .= '/';
+				if ( $cookie_path[strlen($cookie_path)-1] != '/' ) $cookie_path .= '/';
 
 				// timeout value for the cookie
 				$cookie_timeout = (isset($conf['session_timeout']) ? intval($conf['session_timeout']) : 0);
@@ -2164,7 +2164,7 @@ END
 						 $sessdir = substr($sessdir, strpos($sessdir, ";")+1);
 					}
 					if ( !$sessdir ) $sessdir = sys_get_temp_dir(); //'/tmp';
-					if ( $sessdir and $sessdir{strlen($sessdir)-1} == '/' ) $sessdir = substr($sessdir,0, strlen($sessdir)-1);
+					if ( $sessdir and $sessdir[strlen($sessdir)-1] == '/' ) $sessdir = substr($sessdir,0, strlen($sessdir)-1);
 
 					if ( @$conf['subdir'] ) $subdir = $conf['subdir'];
 					else $subdir = md5(DATAFACE_SITE_PATH);
@@ -2634,7 +2634,7 @@ END
         foreach ($modulesDirs as $modulesDir) {
             if (is_dir($modulesDir)) {
                 foreach (scandir($modulesDir) as $moduleDir) {
-                    if ($moduleDir{0} == '.') {
+                    if ($moduleDir[0] == '.') {
                         continue;
                     }
                     $moduleDirPath = $modulesDir . DIRECTORY_SEPARATOR . $moduleDir;
@@ -2650,7 +2650,7 @@ END
             
             if (is_dir($tablesDir)) {
                 foreach (scandir($tablesDir) as $tableDir) {
-                    if ($tableDir{0} == '.') {
+                    if ($tableDir[0] == '.') {
                         continue;
                     }
                     $tableDirPath = $tablesDir . DIRECTORY_SEPARATOR . $tableDir;
@@ -2850,7 +2850,7 @@ END
 		$disallowed = false;
 		if ( isset($this->_conf['_disallowed_tables']) ){
 			foreach ( $this->_conf['_disallowed_tables'] as $name=>$pattern ){
-				if ( $pattern{0} == '/' and preg_match($pattern, $query['-table']) ){
+				if ( $pattern[0] == '/' and preg_match($pattern, $query['-table']) ){
 					$disallowed = true;
 					break;
 				} else if ( $pattern == $query['-table'] ){
@@ -2862,7 +2862,7 @@ END
 
 		if ( $disallowed and isset($this->_conf['_allowed_tables']) ){
 			foreach ($this->_conf['_allowed_tables'] as $name=>$pattern ){
-				if ( $pattern{0} == '/' and preg_match($pattern, $query['-table']) ){
+				if ( $pattern[0] == '/' and preg_match($pattern, $query['-table']) ){
 					$disallowed = false;
 					break;
 				} else if ( $pattern == $query['-table'] ){
@@ -3002,7 +3002,7 @@ END
 				$mt = Dataface_ModuleTool::getInstance();
 				foreach ($this->_conf['_modules'] as $modname=>$modpath){
 					$mt->loadModule($modname);
-					if ( $modpath{0} == '/' )
+					if ( $modpath[0] == '/' )
 						$locations[ dirname($modpath).'/actions/'.basename($query['-action']).'.php' ] = 'actions_'.$query['-action'];
 					else {
 						$locations[ DATAFACE_SITE_PATH.'/'.dirname($modpath).'/actions/'.basename($query['-action']).'.php' ] = 'actions_'.$query['-action'];

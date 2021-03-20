@@ -628,7 +628,7 @@ class Dataface_Relationship {
                 $field_table = Dataface_Table::loadTable($field['tablename']);
                 $fval = $query[$search_key];
                 $exact = false;
-                if ($fval and $fval{0} == '=') {
+                if ($fval and $fval[0] == '=') {
                     $exact = true;
                     $fval = substr($fval,1);
                 }
@@ -1626,7 +1626,7 @@ class Dataface_Relationship {
 		$fkeys = $this->getForeignKeyValues();
 		if ( !isset($fkeys[$table]) ) return 999;
 		foreach ( $fkeys[$table] as $key=>$value ){
-			if ( is_scalar($value) and strlen($value) > 0 and $value{0} == '$' ) return 1;
+			if ( is_scalar($value) and strlen($value) > 0 and $value[0] == '$' ) return 1;
 			
 		}
 		return 2;

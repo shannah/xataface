@@ -279,7 +279,7 @@ class Binding {
 	 * $this->formatVar('$:NULL', 'NEW') => NULL
 	 */
 	private function formatVar($v, $self) {
-		if ($v and $v{0} == '$') {
+		if ($v and $v[0] == '$') {
 			$pos = strpos($v, ':');
 			if ($pos === false) {
 				return $self.'.`'.substr($v, 1).'`';
@@ -381,7 +381,7 @@ class Binding {
 				foreach ($query as $k=>$v) {
 					$insertData[$k] = $v;
 				}
-			} else if ($insertData{0} == '{') {
+			} else if ($insertData[0] == '{') {
 				$insertData = json_decode($field['binding.insert'], true);
 				foreach ($query as $k=>$v) {
 					$insertData[$k] = $v;

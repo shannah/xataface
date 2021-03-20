@@ -279,7 +279,7 @@ class Dataface_RelatedList {
         $local_fkey_fields = array();
         foreach ( $fkeys as $fk_table_name => $fk_table_cols ){
         	foreach ( $fk_table_cols as $k=>$v ){
-        		if ( is_string($v) and $v and $v{0} === '$' ){
+        		if ( is_string($v) and $v and $v[0] === '$' ){
         			$local_fkey_fields[$k] = $v;
         		}
         	}
@@ -737,7 +737,7 @@ class Dataface_RelatedList {
                     $app = & Dataface_Application::getInstance();
                     $q = & $app->getQuery();
                     foreach ($q as $key => $val) {
-                        if (strlen($key) > 1 and $key{0} == '-' and $key{1} == '-') {
+                        if (strlen($key) > 1 and $key[0] == '-' and $key[1] == '-') {
                             continue;
                         }
                         echo '<input type="hidden" name="' . $key . '" value="' . df_escape($val) . '">';

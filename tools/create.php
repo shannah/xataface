@@ -16,7 +16,7 @@ function help() {
 function extract_flags($args) {
     $out = array();
     foreach ($args as $arg) {
-        if ($arg and $arg{0} == '-') {
+        if ($arg and $arg[0] == '-') {
             if (($pos = strpos($arg, '=')) !== false) {
                 $out[substr($arg, 1, $pos)] = substr($arg, $pos+1);
             } else {
@@ -29,7 +29,7 @@ function extract_flags($args) {
 function strip_flags($args) {
     $out = array();
     foreach ($args as $arg) {
-        if ($arg and $arg{0} != '-') {
+        if ($arg and $arg[0] != '-') {
             $out[] = $arg;
         }
     }

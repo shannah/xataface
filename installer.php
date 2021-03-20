@@ -352,7 +352,7 @@ class Dataface_Installer {
 		if ( !$res ) trigger_error(xf_db_error(db()), E_USER_ERROR);
 		$tables = array();
 		while ( $row = xf_db_fetch_row($res) ){
-			if ( $row[0]{0} == '_' ) continue;
+			if ( $row[0][0] == '_' ) continue;
 			if ( strpos($row[0], 'dataface_') === 0 ) continue;
 			if ( preg_match('/__history$/', $row[0]) ) continue;
 			$tables[] = $row[0].' = "'.ucwords(str_replace('_',' ', $row[0])).'"';
@@ -540,7 +540,7 @@ function db(){
 
 function isComment($line){
 	$line = trim($line);
-	if ( strlen($line) > 1 and $line{0} == '-' and $line{1} == '-') return true;
+	if ( strlen($line) > 1 and $line[0] == '-' and $line[1] == '-') return true;
 	return false;
 }
 

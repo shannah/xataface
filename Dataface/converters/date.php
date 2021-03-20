@@ -60,7 +60,7 @@ class Dataface_converters_date {
 		if ( !isset($value) || !$value ) return null;
 		if (is_int($value)) {
 		    $value = date('H:i:s Y-m-d', $value);
-        } else if (is_string($value) and strlen($value) > 0 and ($value{0} == '+' or $value{0} == '-')) {
+        } else if (is_string($value) and strlen($value) > 0 and ($value[0] == '+' or $value[0] == '-')) {
             $value = date('H:i:s Y-m-d', strtotime($value));
 		} else if (is_string($value) and preg_match('/^\d+$/', $value)) {
 		    $value = date('H:i:s Y-m-d', $value);

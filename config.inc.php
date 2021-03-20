@@ -55,7 +55,7 @@ function stripslashes_array($data) {
    }
 }
 
-if (get_magic_quotes_gpc()) {
+if (version_compare(PHP_VERSION, '7.4') < 0 and get_magic_quotes_gpc()) {
 	define('MAGIC_QUOTES_STRIPPED_SLASHES',1);
    /*
    All these global variables are slash-encoded by default,

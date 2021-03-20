@@ -189,7 +189,7 @@ class SQL_Parser
         $end = 0;
         if ($this->lexer->string != '') {
             while (($this->lexer->lineBegin+$end < $this->lexer->stringLen)
-               && ($this->lexer->string{$this->lexer->lineBegin+$end} != "\n")){
+               && ($this->lexer->string[$this->lexer->lineBegin+$end] != "\n")){
                 ++$end;
             }
         }
@@ -861,7 +861,7 @@ class SQL_Parser
 					$colType = 'ident';
 					
 					$columnName = $prevTokText;
-					if ( $columnName{strlen($columnName)-1} == '.') {
+					if ( $columnName[strlen($columnName)-1] == '.') {
 						$columnName .= '*';
 						$colType = 'glob';
 					}
@@ -1427,7 +1427,7 @@ class SQL_Parser
                     	$colType = 'ident';
                     	
                         $columnName = $prevTokText;
-                        if ( $columnName{strlen($columnName)-1} == '.') {
+                        if ( $columnName[strlen($columnName)-1] == '.') {
                         	$columnName .= '*';
                         	$colType = 'glob';
                         	$this->getTok();

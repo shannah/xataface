@@ -70,7 +70,7 @@ class Dataface_FormTool_checkbox {
 			}
 			if (is_array($form->_submitValues)) {
 				$submitVal = @$form->_submitValues[$field['name']];
-				if (is_string($submitVal) and strlen($submitVal) > 0 and $submitVal{0} == '[') {
+				if (is_string($submitVal) and strlen($submitVal) > 0 and $submitVal[0] == '[') {
 					$decoded = json_decode($submitVal, true);
 					$newVal = array();
 					foreach ($decoded as $v) {

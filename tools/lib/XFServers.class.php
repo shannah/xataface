@@ -653,7 +653,7 @@ END
 			if ($state === 1) {
 				if (preg_match('/^DocumentRoot (.*)/', $line, $matches)) {
 					$vhost->docRoot = $matches[1];
-					if ($vhost->docRoot and $vhost->docRoot{0} == '"') {
+					if ($vhost->docRoot and $vhost->docRoot[0] == '"') {
 						$vhost->docRoot = str_replace('"', '', $vhost->docRoot);
 					}
 					continue;

@@ -75,7 +75,7 @@ function installModuleFromZipFile($moduleName, $zipPath, $version) {
     $zip->close();
     echo "Done\n";
     foreach (scandir($dest) as $child) {
-        if ($child{0} === '.') {
+        if ($child[0] === '.') {
             continue;
         }
         $dest = $dest . DIRECTORY_SEPARATOR . $child;

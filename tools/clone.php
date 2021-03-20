@@ -22,7 +22,7 @@ function replaceConfDbSample($newConfDb, $dir) {
         }
     }
     foreach (scandir($dir) as $child) {
-        if ($child{0} == '.') {
+        if ($child[0] == '.') {
             continue;
         }
         $childPath = $dir . DIRECTORY_SEPARATOR . $child;
@@ -54,7 +54,7 @@ function load_conf_ini_files($dir) {
     }
     if (!@$out['_database'] or !$out['_database']['_name']) {
         foreach (scandir($dir) as $child) {
-            if ($child{0} == '.') {
+            if ($child[0] == '.') {
                 continue;
             }
             if (!is_dir($dir . DIRECTORY_SEPARATOR .$child)) {
@@ -80,7 +80,7 @@ function find_xapp_dir($dir) {
         }
     }
     foreach (scandir($dir) as $child) {
-        if ($child{0} == '.') {
+        if ($child[0] == '.') {
             continue;
         }
         $path = $dir . DIRECTORY_SEPARATOR . $child;

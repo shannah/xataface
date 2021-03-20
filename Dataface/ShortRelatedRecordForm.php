@@ -166,27 +166,7 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 	function &getRecord(){
 	    $out = Dataface_Application::getInstance()->getRecord();
 	    return $out;
-	    /*
-		if ( Dataface_ShortRelatedRecordForm::formSubmitted() ){
-			$record = new Dataface_Record($_POST['-table'], array());
-			$io = new Dataface_IO($_POST['-table']);
-			$query = $_POST['__keys__'];
-			
-			if ( is_array($query) ){
-				foreach ( array_keys($query) as $postKey ){
-					if ( $query[$postKey]{0} != '=' ){
-						$query[$postKey] = '='.$query[$postKey];
-					}
-				}
-			}
-			$io->read($query, $record);
-			return $record;
-		} else {
-			$app =& Dataface_Application::getInstance();
-			$qt =& Dataface_QueryTool::loadResult($app->_currentTable);
-			return $qt->loadCurrent();
-		}
-		*/
+	    
 	}
 	
 	/**

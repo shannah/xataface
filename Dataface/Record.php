@@ -2634,7 +2634,7 @@ class Dataface_Record {
 			    $strvl=rawurlencode($strvl);
 			}
 			$out = $field['url'].'/'.$strvl;
-			if ( strlen($out) > 1 and $out{0} == '/' and $out{1} == '/' ){
+			if ( strlen($out) > 1 and $out[0] == '/' and $out[1] == '/' ){
 				$out = substr($out,1);
 			}
 			$this->cache[__FUNCTION__][$fieldname][$index][$where][$sort] = $out;
@@ -2816,7 +2816,7 @@ class Dataface_Record {
         } else {
             $thumb = @$params['thumbnail'];
             $orBust = true;
-            if ($thumb{-1} == '?') {
+            if ($thumb[strlen($thumb)-1] == '?') {
                 $orBust = false;
                 $thumb = substr($thumb, 0, -1);
             }

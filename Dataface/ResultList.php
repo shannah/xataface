@@ -397,7 +397,7 @@ import(XFROOT.'Dataface/QueryTool.php');
 			
 			$sq = $myq = $app->getQuery();
 			foreach ($sq as $sqk=>$sqv ){
-				if ( !$sqk or $sqk{0} == '-' ){
+				if ( !$sqk or $sqk[0] == '-' ){
 					unset($sq[$sqk]);
 				}
 			}
@@ -817,7 +817,7 @@ import(XFROOT.'Dataface/QueryTool.php');
                         $app =& Dataface_Application::getInstance();
                         $q =& $app->getQuery();
                         foreach ( $q as $key=>$val){
-                            if ( strlen($key)>1 and $key{0} == '-' and $key{1} == '-' ){
+                            if ( strlen($key)>1 and $key[0] == '-' and $key[1] == '-' ){
                                 continue;
                             }
                             echo '<input type="hidden" name="'.urlencode($key).'" value="'.df_escape($val).'" />';
@@ -1006,7 +1006,7 @@ END;
             }
 			$res = df_query("select `$col`, count(*) as `num` ".$qb->_from()." ".$qb->_secure( $qb->_where(array($col=>null)) )." group by `$col` order by $orderBy", null, true);
 			if ( !$res and !is_array($res)) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
-			if ( @$query[$col] and $query[$col]{0} == '=' ) $queryColVal = substr($query[$col],1);
+			if ( @$query[$col] and $query[$col][0] == '=' ) $queryColVal = substr($query[$col],1);
 			
 			else $queryColVal = @$query[$col];
 			

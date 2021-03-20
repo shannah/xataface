@@ -677,7 +677,7 @@ END;
 		}
 
 		$url = DATAFACE_URL;
-		if ( strlen($url) > 0 and $url{0} != '/' ){
+		if ( strlen($url) > 0 and $url[0] != '/' ){
 			$url = DATAFACE_SITE_URL.'/'.$url;
 		} else if ( strlen($url) == 0 ){
 			$url = DATAFACE_SITE_URL;
@@ -1465,9 +1465,9 @@ END;
 		$fields = array();
 		foreach ($query as $k=>$v){
 			if ( isset($exclude[$k]) ) continue;
-			if ( is_string($v) and strlen($k)>1 and $k{0} === '-' and $k{1} !== '-' ){
+			if ( is_string($v) and strlen($k)>1 and $k[0] === '-' and $k[1] !== '-' ){
 				$fields[] = '<input type="hidden" name="'.df_escape($k).'" value="'.df_escape($v).'"/ >';
-			} else if ( @$params['filters'] and is_string($v) and strlen($v)>0 and strlen($k)>0 and $k{0} !== '-'){
+			} else if ( @$params['filters'] and is_string($v) and strlen($v)>0 and strlen($k)>0 and $k[0] !== '-'){
 				$fields[] = '<input type="hidden" name="'.df_escape($k).'" value="'.df_escape($v).'"/ >';
 			}
 		}

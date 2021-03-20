@@ -57,7 +57,7 @@ class HistoryToolTest extends BaseTest {
 		$savepath = XFAPPROOT.'tables/HistoryToolTest/container_field/';
 		if ( file_exists($savepath) and $fh = opendir($savepath) ) {
 			while ( false !== ($file = readdir($fh)) ){
-				if ( $file{0} != '.' ) unlink($savepath.$file);
+				if ( $file[0] != '.' ) unlink($savepath.$file);
 			}
 			closedir($fh);
 		}
@@ -65,7 +65,7 @@ class HistoryToolTest extends BaseTest {
 		$historypath = $savepath.'.dataface_history/';
 		if ( file_exists($historypath) and $fh = opendir($historypath) ){
 			while ( false !== ($file = readdir($fh) ) ){
-				if ($file{0} != '.' ) unlink($historypath.$file);
+				if ($file[0] != '.' ) unlink($historypath.$file);
 			}
 			closedir($fh);
 		}

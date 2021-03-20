@@ -162,7 +162,7 @@ class Dataface_DB {
 		$count = 0;
 		for ($i=0;$i<$len;$i++){
 			$skip = false;
-			switch ($query{$i}){
+			switch ($query[$i]){
 				case '\\': 	$escaped = !$escaped;	
 							break;
 				case '"' :	if ( !$escaped && !$sglquoted ){
@@ -195,12 +195,12 @@ class Dataface_DB {
 				
 			}
 			
-			if ( $query{$i} != '\\' ) $escaped = false;
+			if ( $query[$i] != '\\' ) $escaped = false;
 			if ( $skip ) continue;
 			if (  $dblquoted || $sglquoted) {
-				$buffer .= $query{$i};
+				$buffer .= $query[$i];
 			}
-			else $output_query .= $query{$i};
+			else $output_query .= $query[$i];
 		}
 		
 		// Now to replace all numbers

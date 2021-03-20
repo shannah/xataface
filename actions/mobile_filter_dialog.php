@@ -264,7 +264,7 @@ class dataface_actions_mobile_filter_dialog {
                             if (!$val) {
                                 continue;
                             }
-                            if ($val{0} === '=') {
+                            if ($val[0] === '=') {
                                 $val = substr($val, 1);
                             }
                             $selectedValues[] = $val;
@@ -335,10 +335,10 @@ class dataface_actions_mobile_filter_dialog {
                     $queryVal = @$query[$fieldDef['name']];
                     if ($queryVal) {
                         $currentValue = $queryVal;
-                        if ($currentValue{0} == '=') {
-                            $searchPrefix = $currentValue{0};
+                        if ($currentValue[0] == '=') {
+                            $searchPrefix = $currentValue[0];
                             $currentValue = substr($currentValue, 1);
-                        } else if ($currentValue{0} == '~') {
+                        } else if ($currentValue[0] == '~') {
                             if (strpos($currentValue, '~%') === 0) {
                                 $searchPrefix = '~%';
                                 $currentValue = substr($currentValue, 2);
@@ -355,14 +355,14 @@ class dataface_actions_mobile_filter_dialog {
                 } else if ($type == 'range' or $type == 'min' or $type == 'max') {
                     $currentValue = @$query[$fieldDef['name']];
                     
-                    if ($currentValue and $currentValue{0} == '<') {
+                    if ($currentValue and $currentValue[0] == '<') {
                         $currentMaxValue = substr($currentValue, 1);
-                        if ($currentMaxValue and $currentMaxValue{0} == '=') {
+                        if ($currentMaxValue and $currentMaxValue[0] == '=') {
                             $currentMaxValue = substr($currentMaxValue, 1);
                         }
-                    } else if ($currentValue and $currentValue{0} == '>') {
+                    } else if ($currentValue and $currentValue[0] == '>') {
                         $currentMinValue = substr($currentValue, 1);
-                        if ($currentMinValue and $currentMinValue{0} == '=') {
+                        if ($currentMinValue and $currentMinValue[0] == '=') {
                             $currentMinValue = substr($currentMinValue, 1);
                         }
                     } else if ($currentValue and strpos($currentValue, '..') !== false) {

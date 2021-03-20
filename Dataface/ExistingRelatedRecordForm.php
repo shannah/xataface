@@ -141,7 +141,7 @@ class Dataface_ExistingRelatedRecordForm extends HTML_QuickForm {
 			
 			if ( is_array($query) ){
 				foreach ( array_keys($query) as $postKey ){
-					if ( $query[$postKey]{0} != '=' ){
+					if ( $query[$postKey][0] != '=' ){
 						$query[$postKey] = '='.$query[$postKey];
 					}
 				}

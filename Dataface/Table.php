@@ -3069,7 +3069,7 @@ class Dataface_Table {
 
 			foreach ($this->_filters as $key=>$value){
 				if ( isset($this->_securityFilter[$key]) ) continue;
-				if ( $value{0} == '$' ){
+				if ( $value[0] == '$' ){
 					if ( !$user and strpos($value, '$user') !== false ) continue;
 					eval('$filter[$key] = "=".'.$value.';');
 				} else if ( substr($value,0,4) == 'php:' ){

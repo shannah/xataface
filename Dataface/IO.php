@@ -2499,7 +2499,7 @@ class Dataface_IO {
 			}
 
 			foreach ($uri_parts['query'] as $ukey=>$uval){
-				if ( $uval and $uval{0}!='=' ) $uval = '='.$uval;
+				if ( $uval and $uval[0]!='=' ) $uval = '='.$uval;
 				$uri_parts['query'][$ukey]=$uval;
 			}
 			// At this point we are sure that this is requesting an existing record

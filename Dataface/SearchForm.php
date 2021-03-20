@@ -151,7 +151,7 @@ class Dataface_SearchForm extends HTML_QuickForm {
 		
 		$renderer =& $this->defaultRenderer();
 		foreach ($_REQUEST as $qkey=>$qval){
-			if ( strlen($qkey)>1 and $qkey{0} == '-' and strpos($qkey, '-findq:') !== 0){
+			if ( strlen($qkey)>1 and $qkey[0] == '-' and strpos($qkey, '-findq:') !== 0){
 				$this->addElement('hidden', $qkey);
 				$this->setDefaults( array($qkey=>$qval));
 			}
@@ -243,12 +243,12 @@ class Dataface_SearchForm extends HTML_QuickForm {
 		
 		$defaults = array();
 		foreach ($this->_query as $key=>$value){
-			if ( $key{0} != '-' ){
+			if ( $key[0] != '-' ){
 				if ( @$widgetTypes[$key] == 'select'){
 					$parts = explode(' OR ', $value);
 					$value = array();
 					foreach ($parts as $part ){
-						while ( $part and in_array($part{0}, array('=','<','>','!') ) ) {
+						while ( $part and in_array($part[0], array('=','<','>','!') ) ) {
 							$part = substr($part,1);
 							//$value = array($value);
 						}
@@ -333,7 +333,7 @@ class Dataface_SearchForm extends HTML_QuickForm {
 					$qstr .= '&'.urlencode($key).'='.urlencode($value);
 				}
 				unset($field);
-			} else if ( $key{0} == '-' and $key{1} != '-' and $key != '-action' and $key != '-search' and strpos($key, '-find') !== 0 ){
+			} else if ( $key[0] == '-' and $key[1] != '-' and $key != '-action' and $key != '-search' and strpos($key, '-find') !== 0 ){
 				$qstr .= '&'.urlencode($key).'='.urlencode($value);
 			}
 			

@@ -164,7 +164,7 @@ class Dataface_QueryTool {
 					);
 			}
 			$len = strlen($titleColumn);
-			if ( $titleColumn{$len-1} != ')' and $titleColumn{$len-1} != '`') $titleColumn = '`'.$titleColumn.'`';
+			if ( $titleColumn[$len-1] != ')' and $titleColumn[$len-1] != '`') $titleColumn = '`'.$titleColumn.'`';
 			
 			$builder = new Dataface_QueryBuilder( $this->_tablename, $this->_query);
 			$builder->action = 'select';

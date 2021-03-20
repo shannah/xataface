@@ -627,9 +627,9 @@ class Dataface_QueryBuilder {
         $collate = @$field['collate'];
         if (!$collate) $collate = '';
         if (strlen($value) > 6 and
-            $value{0} == '~' and
-            $value{1} == '#' and
-            $value{strlen($value)-1} == '#' and
+            $value[0] == '~' and
+            $value[1] == '#' and
+            $value[strlen($value)-1] == '#' and
             ($commandParts = explode('#', $value)) and
             count($commandParts) === 4) {
             $value = trim($commandParts[1]);
@@ -676,7 +676,7 @@ class Dataface_QueryBuilder {
 		foreach ($words as $value){
 			if ( $value === '' ) continue;
 			// A value with a prefix of '=' indicates that this is an exact match
-			if ( $value{0}=='=' ){
+			if ( $value[0]=='=' ){
 				$exact = true;
 				$value = substr($value,1);
 			} else {

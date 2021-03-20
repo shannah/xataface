@@ -315,8 +315,8 @@
 					$lcount=count($lucifer);
 					if ($lcount<8) continue;
 					$b[$i] = array();
-					$b[$i]['isdir'] = $lucifer[0]{0} === "d";
-					$b[$i]['islink'] = $lucifer[0]{0} === "l";
+					$b[$i]['isdir'] = $lucifer[0][0] === "d";
+					$b[$i]['islink'] = $lucifer[0][0] === "l";
 					$b[$i]['perms'] = $lucifer[0];
 					$b[$i]['number'] = $lucifer[1];
 					$b[$i]['owner'] = $lucifer[2];

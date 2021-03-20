@@ -40,7 +40,7 @@ class dataface_actions_ajax_save  {
 			
 			$vals = array();
 			foreach ($query as $k=>$v){
-				if ( $k and $k{0} != '-' ) $vals[$k] = $v;
+				if ( $k and $k[0] != '-' ) $vals[$k] = $v;
 			}
 			
 			$record->setValues($vals);

@@ -75,7 +75,7 @@ class dataface_actions_load_script {
 			
 		}
 		$path = implode('/', $parts);
-		if ( $path{0} == '/' ) throw new Exception("Absolute paths not supported");
+		if ( $path[0] == '/' ) throw new Exception("Absolute paths not supported");
 		return $path;
 	
 	}

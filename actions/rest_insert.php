@@ -80,7 +80,7 @@ class dataface_actions_rest_insert {
 				throw new Exception("Failed to insert record.  Permission denied");
 			}
 			foreach ($_POST as $k=>$v){
-				if ( $k{0} == '-' ) continue;
+				if ( $k[0] == '-' ) continue;
 				$fields[] = $k;
 				$rec->setValue($k, $v);
 				if ( !$rec->checkPermission('new', array('field'=>$k) ) ){

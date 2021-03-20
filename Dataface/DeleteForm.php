@@ -224,7 +224,7 @@ class Dataface_DeleteForm extends HTML_QuickForm {
 				}
 				$val = $values[$key];
 				
-				if ( $val{0} != '=' ) $val = '='.$val;
+				if ( $val[0] != '=' ) $val = '='.$val;
 				$query[$key] = $val;
 			}
 		} else {

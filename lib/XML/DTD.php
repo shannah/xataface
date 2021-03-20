@@ -182,7 +182,7 @@ class XML_DTD_Parser
         $elem_name  = $data[0];
         $ch = str_replace(' ', '', $data[1]);
         // Content
-        if ($ch{0} != '(') {
+        if ($ch[0] != '(') {
             $content = $ch;
             $children = array();
         // Enumerated list of childs
@@ -227,7 +227,7 @@ class XML_DTD_Parser
             $a = array();
             $att = $data[$i];
             $opts = $data[$i+1];
-            if ($opts{0} == '(' && $opts{strlen($opts)-1} == ')') {
+            if ($opts[0] == '(' && $opts{strlen($opts)-1} == ')') {
                 $a['opts'] = preg_split('/\||,/',
                                         preg_replace('|\s+|',
                                                      '',
@@ -238,7 +238,7 @@ class XML_DTD_Parser
                 $a['opts'] = $opts; // XXX ID is missing yet
             }
             $def = $data[$i+2];
-            if ($def{0} == '"' && $def{strlen($def)-1} == '"') {
+            if ($def[0] == '"' && $def[strlen($def)-1] == '"') {
                 $def = substr($def, 1, -1);
             } elseif ($def == '#FIXED') {
                 $a['fixed_value'] = substr($data[$i+3], 1, -1); //strip "s

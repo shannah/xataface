@@ -221,7 +221,7 @@ class dataface_actions_edit {
 					 *
 					 */
 					$vals = $form->exportValues();
-                    if (@$vals['-query'] and $vals['-query']{0} != '?') {
+                    if (@$vals['-query'] and $vals['-query'][0] != '?') {
                         $vals['-query'] = '?' . $vals['-query'];
                     }
 					$vals['-query'] = preg_replace('/[&\?]-new=[^&]+/i', '', $vals['-query']);
@@ -257,7 +257,7 @@ class dataface_actions_edit {
                     if ( @$query['--lang'] ){
                         $vals['-query'] .= '&--lang='.$query['--lang'];
                     }
-                    if ($vals['-query'] and $vals['-query']{0} == '?') {
+                    if ($vals['-query'] and $vals['-query'][0] == '?') {
                         $vals['-query'] = substr($vals['-query'], 1);
                     }
                                         

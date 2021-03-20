@@ -907,7 +907,7 @@ function df_is_logged_in(){
  */
 function df_absolute_url($url){
 	if ( !$url ) return $_SERVER['HOST_URI'];
-	else if ( $url{0} == '/' ){
+	else if ( $url[0] == '/' ){
 		return $_SERVER['HOST_URI'].$url;
 	} else if ( preg_match('/http(s)?:\/\//', $url) ){
 		return $url;
@@ -915,7 +915,7 @@ function df_absolute_url($url){
 		$host_uri = $_SERVER['HOST_URI'];
 		$site_url = DATAFACE_SITE_URL;
 		if ( $site_url ) {
-			if ($site_url{0} == '/' ) $host_uri = $host_uri.$site_url;
+			if ($site_url[0] == '/' ) $host_uri = $host_uri.$site_url;
 			else $host_uri = $host_uri.'/'.$site_url;
 		}
 		
