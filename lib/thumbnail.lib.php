@@ -11,7 +11,7 @@ class Xataface_Thumbnail {
 		
 		
 	    if ( !defined('MEDIA_CACHE_PATH') ){
-			define('MEDIA_CACHE_PATH', DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'templates_c'.DIRECTORY_SEPARATOR.'mediacache');
+			define('MEDIA_CACHE_PATH', XFTEMPLATES_C.'mediacache');
 		}
 		
 		if ( !is_dir(MEDIA_CACHE_PATH) ){

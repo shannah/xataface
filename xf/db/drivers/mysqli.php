@@ -17,7 +17,7 @@ function xf_db_query($sql, $conn=null){
 }
 function xf_db_error($link=null){
 	if ( $link === null ){
-		return mysqli_error();
+		return mysqli_error(df_db());
 	} else {
 		return mysqli_error($link);
 	}

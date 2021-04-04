@@ -367,7 +367,7 @@ class Dataface_IO {
 			$res2 = $this->fireAfterDelete($record);
 			if ( PEAR::isError($res2) ) return $res2;
 		}
-		self::touchTable($this->_table->tablename);
+		self::touchTable($this->_table->tablename, $record);
 		return $res;
 
 	}
@@ -740,7 +740,7 @@ class Dataface_IO {
 		// It seems to me that we should be setting a new snapshot at this point.
 		//$record->clearSnapshot();
 		$record->setSnapshot();
-		self::touchTable($this->_table->tablename);
+		self::touchTable($record->table()->tablename, $record);
 		self::touchRecord($record);
 		//$record->vetoSecurity = $oldVeto;
 		return $res;
@@ -1523,6 +1523,7 @@ class Dataface_IO {
 
 				unset($idfield);
 			}
+            self::touchTable($currentRecord->_table->tablename, $currentRecord);
 			unset($currentRecord);
 			$rio = new Dataface_IO($drecords[$recordIndex]->_table->tablename);
 
@@ -1535,7 +1536,7 @@ class Dataface_IO {
 			if (PEAR::isError($res) ) return $res;
 			$res = $rio->fireAfterSave($drecords[$recordIndex]);
 			if ( PEAR::isError($res) ) return $res;
-
+            
 			unset($rio);
 		}
 
@@ -2582,15 +2583,93 @@ class Dataface_IO {
 		$res = xf_db_query($sql, df_db());
 		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 	}
-
-	static function touchTable($table){
-		$sql = "replace into dataface__mtimes (`name`,`mtime`) values ('".addslashes($table)."','".addslashes(time())."')";
+    
+    
+    
+    /**
+     * Marks the modification time for a table, and updates the cache version.
+     * @param string $table The tablename
+     * @param Dataface_Record $record Optional the record that was touched.
+     */
+	static function touchTable($table, $record = null){
+        if ($record and is_array($record)) {
+            if (strstr($table, '_my_') === $table) {
+                $record = new Dataface_Record(substr($table, 4), $record);
+            } else {
+                $record = new Dataface_Record($table, $record);
+            }
+        }
+        $sql = "replace into dataface__mtimes (`name`,`mtime`) values ('".addslashes($table)."','".addslashes(time())."')";
 		$res = xf_db_query($sql, df_db());
 		if ( !$res ){
 			self::createModificationTimesTable();
 			$res = xf_db_query($sql, df_db());
 			if ( !$res ) throw new Exception(xf_db_error(df_db()));
 		}
+        // We need to mark this table changed for ALL users.
+        // But the phantom _my_$table table can be used to mark it changed
+        // for only particular users.  This will allow caching plugins
+        // to bind the cache to the _my_$table variant in certain cases.
+        $app = Dataface_Application::getInstance();
+        $app->markCache($table, null);
+        if (!$record) {
+            // The rest of this method is only for invalidating the cache
+            // for particular users - which is only possible if we know which record
+            // triggered this "touch"
+            return;
+        }
+        $tableObj = Dataface_Table::loadTable($table);
+        $userFields = $tableObj->getUserFields();
+        if (count($userFields) == 0) {
+            return;
+        }
+        if (!class_exists('Dataface_AuthenticationTool')) {
+            import(XFROOT . 'Dataface/AuthenticationTool.php');
+        }
+        $auth = Dataface_AuthenticationTool::getInstance();
+        $usersTable = $auth->getUsersTable();
+        if (!$usersTable) {
+            // If there is no users table defined
+            // then we can't really proceed now can we.
+            return;
+        }
+        
+        
+        $userIdField = null;
+        
+        foreach ($userFields as $key) {
+            $field =& $tableObj->getField($key);
+            if (!empty($field['username'])) {
+                // This is a username field.
+                $username = $record->val($key);
+                if ($username) {
+                    $app->markCache('_my_'.$table, $username);
+                }
+                
+            } else if (!empty($field['userid'])) {
+                $userid = $record->val($key);
+                if (!$userIdField) {
+                    foreach ($usersTable->keys() as $k=>$v) {
+                        $userIdField = $k;
+                        break;
+                    }
+                }
+                if ($userid and $userIdField) {
+                    $sql = "select `".$auth->usernameColumn."` from `".$usersTable->tablename."` where `".$userIdField."` = '".addslashes($userid)."' limit 1";
+                    $res = xf_db_query($sql, df_db());
+                    if (!$res) {
+                        error_log("SQL error on ".$sql." .  Error was ". xf_db_error(df_db()));
+                        throw new Exception("SQL error");
+                    }
+                    $row = xf_db_fetch_row($res);
+                    xf_db_free_result($res);
+                    if ($row and $row[0]) {
+                        $app->markCache('_my_'.$table, $row[0]);
+                    }
+                }
+            }
+            unset($field);
+        }
 	}
 
 

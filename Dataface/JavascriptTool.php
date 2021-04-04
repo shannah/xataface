@@ -329,7 +329,7 @@ class Dataface_JavascriptTool {
 	 * Returns the cache path to the compiled javascript file.
 	 */
 	private function getJavascriptCachePath(){
-		return DATAFACE_SITE_PATH.'/templates_c/'.$this->generateCacheKeyForScripts().'.js';
+		return XFTEMPLATES_C.$this->generateCacheKeyForScripts().'.js';
 	}
 	
 	
@@ -337,7 +337,7 @@ class Dataface_JavascriptTool {
 	 * Gets the manifest path for the manifest file for these scripts.
 	 */
 	private function getManifestPath(){
-		return DATAFACE_SITE_PATH.'/templates_c/'.$this->generateCacheKeyForScripts().'.manifest.js';
+		return XFTEMPLATES_C.$this->generateCacheKeyForScripts().'.manifest.js';
 	}
 	
 	
@@ -631,11 +631,11 @@ class Dataface_JavascriptTool {
 	}
 	
 	public function clearCache(){
-		$files = glob(DATAFACE_SITE_PATH.'/templates_c/*.js');
+		$files = glob(XFTEMPLATES_C.'*.js');
 		foreach($files as $f){
 			unlink($f);
 		}
-		$files = glob(DATAFACE_SITE_PATH.'/templates_c/*.manifest.js');
+		$files = glob(XFTEMPLATES_C.'*.manifest.js');
 		foreach($files as $f){
 			unlink($f);
 		}

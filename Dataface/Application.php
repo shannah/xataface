@@ -303,6 +303,37 @@ END;
 	 * @private
 	 */
 	var $sessionCookieKey;
+    
+    /**
+     * Array to keep track of "marks" on the cache.
+     * @see #markCache($table, $user)
+     *
+     * Structure:
+     * [
+     *      'app' => boolean, 
+     *      'users' => [$username => boolean], 
+     *      'tables' => [$tablename => [
+     *          'app' => boolean,
+     *          'users' => [
+     *              $username => boolean
+     *          ]
+     *      ]
+     * ]
+     * 
+     * $versionUpdates['app'] == true => Entire app requires cache update
+     * $versionUpdates['users'][$username] == true => Entire app requires cache update for user $username
+     * $versionUpdates['tables'][$tablename]['app'] == true => Table $tablename requires cache update for all users.
+     * $versionUpdates['tables'][$tablename]['users'][$username] == true => Table $tablename requires cache update for user $username
+     *
+     * There is no guarantee, at the end of the request that this structure or any of its keys will be non-null/defined
+     * do you will need to test before using.
+     * 
+     * The markCache($table, $user) method includes all logic for updating this structure.  Generally changes to the
+     * structure should only be made through that method.
+     *
+     * @since 3.0
+     */
+    private $versionUpdates;
 
 
 	/**
@@ -777,11 +808,35 @@ END;
 			//if ( @$dbinfo['persistent'] ){
 			//	$this->_db = xf_db_pconnect( $dbinfo['host'], $dbinfo['user'], $dbinfo['password'] );
 			//} else {
+                $useEnv = false;
+                if (strpos($dbinfo['host'], '$') === 0) {
+                    $parts = explode('|', $dbinfo['host']);
+                    $dbinfo['host'] = @$_ENV[substr($parts[0], 1)];
+                    if (!$dbinfo['host'] and count($parts) > 1) {
+                        $dbinfo['host'] = $parts[1];
+                    }
+                    $useEnv = true;
+                }
+                if (strpos($dbinfo['user'], '$') === 0) {
+                    $parts = explode('|', $dbinfo['user']);
+                    $dbinfo['user'] = @$_ENV[substr($parts[0], 1)];
+                    if (!$dbinfo['user'] and count($parts) > 1) {
+                        $dbinfo['user'] = $parts[1];
+                    }
+                    $useEnv = true;
+                }
+                if ($useEnv and strpos($dbinfo['password'], '$') === 0) {
+                    $parts = explode('|', $dbinfo['password']);
+                    $dbinfo['password'] = @$_ENV[substr($parts[0], 1)];
+                    if (!$dbinfo['password'] and count($parts) > 1) {
+                        $dbinfo['password'] = $parts[1];
+                    }
+                }
 
 			$this->_db = xf_db_connect( $dbinfo['host'], $dbinfo['user'], $dbinfo['password'] );
 			//}
 			if ( !$this->_db ){
-				throw new Exception('Error connecting to the database: '.xf_db_error());
+				throw new Exception('Error connecting to the database: '.xf_db_connect_error());
 
 			}
 			$this->mysqlVersion = xf_db_get_server_info($this->_db);
@@ -844,7 +899,9 @@ END;
 		}
 
 		// Include XataJax module always.
-		$mods = array('modules_XataJax'=>'modules/XataJax/XataJax.php');
+		$mods = [
+            'modules_XataJax'=>'modules/XataJax/XataJax.php'
+        ];
 
 		// We used to make g2 the default, but
 		// starting with version 3.0, we will be going back to the default
@@ -1196,14 +1253,20 @@ END;
 
 		$this->rawQuery = $query;
 
-		if ( !isset( $query['-table'] ) ) {
+		if ( empty( $query['-table'] ) ) {
+            if (!empty($query['-action'])) {
+                
+                if (!empty($this->_conf['default_table.'.$query['-action']])) {
+                    $this->_conf['default_table'] = $this->_conf['default_table.'.$query['-action']];
+                }
+            }
 		    $query['-table'] = $this->_conf['default_table'];
             $this->_conf['using_default_table'] = true;
 		}
 		$this->_currentTable = $query['-table'];
 
 
-		if ( !@$query['-action'] ) {
+		if ( empty($query['-action']) ) {
 			$query['-action'] = $this->_conf['default_action'];
             if (@$this->_conf['default_action.'.$this->_currentTable]) {
                 $query['-action'] = $this->_conf['default_action.'.$this->_currentTable];
@@ -1211,7 +1274,7 @@ END;
             
 			$this->_conf['using_default_action'] = true;
 		}
-        if (@$this->_conf['using_default_action'] and isset($this->_conf['default_params.'.$this->_currentTable])) {
+        if (!empty($this->_conf['using_default_action']) and isset($this->_conf['default_params.'.$this->_currentTable])) {
             $defaultParams = $this->_conf['default_params.'.$this->_currentTable];
             if (is_string($defaultParams)) {
                 parse_str($defaultParams, $defaultParams);
@@ -1305,6 +1368,254 @@ END;
 
 
 	}
+    
+    
+    
+    /**
+     * Method for caching plugins that retrieves a list of the "caching" commands that should be 
+     * executed.  This will return an array of "commands".  Each "command" is an array with two 
+     * keys: "user" and "table", indicating whether the "user", "table", both or neither need to
+     * have their content versions incremented.
+     * #cache
+     *
+     * Data structure:
+     *
+     * [
+     *   ['table' => $tablename:string, 'user' => $username:string]
+     * ]
+     *
+     * Meaning of commands:
+     *. 1. If $tablename and $username are both empty strings, then the command is to increment
+     *      the app version.
+     *. 2. If the $tablename is empty string but $username is not empty, then the command is to increment
+     *      the app version for the given username.
+     * 3. If the $tablename and $username are both non-empty, then the command is to increment the 
+     *      table version for the given user.
+     * 4. If the $tablename is non-empty, but the $username is empty, then the command is to increment
+     *   the table version for all users.
+     */
+    public function getCacheUpdates() {
+        $out = [];
+        if (!@$this->versionUpdates) return $out;
+        
+        if (@$this->versionUpdates['app']) {
+            $out[] = ['table' => '', 'user' => ''];
+            return $out;
+        }
+        if (@$this->versionUpdates['users']) {
+            foreach ($this->versionUpdates['users'] as $k => $v) {
+                if ($v) {
+                    $out[] = ['table' => '', 'user' => $k];
+                }
+            }
+        }
+        if (@$this->versionUpdates['tables']) {
+            foreach ($this->versionUpdates['tables'] as $k => $tableData) {
+                if (@$tableData['app']) {
+                    $out[] = ['table' => $k, 'user' => ''];
+                } else if (@$tableData['users']) {
+                    foreach ($tableData['users'] as $uk => $uVal) {
+                        if ($uVal) {
+                            $out[] = ['table' => $k, 'user' => $uk];
+                        }
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+    
+    private $manifest;
+    public function &getManifest() {
+        if (!isset($this->manifest)) {
+            $manifestPath = XFTEMPLATES_C.'manifest-'.df_get_database_version().'.php';
+            if (file_exists($manifestPath)) {
+                
+                include $manifestPath;
+                $this->manifest = &$__manifest;
+            } else {
+                $this->updateManifest(df_get_database_version());
+            }
+            
+        }
+        return $this->manifest;
+    }
+    
+    private function updateManifest($version) {
+
+        $manifest = [];
+        foreach ([XFROOT, XFAPPROOT] as $root) {
+            $directory = new \RecursiveDirectoryIterator($root);
+            $iterator = new \RecursiveIteratorIterator($directory);
+        
+            foreach ($iterator as $info) {
+                $pathname = $info->getPathname();
+                if (preg_match('/\.(php|ini|js|html|css)$/', $pathname)) {
+                    $manifest[$pathname] = true;
+                }
+            }
+        }
+        
+        
+        $manifestContents = '<'.'?php'."\n\$__manifest = ".var_export($manifest, true).';';
+        $manifestPath = XFTEMPLATES_C . 'manifest-'.$version.'.php';
+
+        $res = file_put_contents($manifestPath, $manifestContents, LOCK_EX);
+        if ($res === false) {
+            echo "Failed to update manifest.  Could not write contents to ".$manifestPath;
+            exit;
+        } else {
+            if (!file_exists($manifestPath)) {
+                echo "Manifest still doesn't exist after writing it";
+                exit;
+            } else {
+                //echo "Wrote the manifest at $manifestPath";
+                //echo file_get_contents($manifestPath);
+                //exit;
+            }
+        }
+
+        $this->manifest = $manifest;
+        
+    }
+    
+    /**
+     * Calling this method instructs Xataface to NOT cache the current response using the 
+     * scaler module. #cache
+     * @since 3.0
+     */
+    public function nocache() {
+        $this->_conf['nocache'] = true; 
+    }
+    
+    /**
+     * Sets the cache expiry in seconds.  This is used by the Scaler module
+     * to set the memcache expiry.#cache
+     * @since 3.0
+     */
+    public function setCacheExpiry($expires) {
+        $this->_conf['cache_expiry'] = $expires;
+    }
+    
+    /**
+     * Gets the cache expiry in seconds.  #cache
+     * @return mixed The cache expiry for this response.  Or null if none is explicitly set.
+     * @since 3.0
+     */
+    public function getCacheExpiry() {
+        if (isset($this->_conf['cache_expiry'])) {
+            return $this->_conf['cache_expiry'];
+        }
+        return null;
+    }
+    
+    
+    
+    /**
+     * Marks the cache for a particular user/table combination to provide hints
+     * to caching solution that it should invalidate its cache for that table/user
+     * combination at the end of the request. #cache
+     * 
+     * @param string $table The table name or null.  If null is provided, then this applies to all tables.
+     * @param string $user The username of the user or null.  If null is provided then this applies to all users.
+     * @return void
+     * @since 3.0
+     */
+    public function markCache($table = null, $user = null) {
+        if (!isset($this->versionUpdates)) {
+            $this->versionUpdates = [];
+        }
+        if (@$this->versionUpdates['app']) {
+            // If we are already updating the entire app, then we don't need to 
+            // do anything.  The entire thing is invalidated.
+            return;
+        }
+        if (!$table and !$user) {
+            // This updates the entire application version.
+            if (!@$this->versionUpdates['app']) {
+                $this->versionUpdates['app'] = true;
+            }
+            if (isset($this->versionUpdates['users'])) {
+                unset($this->versionUpdates['users']);
+            }
+            if (isset($this->versionUpdates['tables'])) {
+                unset($this->versionUpdates['tables']);
+            }
+            return;
+        }
+
+        if ($table and !$user) {
+            // This updates a particular table
+            if (!isset($this->versionUpdates['tables'])) {
+                $this->versionUpdates['tables'] = [];
+            }
+            $tables =& $this->versionUpdates['tables'];
+            if (!isset($tables[$table])) {
+                // This is our first foray into this table.
+                // we initialize it with the 'app' key true
+                // to indicate that the table is invalidated app-wide
+                $tables[$table] = ['app' => true];
+                return;
+            }
+            $tableData =& $tables[$table];
+            if (@$tableData['app']) {
+                // This table is already invalidated app-wide, so we don't need to do anything.
+                return;
+            }
+            
+            if (isset($tableData['users'])) {
+                // If we previously invalidated a particular user for this table,
+                // we don't need that anymore because we are invalidating the whole table.
+                unset($tableData['users']);
+            }
+            // We set the 'app' key true to indicate that this table is invalidated app-wide
+            $tableData['app'] = true;
+            return;
+            
+        }
+        
+        if (!$table and $user) {
+            // This updates a particular user app-wide
+            if (!isset($this->versionUpdates['users'])) {
+                $this->versionUpdates['users'] = [];
+            }
+            $users =& $this->versionUpdates['users'];
+            if (!@$users[$user]) {
+                $users[$user] = true;
+            }
+            return;
+        }
+        
+        if ($table and $user) {
+            // Invalidating particular user for particular table.
+            if (!isset($this->versionUpdates['tables'])) {
+                $this->versionUpdates['tables'] = [];
+            }
+            $tables =& $this->versionUpdates['tables'];
+            if (!isset($tables[$table])) {
+                // This is our first foray into this table.
+                // we initialize it with the 'app' key true
+                // to indicate that the table is invalidated app-wide
+                $tables[$table] = [];
+            }
+            $tableData =& $tables[$table];
+            if (@$tableData['app']) {
+                // This table is already invalidated for entire app
+                // we don't need to invalidate for this user.
+                return;
+            }
+            if (!isset($tableData['users'])) {
+                $tableData['users'] = [];
+            }
+            
+            $tableData['users'][$user] = true;
+            return;
+        }
+        
+        
+        
+        
+    }
 
 
 	/**
@@ -1777,6 +2088,10 @@ END
 			unset($contextMasks[$k]);
 		}
 	}
+    
+    public function incrementVersion($tableName = null, $userName = null) {
+        
+    }
 
 	/**
 	 * @brief Checks is the current record has been loaded yet.
@@ -2699,7 +3014,7 @@ END
 	function handleRequest($disableCache=false){
 
 
-		if ( !$disableCache and (@$_GET['-action'] != 'getBlob') and isset( $this->_conf['_output_cache'] ) and @$this->_conf['_output_cache']['enabled'] and count($_POST) == 0){
+		if ( !$disableCache and (@$_GET['-action'] != 'getBlob') and isset( $this->_conf['_output_cache'] ) and @$this->_conf['_output_cache']['enabled'] and empty($_POST) == 0){
 			import(XFROOT.'Dataface/OutputCache.php');
 			$oc = new Dataface_OutputCache($this->_conf['_output_cache']);
 			$oc->ob_start();
@@ -2708,7 +3023,7 @@ END
 		import(XFROOT.'Dataface/ActionTool.php');
 		import(XFROOT.'Dataface/PermissionsTool.php');
 		import(XFROOT.'Dataface/Table.php');
-
+        
 		if ( isset($this->_conf['_modules']) and count($this->_conf['_modules']) > 0 ){
 			$mt = Dataface_ModuleTool::getInstance();
 			foreach ($this->_conf['_modules'] as $modname=>$modpath){
@@ -2970,8 +3285,11 @@ END
 			$action = array('name'=>$query['-action'], 'label'=>$query['-action']);
 		}
 
-        if (@$action['page_menu_category']) {
+        if (!empty($action['page_menu_category'])) {
             $this->_conf['page_menu_category'] = $action['page_menu_category'];
+        }
+        if (!empty($action['nocache'])) {
+            $this->nocache();
         }
 		// Step 1:  See if the delegate class has a handler.
 
@@ -3449,7 +3767,7 @@ END
 			}
 			//unset($tableObj);
 		}
-		if ( !@$app->_conf['debug'] ){
+		if ( empty($app->_conf['debug']) ){
             try {
 			    @eval('$parsed = "'.$expression.'";');
             } catch (ParseError $e) {

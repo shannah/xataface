@@ -30,6 +30,31 @@
 if ( !defined('XATAFACE_INI_EXTENSION') ){
 	define('XATAFACE_INI_EXTENSION', '');
 }
+if (!defined('XFTEMPLATES_C')) {
+    $tmpDir = sys_get_temp_dir();
+    if ($tmpDir) {
+        $included_files = get_included_files();
+        if (!empty($included_files)) {
+            $entryScript = $included_files[0];
+            $templates_c = $tmpDir . dirname($entryScript) . DIRECTORY_SEPARATOR . 'templates_c';
+            if (!is_dir($templates_c)) {
+                if (mkdir($templates_c, 0777, true)) {
+                    define('XFTEMPLATES_C', $templates_c.DIRECTORY_SEPARATOR);
+                } else {
+                    define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
+                }
+            } else {
+                define('XFTEMPLATES_C', $templates_c.DIRECTORY_SEPARATOR);
+            }    
+        } else {
+            define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
+        }
+    } else {
+        define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
+    }
+}
+
+
 //Prevent Magic Quotes from affecting scripts, regardless of server settings
 
 //Make sure when reading file data,

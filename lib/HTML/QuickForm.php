@@ -293,7 +293,7 @@ class HTML_QuickForm extends HTML_Common {
 
 
     function _setSubmitValues($vals, $files){
-    	if (1 == get_magic_quotes_gpc() and !defined('MAGIC_QUOTES_STRIPPED_SLASHES')) {
+    	if (version_compare(PHP_VERSION, '7.4') < 0 and 1 == get_magic_quotes_gpc() and !defined('MAGIC_QUOTES_STRIPPED_SLASHES')) {
 			$this->_submitValues = $this->_recursiveFilter('stripslashes', $vals);
 			foreach ($files as $keyFirst => $valFirst) {
 				foreach ($valFirst as $keySecond => $valSecond) {

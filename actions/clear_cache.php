@@ -22,7 +22,11 @@ class dataface_actions_clear_cache {
     }
     
 	function clear_cache(&$params){
-        $liveCache = DATAFACE_SITE_PATH . DIRECTORY_SEPARATOR . "templates_c";
+        $liveCache = XFTEMPLATES_C;
+        if ($liveCache[strlen($liveCache)-1] == DIRECTORY_SEPARATOR) {
+            $liveCache = substr($liveCache, 0, strlen($liveCache)-1);
+        }
+        
         //echo $liveCache;exit;
         $app = Dataface_Application::getInstance();
         $query = $app->getQuery();

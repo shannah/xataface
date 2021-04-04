@@ -94,7 +94,6 @@ class dataface_actions_install {
                 
             }
             
-            
             $res = xf_db_query("update dataface__version set `version`='".addslashes(df_get_file_system_version(true))."'", df_db());
             if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
             
@@ -129,4 +128,6 @@ class dataface_actions_install {
 
 		
 	}
+    
+    
 }

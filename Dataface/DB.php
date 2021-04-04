@@ -59,10 +59,10 @@ class Dataface_DB {
 		}
 		$this->_db = $db;
 		if ( @$this->app->_conf['cache_queries'] and !$this->_fcache_base_path ){
-			if ( is_writable(DATAFACE_SITE_PATH.'/templates_c') ){
-				$this->_fcache_base_path = DATAFACE_SITE_PATH.'/templates_c/query_results';
+			if ( is_writable(XFTEMPLATES_C) ){
+				$this->_fcache_base_path = XFTEMPLATES_C.'query_results';
 			} else {
-				$this->_fcache_base_path = DATAFACE_PATH.'/Dataface/templates_c/query_results';
+				$this->_fcache_base_path = XFTEMPLATES_C.'query_results';
 			}
 
 			if ( !file_exists($this->_fcache_base_path) ){

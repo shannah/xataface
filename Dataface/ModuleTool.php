@@ -59,6 +59,9 @@ class Dataface_ModuleTool {
 		return $out;
 	}
 	
+    private $checkedFsVersion = [];
+    private $fsVersionCache = [];
+    
 	/**
 	 * @brief Returns the file system version of the specified module.
 	 *
@@ -72,14 +75,19 @@ class Dataface_ModuleTool {
 	 * @return int The file system version.
 	 */
 	public function getFsVersion($modname, $path){
-		$versionPath = dirname($path).DIRECTORY_SEPARATOR.'version.txt';
-		if ( !file_exists($versionPath) ) return 0;
-		$str = trim(file_get_contents($versionPath));
-		if ( preg_match('/(\d+)$/', $str, $matches) ){
-			return intval($matches[1]);
-		} else {
-			return 0;
-		}
+        if (!isset($this->checkedFsVersion[$modname.':'.$path])) {
+            $this->checkedFsVersion[$modname.':'.$path] = true;
+    		$versionPath = dirname($path).DIRECTORY_SEPARATOR.'version.txt';
+    		if ( !file_exists($versionPath) ) return 0;
+    		$str = trim(file_get_contents($versionPath));
+    		if ( preg_match('/(\d+)$/', $str, $matches) ){
+    			$this->fsVersionCache[$modname.':'.$path] = intval($matches[1]);
+    		} else {
+    			$this->fsVersionCache[$modname.':'.$path] = 0;
+    		}
+        }
+        return $this->fsVersionCache[$modname.':'.$path];
+		
 	}
 	
 	/**
@@ -118,15 +126,15 @@ class Dataface_ModuleTool {
 				if ( !$res ) throw new Exception(xf_db_error(df_db()));
 			}
 			
-			foreach ($updates as $update ){
+            foreach ($updates as $update ){
 				$method = 'update_'.$update;
 				$res = $installer->$method();
 				if ( PEAR::isError($res) ) return $res;
-				$res = xf_db_query("update dataface__modules set `module_version`='".addslashes($update)."'", df_db());
+				$res = xf_db_query("update dataface__modules set `module_version`='".addslashes($update)."' where module_name='".addslashes($modname)."'", df_db());
 				if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);	
 			}
 			
-			$res = xf_db_query("update dataface__modules set `module_version`='".addslashes($fsversion)."'", df_db());
+			$res = xf_db_query("update dataface__modules set `module_version`='".addslashes($fsversion)."' where module_name='".addslashes($modname)."'", df_db());
 			if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 			
 			

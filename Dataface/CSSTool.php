@@ -91,11 +91,11 @@ class Dataface_CSSTool {
 	}
 	
 	private function getCSSCachePath($stylesheets){
-		return DATAFACE_SITE_PATH.'/templates_c/'.$this->generateCacheKeyForScripts($stylesheets).'.css';
+		return XFTEMPLATES_C.$this->generateCacheKeyForScripts($stylesheets).'.css';
 	}
 	
 	private function getManifestPath($stylesheets){
-		return DATAFACE_SITE_PATH.'/templates_c/'.$this->generateCacheKeyForScripts($stylesheets).'.manifest.css';
+		return XFTEMPLATES_C.$this->generateCacheKeyForScripts($stylesheets).'.manifest.css';
 	}
 	
 	private function writeManifest($stylesheets, $included){
@@ -234,11 +234,11 @@ class Dataface_CSSTool {
 	
 	
 	public function clearCache(){
-		$files = glob(DATAFACE_SITE_PATH.'/templates_c/*.css');
+		$files = glob(XFTEMPLATES_C.'*.css');
 		foreach($files as $f){
 			unlink($f);
 		}
-		$files = glob(DATAFACE_SITE_PATH.'/templates_c/*.manifest.css');
+		$files = glob(XFTEMPLATES_C.'*.manifest.css');
 		foreach($files as $f){
 			unlink($f);
 		}

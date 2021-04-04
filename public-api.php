@@ -1175,11 +1175,11 @@ function df_tz_or_offset(){
 	
     
     function xf_opcache_path($filepath) {
-        return XFAPPROOT . 'templates_c' . DIRECTORY_SEPARATOR . 'xf_opcache' . DIRECTORY_SEPARATOR . basename($filepath) . md5($filepath) . '.php';
+        return XFTEMPLATES_C . 'xf_opcache' . DIRECTORY_SEPARATOR . basename($filepath) . md5($filepath) . '.php';
     }
     
     function xf_opcache_query_path($sql) {
-        return XFAPPROOT . 'templates_c' . DIRECTORY_SEPARATOR . 'xf_opcache_queries' . DIRECTORY_SEPARATOR . md5($sql) . '.php';
+        return XFTEMPLATES_C . 'xf_opcache_queries' . DIRECTORY_SEPARATOR . md5($sql) . '.php';
     }
     
     function xf_opcache_is_query_cached($sql) {
@@ -1231,8 +1231,27 @@ function df_tz_or_offset(){
     }
     
     function xf_is_readable($file) {
+        $app = Dataface_Application::getInstance();
+        $query =& $app->getQuery();
+        
+        if (!empty($app->_conf['use_manifest'])) {
+
+            $manifest = $app->getManifest();
+            if (!empty($manifest)) {
+                            
+                return !empty($manifest[$file]);
+            }
+            
+        }
         return is_readable($file);
         
+    }
+    
+    function xf_touch($tablename, $record = null) {
+        if (!class_exists('Dataface_IO')) {
+            import(XFROOT.'Dataface/IO.php');
+        }
+        Dataface_IO::touchTable($tablename, $record);
     }
     
     

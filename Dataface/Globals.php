@@ -19,9 +19,9 @@
  *-------------------------------------------------------------------------------
  */
 $GLOBALS['Dataface_Globals_Templates'] = dirname(__FILE__).DIRECTORY_SEPARATOR."templates";
-$GLOBALS['Dataface_Globals_Templates_c'] = dirname(__FILE__).DIRECTORY_SEPARATOR."templates_c";
+$GLOBALS['Dataface_Globals_Templates_c'] = XFTEMPLATES_C;
 $GLOBALS['Dataface_Globals_Local_Templates'] = DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR."templates";
-$GLOBALS['Dataface_Globals_Local_Templates_c'] = DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR."templates_c";
+$GLOBALS['Dataface_Globals_Local_Templates_c'] = XFTEMPLATES_C;
 $GLOBALS['Dataface_Globals_BaseUrl'] = DATAFACE_URL;
 $GLOBALS['Dataface_Globals_BasePath'] = DATAFACE_PATH;
 $GLOBALS['Dataface_Globals_Local_Plugins'] = DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'plugins';

@@ -1384,6 +1384,28 @@ class Dataface_Table {
 		}
 		return $this->creatorField;
 	}
+    
+    private $userFields;
+    /**
+     * For caching primarily, a table may mark a field as referencing a user for which
+     * a particular record is targeted.  This will cause a "phantom" table to be created
+     * named _my_{$tablename} that will be "marked" via Dataface_Application::markCache()
+     * for the user any time the record is modified.
+     *
+     * @since 3.0
+     */
+    function getUserFields() {
+        if (!isset($this->userFields)) {
+            $this->userFields = [];
+    		foreach ($this->fields(false,true) as $field){
+    			if (!empty($field['username']) or !empty($field['userid'])) {
+    			    $this->userFields[] = $field['name'];
+    			}
+    		}
+            
+        }
+        return $this->userFields;
+    }
 
 	/**
 	 * @brief Gets the field that is used to track the version of this record, if one
@@ -4505,7 +4527,7 @@ class Dataface_Table {
 	 */
 
 
-
+    private $checkedDelegate;
 	/**
 	 * @brief Returns a reference to the Table's delegate class.
 	 * @return DelegateClass
@@ -4513,7 +4535,8 @@ class Dataface_Table {
 	 */
 	function &getDelegate(){
 		$out = null;
-		if ( !isset( $this->_delegate ) ){
+		if ( !$this->checkedDelegate ){
+            $this->checkedDelegate = true;
 			if ( $this->_hasDelegateFile() ){
 
 				$this->_loadDelegate();

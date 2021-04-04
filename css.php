@@ -1,7 +1,7 @@
 <?php
 if ( !defined('DATAFACE_SITE_PATH') ) die("Cannot be called directly");
 if ( !$_GET['--id'] ) die("No id specified");
-$path = DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'templates_c'.DIRECTORY_SEPARATOR.basename($_GET['--id']).'.css';
+$path = XFTEMPLATES_C.basename($_GET['--id']).'.css';
 if ( !file_exists($path) ){
 	dir("File could not be found");
 }

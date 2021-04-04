@@ -288,7 +288,7 @@ class FeedHtmlField {
 	 * Creates a new instance of FeedHtmlField.
 	 * @param  $string: if given, sets the rawFieldContent property
 	 */
-	function FeedHtmlField($parFieldContent) {
+	function __construct($parFieldContent) {
 		if ($parFieldContent) {
 			$this->rawFieldContent = $parFieldContent;
 		}
@@ -532,7 +532,7 @@ class FeedCreator extends HtmlDescribable {
 	 * @param int        length the maximum length the string should be truncated to
 	 * @return string    the truncated string
 	 */
-	function iTrunc($string, $length) {
+	static function iTrunc($string, $length) {
 		if (strlen($string)<=$length) {
 			return $string;
 		}
@@ -709,7 +709,7 @@ class FeedDate {
 	 * Accepts RFC 822, ISO 8601 date formats as well as unix time stamps.
 	 * @param mixed $dateString optional the date this FeedDate will represent. If not specified, the current date and time is used.
 	 */
-	function FeedDate($dateString="") {
+	function __construct($dateString="") {
 		if ($dateString=="") $dateString = date("r");
 		
 		if (is_integer($dateString)) {
@@ -885,7 +885,7 @@ class RSSCreator091 extends FeedCreator {
 	 */
 	var $RSSVersion;
 
-	function RSSCreator091() {
+	function __construct() {
 		$this->_setRSSVersion("0.91");
 		$this->contentType = "application/rss+xml";
 	}
@@ -1020,7 +1020,7 @@ class RSSCreator091 extends FeedCreator {
  */
 class RSSCreator20 extends RSSCreator091 {
 
-    function RSSCreator20() {
+    function __construct() {
         parent::_setRSSVersion("2.0");
     }
     
@@ -1037,7 +1037,7 @@ class RSSCreator20 extends RSSCreator091 {
  */
 class PIECreator01 extends FeedCreator {
 	
-	function PIECreator01() {
+	function __construct() {
 		$this->encoding = "utf-8";
 	}
     
@@ -1096,7 +1096,7 @@ class PIECreator01 extends FeedCreator {
  */
 class AtomCreator03 extends FeedCreator {
 
-	function AtomCreator03() {
+	function __construct() {
 		$this->contentType = "application/atom+xml";
 		$this->encoding = "utf-8";
 	}
@@ -1164,7 +1164,7 @@ class AtomCreator03 extends FeedCreator {
  */
 class MBOXCreator extends FeedCreator {
 
-	function MBOXCreator() {
+	function __construct() {
 		$this->contentType = "text/plain";
 		$this->encoding = "ISO-8859-15";
 	}
@@ -1251,7 +1251,7 @@ class MBOXCreator extends FeedCreator {
  */
 class OPMLCreator extends FeedCreator {
 
-	function OPMLCreator() {
+	function __construct() {
 		$this->encoding = "utf-8";
 	}
     
