@@ -36,8 +36,10 @@ if (!defined('XFTEMPLATES_C')) {
         $included_files = get_included_files();
         if (!empty($included_files)) {
             $entryScript = $included_files[0];
-            $templates_c = $tmpDir . dirname($entryScript) . DIRECTORY_SEPARATOR . 'templates_c';
+            
+            $templates_c = dirname($entryScript) . DIRECTORY_SEPARATOR . 'templates_c';
             if (!is_dir($templates_c)) {
+                $templates_c = $tmpDir . $templates_c;
                 if (mkdir($templates_c, 0777, true)) {
                     define('XFTEMPLATES_C', $templates_c.DIRECTORY_SEPARATOR);
                 } else {
