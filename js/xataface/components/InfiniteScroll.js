@@ -25,7 +25,7 @@
         }
         
         if (!this.scrollEl) {
-            this.scrollEl = document.querySelector('body');
+            this.scrollEl = document;
         }
         
         if (!this.parentEl) {
@@ -60,8 +60,17 @@
                 return;
             }
 
-            if (self.scrollEl.scrollTop + self.scrollEl.clientHeight >= self.scrollEl.scrollHeight) {
-
+            var scrollTop = self.scrollEl.scrollTop;
+            var clientHeight = self.scrollEl.clientHeight;
+            var scrollHeight = self.scrollEl.scrollHeight;
+            if (self.scrollEl === document.body) {
+                // For some reason scrolling on the body reports the clientHeight to be the full scroll height
+                // in some cases.
+                scrollTop = document.documentElement.scrollTop;
+                clientHeight = Math.min(window.innerHeight, clientHeight);
+            }
+            
+            if (scrollTop + clientHeight >= scrollHeight) {
                 self.loadMore();
             }
         }, true);
