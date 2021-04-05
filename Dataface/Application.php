@@ -1488,6 +1488,10 @@ END;
         $this->_conf['nocache'] = true; 
     }
     
+    public function cache() {
+        $this->_conf['nocache'] = false;
+    }
+    
     /**
      * Sets the cache expiry in seconds.  This is used by the Scaler module
      * to set the memcache expiry.#cache
@@ -3467,13 +3471,16 @@ END
 				}
 				$resp['errorMessage'] = $errorMessage;
 				$resp['errorCode'] = $errorCode;
+                $this->nocache();
 				echo json_encode($resp);
 				exit;
 			}
 			if ($ex->getCode() == DATAFACE_E_NOTICE) {
+                $this->nocache();
 				df_display(array('body'=>'<div class="portalMessageWrapper"><div class="responsive-content"><div class="portalMessage"><ul><li>'.htmlspecialchars($ex->getMessage()).'</li></ul></div></div></div>'), 'Dataface_Main_Template.html');
 				return;
 			}
+            $this->nocache();
 			$uuid = df_error_log($ex);
 			header('HTTP/1.0 500 Internal Server Error', true);
 
