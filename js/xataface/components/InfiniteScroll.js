@@ -115,7 +115,11 @@
             .replace(/\?-skip=[^&]*/, '?')
             .replace(/&-limit=[^&]*/, '')
             .replace(/\?-limit=[^&]*/, '?');
-        currentQuery += '&-skip='+skip+'&-limit='+pageSize;
+        var joinChar = '&';
+        if (currentQuery.indexOf('?') < 0) {
+            joinChar = '?';
+        }
+        currentQuery += joinChar + '-skip='+skip+'&-limit='+pageSize;
         return currentQuery;
     }
     
