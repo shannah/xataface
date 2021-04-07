@@ -2,6 +2,7 @@
 class XFProject {
     private $basedir;
     var $dbName;
+    var $bootstrapSqlFiles;
 
     function __construct($basedir) {
         $this->basedir = $basedir;
@@ -173,6 +174,8 @@ class XFProject {
      */
     function create_deny_all_htaccess($path) {
         $out = <<<END
+RedirectMatch 404 /templates_c
+RedirectMatch 404 /\.git
 # Apache 2.2
 <IfModule !authz_core_module>
 	Order Deny,Allow
@@ -584,18 +587,34 @@ END;
        
         
         $install_sql_path = $this->basedir . DIRECTORY_SEPARATOR . 'install.sql';
-
         
-
-        file_put_contents($install_sql_path, <<<END
+        $bootstrapSqlString = <<<END
 CREATE DATABASE IF NOT EXISTS `{$conf['_database']['name']}`;
 USE `{$conf['_database']['name']}`;
-CREATE TABLE IF NOT EXISTS `test` (
-    test_id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    test_field VARCHAR(100) 
-);
+
+
 END
-    );
+;
+        if (!empty($this->bootstrapSqlFiles) and is_array($this->bootstrapSqlFiles)) {
+            foreach ($this->bootstrapSqlFiles as $bootstrapSqlFile) {
+                if (file_exists($bootstrapSqlFile)) {
+                    echo "Adding bootstrap SQL file $bootstrapSqlFile\n";
+                    $bootstrapSqlString .= "\r\n" . preg_replace('/^CREATE (DATABASE|SCHEMA) .*$/', '', file_get_contents($bootstrapSqlFile)) ."\r\n";
+                }
+                
+            }
+        } 
+        
+        $bootstrapSqlString .= <<<END
+            
+        CREATE TABLE IF NOT EXISTS `test` (
+            test_id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            test_field VARCHAR(100) 
+        );
+END
+;
+        
+        file_put_contents($install_sql_path, $bootstrapSqlString);
         echo "Bootstrapping database...";
         exec('sh '.escapeshellarg($mysql).' init < '.escapeshellarg($install_sql_path), $buf, $res);
         if ($res !== 0) {

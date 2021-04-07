@@ -35,6 +35,17 @@ function strip_flags($args) {
     }
     return $out;
 }
+function get_bootstrap_sql($args) {
+    $out = [];
+    foreach ($args as $arg) {
+        if (strstr($arg, ".sql") === ".sql") {
+            if (file_exists($arg)) {
+                $out[] = $arg;
+            }
+        }
+    }
+    return $out;
+}
 
 function xf_create_run($argv) {
 	$flags = extract_flags($argv);
@@ -45,11 +56,12 @@ function xf_create_run($argv) {
 	}
 	$p = $argv[1];
 	echo "Create project at {$p}\n";
-	$proj = new XFPRoject($p);
+	$proj = new XFProject($p);
 	if (@$flags['db.name']) {
 	    $proj->dbName = $flags['db.name'];
 	}
-
+    $proj->bootstrapSqlFiles = get_bootstrap_sql($argv);
+    
 	$proj->create_scaffold();
 }
 if (@$argv) {
