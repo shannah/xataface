@@ -146,6 +146,10 @@ class Dataface_QueryBuilder {
             // Newer versions of MariaDB work MUCH better if you provide an order by clause always
             $this->alwaysAddOrderBy = false;
         }
+        if (strstr($tablename, '_tmp_') === $tablename) {
+            
+            $this->alwaysAddOrderBy = false;
+        }
 
 		$keys = array_keys( $this->_query );
 		foreach ($keys as $key){
