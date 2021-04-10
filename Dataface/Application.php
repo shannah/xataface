@@ -1044,9 +1044,10 @@ END;
 		if ( !isset($this->_conf['default_table'] ) ){
 			// The default table is the table that is used if no other table is specified.
             
-            if (isset($this->_conf['default_tables']) and @$_REQUEST['-action']) {
-                $defaultTable = @$this->_conf['default_tables'][$_REQUEST['-action']];
-                if ($defaultTable) {
+            if (isset($this->_conf['default_tables']) and !empty($_REQUEST['-action'])) {
+                
+                if (!empty($this->_conf['default_tables'][$_REQUEST['-action']])) {
+                    $defaultTable = $this->_conf['default_tables'][$_REQUEST['-action']];
                     if ($defaultTable == '_') {
                         $defaultTable = '_tmp_null';
                     }
@@ -3293,6 +3294,9 @@ END
             $this->_conf['page_menu_category'] = $action['page_menu_category'];
         }
         if (!empty($action['nocache'])) {
+            $this->nocache();
+        }
+        if ($table->getAttribute('nocache')) {
             $this->nocache();
         }
 		// Step 1:  See if the delegate class has a handler.

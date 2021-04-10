@@ -1253,10 +1253,5 @@ function df_tz_or_offset(){
         }
         Dataface_IO::touchTable($tablename, $record);
     }
-    
-    
-    
-    
-	
-        
+      
 } // end if ( !defined( DATAFACE_PUBLIC_API_LOADED ) ){

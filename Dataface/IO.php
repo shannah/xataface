@@ -2584,8 +2584,6 @@ class Dataface_IO {
 		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 	}
     
-    
-    
     /**
      * Marks the modification time for a table, and updates the cache version.
      * @param string $table The tablename
