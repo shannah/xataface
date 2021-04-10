@@ -3304,7 +3304,16 @@ END
 		$delegate = $table->getDelegate();
 		$handled = false;
 		if ( method_exists($delegate,'handleRequest') ){
-			$result = $delegate->handleRequest();
+            try {
+                $result = $delegate->handleRequest();
+            } catch (xf\core\XFException $ex) {
+                if ($ex->getClientErrorCode() >= 400 and $ex->getClientErrorCode() < 500) {
+                    $result = Dataface_Error::permissionDenied($ex->getClientErrorMessage(), ['cause' => $ex]);
+                } else {
+                    throw $ex;
+                }
+            }
+			
 			if ( PEAR::isError($result) and $result->getCode() === DATAFACE_E_REQUEST_NOT_HANDLED ){
 				$handled = false;
 			} else if ( PEAR::isError($result) ){
@@ -3433,8 +3442,15 @@ END
 
 				if ( method_exists($handler, 'handle') ){
 
-
-					$result = $handler->handle($doParams);
+                    try {
+                        $result = $handler->handle($doParams);
+                    } catch (xf\core\XFException $ex) {
+                        if ($ex->getClientErrorCode() >= 400 and $ex->getClientErrorCode() < 500) {
+                            $result = Dataface_Error::permissionDenied($ex->getClientErrorMessage(), ['cause' => $ex]);
+                        } else {
+                            throw $ex;
+                        }
+                    }
 					if ( PEAR::isError($result) and $result->getCode() === DATAFACE_E_REQUEST_NOT_HANDLED ){
 						continue;
 					}
