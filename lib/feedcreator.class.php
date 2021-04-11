@@ -183,7 +183,7 @@ class FeedItem extends HtmlDescribable {
 	/**
 	 * Optional attributes of an item.
 	 */
-	var $author, $authorEmail, $image, $category, $comments, $guid, $source, $creator, $enclosure;
+	var $author, $authorEmail, $image, $category, $comments, $guid, $source, $creator, $enclosure, $podcast;
 	
 	/**
 	 * Publishing date of an item. May be in one of the following formats:
@@ -467,7 +467,7 @@ class FeedCreator extends HtmlDescribable {
 	/**
 	 * Optional attributes of a feed.
 	 */
-	var $syndicationURL, $image, $language, $copyright, $pubDate, $lastBuildDate, $editor, $editorEmail, $webmaster, $category, $docs, $ttl, $rating, $skipHours, $skipDays;
+	var $syndicationURL, $image, $language, $copyright, $pubDate, $lastBuildDate, $editor, $editorEmail, $webmaster, $category, $docs, $ttl, $rating, $skipHours, $skipDays, $itunes;
 
 	/**
 	* The url of the external xsl stylesheet used to format the naked rss feed.
@@ -904,10 +904,15 @@ class RSSCreator091 extends FeedCreator {
 	 * @return    string    the feed's complete text 
 	 */
 	function createFeed() {
-		$feed = "<?xml version=\"1.0\" encoding=\"".$this->encoding."\"?>\n";
+        $xmlns = 'xmlns:podcast="https://podcastindex.org/namespace/1.0" ';
+        if (!empty($this->itunes)) {
+            $xmlns .= 'xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"';
+        }
+        
+		$feed = "<?xml version=\"1.0\" encoding=\"".$this->encoding."\" ?>\n";
 		$feed.= $this->_createGeneratorComment();
 		$feed.= $this->_createStylesheetReferences();
-		$feed.= "<rss version=\"".$this->RSSVersion."\">\n"; 
+		$feed.= "<rss $xmlns version=\"".$this->RSSVersion."\">\n"; 
 		$feed.= "    <channel>\n";
 		$feed.= "        <title>".FeedCreator::iTrunc(df_escape($this->title),100)."</title>\n";
 		$this->descriptionTruncSize = 500;
@@ -917,6 +922,31 @@ class RSSCreator091 extends FeedCreator {
 		$feed.= "        <lastBuildDate>".df_escape($now->rfc822())."</lastBuildDate>\n";
 		$feed.= "        <generator>".FEEDCREATOR_VERSION."</generator>\n";
         $feed.= "        <author>".df_escape($this->author)."</author>\n";
+        if (!empty($this->itunes)) {
+            if (is_array($this->itunes)) {
+                foreach ($this->itunes as $k=>$v) {
+                    if (is_array($v)) {
+                        foreach ($v as $vi) {
+                            if ($k == 'category') {
+                                $feed .= "        <itunes:$k text=\"".df_escape($vi)."\"/>\n";
+                            } else {
+                                $feed .= "        <itunes:$k>".df_escape($vi)."</itunes:$k>\n";
+                            }
+                        }
+                    } else {
+                        if ($k == 'category') {
+                            $feed .= "        <itunes:$k text=\"".df_escape($v)."\"/>\n";
+                        } else {
+                            $feed .= "        <itunes:$k>".df_escape($v)."</itunes:$k>\n";
+                        }
+                    }
+                
+                }
+            } else {
+                $feed .= "        " . $this->itunes ."\n";
+            }
+            
+        }
 		if ($this->image!=null) {
 			$feed.= "        <image>\n";
 			$feed.= "            <url>".$this->image->url."</url>\n"; 
@@ -1000,6 +1030,18 @@ class RSSCreator091 extends FeedCreator {
 			if ($this->items[$i]->guid!="") {
 				$feed.= "            <guid>".df_escape($this->items[$i]->guid)."</guid>\n";
 			}
+            if (!empty($this->items[$i]->podcast)) {
+                foreach ($this->items[$i]->podcast as $k=>$v) {
+                    if (is_array($v)) {
+                        $feed .= "            <podcast:$k ";
+                        foreach ($v as $vk=>$vv) {
+                            $feed .= "$vk=\"".df_escape($vv)."\" ";
+                        }
+                        $feed .= "/>\n";
+                    }
+                    
+                }
+            }
 			$feed.= $this->_createAdditionalElements($this->items[$i]->additionalElements, "        ");
 			$feed.= "        </item>\n";
 		}

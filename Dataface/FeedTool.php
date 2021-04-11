@@ -266,6 +266,9 @@ class Dataface_FeedTool {
 		$item->source = $data['source']; 
 		$item->author = $data['author'];
         $item->enclosure = $data['enclosure'];
+        if (!empty($data['podcast'])) {
+            $item->podcast = $data['podcast'];
+        }
 		return $item;
 	}
 	
@@ -296,7 +299,9 @@ class Dataface_FeedTool {
         } else {
             $rss->author= $app->getSiteTitle();
         }
-		
+		if (!empty($feed_data['itunes'])) {
+		    $rss->itunes = $feed_data['itunes'];
+		}
 		//optional
 		//$rss->descriptionTruncSize = 500;
 		//$rss->descriptionHtmlSyndicated = true;
