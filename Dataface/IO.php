@@ -174,7 +174,7 @@ class Dataface_IO {
 	 *				the real table. (or a deleted table).
 	 *
 	 */
-	function read($query='', &$record, $tablename=null){
+	function read($query, &$record, $tablename=null){
 		$app =& Dataface_Application::getInstance();
 		if ( !is_a($record, "Dataface_Record") ){
 			throw new Exception(

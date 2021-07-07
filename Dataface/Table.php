@@ -2569,7 +2569,7 @@ class Dataface_Table {
 		// First we will see if the delegate class defines as custom description.
 		$delegate =& $this->getDelegate();
 		$delegate_property_name = str_replace(':', '_', $propertyName);
-		if ( method_exists($delegate, $fieldname.'__'.$delegate_property_name) ){
+		if (isset($delgate) and method_exists($delegate, $fieldname.'__'.$delegate_property_name) ){
 
 			if ( !isset( $params['record'] ) ) $params['record'] = null;
 			$methodname = $fieldname.'__'.$delegate_property_name;
@@ -2641,7 +2641,7 @@ class Dataface_Table {
 		$conf = array_merge($gConf, $conf);
 		$app =& Dataface_Application::getInstance();
 		$appDel =& $app->getDelegate();
-		if ( method_exists($appDel,'decorateFieldsINI') ){
+		if (isset($appDel) and method_exists($appDel,'decorateFieldsINI') ){
 			$appDel->decorateFieldsINI($conf, $this);
 		}
 
@@ -4054,7 +4054,7 @@ class Dataface_Table {
 		if ( !isset($this->_cookedValuelists[$name]) ){
 			$this->_cookedValuelists[$name] = null;
 			$delegate =& $this->getDelegate();
-			if ( method_exists($delegate, 'valuelist__'.$name) ){
+			if (isset($delegate) and method_exists($delegate, 'valuelist__'.$name) ){
 				$res = call_user_func(array(&$delegate, 'valuelist__'.$name));
 				if ( is_array($res) ) $this->_cookedValuelists[$name] = $res;
 			}
@@ -4602,7 +4602,7 @@ class Dataface_Table {
 				}
 			}
 
-			if ( method_exists($this->_delegate, 'tablePermissions') ){
+			if ( isset($this->_delegate) and method_exists($this->_delegate, 'tablePermissions') ){
 				// table permissions are now just done inside the getPermissions() method.
 				// so the tablePermissions() method is no longer supported.  Let the developer
 				// know in case he has old code.
@@ -5574,7 +5574,7 @@ class Dataface_Table {
 			} else if ( !$isEmpty and isset($field['money_format']) ){
 
 				$fieldLocale = null;
-				if ( method_exists($delegate, 'getFieldLocale') ){
+				if ( isset($delegate) and method_exists($delegate, 'getFieldLocale') ){
 					$fieldLocale = $delegate->getFieldLocale($this, $fieldname);
 
 				}
@@ -5613,7 +5613,7 @@ class Dataface_Table {
 
 
 			$fieldLocale = null;
-			if ( method_exists($delegate, 'getFieldLocale') ){
+			if ( isset($delegate) and method_exists($delegate, 'getFieldLocale') ){
 				$fieldLocale = $delegate->getFieldLocale($this, $fieldname);
 
 			}
