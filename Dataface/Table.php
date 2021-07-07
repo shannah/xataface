@@ -586,7 +586,7 @@ class Dataface_Table {
 
 				$delObj = new $delClassName;
 				$this->_delegate = $delObj;
-                if (method_exists($delObj, '__sql__')) {
+                if (isset($delObj) and method_exists($delObj, '__sql__')) {
 					
                     $sqlQuery = $delObj->__sql__();
                 }

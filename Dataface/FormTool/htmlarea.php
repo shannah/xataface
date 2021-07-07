@@ -14,7 +14,7 @@ class Dataface_FormTool_htmlarea {
 		$factory =& Dataface_FormTool::factory();
 		$el =& $factory->addElement('htmlarea', $formFieldName, $widget['label'],array('class'=>$widget['class'], 'id'=>$field['name']) );
 		
-		if ( method_exists($el, 'setWysiwygOptions') ){
+		if ( isset($el) and method_exists($el, 'setWysiwygOptions') ){
 			$el->setWysiwygOptions($widget);
 		
 			if ( isset($widget['editor']) ){

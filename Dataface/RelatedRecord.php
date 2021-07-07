@@ -629,7 +629,7 @@ class Dataface_RelatedRecord {
 		
 		
 		if ( is_array($value) ){
-			if ( method_exists( $table, $table->getType($fieldname)."_to_string") ){
+			if ( isset($table) and method_exists( $table, $table->getType($fieldname)."_to_string") ){
 				$value = call_user_func( array( &$table, $table->getType($fieldname)."_to_string"), $value );
 			} else {
 				$value = implode(', ', $value);

@@ -3303,7 +3303,7 @@ END
 
 		$delegate = $table->getDelegate();
 		$handled = false;
-		if ( method_exists($delegate,'handleRequest') ){
+		if ( isset($delegate) and method_exists($delegate,'handleRequest') ){
             try {
                 $result = $delegate->handleRequest();
             } catch (xf\core\XFException $ex) {
@@ -3440,7 +3440,7 @@ END
 
 				}
 
-				if ( method_exists($handler, 'handle') ){
+				if (isset($handler) and method_exists($handler, 'handle') ){
 
                     try {
                         $result = $handler->handle($doParams);

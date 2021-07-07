@@ -269,6 +269,7 @@ class Dataface_FeedTool {
         if (!empty($data['podcast'])) {
             $item->podcast = $data['podcast'];
         }
+        
 		return $item;
 	}
 	
@@ -308,6 +309,9 @@ class Dataface_FeedTool {
 		
 		$rss->link = htmlentities($feed_data['link']);
 		$rss->syndicationURL = htmlentities($feed_data['syndicationURL']);
+        if (!empty($feed_data['image'])) {
+            $rss->image = (object)$feed_data['image'];
+        }
 		
 		if ( isset($query['-relationship']) ){
 			// Do the related records thing

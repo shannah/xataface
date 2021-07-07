@@ -818,7 +818,7 @@ class Dataface_QuickForm extends HTML_QuickForm {
 
 			if ($tableDelegate) {
 				$methodName = 'prevalidate';
-				if (method_exists($tableDelegate, $methodName)) {
+				if (isset($tableDelegate) and method_exists($tableDelegate, $methodName)) {
 					$res = $tableDelegate->$methodName($this->_record, $rec, $this->_new);
 					if (Dataface_Error::isNotice($res)) {
 						$this->_errors[] = $res->getMessage();

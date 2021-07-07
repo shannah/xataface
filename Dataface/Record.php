@@ -4120,7 +4120,7 @@ class Dataface_Record {
 
 
 		// Case 1: Delegate is defined -- we use the delegate's link
-		if ( method_exists($delegate, $fieldname."__link") ){
+		if ( isset($delegate) and method_exists($delegate, $fieldname."__link") ){
 			$methodname = $fieldname."__link";
 			$link = $delegate->$methodname($this);
 			//$link = call_user_func(array(&$delegate, $fieldname."__link"), $this);

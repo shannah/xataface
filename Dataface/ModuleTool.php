@@ -197,7 +197,7 @@ class Dataface_ModuleTool {
 		foreach ($app->_conf['_modules'] as $name=>$path){
 			//echo "Checking $name : $path";
 			$mod =& $this->loadModule($name);
-			if ( method_exists($mod,'block__'.$blockName) ){
+			if (isset($mod) and  method_exists($mod,'block__'.$blockName) ){
 				//echo "Method exists";
 				$res = call_user_func(array(&$mod, 'block__'.$blockName), $params);
 				if ( !$res !== false ){
@@ -286,7 +286,7 @@ class Dataface_ModuleTool {
 		$this->loadModules();
 		$out = array();
 		foreach ($this->_modules as $name=>$mod ){
-			if ( method_exists($mod, 'requiresMigration') and ( $req = $mod->requiresMigration()) ){
+			if ( isset($mod) and method_exists($mod, 'requiresMigration') and ( $req = $mod->requiresMigration()) ){
 				$out[$name] = $req;
 			}
 		}
@@ -343,10 +343,11 @@ class Dataface_ModuleTool {
 	/**
 	 * Indicates whether a given module is currently installed.
 	 * @returns boolean True if it is installed.
+     */
 	function isInstalled($moduleName){
 		$mod_obj = $this->loadModule($mod);
 		if ( PEAR::isError($mod_obj) ) return false;
-		if ( method_exists($mod_obj,'isInstalled')) return $mod_obj->isInstalled();
+		if ( isset($mod_obj) and method_exists($mod_obj,'isInstalled')) return $mod_obj->isInstalled();
 		return false;
 	}
 	

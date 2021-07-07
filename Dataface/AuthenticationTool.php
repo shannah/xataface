@@ -229,6 +229,7 @@ class Dataface_AuthenticationTool {
 	
     private $_credentials = null;
     
+    
     /**
      * Creates a login token that is valid for 10 minutes.
      * @param string $username The username or email that this login token is for.  

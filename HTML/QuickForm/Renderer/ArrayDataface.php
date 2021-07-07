@@ -125,7 +125,7 @@ class HTML_QuickForm_Renderer_ArrayDataface extends HTML_QuickForm_Renderer_Arra
 				$this->_ary['errors'][] = $val;
 			}
 		}
-		if ( method_exists($form, 'getSubmitLabel') ){
+		if (isset($form) and method_exists($form, 'getSubmitLabel') ){
 			$this->_ary['submit_label'] = $form->getSubmitLabel();
 		}
 	}
