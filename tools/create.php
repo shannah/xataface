@@ -1,5 +1,6 @@
 <?php
 ini_set('display_errors', 'on');
+ini_set('memory_limit', '2048M');
 error_reporting(E_ALL);
 
 if (php_sapi_name() != "cli") {

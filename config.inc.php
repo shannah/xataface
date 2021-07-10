@@ -27,6 +27,9 @@
  *  
  *  Initializes configuration information for Dataface.
  */
+if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
+    define('XF_PHP8', true);
+}
 if ( !defined('XATAFACE_INI_EXTENSION') ){
 	define('XATAFACE_INI_EXTENSION', '');
 }
