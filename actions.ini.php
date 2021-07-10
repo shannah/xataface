@@ -380,7 +380,7 @@
 [submit_translation]
 	label = "Submit a translation"
 	description = "Submit your own translation for this section"
-	url = "javascript:window.location='{$this->url('-action=submit_translation')}&--url='+escape(window.location.href)+'&--recordid='+escape('{$context[record_id]}')"
+	url = "javascript:window.location='{$this->url('-action=submit_translation')}&--url='+escape(window.location.href)+'&--recordid='+escape('{$context['record_id']}')"
 	category=translation_warning_actions
 
 [view_original]
@@ -630,7 +630,7 @@
 [history_restore_record]
 	category=history_record_actions
 	label = "Restore"
-	url = "javascript: historyToolClient.restoreRecord('{$context[history__id]}')"
+	url = "javascript: historyToolClient.restoreRecord('{$context['history__id']}')"
 	onmouseover = "window.status = 'hello';"
 	description = "Restore the current record to the contents of this history snapshot"
 	permission = edit_history
@@ -877,7 +877,7 @@
 [login_menu_item]
 	category=status_bar_right
 	label="Login"
-	condition="($app->_conf[_auth] and !df_is_logged_in())"
+	condition="($app->_conf['_auth'] and !df_is_logged_in())"
 	materialIcon="security"
 	url="?-action=login"
 	

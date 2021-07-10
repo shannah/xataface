@@ -252,7 +252,7 @@ import(XFROOT.'Dataface/QueryTool.php');
                 $onclick = 'onclick="'.htmlspecialchars($onclick).'" ';
             }
             echo '<a href="'.df_escape($url).'" '.$onclick.
-                'class="'.df_escape($action['class']).' '.
+                'class="'.df_escape(@$action['class']).' '.
                     ((@$action['icon'] or $materialIcon)?'with-icon':'').'" '.
                         (@$action['icon']?' style="'.df_escape('background-image: url('.$action['icon'].')').'"':'').(@$action['target']?' target="'.df_escape($action['target']).'"':'').' title="'.df_escape(@$action['description']?$action['description']:$action['label']).'">'.$materialIcon.'<span>'.df_escape($action['label']).'</span></a> ';
         }

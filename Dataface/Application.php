@@ -3794,6 +3794,10 @@ END
 			}
 			//unset($tableObj);
 		}
+        if (defined('XF_PHP8') and !defined('XF_PHP8_STRICT')) {
+            $expression = preg_replace('/\[([a-zA-Z_][a-zA-Z0-9_]*)\]/', '[\'$1\']', $expression);
+        }
+        
 		if ( empty($app->_conf['debug']) ){
             try {
 			    @eval('$parsed = "'.$expression.'";');
@@ -3919,6 +3923,9 @@ END
 			}
 			//unset($tableObj);
 		}
+        if (defined('XF_PHP8') and !defined('XF_PHP8_STRICT')) {
+            $condition = preg_replace('/\[([a-zA-Z_][a-zA-Z0-9_]*)\]/', '[\'$1\']', $condition);
+        }
 		if ( !@$this->_conf['debug'] ){
 			return @eval('return ('.$condition.');');
 		} else {

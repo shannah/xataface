@@ -93,7 +93,9 @@ class Dataface_SkinTool extends Smarty{
 
 
 	function __construct() {
-
+        if (defined('XF_PHP8') and !defined('XF_PHP8_STRICT_SMARTY')) {
+            error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+        }
 		if ( is_writable($GLOBALS['Dataface_Globals_Local_Templates_c']) ){
 
 			$this->compile_dir = $GLOBALS['Dataface_Globals_Local_Templates_c'];
@@ -355,7 +357,7 @@ class Dataface_SkinTool extends Smarty{
     	$params = array('resource_name'=>$resource_name, 'resource_base_path' => $this->template_dir);
     	$name = $this->_parse_resource_name($params);
     	$template_dir = dirname($params['resource_name']);
-    	$skin = $this->skins[$template_dir];
+    	$skin = @$this->skins[$template_dir];
     	if ( strlen($skin) > 0 and preg_match('/^[0-9a-zA-Z_]+$/', $skin) ){
     		$compile_dir = $this->compile_dir.'/'.$skin;
     		if ( !file_exists($compile_dir) ){
