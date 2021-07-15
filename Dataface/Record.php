@@ -2357,7 +2357,6 @@ class Dataface_Record {
 		return $this->getValueAsString($fieldname, $index, $where, $sort);
 	}
 
-
 	/**
 	 * @brief Returns the value of a field except it is serialzed to be instered into a database.
 	 *
@@ -2549,6 +2548,14 @@ class Dataface_Record {
 	 *
 	 */
 	function display($fieldname, $index=0, $where=0, $sort=0, $urlencode=true, $thumbnail=null){
+        
+        if (is_array($fieldname)) {
+            $out = [];
+            foreach ($fieldname as $fname) {
+                $out[$fname] = $this->display($fname, $index, $where, $sort, $urlencode, $thumbnail);
+            }
+            return $out;
+        }
 		if (!is_string($fieldname)) {
 			throw new Exception("Expected fieldname to be string but found ".$fieldname);
 		}
