@@ -2597,6 +2597,9 @@ class Dataface_Record {
 		}
 
 		$field =& $this->_table->getField($fieldname);
+        if (PEAR::isError($field)) {
+            throw new Exception("Attempt to get non-existent field $fieldname in table ".$this->_table->tablename.": ".$field->getMessage());
+        }
 		if (@$field['displayField']) {
 			return $this->display($field['displayField'], $index, $where, $sort, $urlencode);
 		}

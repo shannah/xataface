@@ -48,6 +48,11 @@ class dataface_actions_xf_email_login {
         
             
             $tok = $auth->createLoginToken($email, $redirectUrl);
+            $shortTok = null;
+            if (!empty($query['--request-login-code']) and ($query['--request-login-code'] == '1' or $query['--request-login-code'] == 'true') and !empty($auth->conf['short_token_length'])) {
+                $shortTok = substr(md5($tok), 0, intval($auth->conf['short_token_length']));
+            }
+            
             
             if (!$tok) {
                 // No token was created for this email address, meaning that likely there is no
@@ -105,8 +110,15 @@ class dataface_actions_xf_email_login {
             
             $subject = 'Log in to '.$app->getSiteTitle();
             
+            $shortTokMessage = '';
             
-            $msg = '<html><body>'.$registerMessage.'<p style="color:#1a1a1a;font-size:16px;line-height:26px;margin:0 0 1em 0;text-align:center"><a href="'.htmlspecialchars($url).'" style="background-color:#000080;border:solid #000080;border-radius:4px;border-width:12px 20px;box-sizing:content-box;color:#ffffff;display:inline-block;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif,\'Apple Color Emoji\',\'Segoe UI Emoji\',\'Segoe UI Symbol\';font-size:16px;height:auto;line-height:1em;margin:0;opacity:1;outline:none;padding:0;text-decoration:none!important" >'.htmlspecialchars($loginMessage).'</a></p></body></html>';
+            if (!empty($shortTok)) {
+                $msg = '<html><body>'.$registerMessage.'<p style="color:#1a1a1a;font-size:16px;line-height:26px;margin:0 0 1em 0;text-align:center"><span style="background-color:#000080;border:solid #000080;border-radius:4px;border-width:12px 20px;box-sizing:content-box;color:#ffffff;display:inline-block;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif,\'Apple Color Emoji\',\'Segoe UI Emoji\',\'Segoe UI Symbol\';font-size:16px;height:auto;line-height:1em;margin:0;opacity:1;outline:none;padding:0;text-decoration:none!important" >'.htmlspecialchars('Your login code is '.$shortTok).'</span></p></body></html>';
+            } else {
+                $msg = '<html><body>'.$registerMessage.'<p style="color:#1a1a1a;font-size:16px;line-height:26px;margin:0 0 1em 0;text-align:center"><a href="'.htmlspecialchars($url).'" style="background-color:#000080;border:solid #000080;border-radius:4px;border-width:12px 20px;box-sizing:content-box;color:#ffffff;display:inline-block;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif,\'Apple Color Emoji\',\'Segoe UI Emoji\',\'Segoe UI Symbol\';font-size:16px;height:auto;line-height:1em;margin:0;opacity:1;outline:none;padding:0;text-decoration:none!important" >'.htmlspecialchars($loginMessage).'</a></p></body></html>';
+            }
+            
+            
             
     		$event = new StdClass;
     		$event->email = $email;

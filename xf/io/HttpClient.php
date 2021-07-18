@@ -28,6 +28,7 @@ class HttpClient {
         }
         // use key 'http' even if you send the request to https://...
         $headerStr = '';
+        
         foreach ($headers as $k=>$v) {
             $headerStr .= $k.': '.$v."\r\n";
         }
@@ -37,6 +38,50 @@ class HttpClient {
                 'method'  => 'GET',
                 'ignore_errors' => true,
                 'follow_location' => true
+            )
+        );
+        
+        $context  = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        if (!@$http_response_header) {
+            throw new \Exception("There was a problem with the request.  No response header received");
+        }
+        $status_line = self::status_line($http_response_header);
+        preg_match('{HTTP\/\S*\s(\d{3})}', $status_line, $match);
+        $out = new \StdClass;
+        $out->status = intval($match[1]);
+        $out->code = $out->status;
+        $out->data = $result;
+        $out->headers = $http_response_header;
+        
+        foreach ($http_response_header as $h) {
+            if (preg_match('/^Etag:(.*)$/i', $h, $match)) {
+                $out->etag = trim($match[0]);
+            }
+        }
+        return $out;
+    }
+    
+    public static function post($url, $headers=[], $data=[]) {
+        if (strpos($url, 'http://') !== 0 and strpos($url, 'https://') !== 0) {
+            throw new \Exception("Only http:// and https:// URLs are supported but found ".$url);
+        }
+        // use key 'http' even if you send the request to https://...
+        $headerStr = '';
+        if (!array_key_exists('content-type', array_change_key_case($headers))) {
+            $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        }
+            
+        foreach ($headers as $k=>$v) {
+            $headerStr .= $k.': '.$v."\r\n";
+        }
+        $options = array(
+            'http' => array(
+                'header'  => $headerStr,
+                'method'  => 'GET',
+                'ignore_errors' => true,
+                'follow_location' => true,
+                'content' => http_build_query($data)
             )
         );
         

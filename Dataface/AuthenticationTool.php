@@ -306,14 +306,24 @@ class Dataface_AuthenticationTool {
                 $tokenTable = self::TOKEN_TABLE;
                 if (self::table_exists($tokenTable)) {
                     $res = xf_db_query("delete from `".$tokenTable."` where expires < NOW()", df_db());
-                    
-                    $res = xf_db_query("select `username`, `autologin` from `".$tokenTable."` where `token` = '".addslashes($token)."'", df_db());
+                    if (!empty($this->conf['short_token_length']) and intval($this->conf['short_token_length']) === strlen($token)) {
+                        $tokLen = strlen($token);
+                        $res = xf_db_query("select `username`, `autologin`, `token` from `".$tokenTable."` where SUBSTRING(MD5(`token`), 1, $tokLen)  = '".addslashes($token)."'",df_db());
+                    } else {
+                        $res = xf_db_query("select `username`, `autologin`, `token` from `".$tokenTable."` where `token` = '".addslashes($token)."'",df_db());
+                    }
+                     
                     if (!$res) {
                         throw new Exception("SQL error checking token");
                     }
-                    list($username, $autologin) = xf_db_fetch_row($res);
-                    if ($autologin and @$this->conf['autologin']) {
-                        $_REQUEST['--remember-me'] = 1;
+                    if (xf_db_num_rows($res) > 0) {
+                        
+                    
+                        list($username, $autologin, $token) = xf_db_fetch_row($res);
+                        if ($autologin and @$this->conf['autologin']) {
+                            $_REQUEST['--remember-me'] = 1;
+                        }
+                        
                     }
                     xf_db_free_result($res);
                 } 
