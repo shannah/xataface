@@ -752,13 +752,18 @@ END;
                         }
                         
     					if ( is_readable($i) ){
+                            //echo $i;
+                            $conf2 = parse_ini_file($i, true);
+                            //print_r($conf2);
     						$conf = array_merge($conf, parse_ini_file($i, true));
+                            
     					} else if ( is_readable($i.'.php') ){
     						$conf = array_merge($conf, parse_ini_file($i.'.php', true));
     					} else if (!$optional) {
     					    throw new Exception("Include directive $i not satisifed.  Cannot find the file $i");
     					}
     				}
+                    //print_r($conf);exit;
     			}
     		}
             if (XF_USE_OPCACHE) {
@@ -2300,8 +2305,42 @@ END
 				return $matches[1];
 			}
 		}
+        if (!empty($_REQUEST['--Bearer'])) {
+            return $_REQUEST['--Bearer'];
+        }
 		return null;
 	}
+    
+    private function updateAutologinTable() {
+        //$nonceVal = time().'.'.rand();
+        //echo '28198f1e35f949d3a4141b92a28b3aaac072-'.$nonceVal.'-'.sha1($nonceVal . '58598b90-b96e-48af-a3ae-d890d2d3e9e1');
+        //exit;
+        
+        $modname = 'xf_autologin';
+        $autologinVersion = Dataface_ModuleTool::getInstance()->getDbVersion($modname);
+        
+        if (!$autologinVersion) {
+            try {
+                $this->createAutologinTable();
+               
+            } catch (Exception $ex){}
+            try {
+                  xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 1)", df_db());
+            } catch (Exception $ex) {
+                
+            }
+            $autologinVersion = 1;
+        }
+        if (intval($autologinVersion) === 1) {
+            xf_db_query("ALTER TABLE `dataface__autologin` ADD `hashed_token` VARCHAR(36) NULL AFTER `token`;", df_db());
+            xf_db_query("ALTER TABLE `dataface__autologin` ADD INDEX (`hashed_token`);", df_db());
+            xf_db_query("CREATE TABLE `dataface__autologin_nonces` ( `nonce_value` VARCHAR(36) NOT NULL , `last_used_time` BIGINT(20) UNSIGNED NOT NULL , PRIMARY KEY (`nonce_value`)) ENGINE = MyISAM;", df_db());
+            xf_db_query("UPDATE `dataface__autologin` set `hashed_token` = SHA1(`token`)", df_db());
+            xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 2)", df_db());
+        }
+        
+        
+    }
     
     /**
      * Creates the autologin table.
@@ -2310,7 +2349,7 @@ END
         $createSql = "create table dataface__autologin (`username` varchar(100) NOT NULL, `token` varchar(36) NOT NULL PRIMARY KEY) Engine MyISAM";
         $res = xf_db_query($createSql, df_db());
         if (!$res) {
-            error_log("Failed to create autologin table: ". xf_db_erorr(df_db()));
+            error_log("Failed to create autologin table: ". xf_db_error(df_db()));
             throw new Exception("Failed to create autologin table.");
         }
     }
@@ -2319,7 +2358,8 @@ END
      * Inserts an autologin token into the autologins table.
      */
     public function insertAutologinToken($token, $tryCreateTableOnFail = true) {
-        $insertSql = "replace into dataface__autologin (`username`,`token`) values ('".addslashes($_SESSION['UserName'])."', '".$token."')";
+        $this->updateAutologinTable();
+        $insertSql = "replace into dataface__autologin (`username`,`token`, `hashed_token`) values ('".addslashes($_SESSION['UserName'])."', '".addslashes($token)."', SHA1('".addslashes($token)."'))";
         $res = xf_db_query($insertSql, df_db());
         if (!$res) {
             if ($tryCreateTableOnFail) {
@@ -2336,7 +2376,6 @@ END
      * Get the username for the given autologin token.
      */
     private function getAutologinUserForToken($token) {
-        
         $res = xf_db_query("select username from dataface__autologin where token='".addslashes($token)."' limit 1", df_db());
         if ($res) {
             if ($row = xf_db_fetch_row($res)) {
@@ -2346,6 +2385,77 @@ END
         } 
         return null;
          
+    }
+    
+    /**
+     * Hashed tokens can be passed in the open (e.g. as a GET parameter).  Their structure is:
+     * {hashedToken}-{nonce}-{combinedHash}
+     * 
+     * Where 
+     * - hashedToken is the sha1 hash of an autologin token (each autologin token's hash 
+     *  will be stored in the dataface__autologin table's hashed_token column for efficient lookup).
+     * - nonce is 36-character string that cannot be reused again for 24 hours.  The intention is that a nonce would be
+     *  generated as follows: {currentTime}.{64-bit random integer}.
+     * - combinedHash is SHA1({nonce}, {token}) - where {token} corresponds to value in token column of dataface__autologin table.
+     *
+     * @return string Username or null
+     * @throws Exception if nonce is invalid.
+     */ 
+    private function getAutologinUserForHashedToken($token) {
+        $this->updateAutologinTable();
+        $parts = explode('-', $token);
+        if (count($parts) !== 3) throw new Exception("Invalid token");
+        list($hashedToken, $nonce, $combinedHash) = $parts;
+        if (strpos($nonce, '.') === false) {
+            // The nonce must be in the form {currentTime}.{randomNumber}
+            // This allows us to check the current time to ensure that it is relatively current
+            throw new Exception("Invalid nonce");
+        }
+        $nonceTime = intval(substr($nonce, 0, strpos($nonce, '.')));
+    
+        if (abs($nonceTime-time()) > 3600) {
+            throw new Exception("Invalid nonce");
+        }
+        $res = xf_db_query("select count(*) from dataface__autologin_nonces where `nonce_value`='".addslashes($nonce)."' and last_used_time > ".(time() - 3600), df_db());
+        if (!$res) {
+            // If the nonces table isn't created yet, then we don't worry about it.
+            error_log(xf_db_error(df_db()));
+            throw new Exception("Server error querying nonces log");
+        }
+        list($count) = xf_db_fetch_row($res);
+        xf_db_free_result($res);
+        //echo "Count=$count";exit;
+        if (intval($count) !== 0) {
+            // This nonce has already been used.
+            throw new Exception("Invalid nonce");
+        }
+        $sql = "select username from `dataface__autologin` where `hashed_token` = '".addslashes($hashedToken)."' and SHA1(CONCAT('".addslashes($nonce)."', `token`)) = '".addslashes($combinedHash)."' limit 1";
+        //echo $sql;exit;
+        $res = xf_db_query($sql, df_db());
+        if (!$res) {
+            // If the autologin table isn't set up yet, then there is no matching token
+            // just return null.  THe autologin table will be set up when tokens are inserted.
+            return null;
+        }
+        
+        $username = null;
+        while ($row = xf_db_fetch_row($res)) {
+            list($username) = $row;
+            break;
+        }
+        xf_db_free_result($res);
+        if (!isset($username)) {
+            return null;
+        }
+        
+        // Record the nonce so that it can't be reused.
+        $res = xf_db_query("replace into dataface__autologin_nonces (`nonce_value`, `last_used_time`) values ('".addslashes($nonce)."', '".addslashes(time())."')", df_db());
+        if (!$res) {
+            throw new Exception("Failed to update nonces: " . xf_db_error(df_db()));
+        }
+        
+        return $username;
+        
     }
     
     
@@ -2393,6 +2503,115 @@ END
         }
         return $cookieName;
     }
+    
+    
+    private $bearerTokensTablesVersion = -1;
+
+    public function updateBearerTokensTables() {
+        if ($this->bearerTokensTablesVersion >= 0) {
+            return;
+        }
+        $modname = 'xf_bearer_tokens';
+        $res = xf_db_query("select module_version from dataface__modules where module_name='".addslashes($modname)."' limit 1", df_db());
+        if (!$res) throw new Exception("Failed to update bearer tokens tables.");
+        $this->bearerTokensTablesVersion = 0;
+        while ($row = xf_db_fetch_row($res)) {
+            list($this->bearerTokensTablesVersion) = $row;
+        }
+        xf_db_free_result($res);
+        
+    
+        if (!$this->bearerTokensTablesVersion) {
+            $res = xf_db_query("CREATE TABLE `dataface__tokens` ( `token` VARCHAR(100) NOT NULL , `hashed_token` VARCHAR(36) NOT NULL , PRIMARY KEY (`hashed_token`), UNIQUE (`token`)) ENGINE = MyISAM;", df_db());
+            if (!$res) {
+                error_log("Failed to create tokens table: ".xf_db_error(df_db()));
+                throw new Exception("Failed to create tokens table");
+            }
+            $res = xf_db_query("CREATE TABLE `dataface__tokens_nonce` ( `nonce_value` VARCHAR(36) NOT NULL , `last_used_time` BIGINT(20) NOT NULL , PRIMARY KEY (`nonce_value`)) ENGINE = MyISAM;");
+            if (!$res) {
+                error_log("Failed to create tokens_nonce table: ".xf_db_error(df_db()));
+                throw new Exception("Failed to create tokens_nonce table");
+            }
+            
+            xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 1)", df_db());    
+            
+            $this->bearerTokensTablesVersion = 1;
+        }
+        
+    }
+    
+    
+    private function decodeBearerToken($token) {
+
+        //$nonce = time().'.'.rand();
+        //$ex = 'c461a059aec5f9c91377a0525f868a47cf90-'.$nonce.'-'.sha1($nonce . '5766469aa305a3957f2c9cc49041c2f9.ZWZiMTdhNjExYzJmNTM4YzBjNDI0MjdiYTYwYjk3Mjg=');
+        //echo $ex;exit;
+        //echo "here: $token";exit;
+
+        if (strstr($token, 'xf.') !== $token) return $token;
+        
+        $this->updateBearerTokensTables();
+        $token = substr($token, strpos($token, '.')+1);
+        $parts = explode('-', $token);
+        if (count($parts) !== 3) throw new Exception("Invalid token");
+        list($hashedToken, $nonce, $combinedHash) = $parts;
+        if (strpos($nonce, '.') === false) {
+            // The nonce must be in the form {currentTime}.{randomNumber}
+            // This allows us to check the current time to ensure that it is relatively current
+            throw new Exception("Invalid nonce");
+        }
+                                
+        $nonceTime = intval(substr($nonce, 0, strpos($nonce, '.')));
+    
+        if (abs($nonceTime-time()) > 3600) {
+            throw new Exception("Invalid nonce");
+        }
+        
+        $res = xf_db_query("select count(*) from dataface__tokens_nonce where `nonce_value`='".addslashes($nonce)."' and last_used_time > ".(time() - 3600), df_db());
+        if (!$res) {
+            // If the nonces table isn't created yet, then we don't worry about it.
+            error_log(xf_db_error(df_db()));
+            throw new Exception("Server error querying nonces log");
+        }
+        
+        list($count) = xf_db_fetch_row($res);
+        xf_db_free_result($res);
+        //echo "Count=$count";exit;
+        if (intval($count) !== 0) {
+            // This nonce has already been used.
+            throw new Exception("Invalid nonce");
+        }
+        
+        $sql = "select token from `dataface__tokens` where `hashed_token` = '".addslashes($hashedToken)."' and SHA1(CONCAT('".addslashes($nonce)."', `token`)) = '".addslashes($combinedHash)."' limit 1";
+        //echo $sql;exit;
+        $res = xf_db_query($sql, df_db());
+        if (!$res) {
+            // If the autologin table isn't set up yet, then there is no matching token
+            // just return null.  THe autologin table will be set up when tokens are inserted.
+            error_log("Error while checking tokens table: ".xf_db_error(df_db()));
+            throw new Exception("tokens table not setup yet");
+        }
+        
+        
+        $token = null;
+        while ($row = xf_db_fetch_row($res)) {
+            list($token) = $row;
+            break;
+        }
+        //echo "Here $token";exit;
+        xf_db_free_result($res);
+        if (!isset($token)) {
+            return null;
+        }
+        
+        // Record the nonce so that it can't be reused.
+        $res = xf_db_query("replace into dataface__tokens_nonce (`nonce_value`, `last_used_time`) values ('".addslashes($nonce)."', '".addslashes(time())."')", df_db());
+        if (!$res) {
+            throw new Exception("Failed to update nonces: " . xf_db_error(df_db()));
+        }
+        
+        return $token;
+    }
 
 	/**
 	 * @brief Starts a session if one does not already exist.  If you are writing code
@@ -2416,6 +2635,14 @@ END
 		if (session_id() == "" and $bearerToken) {
 			// We'll allow users to keep the php session ID 
 			// in the bearer ID
+            if (strstr($bearerToken, 'xf.') === $bearerToken) {
+                try {
+                    $bearerToken = $this->decodeBearerToken($bearerToken);
+                } catch (Exception $ex) {
+                    error_log($ex->getMessage());
+                }
+                
+            }
 			$parts = explode('.', $bearerToken);
 			//echo "Parts[0] = {$parts[0]} vs ".md5('sessid');
 			if (count($parts) == 2 and $parts[0] == md5('sessid')) {
@@ -2517,16 +2744,30 @@ END
 					$_SESSION['UserName'] = REQUEST_PUBLIC_URL_USERNAME;
 				}
                 if (!@$_SESSION['UserName'] and @$conf['autologin']) {
-                    
-                    $autologinCookieVal = @$_COOKIE[$this->getAutologinCookieName()];
-                    if ($autologinCookieVal) {
-                        $foundUser = $this->getAutologinUserForToken($autologinCookieVal);
+
+                    if (!empty($_REQUEST['--autologin'])) {
+ 
+                        $foundUser = $this->getAutologinUserForHashedToken($_REQUEST['--autologin']);
+                                                                   
                         if ($foundUser) {
                             $_SESSION['UserName'] = $foundUser;
-                            setcookie($this->getAutologinCookieName(), $autologinCookieVal, time() + (10 * 365 * 24 * 60 * 60)); // 10 years
+                            // We don't set the cookie here because the hashed token doesn't actually have the token.
+                            // But it gets us in.
                         }
+                    } 
+                    if (empty($_SESSION['UserName'])){
+                        $autologinCookieVal = @$_COOKIE[$this->getAutologinCookieName()];
+                    
+                        if ($autologinCookieVal) {
+                            $foundUser = $this->getAutologinUserForToken($autologinCookieVal);
+                            if ($foundUser) {
+                                $_SESSION['UserName'] = $foundUser;
+                                setcookie($this->getAutologinCookieName(), $autologinCookieVal, time() + (10 * 365 * 24 * 60 * 60)); // 10 years
+                            }
                         
+                        } 
                     }
+                    
                 } 
                 
 				header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');

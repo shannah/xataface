@@ -49,7 +49,7 @@ class dataface_actions_xf_email_login {
             
             $tok = $auth->createLoginToken($email, $redirectUrl);
             $shortTok = null;
-            if (!empty($query['--request-login-code']) and ($query['--request-login-code'] == '1' or $query['--request-login-code'] == 'true') and !empty($auth->conf['short_token_length'])) {
+            if (!empty($tok) and !empty($query['--request-login-code']) and ($query['--request-login-code'] == '1' or $query['--request-login-code'] == 'true') and !empty($auth->conf['short_token_length'])) {
                 $shortTok = substr(md5($tok), 0, intval($auth->conf['short_token_length']));
             }
             

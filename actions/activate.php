@@ -111,7 +111,7 @@ class dataface_actions_activate {
 				$app->redirect($url.'&--msg='.urlencode($msg));
                 exit;
 			}
-            if (@$app->_conf['allow_email_login']) {
+            if ($auth->isEmailLoginAllowed()) {
     			$res = xf_db_query("select count(*) from 
     				`".str_replace('`','',$auth->usersTable)."` 
     				where `".str_replace('`','',$auth->getEmailColumn())."` = '".addslashes($values[$auth->getEmailColumn()])."'

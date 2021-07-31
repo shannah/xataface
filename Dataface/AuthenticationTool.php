@@ -241,6 +241,7 @@ class Dataface_AuthenticationTool {
         if (!$redirectUrl) {
             $redirectUrl = DATAFACE_SITE_HREF;
         }
+        $allowEmailLoginAndAutoRegister = $this->getEmailColumn() and $this->usernameColumn and @$this->conf['allow_register'] and @$this->conf['auto_register'] and $this->isEmailLoginAllowed();
         
         // We need to verify the username
         if ($this->usernameColumn) {
@@ -261,7 +262,10 @@ class Dataface_AuthenticationTool {
                 list($num) = xf_db_fetch_row($res);
                 xf_db_free_result($res);
                 if (intval($num) !== 1) {
-                    return false;
+                    if (!$allowEmailLoginAndAutoRegister) {
+                        return false;
+                    }
+                    
                 }
             }
         }
@@ -326,6 +330,8 @@ class Dataface_AuthenticationTool {
                         
                     }
                     xf_db_free_result($res);
+                    
+                    
                 } 
             }
             if ($username and self::is_email_address($username) and $this->usersTable and $this->getEmailColumn()) {
@@ -338,6 +344,10 @@ class Dataface_AuthenticationTool {
                 list($numUsernames) = xf_db_fetch_row($res);
                 xf_db_free_result($res);
                 if ($numUsernames == 0) {
+                    
+                    
+                    
+                    
                     // No usernames found
                     // Let's try to find an email address.
                     $res = xf_db_query("select `".$this->usernameColumn."` from `".$this->usersTable."` where `".$this->getEmailColumn()."` = '".addslashes($username)."'", df_db());
@@ -349,6 +359,20 @@ class Dataface_AuthenticationTool {
                     } else if (xf_db_num_rows($res) == 1) {
                         // One to one match
                         list($username) = xf_db_fetch_row($res);
+                    } else {
+                        if ($this->getEmailColumn() and $this->usernameColumn and @$this->conf['allow_register'] and @$this->conf['auto_register'] and $this->isEmailLoginAllowed()) {
+                            $values = [];
+                            $values[$this->getEmailColumn()] = $username;
+                            $values[$this->usernameColumn] = $username;
+                            $record = new Dataface_Record($this->usersTable, array());
+                    		$record->setValues($values);
+                    		$res2 = $record->save();
+                    		if ( PEAR::isError($res2) ){
+                                xf_db_free_result($res);
+                    			throw new Exception("Failed to save user record: " . $res->getMessage());
+                    		} 
+		
+                        }
                     }
                     xf_db_free_result($res);
                 }
@@ -473,14 +497,25 @@ class Dataface_AuthenticationTool {
         return false;
     }
 
+    
+
     /**
      * Creates a session token.
      */
-	function createToken() {
+	function createToken($addToDatabase = false) {
 		if (session_id() == '') {
 			return null;
 		}
-		return md5('sessid').'.'.base64_encode(session_id());
+        $tok = md5('sessid').'.'.base64_encode(session_id());
+        if ($addToDatabase) {
+            Dataface_Application::getInstance()->updateBearerTokensTables();
+            $res = xf_db_query("replace into dataface__tokens (`token`, `hashed_token`) values ('".addslashes($tok)."', '".addslashes(sha1($tok))."')", df_db());
+            if (!$res) {
+                error_log("Failed ot add token to database: " . xf_db_error(df_db()));
+                throw new Exception("Failed to add token to database");
+            }
+        }
+		return $tok;
 	}
 
 	function authenticate(){
@@ -557,7 +592,7 @@ class Dataface_AuthenticationTool {
 				if ($json) {
 					df_write_json(array(
 						'code' => 200,
-						'token' => $this->createToken(),
+						'token' => $this->createToken(true),
 						'message' => 'Logged in'
 					));
 					exit;
@@ -634,7 +669,7 @@ class Dataface_AuthenticationTool {
 			if ($json) {
 				df_write_json(array(
 					'code' => 200,
-					'token' => $this->createToken(),
+					'token' => $this->createToken(true),
 					'message' => 'Logged in'
 				));
 				exit;
