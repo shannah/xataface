@@ -2537,6 +2537,22 @@ END
             
             $this->bearerTokensTablesVersion = 1;
         }
+        if (intval($this->bearerTokensTablesVersion) === 1) {
+            $res = xf_db_query("ALTER TABLE `dataface__tokens` CHANGE `hashed_token` `hashed_token` VARCHAR(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;");
+            if (!$res) {
+                error_log("Failed to update tokens table: ".xf_db_error(df_db()));
+                throw new Exception("Failed to update tokens table");
+            }
+            $res = xf_db_query("ALTER TABLE `dataface__tokens_nonce` CHANGE `nonce_value` `nonce_value` VARCHAR(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;");
+            if (!$res) {
+                error_log("Failed to update tokens_nonce table: ".xf_db_error(df_db()));
+                throw new Exception("Failed to update tokens_nonce table");
+            }
+            xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 2)", df_db());    
+            
+            $this->bearerTokensTablesVersion = 2;
+            
+        }
         
     }
     
@@ -2554,6 +2570,7 @@ END
         $token = substr($token, strpos($token, '.')+1);
         $parts = explode('-', $token);
         if (count($parts) !== 3) throw new Exception("Invalid token");
+        //print_r($parts);exit;
         list($hashedToken, $nonce, $combinedHash) = $parts;
         if (strpos($nonce, '.') === false) {
             // The nonce must be in the form {currentTime}.{randomNumber}
@@ -2598,7 +2615,7 @@ END
             list($token) = $row;
             break;
         }
-        //echo "Here $token";exit;
+
         xf_db_free_result($res);
         if (!isset($token)) {
             return null;
@@ -2609,7 +2626,6 @@ END
         if (!$res) {
             throw new Exception("Failed to update nonces: " . xf_db_error(df_db()));
         }
-        
         return $token;
     }
 
@@ -2627,7 +2643,7 @@ END
 	function startSession($conf=null){
 		if ( defined('XATAFACE_NO_SESSION') and XATAFACE_NO_SESSION ) return;
 		//echo "In startSession()";
-		if ( !$this->sessionEnabled() ){
+		if ( empty($_COOKIE[$this->sessionCookieKey]) ){
 		    $this->enableSessions();
 		}
 		$bearerToken = $this->getBearerToken();
@@ -2636,16 +2652,24 @@ END
 			// We'll allow users to keep the php session ID 
 			// in the bearer ID
             if (strstr($bearerToken, 'xf.') === $bearerToken) {
+
                 try {
-                    $bearerToken = $this->decodeBearerToken($bearerToken);
+                    $decoded = $this->decodeBearerToken($bearerToken);
+                    //echo 'foo['.strstr($decoded, "xf.").']';
+                    if (!empty($decoded) and strstr($decoded, 'xf.') != $decoded) {
+                        $bearerToken = $decoded;
+                    }
                 } catch (Exception $ex) {
+                    $bearerToken = null;
                     error_log($ex->getMessage());
                 }
                 
             }
+            //echo "herenow $bearerToken";exit;
 			$parts = explode('.', $bearerToken);
 			//echo "Parts[0] = {$parts[0]} vs ".md5('sessid');
 			if (count($parts) == 2 and $parts[0] == md5('sessid')) {
+                //echo "decoding session for ".base64_decode($parts[1]);exit;
 				session_id(base64_decode($parts[1]));
 				$sessionFromBearer = true;
 			}
