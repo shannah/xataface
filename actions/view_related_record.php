@@ -17,6 +17,12 @@ class dataface_actions_view_related_record {
 		if ( !@$perms['view'] ){
 			return Dataface_Error::permissionDenied('You don\'t have permission to view this record.');
 		}
+        
+        if ($related_record->_relationship->isLinkToDomainRecord()) {
+            $domainRecord = $related_record->toRecord();
+            header('Location: '.$domainRecord->getURL());
+            return;
+        }
 		
 		$query['-relationship'] = $related_record->_relationship->getName();
 		Dataface_JavascriptTool::getInstance()->import('xataface/actions/view_related_record.js');
