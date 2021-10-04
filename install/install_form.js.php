@@ -24,7 +24,8 @@ function testftp(form){
 
 function testdb(form){
 	postDataReturnText('installer.php','-action=testdb&-dbname='+escape(form.database_name.options[form.database_name.selectedIndex].value)+'&-dbuser='+escape(form.mysql_user.value)+'&-dbpass='+escape(form.mysql_password.value), function(result){
-        var results = JSON.parse(result);
+		var resultDiv = document.getElementById('db-test-results');
+		var results = JSON.parse(result);
 		resultDiv.innerText = results.message;
 	});
 }
