@@ -27,7 +27,10 @@ function init_logging() {
             }
             define('XF_MIN_LOG_LEVEL', $levelNum);
         
-        }    
+        } else {
+            define('XF_MIN_LOG_LEVEL', 3);
+            
+        } 
     }
     
     
