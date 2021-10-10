@@ -15,8 +15,8 @@ function testftp(form){
 	
 	postDataReturnText('installer.php','-action=testftp&-ftphost='+escape(form.ftp_host.value)+'&-ftpuser='+escape(form.ftp_username.value)+'&-ftppass='+escape(form.ftp_password.value)+'&-ftppath='+escape(form.ftp_path.value), function(result){
 		var resultDiv = document.getElementById('ftp-test-results');
-		eval('var results = '+result+';');
-		resultDiv.innerHTML = results.message;
+		var results = JSON.parse(result);
+		resultDiv.innerText = results.message;
 		});
 	
 
@@ -25,8 +25,8 @@ function testftp(form){
 function testdb(form){
 	postDataReturnText('installer.php','-action=testdb&-dbname='+escape(form.database_name.options[form.database_name.selectedIndex].value)+'&-dbuser='+escape(form.mysql_user.value)+'&-dbpass='+escape(form.mysql_password.value), function(result){
 		var resultDiv = document.getElementById('db-test-results');
-		eval('var results = '+result+';');
-		resultDiv.innerHTML = results.message;
+		var results = JSON.parse(result);
+		resultDiv.innerText = results.message;
 	});
 }
 
