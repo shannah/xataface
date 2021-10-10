@@ -764,6 +764,10 @@ class Dataface_AuthenticationTool {
 			echo "<html><body>Please Log In</body></html>";
 			exit;
 		}
+        if (@$query['-response'] == 'json') {
+            df_write_json(['code' => 401, 'message' => 'Please log in']);
+            exit;
+        }
 		
 		if ( isset($this->delegate) and method_exists($this->delegate, 'showLoginPrompt') ){
 			return $this->delegate->showLoginPrompt($msg);
