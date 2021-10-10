@@ -141,6 +141,10 @@ class Dataface_Relationship {
 		}
 		$this->_field_def_overrides[$field_name] = $field_def;
 	}
+    
+    function isLinkToDomainRecord() {
+        return !empty($this->_schema['list']['link_to_domain_record']) and $this->_schema['list']['link_to_domain_record'];
+    }
 	
 	/**
 	 * Returns an array of names of fields in this relationship.
