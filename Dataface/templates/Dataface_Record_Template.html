@@ -65,6 +65,13 @@
                         {$ENV.table_object->getLabel()|escape}
                     {/if}
                 </div>
+
+                {actions var="recordNavActions" category="record_nav_actions"}
+                {if $recordNavActions|@count>0}
+                    <div class='record-nav-actions'>
+                        {actions_menu category="record_nav_actions"}
+                    </div>
+                {/if}
                 
             {/if}
     {/fill_slot}
