@@ -7,6 +7,9 @@ class BaseAction {
         $res = null;
         try {
             $res = $this->handleImpl($params);
+            if (\PEAR::isError($res)) {
+                return $res;
+            }
 
         } catch (\Exception $ex) {
             if ($ex->getCode() === 401) {

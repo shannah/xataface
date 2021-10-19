@@ -3293,6 +3293,9 @@ div.xf-button-bar-actions > ul > li.featured-action,
       display:flex;
   }
   
+  .record-nav-actions {
+      padding-top: 10px;
+  }
   
   .record-nav-actions > ul {
       list-style-type: none;

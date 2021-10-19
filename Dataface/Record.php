@@ -429,7 +429,9 @@ class Dataface_Record {
 	}
 
 
-
+    function tablename() {
+        return $this->_table->tablename;
+    }
 
 
 	/**

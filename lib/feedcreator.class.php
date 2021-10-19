@@ -183,7 +183,7 @@ class FeedItem extends HtmlDescribable {
 	/**
 	 * Optional attributes of an item.
 	 */
-	var $author, $authorEmail, $image, $category, $comments, $guid, $source, $creator, $enclosure, $podcast;
+	var $author, $authorEmail, $image, $category, $comments, $guid, $source, $creator, $enclosure, $podcast, $itunes;
 	
 	/**
 	 * Publishing date of an item. May be in one of the following formats:
@@ -926,15 +926,40 @@ class RSSCreator091 extends FeedCreator {
             if (is_array($this->itunes)) {
                 foreach ($this->itunes as $k=>$v) {
                     if (is_array($v)) {
-                        foreach ($v as $vi) {
-                            if ($k == 'category') {
-                                $feed .= "        <itunes:$k text=\"".df_escape($vi)."\"/>\n";
-                            } else {
-                                $feed .= "        <itunes:$k>".df_escape($vi)."</itunes:$k>\n";
+                        if ($k == 'owner') {
+                            $feed .= "        <itunes:$k>\n";
+                            foreach ($v as $ki=>$vi) {
+                                $feed .= "            <itunes:$ki>".df_escape($vi)."</itunes:$ki>\n";
+                            }
+                            $feed .= "        </itunes:$k>\n";
+
+                        } else {
+                            foreach ($v as $vi) {
+                                if ($k == 'category') {
+                                    $feed .= "        <itunes:$k text=\"".df_escape($vi)."\"/>\n";
+                                } else {
+                                    $feed .= "        <itunes:$k>".df_escape($vi)."</itunes:$k>\n";
+                                }
                             }
                         }
+                        
                     } else {
-                        if ($k == 'category') {
+                        if ($k == 'explicit') {
+                            if (empty($v) or $v === false or $v === '0' or $v === 0) {
+                                $v = 'False';
+                            } else if ($v === '1' or $v === 1 or $v === true) {
+                                $v = 'True';
+                            }
+                        } else if ($k == 'block' or $k == 'complete') {
+                            if (empty($v) or $v === false or $v === '0' or $v === 0) {
+                                $v = 'No';
+                            } else if ($v === true or $v === '1' or $v === 1) {
+                                $v = 'Yes';
+                            }
+                        }
+                        if ($k == 'image') {
+                            $feed .= "        <itunes:$k href=\"".df_escape($v)."\"/>\n";
+                        } else if ($k == 'category') {
                             $feed .= "        <itunes:$k text=\"".df_escape($v)."\"/>\n";
                         } else {
                             $feed .= "        <itunes:$k>".df_escape($v)."</itunes:$k>\n";
@@ -949,9 +974,9 @@ class RSSCreator091 extends FeedCreator {
         }
 		if ($this->image!=null) {
 			$feed.= "        <image>\n";
-			$feed.= "            <url>".$this->image->url."</url>\n"; 
+			$feed.= "            <url>".df_escape($this->image->url)."</url>\n"; 
 			$feed.= "            <title>".FeedCreator::iTrunc(df_escape($this->image->title),100)."</title>\n"; 
-			$feed.= "            <link>".$this->image->link."</link>\n";
+			$feed.= "            <link>".df_escape($this->image->link)."</link>\n";
 			if (!empty($this->image->width)) {
 				$feed.= "            <width>".$this->image->width."</width>\n";
 			}
@@ -959,7 +984,7 @@ class RSSCreator091 extends FeedCreator {
 				$feed.= "            <height>".$this->image->height."</height>\n";
 			}
 			if (!empty($this->image->description)) {
-				$feed.= "            <description>".$this->image->getDescription()."</description>\n";
+				$feed.= "            <description>".df_escape($this->image->getDescription())."</description>\n";
 			}
 			$feed.= "        </image>\n";
 		}
@@ -1040,6 +1065,55 @@ class RSSCreator091 extends FeedCreator {
                         $feed .= "/>\n";
                     }
                     
+                }
+            }
+            if (!empty($this->items[$i]->itunes)) {
+                if (is_array($this->items[$i]->itunes)) {
+                    foreach ($this->items[$i]->itunes as $k=>$v) {
+                        if (is_array($v)) {
+                            if ($k == 'owner') {
+                                $feed .= "            <itunes:$k>\n";
+                                foreach ($v as $ki=>$vi) {
+                                    $feed .= "                <itunes:$ki>".df_escape($vi)."</itunes:$ki>\n";
+                                }
+                                $feed .= "            </itunes:$k>\n";
+
+                            } else {
+                                foreach ($v as $vi) {
+                                    if ($k == 'category') {
+                                        $feed .= "            <itunes:$k text=\"".df_escape($vi)."\"/>\n";
+                                    } else {
+                                        $feed .= "            <itunes:$k>".df_escape($vi)."</itunes:$k>\n";
+                                    }
+                                }
+                            }
+                        
+                        } else {
+                            if ($k == 'explicit') {
+                                if (empty($v) or $v === false or $v === '0' or $v === 0) {
+                                    $v = 'False';
+                                } else if ($v === '1' or $v === 1 or $v === true) {
+                                    $v = 'True';
+                                }
+                            } else if ($k == 'block' or $k == 'complete') {
+                                if (empty($v) or $v === false or $v === '0' or $v === 0) {
+                                    $v = 'No';
+                                } else if ($v === true or $v === '1' or $v === 1) {
+                                    $v = 'Yes';
+                                }
+                            }
+                            if ($k == 'image') {
+                                $feed .= "        <itunes:$k href=\"".df_escape($v)."\"/>\n";
+                            } else if ($k == 'category') {
+                                $feed .= "            <itunes:$k text=\"".df_escape($v)."\"/>\n";
+                            } else {
+                                $feed .= "            <itunes:$k>".df_escape($v)."</itunes:$k>\n";
+                            }
+                        }
+                
+                    }
+                } else {
+                    $feed .= "            " . $this->items[$i]->itunes ."\n";
                 }
             }
 			$feed.= $this->_createAdditionalElements($this->items[$i]->additionalElements, "        ");
