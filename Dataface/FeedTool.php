@@ -256,6 +256,9 @@ class Dataface_FeedTool {
 		$item->title = $data['title'];
 		$item->link = $data['link'];
 		$item->description = $data['description']; 
+		if (!empty($data['itunes'])) {
+		    $item->itunes = $data['itunes'];
+		}
 		
 		//optional
 		//item->descriptionTruncSize = 500;
@@ -303,6 +306,12 @@ class Dataface_FeedTool {
 		if (!empty($feed_data['itunes'])) {
 		    $rss->itunes = $feed_data['itunes'];
 		}
+        if (!empty($feed_data['copyright'])) {
+            $rss->copyright = $feed_data['copyright'];
+        }
+        if (!empty($feed_data['language'])) {
+            $rss->language = $feed_data['language'];
+        }
 		//optional
 		//$rss->descriptionTruncSize = 500;
 		//$rss->descriptionHtmlSyndicated = true;
