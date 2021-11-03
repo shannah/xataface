@@ -503,6 +503,14 @@
     materialIcon=add
     category=record_actions_menu
     url="{$app->url('-action=new_related_record')}"
+    
+[add_first_related_record > new_related_record]
+    condition="$query['-action'] == 'related_records_list' and $query['-relationship'] and $app->getRelationship() and $app->getRelationship()->supportsAddNew() and !$app->getRelationship()->supportsAddExisting()"
+    label = "Add {$app->getRelationship()->getSingularLabel()}"
+    materialIcon=add
+    category=empty_relationship_actions
+    url="{$app->url('-action=new_related_record')}"
+    class=featured-action
 
 
 ;; Show the "Add Existing Related Record" form to add an existing record to a 

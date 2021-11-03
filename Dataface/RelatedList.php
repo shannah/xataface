@@ -776,6 +776,7 @@ class Dataface_RelatedList {
         ob_start();
         $context['filters'] = $this->filters;
         $context['listStyle'] = $this->listStyle;
+        $context['targetDevice'] = $mode;
         df_display($context, 'xataface/RelatedList/list.html');
         $out = ob_get_contents();
         ob_end_clean();
