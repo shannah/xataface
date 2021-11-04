@@ -936,6 +936,18 @@
     permission=view
     related=1
     allow_override="relationships.ini"
+
+[related_list_delete]
+    category=related_list_settings
+    materialIcon=delete
+    label=delete
+    description=Select and Delete rows
+    url="javascript:void(0)"
+    onclick="window.xataface.relatedList.selectAndDeleteRowsInRelatedList()"
+    permission=delete related record
+    related=1
+    allow_override="relationships.ini"
+    order=99
     
     
 [related_sort_dialog]

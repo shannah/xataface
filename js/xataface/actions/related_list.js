@@ -1,11 +1,13 @@
 //require <jquery.packed.js>
 //require <xataface/components/InfiniteScroll.js>
+//require <xatajax.actions.js>
 (function(){
 	var $ = jQuery;
     window.xataface = window.xataface || {};
     window.xataface.relatedList = {};
     window.xataface.relatedList.openSortDialog = openSortDialog;
     window.xataface.relatedList.openFilterDialog = openFilterDialog;
+    window.xataface.relatedList.selectAndDeleteRowsInRelatedList = selectAndDeleteRowsInRelatedList;
     var settingsWrapper = document.querySelector('.mobile-list-settings-wrapper');
     
 	$(document).ready(function() {
@@ -147,5 +149,114 @@
             position : position
         });
         sheet.show();
+    }
+    
+    function selectAndDeleteRowsInRelatedList() {
+        var checkboxes = [];
+        var summaryPanel = $('<div class="summary-panel"></div>');
+
+        var cancelButton = $('<button>Cancel</button>');
+        var deleteButton = $('<button>Delete Selected Rows</button>');
+        deleteButton.attr('disabled', '');
+        function update() {
+            var countSelected = 0;
+            checkboxes.forEach(function(cb) {
+                if ($(cb).is(':checked')) {
+                    countSelected++;
+                }
+               
+            });
+            $(deleteButton).text('Delete '+countSelected+' Row' + ((countSelected==1) ? '':'s'));
+            if (countSelected > 0) {
+                deleteButton.get(0).removeAttribute('disabled');
+            } else {
+                deleteButton.attr('disabled', '');
+            }
+        }
+        
+        function getContext() {
+            var tableName = null;
+            var relationship = null;
+            checkboxes.forEach(function(cb) {
+                var id = cb.attr('xf-record-id');
+                tableName = id.substr(0, id.indexOf('/'));
+                var remaining = id.substr(tableName.length+1);
+                relationship = remaining.substr(0, remaining.indexOf('?'));
+            });
+            return {'table' : tableName, 'relationship' : relationship};
+        }
+        
+        function cancel() {
+            $(checkboxes).each(function() {
+                $(this).remove();
+            });
+            summaryPanel.fadeOut(function() {
+                summaryPanel.remove(); 
+            });
+        }
+        
+        function submit() {
+            var context = getContext();
+            
+            XataJax.actions.doSelectedAction({
+                '-action' : 'remove_related_record',
+                '-table' : context.table,
+                '-relationship' : context.relationship
+            }, $('.mobile-listing'), function(ids) {
+                return true;
+            }, function() {
+                return true;
+            });
+        }
+        deleteButton.on('click', submit);
+        
+        cancelButton.on('click', cancel);
+        $(summaryPanel).append(cancelButton, deleteButton);
+        summaryPanel.css({
+            position: 'fixed',
+            'background-color' : 'white',
+            'border-top' : '1px solid gray',
+            'z-index' : 99999,
+            'left' : 0,
+            'right' : 0,
+            'bottom' : 0,
+            'display' : 'none',
+            'padding' : '1em',
+            'text-align' : 'right'
+            
+        });
+        $([cancelButton, deleteButton]).each(function(btn) {
+            $(this).css({
+                padding: '1em',
+                margin: '5px',
+                'background-color' : 'var(--menuBgColor)',
+                'color' : 'var(--menuColor)',
+                'border' : '1px solid var(--menuBorderColor)',
+                'border-radius' : '5px',
+            });
+        });
+            
+        $(deleteButton).css({
+            color: 'white',
+            'background-color' : 'red',
+            'font-weight' : 'bold'
+        });
+            
+        $('body').append(summaryPanel);
+        
+        $('.mobile-listing-row').each(function() {
+            var cb = $('<input type="checkbox" class="rowSelectorCheckbox"/>');
+            cb.css({
+                float: 'left',
+                height: $(this).height(),
+                'border' : 'none'
+            });
+            cb.attr('xf-record-id', $(this).attr('xf-record-id'));
+            cb.on('click', update);
+            checkboxes.push(cb);
+            this.insertBefore(cb.get(0), this.childNodes[0]);
+        });
+        summaryPanel.fadeIn();
+        
     }
 })();
