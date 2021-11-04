@@ -157,6 +157,10 @@ class Dataface_QuickForm extends HTML_QuickForm {
 
 
 	var $submitLabel = null;
+    
+    private $addRelatedContext;
+    private $parentRecord;
+    private $relationship;
 
 	/**
 	 * @param $tablename The name of the table upon which this form is based. - or a Dataface_Record object to edit.
@@ -179,6 +183,22 @@ class Dataface_QuickForm extends HTML_QuickForm {
 		$app =& Dataface_Application::getInstance();
 		$this->app =& $app;
 		$appQuery =& $app->getQuery();
+        
+        if ($new) {
+            // This request may have been redirected from new_related_record if this table is being used
+            // as a proxy for adding to a relationship.  In this case it would pass the -add-related-context
+            // parameter with a JSON value of the form ['id' => RECORDID, ' => 'relationship' => RELATIONSHIPNAME]
+            $this->addRelatedContext = empty($query['-add-related-context']) ? 
+                    null : 
+                    json_decode($query['-add-related-context'], true);
+            $this->parentRecord = ($this->addRelatedContext and !empty($this->addRelatedContext['id'])) ? 
+                    df_get_record_by_id($this->addRelatedContext['id']) : 
+                    null;
+            $this->relationship = ($this->addRelatedContext and $this->parentRecord and !empty($this->addRelatedContext['relationship'])) ?
+                    $this->parentRecord->_table->getRelationship($this->addRelatedContext['relationship']) : 
+                    null;
+        }
+        
 		if ( !isset($lang) && !isset($this->_lang) ){
 			$this->_lang = $app->_conf['lang'];
 		} else if ( isset($lang) ){

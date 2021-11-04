@@ -36,19 +36,39 @@ class dataface_actions_new {
 		$formTool =& Dataface_FormTool::getInstance();
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
-		
+        
+        // This request may have been redirected from new_related_record if this table is being used
+        // as a proxy for adding to a relationship.  In this case it would pass the -add-related-context
+        // parameter with a JSON value of the form ['id' => RECORDID, ' => 'relationship' => RELATIONSHIPNAME]
+        
+        $addRelatedContext = empty($query['-add-related-context']) ? 
+                null : 
+                json_decode($query['-add-related-context'], true);
+        $parentRecord = ($addRelatedContext and !empty($addRelatedContext['id'])) ? 
+                df_get_record_by_id($addRelatedContext['id']) : 
+                null;
+        $relationship = ($addRelatedContext and $parentRecord and !empty($addRelatedContext['relationship'])) ?
+                $parentRecord->_table->getRelationship($addRelatedContext['relationship']) : 
+                null;
+        
+        if ($parentRecord and $relationship) {
+            import(XFROOT.'Dataface/RelatedRecord.php');
+            $app->addRecordContext(new Dataface_RelatedRecord($parentRecord, $relationship->getName()));
+        }
+        
+        
 		$app->addBodyCSSClass('no-table-tabs');
         $app->addBodyCSSClass('no-mobile-header');
-         $app->addBodyCSSClass('no-app-menu');
+        $app->addBodyCSSClass('no-app-menu');
         $app->addBodyCSSClass('no-fab');
         $app->_conf['page_menu_category'] = 'new_record_actions_menu';
 		$new = true;
 
-                $includedFields = null; // Null for all fields
+        $includedFields = null; // Null for all fields
 
-                if ( @$query['-fields'] ){
-                    $includedFields = explode(' ', $query['-fields']);
-                }
+        if ( @$query['-fields'] ){
+            $includedFields = explode(' ', $query['-fields']);
+        }
 
 		$currentRecord = new Dataface_Record($query['-table'], array());
 		$currentTable =& Dataface_Table::loadTable($query['-table']);
@@ -64,15 +84,29 @@ class dataface_actions_new {
 			}
 		}
 
-		$app->setPageTitle(
-		    df_translate(
-		        'actions.new.label',
-		        'New '.$currentTable->getSingularLabel(),
-		        array(
-		            'tableObj'=>$currentTable
-		        )
-		    )
-		);
+        if ($relationship) {
+            // This is a relationship
+    		$app->setPageTitle(
+    		    df_translate(
+    		        'scripts.Dataface.RelatedList.toHtml.LABEL_ADD_NEW_RELATED_RECORD',
+    		        'Add '.$relationship->getSingularLabel(),
+    		        array(
+    		            'relationship'=>$relationship->getSingularLabel()
+    		        )
+    		    )
+    		);
+        } else {
+    		$app->setPageTitle(
+    		    df_translate(
+    		        'actions.new.label',
+    		        'New '.$currentTable->getSingularLabel(),
+    		        array(
+    		            'tableObj'=>$currentTable
+    		        )
+    		    )
+    		);
+        }
+		
 
 		if ( !isset($query['--tab']) and count($currentTable->tabs($currentRecord)) > 1 ){
 		   $tabs = $currentTable->tabs($currentRecord);
@@ -274,7 +308,11 @@ class dataface_actions_new {
 				$link = $url.'&--saved=1&--msg='.$msg;
                                 //echo "$link";exit;
                                 
-                                
+                if ($parentRecord and $relationship) {
+                    // This form was to add a new record to the given relationship
+                    $link = $parentRecord->getURL('-action=related_records_list&-relationship='.urlencode($relationship->getName()));
+                    $link .= '&--msg='.$msg;
+                }           
                 
 				$app->redirect("$link");
 
@@ -315,7 +353,11 @@ class dataface_actions_new {
 		}
 		$context = array('form'=>&$out);
 		$context['tabs'] = $formTool->createHTMLTabs($currentRecord, $form, @$query['--tab']);
-		$context['new_record_header_label'] = 'Create new '.$currentTable->getSingularLabel();
+        if ($relationship) {
+    		$context['new_record_header_label'] = 'Add '.$relationship->getSingularLabel();
+        } else {
+    		$context['new_record_header_label'] = 'Create new '.$currentTable->getSingularLabel();
+        }
 		if (@$currentTable->_atts['new_record_label']) {
 			$context['new_record_header_label'] = $currentTable->_atts['new_record_label'];
 		}

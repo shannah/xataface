@@ -120,8 +120,23 @@ class Dataface_Relationship {
 		$this->_permissions =& $this->_schema['permissions'];
 		
 	}
-		function Dataface_Relationship($tablename, $relationshipName, &$values) { self::__construct($tablename, $relationshipName, $values); }
+	function Dataface_Relationship($tablename, $relationshipName, &$values) { self::__construct($tablename, $relationshipName, $values); }
 	
+    /**
+     * Returns the name of a table that is used as a proxy for inserting new records into this 
+     * relationship.
+     */
+    function getAddRelatedRecordTable() {
+        if (!empty($this->_schema['add']['table'])) {
+            return $this->_schema['add']['table'];
+        }
+        $defaultTableName = 'xf_add_'.$this->_sourceTable->tablename . '__' . $this->_name;
+        if (Dataface_Table::tableExists($defaultTableName)) {
+            return $defaultTableName;
+        }
+        return null;
+    }
+    
 	
 	function &getFieldDefOverride($field_name, $default=array()){
 		if ( strpos($field_name,'.') !== false	){

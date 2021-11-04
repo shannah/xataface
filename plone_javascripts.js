@@ -485,4 +485,41 @@ var form=document.getElementById("result_list_selected_items_form");form.element
     }
 })();
 
+(function() {
+    // Define a goBackToParentContext() method which is used in the new record form
+    // when the -add-related-context is supplied (meaning that it is actually adding a record to a relationship).
+    var $ = jQuery;
+    var xataface = window.xataface || {};
+    window.xataface = xataface;
+    
+
+    xataface.goBackToParentContext = goBackToParentContext;
+    function decodeHtml(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+    function goBackToParentContext() {
+        var params = new URLSearchParams(document.location.search.substring(1));
+        var contextString = params.get('-add-related-context');
+        if (!contextString) {
+            // Context string might be embedded in hidden fields on forms
+            contextString = $('input[name="-add-related-context"]').val();
+            if (contextString) {
+                contextString = decodeHtml(contextString);
+            }
+        }
+        if (!contextString) {
+            return;
+        }
+        
+        var context = JSON.parse(contextString);
+        var id = context.id;
+        var tableName = id.substring(0, id.indexOf('?'));
+        window.location.search = '?-table=' + encodeURIComponent(tableName)+ '&-action=related_records_list&-relationship=' + encodeURIComponent(context.relationship) + '&-recordid=' + encodeURIComponent(id);
+        
+        
+    }
+})();
+
 

@@ -182,6 +182,7 @@
     category=edit_record_actions_menu
     materialIcon="cancel"
     url="{$app->url('-action=browse')}"
+
     
 [new_record_actions]
 	label=""
@@ -208,7 +209,11 @@
 [cancel_new_record > cancel_edit_record]
     url="{$app->url('-action=list')}"
     category=new_record_actions_menu
+    condition="empty($query['-add-related-context'])"
     
+[cancel_new_record_related_context > cancel_new_record]
+    condition="!empty($query['-add-related-context'])"
+    url="javascript:xataface.goBackToParentContext()"
     
 [save_new_related_record > save_record]
     category=new_related_record_actions_menu
