@@ -2930,7 +2930,7 @@ class Dataface_Table {
 					);
 				}
 			}
-            if (@$field['ownerstamp'] or @$field['timestamp'] == 'insert' or @$field['timestamp'] == 'update') {
+            if (@$field['ownerstamp'] or @$field['uuid'] or @$field['timestamp'] == 'insert' or @$field['timestamp'] == 'update') {
                 $field['widget']['type'] = 'hidden';
             }
             if (@$field['ajax_value']) {

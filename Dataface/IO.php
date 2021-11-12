@@ -911,7 +911,7 @@ class Dataface_IO {
 						// we don't need to perform any permissions on it
 						continue;
 					}
-                    if (@$field['ownerstamp']) {
+                    if (@$field['ownerstamp'] or @$field['uuid']) {
                         continue;
                     }
 					// If this field's change doesn't have veto power and its value has changed,
