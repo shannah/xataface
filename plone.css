@@ -120,7 +120,7 @@
     --sidebarMenuTextColor: #fff;
     --sidebarTextColor: rgba(255, 255, 255, 0.50);
     
-    --navTablesButtonHeight: 70px;
+    --navTablesButtonHeight: 50px;
     
 }
 
@@ -611,6 +611,34 @@ del {
     z-index: 1;
 }
 
+.relationship-empty p {
+    
+    text-align:center;
+}
+
+.relationship-empty ul.with-add_first_related_record {
+
+    margin: auto;
+    text-align: center;
+}
+.relationship-empty ul.with-add_first_related_record li {
+    list-style-image: none;
+    list-style-type: none;
+    padding:0;
+    margin:0;
+    
+}
+
+.relationship-empty ul.with-add_first_related_record li a {
+    
+    border: 1px solid var(--menuBorderColor);
+    padding: 5px;
+    border-radius: 2px;
+    text-decoration:none;
+    color: var(--menuColor);
+    background-color: var(--menuBgColor);
+    
+}
 
 /*
 ** begin ECMAScript Content Action Menus
@@ -3893,6 +3921,7 @@ body.two-col #status-bar .responsive-content,
       .mobile-listing.list-style-mobile .mobile-listing-row {
         border-top: 1px solid #eaeaea;
         padding: 3mm;
+
       }
   
       .mobile-byline,

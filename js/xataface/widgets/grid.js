@@ -195,6 +195,7 @@
             }
 
             decorateXatafaceNode(newtr);
+            jQuery('input', newtr).first().focus();
 
 
         }

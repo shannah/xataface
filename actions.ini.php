@@ -182,6 +182,7 @@
     category=edit_record_actions_menu
     materialIcon="cancel"
     url="{$app->url('-action=browse')}"
+
     
 [new_record_actions]
 	label=""
@@ -208,7 +209,11 @@
 [cancel_new_record > cancel_edit_record]
     url="{$app->url('-action=list')}"
     category=new_record_actions_menu
+    condition="empty($query['-add-related-context'])"
     
+[cancel_new_record_related_context > cancel_new_record]
+    condition="!empty($query['-add-related-context'])"
+    url="javascript:xataface.goBackToParentContext()"
     
 [save_new_related_record > save_record]
     category=new_related_record_actions_menu
@@ -503,6 +508,14 @@
     materialIcon=add
     category=record_actions_menu
     url="{$app->url('-action=new_related_record')}"
+    
+[add_first_related_record > new_related_record]
+    condition="$query['-action'] == 'related_records_list' and $query['-relationship'] and $app->getRelationship() and $app->getRelationship()->supportsAddNew() and !$app->getRelationship()->supportsAddExisting()"
+    label = "Add {$app->getRelationship()->getSingularLabel()}"
+    materialIcon=add
+    category=empty_relationship_actions
+    url="{$app->url('-action=new_related_record')}"
+    class=featured-action
 
 
 ;; Show the "Add Existing Related Record" form to add an existing record to a 
@@ -923,6 +936,18 @@
     permission=view
     related=1
     allow_override="relationships.ini"
+
+[related_list_delete]
+    category=related_list_settings
+    materialIcon=delete
+    label=delete
+    description=Select and Delete rows
+    url="javascript:void(0)"
+    onclick="window.xataface.relatedList.selectAndDeleteRowsInRelatedList()"
+    permission=delete related record
+    related=1
+    allow_override="relationships.ini"
+    order=99
     
     
 [related_sort_dialog]

@@ -18,9 +18,29 @@ class dataface_actions_new_related_record {
 				), DATAFACE_E_ERROR
 			);
 		}
+        
+        
 
 
-		$record = null;	// we let the Form automatically handle loading of record.
+		$record = $app->getRecord();
+        if ($record) {
+            $relationship = $record->_table->getRelationship($query['-relationship']);
+            if (PEAR::isError($relationship)) {
+                return $relationship;
+            }
+            $addRecordTable = $relationship->getAddRelatedRecordTable();
+            if ($addRecordTable) {
+                // This relationship has a "dummy" table registered to be used for adding
+                // records to this relationship.
+                header('Location: '.$app->url([
+                    '-table' => $addRecordTable, 
+                    '-action' => 'new',
+                    '-add-related-context' => json_encode(['id' => $record->getId(), 'relationship' => $query['-relationship']])]));
+                return;
+                    
+            }
+        }
+        
 		$form = new Dataface_ShortRelatedRecordForm($record, $query['-relationship']);
 
 		$form->_build();

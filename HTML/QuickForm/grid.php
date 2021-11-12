@@ -89,7 +89,7 @@ class HTML_QuickForm_grid extends HTML_QuickForm_input {
     		array(
     			'id'=>$column.'_'.$fieldId,
     			'onchange'=>( @$properties['onFieldChange'] ? $properties['onFieldChange'].'(this);':'').(($this->fixedRows < 0 and ($this->addNew or $this->addExisting))?'dataGridFieldFunctions.addRowOnChange(this);':'').$element->getAttribute('onchange'),
-    			'style'=>'width:100%;'.$element->getAttribute('style')
+    			'style'=>'width:100%;box-sizing:border-box;'.$element->getAttribute('style')
     			)
     		);
 

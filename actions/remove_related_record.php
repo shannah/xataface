@@ -9,11 +9,15 @@
  *		key1val-key2val-key3val&key1val-key2val-key3val&..
  */
 class dataface_actions_remove_related_record {
+    
+    
+    
 	function handle(&$params){
 		import( XFROOT.'Dataface/RemoveRelatedRecordForm.php');
 		$app =& Dataface_Application::getInstance();
 		$query =& $app->getQuery();
 		
+        
 		$record = null; //& new Dataface_Record($this->_tablename, $_REQUEST['--__keys__']);
 			// let the form handle the loading of the record
 		

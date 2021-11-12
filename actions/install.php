@@ -44,7 +44,10 @@ class dataface_actions_install {
                 $app->redirect(DATAFACE_SITE_HREF.'?--msg='.urlencode('The database version is greater than the file system version.  Please upgrade your application to match the version in the database (version '.df_get_database_version()));
                 return;
             }
-            df_clear_cache();
+            try {
+                df_clear_cache();
+            } catch (Exception $ex){/*This might throw an exception if the current table not found.  We want to ignore*/}
+            
             if (XF_USE_OPCACHE and @$_REQUEST['--update'] !== '2') {
                 
                 $app->redirect($app->url('-action=install').'&--update=2');
