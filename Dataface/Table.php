@@ -648,7 +648,8 @@ class Dataface_Table {
                 include(xf_opcache_query_path($sql));
                 $showColumnsRows = $xf_opcache_export;
             } else {
-    			$res = xf_db_query($sql, $this->db);
+    			//$res = xf_db_query($sql, $this->db);
+				$res = xf_db_sql_traslator(false,"SHOW COLUMNS FROM", df_db(),$this->tablename);
     			if ( !$res ){
     				if ( $quiet ){
     					return PEAR::raiseError("Error performing mysql query to get column information from table '".$this->tablename."'.  The mysql error returned was : '".xf_db_error($this->db));
@@ -2095,7 +2096,8 @@ class Dataface_Table {
                 return null;
             }
         } else {
-    		$res = xf_db_query($showSql, df_db());
+    		//$res = xf_db_query($showSql, df_db());
+			$res = xf_db_sql_traslator(false,"SHOW TABLES LIKE", df_db(),$viewName);
     		if ( !$res ) throw new Exception(xf_db_error(df_db()));
     		if ( xf_db_num_rows($res) < 1 ){
     			@xf_db_free_result($res);
@@ -3365,7 +3367,8 @@ class Dataface_Table {
                 include(xf_opcache_query_path($sql));
                 $this->translations = $xf_opcache_export;
             } else {
-    			$res = xf_db_query($sql, $this->db);
+    			//$res = xf_db_query($sql, $this->db);
+				$res=xf_db_sql_traslator(false,"SHOW TABLES LIKE",$this->db,$this->tablename);
     			if ( !$res ){
 
     				throw new Exception(
@@ -3702,7 +3705,8 @@ class Dataface_Table {
                 include(xf_opcache_query_path($sql));
                 $this->status = $xf_opcache_export;
             } else {
-                $res = xf_db_query($sql, df_db());
+				$res = xf_db_sql_traslator(false,"SELECT CREATE_TIME", df_db());
+                //$res = xf_db_query($sql, df_db());
             
     			if ( !$res ){
     				throw new Exception("Error performing mysql query to obtain status for table '".$this->tablename."': ".xf_db_error($this->db), E_USER_ERROR);
@@ -3792,7 +3796,8 @@ class Dataface_Table {
 			$dbname = $app->_conf['_database']['name'];
 			$sql = "show tables";
 
-			$res = xf_db_query($sql, df_db());
+			$res = xf_db_sql_traslator(false,"SHOW TABLES", df_db());
+			//$res = xf_db_query($sql, df_db());
 			if ( !$res ){
 				throw new Exception(xf_db_error(df_db()));
 			}

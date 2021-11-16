@@ -208,7 +208,13 @@ class Dataface_Application_blob {
 			}
 			$record =& $queryTool->loadCurrent($columns, true, true);
 			$record->loadBlobs = true;
-			$contents = $record->getValue($fieldname, $index);
+			//gio version
+			if( $app->_conf['_database']['driver']=='postgresql'){
+				$appStr=substr(pg_unescape_bytea($record->getValue($fieldname, $index)), 2);
+				$contents = hex2bin($appStr);
+			}
+			else
+				$contents = $record->getValue($fieldname, $index);
 			$found = $cachePath.'-'.time();
 			$found=str_replace("?","-",$found);
 			if ( $fh = fopen($found, "w") ){

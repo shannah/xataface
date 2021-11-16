@@ -751,9 +751,11 @@ class Dataface_IO {
 		if ( !isset($record) ) return;
 		$id = $record->getId();
 		$hash = md5($id);
-		$sql = "replace into dataface__record_mtimes
+		/*$sql = "replace into dataface__record_mtimes
 				(recordhash, recordid, mtime) values
 				('".addslashes($hash)."','".addslashes($id)."','".time()."')";
+		*/
+		$sql = xf_db_replaceInto("dataface__record_mtimes",array('recordhash','recordid','mtime'),array('recordhash'),array("'".addslashes($hash)."'", "'".addslashes($id)."'",time()) );		
 		try {
 			$res = df_q($sql);
 		} catch ( Exception $ex){
@@ -762,10 +764,11 @@ class Dataface_IO {
 	}
 
 	static function createRecordMtimes(){
-	    $res = df_q("create table if not exists dataface__record_mtimes (
+	$res = df_q(xf_db_sql_traslator(true,"CREATE TABLE dataface__record_mtimes",NULL));																				 
+	    /*$res = df_q("create table if not exists dataface__record_mtimes (
 				recordhash varchar(32) not null primary key,
 				recordid varchar(255) not null,
-				mtime int(11) not null) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+				mtime int(11) not null) ENGINE=InnoDB DEFAULT CHARSET=utf8");*/
         //$res = df_q($sql);
 	}
 
@@ -2576,11 +2579,12 @@ class Dataface_IO {
 
 
 	static function createModificationTimesTable(){
-		$sql = "create table if not exists dataface__mtimes (
+		$res =xf_db_sql_traslator(false,"CREATE TABLE dataface__mtimes", df_db());																	
+		/*$sql = "create table if not exists dataface__mtimes (
 			`name` varchar(255) not null primary key,
 			`mtime` int(11)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-		$res = xf_db_query($sql, df_db());
+		$res = xf_db_query($sql, df_db());*/
 		if ( !$res ) throw new Exception(xf_db_error(df_db()));
 	}
     
@@ -2597,8 +2601,10 @@ class Dataface_IO {
                 $record = new Dataface_Record($table, $record);
             }
         }
-        $sql = "replace into dataface__mtimes (`name`,`mtime`) values ('".addslashes($table)."','".addslashes(time())."')";
-		$res = xf_db_query($sql, df_db());
+		
+        //$sql = "replace into dataface__mtimes (`name`,`mtime`) values ('".addslashes($table)."','".addslashes(time())."')";
+		//$res = xf_db_query($sql, df_db());
+		$res = xf_db_replaceInto("dataface__mtimes",array('name','mtime'),array('name'),array( "'".addslashes($table)."'",addslashes(time()))  ,df_db() );
 		if ( !$res ){
 			self::createModificationTimesTable();
 			$res = xf_db_query($sql, df_db());

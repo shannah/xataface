@@ -453,7 +453,7 @@ class Dataface_OutputCache {
 		
 		
 		// Now we can insert the cached page.
-		$sql = "
+		/*$sql = "
 			replace INTO `".addslashes($this->tableName)."`
 			(`PageID`,`Language`,`UserID`,`Dependencies`,`Expires`,`Data`,`Data_gz`, `Headers`)
 			VALUES
@@ -465,8 +465,10 @@ class Dataface_OutputCache {
 			 '".addslashes($Data)."',
 			 '".addslashes($Data_gz)."',
 			 '".addslashes(serialize($headers))."'
-			)";
-			//file_put_contents('/tmp/dump.sql',$sql);
+			)";*/
+		$sql = xf_db_replaceInto(addslashes($this->tableName),array('PageID','Language','UserID','Dependencies','Expires','Data','Data_gz', 'Headers'),array('PageID'),
+		array(addslashes($PageID),addslashes($Language), addslashes($UserID)  , addslashes($Dependencies) , 'to_timestamp('.addslashes($Expires).')'  , addslashes($Data) , addslashes($Data_gz), addslashes(serialize($headers)) ) )  ;	
+		//file_put_contents('/tmp/dump.sql',$sql);
 		$res = xf_db_query($sql, $this->app->db());
 		
 		if ( !$res ){

@@ -129,7 +129,7 @@ class Dataface_Index {
 	    
 	    $searchable_text .= '[/////]: '.implode(' ', $soundexAddons);
 	    $searchable_text = strip_tags($searchable_text);
-	
+		/*
 		$sql = "
 			replace into dataface__index 
 			(`record_id`,`table`,`record_url`,`record_title`,`record_description`,`lang`,`searchable_text`)
@@ -142,7 +142,10 @@ class Dataface_Index {
 			'".addslashes(strip_tags($record->getDescription()))."',
 			'".addslashes($lang)."',
 			'".addslashes($searchable_text)."'
-			)";
+			)";*/
+		$sql = xf_db_replaceInto("dataface__index",array('record_id','table','record_url','record_title','record_description','lang','searchable_text'),array('record_id'),
+		array(addslashes($record->getId()), addslashes($record->_table->tablename) ,  addslashes($record->getPublicLink() , addslashes($record->getTitle(), addslashes(strip_tags($record->getDescription())) , addslashes($lang) , addslashes($searchable_text) );	
+			
 		if ( !@xf_db_query($sql, df_db()) ){
 			$this->createIndexTable();
 			if ( !xf_db_query($sql, df_db()) ){

@@ -509,7 +509,8 @@ class Dataface_AuthenticationTool {
         $tok = md5('sessid').'.'.base64_encode(session_id());
         if ($addToDatabase) {
             Dataface_Application::getInstance()->updateBearerTokensTables();
-            $res = xf_db_query("replace into dataface__tokens (`token`, `hashed_token`) values ('".addslashes($tok)."', '".addslashes(sha1($tok))."')", df_db());
+			$res = xf_db_replaceInto("dataface__tokens",array('token','hashed_token'),array('token'),array(addslashes($tok),addslashes(sha1($tok)))  ,df_db() );
+            //$res = xf_db_query("replace into dataface__tokens (`token`, `hashed_token`) values ('".addslashes($tok)."', '".addslashes(sha1($tok))."')", df_db());
             if (!$res) {
                 error_log("Failed ot add token to database: " . xf_db_error(df_db()));
                 throw new Exception("Failed to add token to database");
@@ -838,12 +839,13 @@ class Dataface_AuthenticationTool {
 		
 	}
 	function _createFailedLoginsTable(){
-		$res = xf_db_query("create table if not exists `dataface__failed_logins` (
+		$res=xf_db_sql_traslator(false,"CREATE TABLE dataface__failed_logins", df_db());																		  
+		/*$res = xf_db_query("create table if not exists `dataface__failed_logins` (
 			`attempt_id` int(11) not null auto_increment primary key,
 			`ip_address` varchar(32) not null,
 			`username` varchar(32) not null,
 			`time_of_attempt` int(11) not null
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());*/
 		if ( !$res ) throw new Exception(xf_db_error(df_db()), E_USER_ERROR);
 	}
 	

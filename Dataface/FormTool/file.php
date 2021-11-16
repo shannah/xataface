@@ -239,7 +239,11 @@ class Dataface_FormTool_file {
 						// before sending it to the database.  It is better if
 						// that query is short - so we only pass the whole value
 						// if we are not parsing the query.
-						$out = file_get_contents($val['tmp_name']);
+						//gio version
+						if($app->_conf['_database']['driver']=='postgresql')
+							$out = pg_escape_bytea (file_get_contents($val['tmp_name']));
+						else
+							$out = file_get_contents($val['tmp_name']);
 					} else {
 						// If we are parsing the query, then we will just store
 						// the path to the blob.

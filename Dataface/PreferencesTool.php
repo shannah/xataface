@@ -41,7 +41,11 @@ class Dataface_PreferencesTool {
 		} else {
 			$username = '*';
 		}
-		$sql = "select * from `dataface__preferences` where `username` in ('*','".addslashes($username)."') and `table` in ('*','".addslashes($table)."')";
+		$app =& Dataface_Application::getInstance();
+		if( $app->_conf['_database']['driver']=='postgresql')
+			$sql = "select * from dataface__preferences where username in ('*','".addslashes($username)."') and \"table\" in ('*','".addslashes($table)."')";
+		else  
+			$sql = "select * from `dataface__preferences` where `username` in ('*','".addslashes($username)."') and `table` in ('*','".addslashes($table)."')";
 		
 		$res = xf_db_query($sql, df_db());
 		if ( !$res ){

@@ -35,10 +35,11 @@ class Dataface_ModuleTool {
             } else {
     			$res = xf_db_query($sql, df_db());
     			if ( !$res ){
-    				$res = xf_db_query("create table dataface__modules (
+					$res = xf_db_sql_traslator(false,"CREATE TABLE dataface__modules", df_db());
+    				/*$res = xf_db_query("create table dataface__modules (
     					`module_name` varchar(255) not null primary key,
     					`module_version` int(11)
-    				) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());
+    				) ENGINE=InnoDB DEFAULT CHARSET=utf8", df_db());*/
     				if ( !$res ) throw new Exception(xf_db_error(df_db()));
     				$res = xf_db_query($sql, df_db());
     			}

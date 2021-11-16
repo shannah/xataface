@@ -143,13 +143,17 @@ class Dataface_Clipboard {
 		$this->clearLogs();
 		$app =& Dataface_Application::getInstance();
 		Dataface_Clipboard::shotgunClean();
-		$res = xf_db_query(
+		/*$res = xf_db_query(
 			"REPLACE INTO `".Dataface_Clipboard_tablename."` 
 			(`clipperid`,`cut`,`recordids`,`lastmodified`)
 			VALUES
 			('".addslashes($this->id)."',
 			0,'".addslashes(implode("\n",$recordids))."', NOW()
-			)", $app->db();
+			)", $app->db() );
+		*/	
+		
+		$res = xf_db_replaceInto(Dataface_Clipboard_tablename,array('clipperid','cut','recordids','lastmodified'),array('clipperid'),array(addslashes($this->id),0,addslashes(implode("\n",$recordids)),'NOW()' )  ,df_db() );	
+			
 		if ( !$res ){
 			return PEAR::raiseError(xf_db_error($app->db()));
 		}
@@ -169,13 +173,16 @@ class Dataface_Clipboard {
 		$this->clearLogs();
 		$app =& Dataface_Application::getInstance();
 		Dataface_Clipboard::shotgunClean();
-		$res = xf_db_query(
+		/*$res = xf_db_query(
 			"REPLACE INTO `".Dataface_Clipboard_tablename."` 
 			(`clipperid`,`cut`,`recordids`,`lastmodified`)
 			VALUES
 			('".addslashes($this->id)."',
 			1,'".addslashes(implode("\n",$recordids))."', NOW()
-			)", $app->db();
+			)", $app->db());
+		*/		
+			
+		$res = xf_db_replaceInto(Dataface_Clipboard_tablename,array('clipperid','cut','recordids','lastmodified'),array('clipperid'),array(addslashes($this->id),1,addslashes(implode("\n",$recordids)),'NOW()' )  ,df_db() );	
 		if ( !$res ){
 			return PEAR::raiseError(xf_db_error($app->db()));
 		}

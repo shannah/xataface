@@ -939,7 +939,8 @@ END;
 			@xf_db_query('START TRANSACTION', $this->_db);
 
 		}
-
+		//gio no sql traslator for loop 
+		if($this->_conf['_database']['driver']!='postgresql')
 		if (@$this->_conf['_database']['sql_mode']) {
 			xf_db_query('SET sql_mode="'.addslashes($this->_conf['_database']['sql_mode']).'"', $this->_db);
 		} else {
@@ -978,6 +979,8 @@ END;
 
                 define('XF_OUTPUT_ENCODING', $this->_conf['oe']);
 
+	//gio
+	if(@$this->_conf['_database']['driver']!='postgresql'){													 
 		if ( $this->_conf['oe'] == 'UTF-8' ){
 			$res = xf_db_query('set character_set_results = \'utf8\'', $this->_db);
 			xf_db_query("SET NAMES utf8", $this->_db);
@@ -986,7 +989,7 @@ END;
 			$res = xf_db_query('set character_set_client = \'utf8\'', $this->_db);
 
 		}
-
+	}
 
 		if ( isset($this->_conf['use_cache']) and $this->_conf['use_cache'] and !defined('DATAFACE_USE_CACHE') ){
 			define('DATAFACE_USE_CACHE', true);
@@ -2325,7 +2328,8 @@ END
                
             } catch (Exception $ex){}
             try {
-                  xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 1)", df_db());
+                  //xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 1)", df_db());
+				  xf_db_replaceInto("dataface__modules",array('module_name','module_version'),array('module_name'),array(addslashes($modname),1)  ,df_db() );
             } catch (Exception $ex) {
                 
             }
@@ -2336,7 +2340,8 @@ END
             xf_db_query("ALTER TABLE `dataface__autologin` ADD INDEX (`hashed_token`);", df_db());
             xf_db_query("CREATE TABLE `dataface__autologin_nonces` ( `nonce_value` VARCHAR(36) NOT NULL , `last_used_time` BIGINT(20) UNSIGNED NOT NULL , PRIMARY KEY (`nonce_value`)) ENGINE = MyISAM;", df_db());
             xf_db_query("UPDATE `dataface__autologin` set `hashed_token` = SHA1(`token`)", df_db());
-            xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 2)", df_db());
+            xf_db_replaceInto("dataface__modules",array('module_name','module_version'),array('module_name'),array(addslashes($modname),2)  ,df_db() );
+			//xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 2)", df_db());
         }
         
         
@@ -2359,8 +2364,11 @@ END
      */
     public function insertAutologinToken($token, $tryCreateTableOnFail = true) {
         $this->updateAutologinTable();
-        $insertSql = "replace into dataface__autologin (`username`,`token`, `hashed_token`) values ('".addslashes($_SESSION['UserName'])."', '".addslashes($token)."', SHA1('".addslashes($token)."'))";
-        $res = xf_db_query($insertSql, df_db());
+        //$insertSql = "replace into dataface__autologin (`username`,`token`, `hashed_token`) values ('".addslashes($_SESSION['UserName'])."', '".addslashes($token)."', SHA1('".addslashes($token)."'))";
+		//$res = xf_db_query($insertSql, df_db());
+		$res = xf_db_replaceInto("dataface__autologin",array('username','token','hashed_token'),array('token'),array(  addslashes($_SESSION['UserName']) , addslashes($token) , SHA1( addslashes($token) ) )  ,df_db() );
+		
+        
         if (!$res) {
             if ($tryCreateTableOnFail) {
                 $this->createAutologinTable();
@@ -2449,7 +2457,8 @@ END
         }
         
         // Record the nonce so that it can't be reused.
-        $res = xf_db_query("replace into dataface__autologin_nonces (`nonce_value`, `last_used_time`) values ('".addslashes($nonce)."', '".addslashes(time())."')", df_db());
+        //$res = xf_db_query("replace into dataface__autologin_nonces (`nonce_value`, `last_used_time`) values ('".addslashes($nonce)."', '".addslashes(time())."')", df_db());
+		$res = xf_db_replaceInto("dataface__autologin_nonces",array('nonce_value','last_used_time'),array('nonce_value'),array(addslashes($nonce),addslashes(time))  ,df_db() );
         if (!$res) {
             throw new Exception("Failed to update nonces: " . xf_db_error(df_db()));
         }
@@ -2533,7 +2542,8 @@ END
                 throw new Exception("Failed to create tokens_nonce table");
             }
             
-            xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 1)", df_db());    
+            //xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 1)", df_db());
+			xf_db_replaceInto("dataface__modules",array('module_name','module_version'),array('module_name'),array(addslashes($modname),1)  ,df_db() );
             
             $this->bearerTokensTablesVersion = 1;
         }
@@ -2548,7 +2558,8 @@ END
                 error_log("Failed to update tokens_nonce table: ".xf_db_error(df_db()));
                 throw new Exception("Failed to update tokens_nonce table");
             }
-            xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 2)", df_db());    
+            //xf_db_query("replace into dataface__modules (`module_name`, `module_version`) values ('".addslashes($modname)."', 2)", df_db());    
+			xf_db_replaceInto("dataface__modules",array('module_name','module_version'),array('module_name'),array(addslashes($modname),2)  ,df_db() );
             
             $this->bearerTokensTablesVersion = 2;
             
@@ -2622,7 +2633,8 @@ END
         }
         
         // Record the nonce so that it can't be reused.
-        $res = xf_db_query("replace into dataface__tokens_nonce (`nonce_value`, `last_used_time`) values ('".addslashes($nonce)."', '".addslashes(time())."')", df_db());
+        //$res = xf_db_query("replace into dataface__tokens_nonce (`nonce_value`, `last_used_time`) values ('".addslashes($nonce)."', '".addslashes(time())."')", df_db());
+		$res = xf_db_replaceInto("dataface__tokens_nonce",array('nonce_value','last_used_time'),array('nonce_value'),array(addslashes($nonce),addslashes(time()))  ,df_db() );
         if (!$res) {
             throw new Exception("Failed to update nonces: " . xf_db_error(df_db()));
         }

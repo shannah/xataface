@@ -999,7 +999,8 @@ function df_tz_or_offset(){
             
 			$res = @xf_db_query($sql, $db);
 			if ( !$res ){
-				$res = xf_db_query("create table dataface__version ( `version` int(5) not null default 0)", $db);
+				$res = xf_db_sql_traslator(false,"CREATE TABLE dataface__version", $db);															
+				//$res = xf_db_query("create table dataface__version ( `version` int(5) not null default 0)", $db);
 				if ( !$res ) throw new Exception(xf_db_error($db), E_USER_ERROR);
 				//$fs_version = df_get_file_system_version();
 				$res = xf_db_query("insert into dataface__version values ('0')", $db);
