@@ -2604,7 +2604,7 @@ class Dataface_IO {
 		
         //$sql = "replace into dataface__mtimes (`name`,`mtime`) values ('".addslashes($table)."','".addslashes(time())."')";
 		//$res = xf_db_query($sql, df_db());
-		$res = xf_db_replaceInto("dataface__mtimes",array('name','mtime'),array('name'),array( "'".addslashes($table)."'",addslashes(time()))  ,df_db() );
+		$sql = xf_db_replaceInto("dataface__mtimes",array('name','mtime'),array('name'),array( "'".addslashes($table)."'",addslashes(time())) );
 		if ( !$res ){
 			self::createModificationTimesTable();
 			$res = xf_db_query($sql, df_db());

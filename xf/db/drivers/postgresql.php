@@ -4,6 +4,26 @@
 
 global $LAST_ID;
 
+define("PGDRIVE_DB_LV",1);
+define("PGDRIVE_DB_FILE","pgdriver.log");
+
+function pgdriver_log($val,$lev,$prof=1){
+	
+	if( $lev > PGDRIVE_DB_LV ){
+		return;
+	}
+	$backtraces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,$prof);
+	$fileinfo ="";
+	foreach($backtraces as $backtr)
+	{
+		$fileinfo .= "\t".$backtr['file'] . ":" . $backtr['line']."\n";
+	}
+	
+	error_log(date("d-m-Y H:i:s:").$val."\n",3,PGDRIVE_DB_FILE);
+	error_log("TRACE:\n",3,PGDRIVE_DB_FILE);
+	error_log($fileinfo,3,PGDRIVE_DB_FILE);
+}
+
 /*
 * Replace fà update se il record esiste altrimenti fà un insert
 * Questa è la versione generica
@@ -32,8 +52,7 @@ function xf_db_replaceInto($tablename,$fields,$pk,$value,$conn=null)
 function xf_db_sql_traslator($retStri,$sql,$conn,...$args)
 {	
 	
-	//error_log("xf_db_sql_traslator:".debug_backtrace()."\n",3,"gio.log");
-	error_log("sql xf_db_sql:".$sql."\n",3,"gio.log");
+	pgdriver_log("xf_db_sql_traslator sql:".$sql, 2,3);
 	$app = Dataface_Application::getInstance();
 	$partsHost = explode(':', $app->_conf['_database']['host']);
 	$partsDatabase = explode('/', $partsHost[0]);
@@ -58,7 +77,11 @@ union
 					) ";
 		break;
 	case "SELECT CREATE_TIME":
-		$newSql= "SELECT (pg_stat_file('base/'||oid ||'/PG_VERSION')).modification as \"Create_time\",null as \"Update_time\" FROM pg_database where datname='".$partsDatabase[1] ."'";
+		$newSql= "SELECT  (pg_stat_file('./base/'|| (select oid FROM pg_database where datname='".$partsDatabase[1]."') ||'/'|| relfilenode::text)).creation
+ as \"Create_time\", null as \"Update_time\"
+FROM pg_class  
+WHERE relkind LIKE 'r'
+AND relfilenode <> 0 and relname = '".$args[0]."';";
 		break;
 		
 		
@@ -147,12 +170,12 @@ ORDER BY c.relname,f.attname;  ";
 		break;
 		*/
 	default:
-		error_log("xf_db_sql_traslator:".print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,2),true)."\n",3,"gio.log");
+		pgdriver_log("xf_db_sql_traslator:Case not found",1,3);
 		die("Case not found in postgresql.php");
 		break;
 	}
 	
-	error_log("newSql xf_db_sql:".$newSql."\n",3,"gio.log");
+	pgdriver_log("xf_db_sql_traslator newSql:".$newSql,2);
 	
 	if(!$retStri)
 	{
@@ -212,21 +235,20 @@ function xf_db_query($sql, $conn=null){
 	$newSql = preg_replace($pattern, $replace, $sql);
 	if ($newSql == null)
 		if (PREG_BACKTRACK_LIMIT_ERROR  ==preg_last_error())
-			error_log("PREG_BACKTRACK_LIMIT_ERROR".preg_last_error()."\n",3,"gio.log"); 
+			pgdriver_log("PREG_BACKTRACK_LIMIT_ERROR:",1,3); 
 		else
-			error_log("preg error n°:".preg_last_error()."\n",3,"gio.log"); 
+			pgdriver_log("preg_replace error n°:".preg_last_error(),1,3); 
 	
-	error_log(date("d-m-Y H:i:s")."xf_db_query:".print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,1),true)."\n",3,"gio.log");
 	
-	error_log("sql:".$sql."\n",3,"gio.log");
-	error_log("newSql:".$newSql."\n",3,"gio.log");
+	pgdriver_log("sql:".$sql,2);
+	pgdriver_log("newSql:".$newSql,2);
+
 	
 	
 	
 	$res=pg_query($conn, $newSql);
 	if ( !$res ){
-		error_log("Query Error:".pg_last_error($conn)."\n",3,"gio.log");
-		error_log("Stack:".print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,1),true)."\n",3,"gio.log");
+		pgdriver_log("Query error:".pg_last_error($conn)." newSql:".$newSql,1,3);
 	}		
 	/*
 	
@@ -246,7 +268,6 @@ function xf_db_query($sql, $conn=null){
 	}
 	*/
 	
-	error_log("Query Error:".pg_last_error($conn)."\n",3,"gio.log");
 	
 
 	//error_log(date("d-m-Y H:i:s")."xf_db_query:".print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,2),true)."\n",3,"gio.log");
@@ -258,7 +279,7 @@ function xf_db_query($sql, $conn=null){
 		$result = pg_query($conn, $query);
 		$insert_row = pg_fetch_row($result);
 		$LAST_ID=$insert_row[0];
-		error_log("LAST_ID query:".$LAST_ID."\n",3,"gio.log");
+		pgdriver_log("LAST_ID query:".$LAST_ID,2,2);
 	}
 	/*else if ( ($word[0]=='select' || $word[0] =='SELECT' ) && $word[1]=='COUNT(*)')
 	if($res)
@@ -309,11 +330,11 @@ function xf_db_fetch_assoc($result){
 	global $LAST_ID;
 	//error_log("xf_db_fetch_assoc:\n".print_r(debug_backtrace(),true)."\n",3,"gio.log");
 	$res=pg_fetch_array($result, NULL, PGSQL_ASSOC);
-	error_log("Pura_res2:".serialize($res)."\n",3,"gio.log");
+	pgdriver_log("Pura_res2:".serialize($res),2,2);
 	if($res)
 	{
 		//$LAST_ID=reset ( $res );
-		error_log("LASTID:".$LAST_ID."\n",3,"gio.log");
+		pgdriver_log("LASTID:".$LAST_ID,2,2);
 	}
 	return $res;
 	
@@ -322,7 +343,7 @@ function xf_db_fetch_object($result){ die("xf_db_fetch_object non implementato")
 function xf_db_fetch_row($result){
 	global $LAST_ID;
 	$res=pg_fetch_row ($result);
-	error_log("Pura_res:".serialize($res)."\n",3,"gio.log");
+	pgdriver_log("Pura_res:".serialize($res),2,2);
 	
 	/*if($res and sizeof($res)>0)
 		$LAST_ID=$res[0];
@@ -357,9 +378,7 @@ function xf_db_fetch_lengths($result){ return mysqli_fetch_lengths($result);}
 function xf_db_num_rows($result){ return pg_num_rows ($result);}
 function xf_db_insert_id($link=null){
 	global $LAST_ID;
-	error_log("link:".serialize($link)."\n",3,"gio.log");
-	error_log("LASTID:".$LAST_ID."\n",3,"gio.log");
-	//error_log("Chiamata:".print_r(debug_backtrace(),true)."\n",3,"C:\Users\giorgio.saporito\Documents\App\PHP\gio.log");
+	pgdriver_log("LASTID:".$LAST_ID."link:".serialize($link),2,2);
 	return $LAST_ID;
 }
 function xf_db_data_seek($result, $offset){ return pg_result_seek($result, $offset);}
