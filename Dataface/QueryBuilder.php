@@ -533,9 +533,10 @@ class Dataface_QueryBuilder {
                     } else {
                         $user = $auth->getLoggedInUser();
                         if ($user) {
-                            $keynames = array_keys($keys);
+                            $keynames = array_keys($user->table()->keys());
                             if (count($keynames) == 1) {
-                                $id = $user->val($keynames[0]);
+                                $keyname = array_shift($keynames);
+                                $id = $user->val($keyname);
                                 $insertedKeys[] = '`'.$key.'`';
                                 $insertedValues[] = $this->prepareValue($key, $id);
                                 $record->setValue($key, $id);
