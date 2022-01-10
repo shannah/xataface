@@ -259,6 +259,9 @@ class Dataface_FeedTool {
 		if (!empty($data['itunes'])) {
 		    $item->itunes = $data['itunes'];
 		}
+        if (!empty($data['guid'])) {
+            $item->guid = $data['guid'];
+        }
 		
 		//optional
 		//item->descriptionTruncSize = 500;
