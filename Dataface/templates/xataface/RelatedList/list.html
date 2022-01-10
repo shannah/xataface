@@ -139,9 +139,11 @@
 				</div>
 			{/if}
 
-			<div class="resultlist-controller">
-				{$relatedResultController}
-			</div>
+            {if $ENV.prefs.show_bottom_result_controller or ($records|@count > 30 and !$ENV.prefs.hide_bottom_result_controller)}
+    			<div class="resultlist-controller">
+                   {$relatedResultController} 
+    			</div>
+            {/if}
 			{if $ENV.prefs.allow_reorder_related_rows}
 			<script language="javascript" src="{$prototype_url|escape}"></script>
 			<script language="javascript" src="{$scriptaculous_url|escape}"></script>
