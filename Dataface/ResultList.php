@@ -948,11 +948,24 @@ END;
 
 		function resultlist__updateFilters(col,select, currentURL){
 			var autoRedirect = currentURL ? false : true;
+            var isMultiSelect = select.multiple;
 			currentURL = currentURL || "'.$app->url('').'";
 			var currentParts = currentURL.split("?");
 			var currentQuery = "?"+currentParts[1];
-			var value = select.options[select.selectedIndex].value;
+			var value = "";
+            if (isMultiSelect) {
+                jQuery(select).val().forEach(function(v, idx) {
+                    if (value) {
+                        value += " OR =";
+                    }
+                    value += v;
+                });
+               
+            } else {
+                value = select.options[select.selectedIndex].value;
+            }
 			var regex = new RegExp(\'([?&])\'+col+\'={1,2}[^&]*\');
+            
 			if ( currentQuery.match(regex) ){
 				if ( value ){
 					prefix = "=";
@@ -999,7 +1012,14 @@ END;
 			if (!$autoUpdateFilters) {
 				$onchange = '';
 			}
-			echo '<li> '.df_escape($field['widget']['label']).' <select data-col="'.htmlspecialchars($col).'" '.$onchange.'><option value="">'.df_translate('scripts.GLOBAL.LABEL_ALL', 'All').'</option>';
+            $isMultiSelect = false;
+            $multiple = ' ';
+            if (@$field['filter.multiple']) {
+                $multiple = ' multiple ';
+                $isMultiSelect = true;
+            }
+            
+			echo '<li> '.df_escape($field['widget']['label']).' <select'.$multiple.'data-col="'.htmlspecialchars($col).'" '.$onchange.'><option value="">'.df_translate('scripts.GLOBAL.LABEL_ALL', 'All').'</option>';
 			$orderBy = "`$col`";
             if (@$field['filter.sort']) {
                 $orderBy = $field['filter.sort'];
@@ -1009,6 +1029,16 @@ END;
 			if ( @$query[$col] and $query[$col][0] == '=' ) $queryColVal = substr($query[$col],1);
 			
 			else $queryColVal = @$query[$col];
+            
+            $queryColVals = explode(' OR ', $queryColVal);
+            foreach ($queryColVals as $k=>$v) {
+                
+                if ($v and $v[0] == '=') {
+                    $queryColVals[$k] = substr($v, 1);
+                }
+            }
+            
+           
 			
 			//while ( $row = xf_db_fetch_assoc($res) ){
 			foreach ($res as $row){
@@ -1017,9 +1047,14 @@ END;
 				} else {
 					$val = $row[$col];
 				}
-				
-				if ( $queryColVal == $row[$col] ) $selected = ' selected';
-				else $selected = '';
+				$selected = '';
+                
+                if ($isMultiSelect and in_array($row[$col], $queryColVals)) {
+                    $selected = ' selected';
+                } else if (!$isMultiSelect and $queryColVal == $row[$col] ) {
+                    $selected = ' selected';
+                }
+
                 $countStr = $showRowCounts ? (' ('.$row['num'].')') : '';
 				echo '<option value="'.df_escape($row[$col]).'"'.$selected.'>'.df_escape($val.$countStr).'</option>';
 				
