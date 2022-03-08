@@ -27,7 +27,6 @@ GPL
 1. [Xataface Website](http://xataface.com)
 2. [Wiki](http://xataface.com/wiki)
 3. [Getting Started Tutorial](http://xataface.com/documentation/tutorial/getting_started)
-4. [PHP API Docs (Doxygen)](https://rawgithub.com/shannah/xataface/master/doc_output/html/index.html)
 5. [Javascript API Docs (jsDoc)](https://rawgithub.com/shannah/xataface/master/doc_output/jsdoc/index.html)
 
 ## Support
