@@ -24,10 +24,10 @@ GPL
 
 ## Documentation
 
-1. [Xataface Website](http://xataface.com)
-2. [Wiki](http://xataface.com/wiki)
-3. [Getting Started Tutorial](http://xataface.com/documentation/tutorial/getting_started)
-5. [Javascript API Docs (jsDoc)](https://rawgithub.com/shannah/xataface/master/doc_output/jsdoc/index.html)
+1. [Xataface Developer Guide](https://shannah.github.io/xataface-manual/)
+2. [Xataface Website](http://xataface.com)
+3. [Wiki](http://xataface.com/wiki)
+4. [Getting Started Tutorial](http://xataface.com/documentation/tutorial/getting_started)
 
 ## Support
 [Forum](http://xataface.com/forum)
