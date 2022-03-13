@@ -1,0 +1,16 @@
+{
+  "name": "xataface/xataface",
+  "description": "Xataface framework",
+  "type": "library",
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "license": "GPLv2",
+  "authors": [
+    {
+      "name": "Steve Hannah",
+      "email": "steve@weblite.ca"
+    }
+  ],
+  "minimum-stability": "dev"
+}
