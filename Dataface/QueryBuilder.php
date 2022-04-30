@@ -1308,7 +1308,7 @@ class Dataface_QueryBuilder {
 		if ( !is_a($relatedRecord, 'Dataface_RelatedRecord') ){
 			throw new Exception("In QueryBuilder::addRelatedRecord() expecting first argument to be type 'Dataface_RelatedRecord' but received '".get_class($relatedRecord)."'\n<br>", E_USER_ERROR);
 		}
-		$relationship =& (Dataface_Relationship)$relatedRecord->_relationship;
+		$relationship =& $relatedRecord->_relationship;
 		$table_cols = $relatedRecord->getForeignKeyValues( $sql);
 		if ( count($this->errors) > 0 ){
 			$error = array_pop($this->errors);
