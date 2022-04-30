@@ -16,10 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup MySQL
+    - name: MySql in GitHub Actions
       # You may pin to the exact commit or the version.
-      # uses: mirromutth/mysql-action@de1fba8b3f90ce8db80f663a7043be3cf3231248
-      uses: mirromutth/mysql-action@v1.1
+      # uses: nnhy/mysql-action@222a90440dbe61dc5b4d971ef8117eaf3858e24b
+      uses: nnhy/mysql-action@v1.0
       
       
     - name: Run Tests
