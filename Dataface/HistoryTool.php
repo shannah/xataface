@@ -179,7 +179,7 @@ class Dataface_HistoryTool {
 					return;
 				}
 				$savepath = $field['savepath'];
-				if ( $savepath{strlen($savepath)-1} != $s ) $savepath.=$s;
+				if ( $savepath[strlen($savepath)-1] != $s ) $savepath.=$s;
 				if ( !$record->val($fieldname) ) break; // there is no file currently stored in this field.
 				if ( !xf_is_readable($savepath.$record->val($fieldname)) ) break; // the file does not exist
 				if ( !file_exists($savepath) || !is_dir($savepath) )
@@ -447,6 +447,7 @@ class Dataface_HistoryTool {
 		$app =& Dataface_Application::getInstance();
 		if ( !isset($lang) )  $lang = $app->_conf['lang'];
 		$htablename = $record->_table->tablename.'__history';
+		$tablename = $record->_table->tablename;
 		if ( !Dataface_Table::tableExists($htablename) ) 
 			return PEAR::raiseError(
 				df_translate('scripts.Dataface.HistoryTool.getDiffs.ERROR_HISTORY_TABLE_DOES_NOT_EXIST',
@@ -574,7 +575,7 @@ class Dataface_HistoryTool {
 					return true;
 				}
 				$savepath = $field['savepath'];
-				if ( $savepath{strlen($savepath)-1} != '/' ) $savepath .= '/';
+				if ( $savepath[strlen($savepath)-1] != '/' ) $savepath .= '/';
 				
 				if ( $old_record->val($fieldname) ){
 					// we need to delete the existing file

@@ -1667,7 +1667,8 @@ class Dataface_Table {
             } else {
     			$res = xf_db_query($sql, $this->db);
     			if ( !$res || xf_db_num_rows($res) == 0){
-    				Dataface_MetadataTool::refreshMetadataTable($this->tablename);
+    				$metadataTool = new Dataface_MetadataTool();
+					$metadataTool->refreshMetadataTable($this->tablename);
     				$res = xf_db_query($sql, $this->db);
     			}
     			if ( !$res ) throw new Exception(xf_db_error($this->db), E_USER_ERROR);

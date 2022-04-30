@@ -400,7 +400,7 @@ class Dataface_JavascriptTool {
 		$jspath = $this->getJavascriptCachePath();
 		$manifest = $this->getManifestData();
 		if (XF_USE_OPCACHE) {
-		    if (xf_opcache_is_script_cached($jsPath) and xf_opcache_is_script_cached($mfpath)) {
+		    if (xf_opcache_is_script_cached($jspath)) {
                 // If we're using an opcache and the CSS file is cached
                 // then we're good.  We don't check for mod time.
 		        return false;

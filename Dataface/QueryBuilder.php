@@ -1308,11 +1308,12 @@ class Dataface_QueryBuilder {
 		if ( !is_a($relatedRecord, 'Dataface_RelatedRecord') ){
 			throw new Exception("In QueryBuilder::addRelatedRecord() expecting first argument to be type 'Dataface_RelatedRecord' but received '".get_class($relatedRecord)."'\n<br>", E_USER_ERROR);
 		}
-		$relationship =& $relatedRecord->_relationship;
+		$relationship =& (Dataface_Relationship)$relatedRecord->_relationship;
 		$table_cols = $relatedRecord->getForeignKeyValues( $sql);
 		if ( count($this->errors) > 0 ){
 			$error = array_pop($this->errors);
-			$error->addUserInfo("Error getting foreign key values for relationship '$relationship_name'");
+			$relationshipName = $relationship->getName();
+			$error->addUserInfo("Error getting foreign key values for relationship '$relationshipName'");
 			throw new Exception($error->toString());
 		}
 
