@@ -247,6 +247,9 @@ case "$mode" in
       # Give extra arguments to mysqld with the my.cnf file. This script
       # may be overwritten at next upgrade.
       echo "PID FILE $mysqld_pid_file_path\n"
+      if test -f "$scaffolddir/data/index.txt"; then
+        rm "$scaffolddir/data/index.txt"
+      fi
       $bindir/mysqld_safe --skip-grant-tables --skip-networking --tmpdir="$scaffolddir/tmp" --datadir="$scaffolddir/data" --innodb_data_home_dir="$scaffolddir/data" --innodb_log_group_home_dir="$scaffolddir/data" --log-error="$scaffolddir/log/mysql-errors.log" --socket="$scaffolddir/tmp/mysql.sock" --user=`whoami` --pid-file="$mysqld_pid_file_path" "$@" >/dev/null &
       #$bindir/mysqld_safe --datadir="$datadir" --pid-file="$mysqld_pid_file_path" "$@" &
       wait_for_ready; return_value=$?
