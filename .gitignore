@@ -1,3 +1,4 @@
 .DS_Store
 /nbproject/private/
 .idea
+/tests_output/

@@ -12,5 +12,8 @@
       "email": "steve@weblite.ca"
     }
   ],
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "scripts": {
+    "test": "bash ./tests/runtests_composer.sh"
+  }
 }
