@@ -221,6 +221,7 @@ wait_for_ready () {
   done
 
   log_failure_msg
+  cat "$scaffolddir/log/mysql-errors.log"
   return 1
 }
 #
