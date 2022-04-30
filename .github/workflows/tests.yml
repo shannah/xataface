@@ -20,6 +20,7 @@ jobs:
       with:
         mysql-version: '8.0'
         auto-start: false
-      
+    - name: "Print MYSQL Info"
+      run: mysql --version
     - name: Run Tests
       run: composer test
