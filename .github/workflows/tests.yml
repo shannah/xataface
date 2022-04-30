@@ -1,0 +1,26 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup MySQL
+      # You may pin to the exact commit or the version.
+      # uses: mirromutth/mysql-action@de1fba8b3f90ce8db80f663a7043be3cf3231248
+      uses: mirromutth/mysql-action@v1.1
+      
+      
+    - name: Run Tests
+      run: composer test
