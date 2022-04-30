@@ -67,13 +67,28 @@ class TableTest extends BaseTest {
 			
 	
 	}
+
+	private function strip_display_width($coltype) {
+		if (($pos = strpos($coltype, '(')) !== false) {
+			return strtolower(trim(substr($coltype, 0, $pos)));
+		} else {
+			return strtolower(trim($coltype));
+		}
+	}
 	
 	function test_column_types(){
 		$fields =& $this->table1->fields();
 		$fieldnames = array_keys($fields);
 		foreach ($fieldnames as $name){
 			$field =& $fields[$name];
-			$this->assertEquals( strtolower($this->types_control[$name]),  strtolower($field['Type']) );
+			if (preg_match('/int$/i', $field['Type'])) {
+				// As of MySQL 8.0.19 it may strip off width hints from integer columns
+				//https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html
+				$this->assertEquals($this->strip_display_width($this->types_control[$name]),  $this->strip_display_width($field['Type']));
+
+			} else {
+				$this->assertEquals( strtolower($this->types_control[$name]),  strtolower($field['Type']) );
+			}
 			
 			unset($field);
 		}
