@@ -53,12 +53,12 @@ function xf_service_run($argv) {
 		if (!$serviceManager->contains($httpd)) {
 			$serviceManager->add($httpd);
 			$added = true;
-			echo "Adding mysql service @ $appPath\n";
+			echo "Adding http service @ $appPath\n";
 		}
 		if (!$serviceManager->contains($mysql)) {
 			$serviceManager->add($mysql);
 			$added = true;
-			echo "Adding http service @ $appPath\n";
+			echo "Adding mysql service @ $appPath\n";
 		}
 		if ($added) {
 			$serviceManager->save();
@@ -93,12 +93,12 @@ function xf_service_run($argv) {
 		if ($serviceManager->contains($httpd)) {
 			$serviceManager->remove($httpd);
 			$removed = true;
-			echo "Removing mysql service @ $appPath\n";
+			echo "Removing http service @ $appPath\n";
 		}
 		if ($serviceManager->contains($mysql)) {
 			$serviceManager->remove($mysql);
 			$removed = true;
-			echo "Removing http service @ $appPath\n";
+			echo "Removing mysql service @ $appPath\n";
 		}
 		if ($removed) {
 			$serviceManager->save();
