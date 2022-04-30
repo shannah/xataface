@@ -16,11 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: MySql in GitHub Actions
-      # You may pin to the exact commit or the version.
-      # uses: nnhy/mysql-action@222a90440dbe61dc5b4d971ef8117eaf3858e24b
-      uses: nnhy/mysql-action@v1.0
-      
+    - uses: shogo82148/actions-setup-mysql@v1
+      with:
+        mysql-version: '8.0'
+        auto-start: false
       
     - name: Run Tests
       run: composer test
