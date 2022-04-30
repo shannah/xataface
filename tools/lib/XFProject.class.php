@@ -578,6 +578,7 @@ END;
         exec('bash '.escapeshellarg($mysql_server).' start', $buffer, $res);
         if ($res !== 0) {
             fwrite(STDERR, "Failed to start mysql server.\n");
+            print_r($buffer);
             exit(1);
         }
         echo "Started Successfully\n";
