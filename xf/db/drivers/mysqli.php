@@ -1,5 +1,7 @@
 <?php
 function xf_db_connect($host,$user,$pass){
+	// PHP 8.1 throws exceptions... this needs to be off or hell breaks loose
+	mysqli_report(MYSQLI_REPORT_OFF);
     if (strpos($host, ':') === false) {
         return mysqli_connect($host, $user, $pass);
     } else {
