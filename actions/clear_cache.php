@@ -27,14 +27,8 @@ class dataface_actions_clear_cache {
             $liveCache = substr($liveCache, 0, strlen($liveCache)-1);
         }
         
-        //echo $liveCache;exit;
         $app = Dataface_Application::getInstance();
         $query = $app->getQuery();
-        //print_r($query);exit;
-        import(XFROOT.'Dataface/Table.php');
-        $table = Dataface_Table::loadTable($query['-table']);
-        //print_r($table);exit;
-        
         self::rrmdir($liveCache, array('.htaccess'), false);
         
         import(XFROOT.'actions/clear_views.php');

@@ -295,7 +295,7 @@ function df_append_query($url, $query){
  * Clears all of the calculated views in the database.
  */
 function df_clear_views(){
-    import(XF_ROOT.'actions/clear_views.php');
+    import(XFROOT.'actions/clear_views.php');
     $action = new dataface_actions_clear_views();
     $action->clear_views();
 }
