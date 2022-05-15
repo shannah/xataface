@@ -946,10 +946,11 @@ ol.visualNoMarker {
 
 .xf-dropdown a.trigger span.arrow {
 	 background: url(images/arrowDown.gif) no-repeat 50% 50%;
-	 
 	 padding: 10px;
-	
+}
 
+.xf-dropdown a.trigger > i.material-icons {
+	display:none;
 }
 
 
@@ -1246,6 +1247,16 @@ tr.even, td.even {
 
 #language_selector {
 	float: right;
+	margin:auto;
+	margin-top: 10px;
+	margin-right: 10px;
+}
+
+#language_selector select {
+	background-color: transparent;
+	border: none;
+	color: #436976;
+	font: 13px/27px Arial,sans-serif;
 }
 
 #language_selector li {

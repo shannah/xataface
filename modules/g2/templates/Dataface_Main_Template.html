@@ -57,8 +57,14 @@
 					</div>
 				{if $ENV.prefs.show_tables_menu}
 					<div id="top-left-menu-bar">
+						
 						{actions_menu category=top_left_menu_bar maxcount=$G2->get_property('top_left_menu_bar.size', 7)}
 					</div>
+					{if !$ENV.prefs.hide_language_selector}
+						{block name="before_language_selector"}
+						{define_slot name="language_selector"}<div id="language_selector">{language_selector autosubmit="true" type="select" use_flags=false}</div>{/define_slot}
+						{block name="after_language_selector"}
+					{/if}
 					<div style="clear:both; height: 1px;"></div>
 				{/if}
 				
@@ -66,11 +72,7 @@
 				
 				
 				
-				{if !$ENV.prefs.hide_language_selector}
-					{block name="before_language_selector"}
-					{define_slot name="language_selector"}<div id="language_selector">{language_selector autosubmit="true" type="ul" use_flags=false}</div>{/define_slot}
-					{block name="after_language_selector"}
-				{/if}
+				
 					
 				
 			
