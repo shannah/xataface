@@ -2409,6 +2409,13 @@ div.resultlist-filters ul li { display: inline; list-style-type: none; list-styl
 div.resultlist-filters h3 { display: inline; font-size: 12px; color: #444}
 div.resultlist-filters ul { display: inline}
 
+div.resultlist-parent.non-empty .no-results-found {
+    display:none;
+}
+div.resultlist-parent.non-empty > .mobile-listing {
+    display:none;
+}
+
 th span.column-legend {
 	display: block;
 	font-size: 9px;
@@ -3051,3 +3058,64 @@ td.master-detail-selected a {
   li.record-back i.material-icons {
     display:none;
   }
+
+
+div.mobile-list-settings-wrapper {
+    box-sizing: border-box;
+    font-size: 11px;
+    display:block;
+}
+
+
+
+div.mobile-list-settings-wrapper > div {
+    padding:0;
+    margin:auto;
+    display:flex;
+}
+div.mobile-list-settings-wrapper span,
+div.mobile-list-settings-wrapper i {
+    color: #666;
+}
+div.mobile-list-settings-wrapper.active span,
+div.mobile-list-settings-wrapper.active i {
+    color: white;
+}
+div.mobile-list-settings-wrapper i  {
+    font-size: 16px;
+    vertical-align:middle;
+    margin-right: 5px;
+}
+
+div.mobile-list-settings-wrapper > div > a {
+    border-left: 1px solid white;
+    height: 100%;
+    flex-grow:1;
+    box-sizing: border-box;
+}
+div.mobile-list-settings-wrapper > div > a:first-child {
+    border-left: none;
+}
+div.mobile-list-settings-wrapper a {
+    text-decoration:none;
+    padding: 5px 10px 5px 10px;
+}
+
+
+div.mobile-list-settings-wrapper.active {
+    position:fixed;
+    z-index: 100;
+    background-color: rgb(10, 132, 255);
+    border-radius: 20px;
+    color: white;
+    -webkit-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    -moz-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 0);
+    padding:5px 15px 5px 15px;
+
+}
+
+  

@@ -40,6 +40,12 @@ class modules_g2 {
 		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/js/xataface/lang.js').'"></script>');
 		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/modules/XataJax/js/jquery.packed.js').'"></script>');
 		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/modules/XataJax/js/jquery-ui.min.js').'"></script>');
+		$app->addHeadContent('<script type="text/javascript" language="javascript">
+					DATAFACE_URL = '.json_encode(DATAFACE_URL).';
+					DATAFACE_SITE_URL = '.json_encode(DATAFACE_SITE_URL).';
+					DATAFACE_SITE_HREF = '.json_encode(DATAFACE_SITE_HREF).';
+				</script>');
+		$app->addHeadContent('<script src="'.htmlspecialchars($this->getBaseURL()).'/js/xataface-global.js"></script>');
 		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/modules/XataJax/js/xatajax.core.js').'"></script>');
 		$app->addHeadContent('<script src="'.htmlspecialchars(DATAFACE_URL.'/modules/XataJax/js/xatajax.util.js').'"></script>');
 		$app->addHeadContent('<link rel="stylesheet" type="text/css" href="'.htmlspecialchars(DATAFACE_URL.'/modules/XataJax/css/jquery-ui/jquery-ui.css').'"/>');
