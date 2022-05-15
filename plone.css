@@ -4903,7 +4903,7 @@ div.mobile-list-settings-wrapper.active {
     z-index: 100;
     background-color: rgb(10, 132, 255);
     border-radius: 20px;
-    color white;
+    color: white;
     -webkit-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
     -moz-box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
     box-shadow: 10px 10px 41px -10px rgba(0,0,0,0.71);
