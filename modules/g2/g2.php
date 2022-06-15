@@ -178,6 +178,8 @@ class modules_g2 {
 		foreach ($query as $k=>$v){
 			if ( $v and $table->hasField($k)){
 				$fld =& $table->getField($k);
+				$vl = & $table->getValuelist($fld['vocabulary']);
+                		if ($vl) $v = $vl[str_replace('=','',$v)];
 				if (isset($fld['silent_filter'])) {
 				    continue;
 				}
