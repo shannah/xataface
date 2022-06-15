@@ -123,11 +123,20 @@ class Dataface_Clipboard {
 	 * Indicates whether the clipboard is empty.
 	 * @return boolean True if the clipboard is empty for the current user.
 	 */
-	function empty(){
+	function _empty(){
 		return (xf_db_num_rows(xf_db_query("select count(*) from `".Dataface_Clipboard_tablename."` where `clipperid`='".addslashes($this->id)."'")) == 0);
 	}
-	
-	
+
+	/**
+	 * Compatibility layer so people could still use the "empty" function
+	 * @return boolean True
+	 */
+	function __call($name, $arguments) {
+		if ($name == 'empty') {
+			return call_user_func_array(array($this, '_empty'), $arguments);
+		}
+	}
+
 	/**
 	 * Copies the given record onto the clipboard.
 	 *
