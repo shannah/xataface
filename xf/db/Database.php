@@ -34,9 +34,9 @@ class Database {
             $conf = $this->conf;
             $this->db = xf_db_connect($conf['host'], $conf['user'], $conf['password'], true /* necessary to force new link */);
             xf_db_select_db($conf['name'], $this->db);
-            xf_db_query('set character_set_results = \'utf8\'', $this->db);
-            xf_db_query("SET NAMES utf8", $this->db);
-            xf_db_query('set character_set_client = \'utf8\'', $this->db);
+            xf_db_query('set character_set_results = \'utf8mb4\'', $this->db);
+            xf_db_query("SET NAMES utf8mb4", $this->db);
+            xf_db_query('set character_set_client = \'utf8mb4\'', $this->db);
             unset($this->conf);
         }
         return $this->db;

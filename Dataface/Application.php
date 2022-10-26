@@ -979,11 +979,11 @@ END;
                 define('XF_OUTPUT_ENCODING', $this->_conf['oe']);
 
 		if ( $this->_conf['oe'] == 'UTF-8' ){
-			$res = xf_db_query('set character_set_results = \'utf8\'', $this->_db);
-			xf_db_query("SET NAMES utf8", $this->_db);
+			$res = xf_db_query('set character_set_results = \'utf8mb4\'', $this->_db);
+			xf_db_query("SET NAMES utf8mb4", $this->_db);
 		}
 		if ( $this->_conf['ie'] == 'UTF-8' ){
-			$res = xf_db_query('set character_set_client = \'utf8\'', $this->_db);
+			$res = xf_db_query('set character_set_client = \'utf8mb4\'', $this->_db);
 
 		}
 
