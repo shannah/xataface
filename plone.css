@@ -3591,6 +3591,16 @@ body.two-col #status-bar .responsive-content,
       margin: 0 auto;
   }
 
+  body.full-width #main_table,
+body.full-width #status-bar .responsive-content,
+  body.full-width .responsive-content {
+      margin:0;
+      padding:0;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+  }
+
   #dataface-sections-main-column {
       padding:0 !important;
   }
@@ -3681,6 +3691,12 @@ body.two-col #status-bar .responsive-content,
       overflow-x: scroll;
       width: 1000px;
   }
+
+  body.full-width #list-window {
+    overflow-x: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
   
   #login-window .reset-password-field-wrapper {
       border-bottom: 2px solid var(--loginFieldUnderlineColor);
@@ -4226,9 +4242,6 @@ body.two-col #status-bar .responsive-content,
         display:none ;
     }
     
-    body.two-col #main_table,
-    body.two-col #status-bar .responsive-content,
-
     #left_column {
         display:none;
     }

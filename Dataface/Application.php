@@ -3493,6 +3493,10 @@ END
             }
             
         }
+				if ($record and ($record->getTableAttribute('full-width') or $record->getTableAttribute('full-width.'.$query['-action']))) {
+						$this->addBodyCSSClass('full-width');
+				}
+						
 
 		$params = array(
 			'table'=>$query['-table'],
