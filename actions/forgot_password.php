@@ -371,7 +371,7 @@ END
 		error_log("Rand is ".$rand);
 		$pw = '';
 		for ( $i=0; $i<=16; $i+=2 ){
-			$pw .= $rand{$i};
+			$pw .= $rand[$i];
 		}
 		$password = $pw;
                 if ( isset($del) and method_exists($del, 'generateTemporaryPassword')){

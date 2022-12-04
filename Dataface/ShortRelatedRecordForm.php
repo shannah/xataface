@@ -265,6 +265,8 @@ class Dataface_ShortRelatedRecordForm extends HTML_QuickForm {
 
 		foreach ( $groups as $sectionName => $fields ){
 			unset($group);
+			// deal with empty sections. Passing null to reset causes a fatal error
+			if (!is_array($fields)) continue;
 			$firstField = reset($fields);
 			if ( !$firstField ) continue;
 			$thisTable =& Dataface_Table::loadTable($firstField['tablename']);
