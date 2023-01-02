@@ -3,7 +3,7 @@ if ( !defined('DATAFACE_SITE_PATH') ) die("Cannot be called directly");
 if ( !$_GET['--id'] ) die("No id specified");
 $path = XFTEMPLATES_C.basename($_GET['--id']).'.css';
 if ( !file_exists($path) ){
-	dir("File could not be found");
+	die("File could not be found");
 }
 // seconds, minutes, hours, days
 //ob_start("ob_gzhandler");  //Removed due to PHP BUG 55544
