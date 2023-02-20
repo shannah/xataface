@@ -876,7 +876,7 @@ class Dataface_Table {
 						!$this->isDate($row['name']) 	and
 						!$this->isPassword($row['name']) and
 						$row['Null'] != 'YES' 			and
-						strlen($row['Default']) == 0	and
+						empty($row['Default'])	and
 						$row['Extra'] != 'auto_increment' and
 						@$row['validators']['required'] !== 0){
 				$messageStr = "%s is a required field";
