@@ -628,7 +628,7 @@ import(XFROOT.'Dataface/QueryTool.php');
                     
                     
                         echo '</td>';
-                        unset($at, $actions);
+                        unset($actions);
                     }
                 } else if ($mobile){
                     echo "<div class=\"mobile-listing-row $rowClass\" xf-record-id=\"".df_escape($recordid)."\" xf-record-id=\"".df_escape($recordid)."\">";
