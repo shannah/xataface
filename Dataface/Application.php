@@ -4231,7 +4231,7 @@ END
 	 * etc.. as well).
 	 *
 	 */
-	function url($query, $useContext=true, $forceContext=false){
+	function url($query = [], $useContext=true, $forceContext=false){
 		import(XFROOT.'Dataface/LinkTool.php');
 		return Dataface_LinkTool::buildLInk($query, $useContext, $forceContext);
 

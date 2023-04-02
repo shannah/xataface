@@ -55,6 +55,9 @@ class SQL_Parser
     var $reserved = array();
     var $units = array();
     var $dialect;
+    var $all_tables;
+    var $commands;
+    var $quantifiers;
     
     /**
      * A flag to see if there has been an interval that has not been closed
@@ -1729,7 +1732,11 @@ class SQL_Parser
                         return $this->raiseError('Expected "by"');
                     }
                     $this->getTok();
-                    while ($this->token == 'ident' or $this->isFunc()) {
+                    while ($this->token == 'language' or $this->token == 'ident' or $this->isFunc()) {
+                        if ($this->token == 'language') {
+                            $this->tokText = $this->token;
+                            $this->token = 'ident';
+                        }
                         //$col = $this->tokText;
                         $col = array();
                         if ( $this->token == 'ident' ){
@@ -1796,7 +1803,7 @@ class SQL_Parser
                 	return $tree;
                 	
                 default:
-                    return $this->raiseError('Unexpected clause');
+                    return $this->raiseError('Unexpected clause ' . $this->token);
             }
         }
         return $tree;
