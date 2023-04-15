@@ -2069,7 +2069,7 @@ class Dataface_Table {
 			return null;
 		}
 		$sqlKey = md5($sql);
-		$viewName = 'dataface__view_'.md5($this->tablename.'_'.$sqlKey);
+		$viewName = 'dataface__view_'.$this->tablename.'_'.$sqlKey;
 		if ( isset($this->_proxyViews[$viewName]) and $this->_proxyViews[$viewName]) return $viewName;
 		else if ( isset($this->_proxyViews[$viewName]) and !$this->_proxyViews[$viewName]) return null;
 
