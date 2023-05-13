@@ -696,7 +696,7 @@ class Dataface_Table
                     $row['tableta'] = 'default';
                     $row['vocabulary'] = '';
                     $row['enforceVocabulary'] = false;
-                    $row['validators'] = array();
+                    $row['validators'] = [];
                     $row['name'] = $row['Field'];
                     $row['permissions'] = Dataface_PermissionsTool::getRolePermissions($this->app->_conf['default_field_role']);
                     $row['repeat'] = false;
@@ -788,7 +788,6 @@ class Dataface_Table
         foreach ($fieldnames as $key) {
             $row = &$this->_fields[$key];
 
-
             // handle case where this is an enumerated field
             $matches = array();
             if (preg_match('/^(enum|set)\((.*)\)$/', $row['Type'], $matches)) {
@@ -811,8 +810,6 @@ class Dataface_Table
                     $row['repeat'] = false;
                 }
 
-                //$row['widget']['type'] = 'select';
-
                 $opt_keys = array_keys($vocab);
 
                 $dummy = '';
@@ -832,6 +829,7 @@ class Dataface_Table
                 $row['Null'] != 'YES'             and
                 empty($row['Default'])    and
                 $row['Extra'] != 'auto_increment' and
+                $row['widget']['type'] != 'checkbox' and 
                 @$row['validators']['required'] !== 0
             ) {
                 $messageStr = "%s is a required field";
@@ -848,10 +846,6 @@ class Dataface_Table
                     'arg' => ''
                 );
             } else if (@$row['validators']['required'] === 0) {
-                unset($row['validators']['required']);
-            }
-
-            if ($widget['type'] == 'checkbox') {
                 unset($row['validators']['required']);
             }
 
@@ -2522,7 +2516,6 @@ class Dataface_Table
             return $table->getFieldProperty($propertyName, $fieldname, $params);
         }
 
-
         // First we will see if the delegate class defines as custom description.
         $delegate = &$this->getDelegate();
         $delegate_property_name = str_replace(':', '_', $propertyName);
@@ -2550,9 +2543,6 @@ class Dataface_Table
         }
         return $arr;
     }
-
-
-
 
     /**
      * @brief Returns the name of the field that is auto incrementing (if it exists).
@@ -2583,15 +2573,12 @@ class Dataface_Table
         return self::$globalFieldsConfig;
     }
 
-
     /**
      * Load information about the fields in this table from the fields.ini file.
      * @private
      */
     function _loadFieldsIniFile()
     {
-
-
         import(XFROOT . 'Dataface/ConfigTool.php');
         $configTool = &Dataface_ConfigTool::getInstance();
         $conf = &$configTool->loadConfig('fields', $this->tablename); //$temp['root'];
@@ -2599,21 +2586,21 @@ class Dataface_Table
         $conf = array_merge($gConf, $conf);
         $app = &Dataface_Application::getInstance();
         $appDel = &$app->getDelegate();
-        if (isset($appDel) and method_exists($appDel, 'decorateFieldsINI')) {
-            $appDel->decorateFieldsINI($conf, $this);
+        $decorateFieldsFunc = 'decorateFieldsINI';
+        if (isset($appDel) and method_exists($appDel, $decorateFieldsFunc)) {
+            $appDel->$decorateFieldsFunc($conf, $this);
         }
 
         $this->_global_field_properties = array();
         if (isset($conf['__global__'])) $this->_parseINISection($conf['__global__'], $this->_global_field_properties);
         else $this->_global_field_properties = array();
-        //print_r($this->_fields);
+        
         foreach ($this->_fields as $key => $val) {
             if (isset($conf[$key])) {
                 $conf[$key] = array_merge_recursive_unique($this->_global_field_properties, $conf[$key]);
             } else {
                 $conf[$key] = $this->_global_field_properties;
             }
-            //$conf[$key] = array_merge_recursive_unique($this->_global_field_properties, $conf[$key]);
         }
 
         $selectors = array();
@@ -2638,7 +2625,6 @@ class Dataface_Table
                 continue;
             }
 
-
             if (is_array($value) and @$value['decorator']) {
                 $event = new StdClass;
                 $event->key = $key;
@@ -2659,17 +2645,12 @@ class Dataface_Table
                 if (isset($value['Type'])) {
 
                     $ftype = strtolower(preg_replace('/\(.*$/', '', $value['Type']));
-                    //echo $ftype;
                     if (isset($conf['/' . $ftype])) {
                         $conf[$key] = $value = array_merge($conf['/' . $ftype], $value);
-                        //print_r($value);
                     }
                 }
             }
 
-            /*
-       * Iterate through all of the fields.
-       */
             $matches = array(); // temp holder for preg matches
             if (preg_match('/fieldgroup:(.+)/', $key, $matches)) {
                 // This is a group description - not a field description
@@ -2756,12 +2737,9 @@ class Dataface_Table
                 $ftype = $field['Type'];
                 if (isset($value['Type'])) $ftype = $value['Type'];
                 $ftype = strtolower(preg_replace('/\(.*$/', '', $ftype));
-                //echo $ftype;
                 if (isset($conf['/' . $ftype])) {
                     $conf[$key] = $value = array_merge($conf['/' . $ftype], $value);
-                    //print_r($value);
                 }
-
 
                 // get the attributes defined in the ini file
                 foreach ($value as $att => $attval) {
@@ -2876,10 +2854,10 @@ class Dataface_Table
             }
             if (strcasecmp($field['Type'], 'container') === 0) {
                 /*
-         * This field is a Container field.  We will need to set up the save path.
-         * If no save path is specified we will create a directory by the name
-         * of this field inside the table's directory.
-         */
+                * This field is a Container field.  We will need to set up the save path.
+                * If no save path is specified we will create a directory by the name
+                * of this field inside the table's directory.
+                */
                 if ($field['widget']['type'] == 'text' or $field['widget']['type'] == 'textarea') $field['widget']['type'] = 'file';
                 if (!isset($field['savepath'])) {
                     $field['savepath'] = $this->basePath() . '/tables/' . $this->tablename . '/' . $key;
@@ -2896,7 +2874,6 @@ class Dataface_Table
                     $field['noLinkFromListView'] = 1;
                 }
             }
-
 
             if (!isset($this->_fields[$key]['tab'])) $this->_fields[$key]['tab'] = '__main__';
             $tab = $this->_fields[$key]['tab'];
@@ -2951,13 +2928,6 @@ class Dataface_Table
             unset($widget);
         }
     }
-
-
-
-
-
-
-
 
     // @}
     // END Fields methods
