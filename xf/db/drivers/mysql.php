@@ -23,7 +23,7 @@ function xf_db_errno($link=null){
 	return mysql_errno($link); 
 }
 function xf_db_escape_string($unescaped_string){ return mysql_escape_string($unescaped_string); }
-function xf_db_real_escape_string($unescaped_string, $link){ return mysql_real_escape_string($unescaped_string, $link); }
+function xf_db_real_escape_string($unescaped_string, $link = null){ return mysql_real_escape_string($unescaped_string, $link ?? df_db()); }
 function xf_db_fetch_array($result){ return mysql_fetch_array($result); }
 function xf_db_fetch_assoc($result){ return mysql_fetch_assoc($result); }
 function xf_db_fetch_object($result){ return mysql_fetch_object($result); }
