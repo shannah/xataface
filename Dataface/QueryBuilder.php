@@ -708,7 +708,7 @@ class Dataface_QueryBuilder {
                                         $oldval = trim($value);
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true );
 					if ( $repeat ){
-						$where .= $this->wc($tableAlias, $key, $collate)." NOT RLIKE CONCAT('[[:<:]]',$value,'[[:>:]]') AND ";
+						$where .= $this->wc($tableAlias, $key, $collate)." NOT REGEXP CONCAT('\\b',$value,'\\b') AND ";
 					} else {
                                                 $oper = '<>';
                                                 if (  strlen($oldval) === 0 ){
@@ -775,7 +775,7 @@ class Dataface_QueryBuilder {
 
 				} else if ( $repeat ){
 					$value = $this->prepareValue( $key, $table->parse($key, $value), true);
-					$where .= $this->wc($tableAlias, $key, $collate)." RLIKE CONCAT('[[:<:]]',$value,'[[:>:]]') AND ";
+					$where .= $this->wc($tableAlias, $key, $collate)." REGEXP CONCAT('\\b',$value,'\\b') AND ";
 				}
 
 				else if ( $this->_exactMatches || preg_match( '/int|decimal/i', $field['Type']) || $exact ){

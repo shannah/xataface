@@ -12,10 +12,7 @@ function xf_db_connect($host,$user,$pass){
 function xf_db_connect_errno(){ return mysqli_connect_errno();}
 function xf_db_connect_error(){ return mysqli_connect_error();}
 function xf_db_query($sql, $conn=null){
-	if ($conn === null) {
-		$conn = df_db();
-	}
-	return mysqli_query($conn, $sql);
+	return mysqli_query($conn ?? df_db(), $sql);
 }
 function xf_db_error($link=null){
 	if ( $link === null ){
