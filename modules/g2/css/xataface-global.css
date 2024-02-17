@@ -3118,4 +3118,6 @@ div.mobile-list-settings-wrapper.active {
 
 }
 
-  
+.mobile, .mobile-listing, .mobile-footer {
+	display:none;
+}
