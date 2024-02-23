@@ -36,6 +36,7 @@
                             if ( !foundFirstNonBlank){
                                 foundFirstNonBlank = true;
                                 if ( numLeadingBlanks > 0 ){
+                                	numLeadingBlanks -= 1;
                                     if (label ){
                                         $(footRow).append($('<th>').attr('colspan', numLeadingBlanks).text(label));
                                     } else {
