@@ -314,7 +314,7 @@ END
 		$dummyForm =& $this->getTableForm($query['-table']);
 		foreach ($replacements as $key=>$val){
 			$dummyForm =& $this->getTableForm($fields[$key]['tablename']);
-			if ( strpos($val,'=') === 0  ){
+			if (is_string($val) && strpos($val,'=') === 0  ){
 				// This is a calculated change so we don't try to push the value
 				// we'll let it go through
 				continue;
@@ -391,7 +391,7 @@ END
 				if ( $failed ) continue;
 				foreach ($replacements as $k=>$v){
 				
-					if ( strpos($v,'=') === 0  ){
+					if ( is_string($v) && strpos($v,'=') === 0  ){
 						$replacements[$k] = $copyTool->evaluate($v, $k, $record);
 					}
 				}
