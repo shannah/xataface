@@ -2,6 +2,7 @@
 /nbproject/private/
 .idea
 /tests_output/
+/local-test-apps/
 
 ### BROKK'S CONFIGURATION ###
 .brokk/**
