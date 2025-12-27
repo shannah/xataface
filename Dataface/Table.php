@@ -3172,7 +3172,7 @@ class Dataface_Table
                 $perms = array_merge($recordmask, $perms);
                 continue;
             }
-            if (isset($method['object']) and method_exists($method['object'], $method['name'])) {
+            if (is_array($method) and isset($method['object']) and method_exists($method['object'], $method['name'])) {
                 $name = $method['name'];
                 if ($method['type'] == 'Dataface_Table') {
                     $res = $method['object']->$name(array_merge($params, array('nobubble' => 1)));
