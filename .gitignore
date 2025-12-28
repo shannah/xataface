@@ -3,6 +3,7 @@
 .idea
 /tests_output/
 /local-test-apps/
+/vendor/
 
 ### BROKK'S CONFIGURATION ###
 .brokk/**

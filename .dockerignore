@@ -1,0 +1,11 @@
+.git
+.github
+.claude
+.brokk
+.travis
+node_modules
+vendor
+nbproject
+local-test-apps
+*.log
+.DS_Store
