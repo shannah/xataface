@@ -7,8 +7,8 @@ function fnDatabaseExists($dbName, $oConn='') {
 //Verifies existence of a MySQL database
 $bRetVal = FALSE;
 if ($oConn or $oConn = @xf_db_connect(DB_HOST, DB_USER, DB_PASSWORD)) {
-$result = mysql_list_dbs($oConn);
-while ($row=xf_db_fetch_array($result, MYSQL_NUM)) {
+$result = xf_db_query("SHOW DATABASES", $oConn);
+while ($row=xf_db_fetch_array($result)) {
 if ($row[0] ==  $dbName)
 $bRetVal = TRUE;
 }
@@ -35,8 +35,9 @@ if (!oConn and !$oConn = @xf_db_connect(DB_HOST, DB_USER, DB_PASSWORD)) {
 $bRetVal = FALSE;
 } else {
 $bRetVal = FALSE;
-$result = mysql_list_tables(DB_NAME, $oConn);
-while ($row=xf_db_fetch_array($result, MYSQL_NUM)) {
+xf_db_select_db(DB_NAME, $oConn);
+$result = xf_db_query("SHOW TABLES", $oConn);
+while ($row=xf_db_fetch_array($result)) {
 if ($row[0] ==  $TableName)
 $bRetVal = TRUE;
 break;
@@ -53,23 +54,26 @@ function fnSQLtoHTML($sSQL, $oConn='') {
 if (!$oConn and !$oConn = @xf_db_connect(DB_HOST, DB_USER, DB_PASSWORD)) {
 $sRetVal = xf_db_error();
 } else {
-if (!mysql_selectdb(DB_NAME,$oConn)) {
+if (!xf_db_select_db(DB_NAME,$oConn)) {
 $sRetVal = xf_db_error();
 } else {
 if (!$result = xf_db_query($sSQL, $oConn)) {
 $sRetVal = xf_db_error();
 } else {
 $sRetVal = "<table border=1>\n";
-$sRetVal .= "<tr><th colspan=" . mysql_num_fields($result) . ">";
-$sRetVal .= mysql_field_table($result,0) . "</th></tr>";
+$numFields = mysqli_num_fields($result);
+$fieldInfo = mysqli_fetch_field_direct($result, 0);
+$sRetVal .= "<tr><th colspan=" . $numFields . ">";
+$sRetVal .= $fieldInfo->table . "</th></tr>";
 $sRetVal .= "<tr>";
 $i=0;
-while ($i < mysql_num_fields($result)) {
-$sRetVal .= "<th>" . mysql_field_name($result, $i) . "</th>";
+while ($i < $numFields) {
+$fieldInfo = mysqli_fetch_field_direct($result, $i);
+$sRetVal .= "<th>" . $fieldInfo->name . "</th>";
 $i++;
 }
 $sRetVal .= "</tr>";
-while ($line = xf_db_fetch_array($result, MYSQL_ASSOC)) {
+while ($line = xf_db_fetch_assoc($result)) {
 $sRetVal .= "\t<tr>\n";
 foreach ($line as $col_value) {
 $sRetVal .= "\t\t<td>$col_value</td>\n";
@@ -92,23 +96,23 @@ function fnSQLtoXML($sSQL, $oConn='') {
 if (!$oConn and !$oConn = @xf_db_connect(DB_HOST, DB_USER, DB_PASSWORD)) {
 $sRetVal = xf_db_error();
 } else {
-if (!mysql_selectdb(DB_NAME,$oConn)) {
+if (!xf_db_select_db(DB_NAME,$oConn)) {
 $sRetVal = xf_db_error();
 } else {
 if (!$result = xf_db_query($sSQL, $oConn)) {
 $sRetVal = xf_db_error();
 } else {
-while ($line = xf_db_fetch_array($result, MYSQL_ASSOC)) {
-$sRetVal = "\n<" . mysql_field_table($result,0) . ">";
+$fieldInfo = mysqli_fetch_field_direct($result, 0);
+while ($line = xf_db_fetch_assoc($result)) {
+$sRetVal = "\n<" . $fieldInfo->table . ">";
 $iThisField = 0;
 foreach ($line as $col_value) {
-$oTMP = mysql_fetch_field($result, $iThisField);
-$iThisField ++;
-$sThisFieldName = $oTMP -> name;
+$oTMP = mysqli_fetch_field($result);
+$sThisFieldName = $oTMP->name;
 $sRetVal .= "\n\t<$sThisFieldName value=" . $col_value . ">";
 $sRetVal .= "</$sThisFieldName>";
 }
-$sRetVal .= "\n</" . mysql_field_table($result,0) . ">\n";
+$sRetVal .= "\n</" . $fieldInfo->table . ">\n";
 }
 xf_db_free_result($result);
 }  }

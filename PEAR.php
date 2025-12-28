@@ -539,21 +539,13 @@ class PEAR
             $message     = $message->getMessage();
         }
 
-        if (isset($this) && isset($this->_expected_errors) && sizeof($this->_expected_errors) > 0 && sizeof($exp = end($this->_expected_errors))) {
-            if ($exp[0] == "*" ||
-                (is_int(reset($exp)) && in_array($code, $exp)) ||
-                (is_string(reset($exp)) && in_array($message, $exp))) {
-                $mode = PEAR_ERROR_RETURN;
-            }
-        }
+        // Note: Removed isset($this) checks for PHP 7.1+ compatibility
+        // This static method now uses only global error handling
+
         // No mode given, try global ones
         if ($mode === null) {
-            // Class error handler
-            if (isset($this) && isset($this->_default_error_mode)) {
-                $mode    = $this->_default_error_mode;
-                $options = $this->_default_error_options;
             // Global error handler
-            } elseif (isset($GLOBALS['_PEAR_default_error_mode'])) {
+            if (isset($GLOBALS['_PEAR_default_error_mode'])) {
                 $mode    = $GLOBALS['_PEAR_default_error_mode'];
                 $options = $GLOBALS['_PEAR_default_error_options'];
             }
@@ -561,8 +553,6 @@ class PEAR
 
         if ($error_class !== null) {
             $ec = $error_class;
-        } elseif (isset($this) && isset($this->_error_class)) {
-            $ec = $this->_error_class;
         } else {
             $ec = 'PEAR_Error';
         }
@@ -862,12 +852,12 @@ class PEAR_Error
     function __construct($message = 'unknown error', $code = null,
                         $mode = null, $options = null, $userinfo = null)
     {
-        if ($mode === null) {
-            $mode = PEAR_ERROR_RETURN;
-        }
+        // Assign default before debug_backtrace() for PHP 7.0+ compatibility
+        $effectiveMode = ($mode === null) ? PEAR_ERROR_RETURN : $mode;
+
         $this->message   = $message;
         $this->code      = $code;
-        $this->mode      = $mode;
+        $this->mode      = $effectiveMode;
         $this->userinfo  = $userinfo;
         if (!PEAR::getStaticProperty('PEAR_Error', 'skiptrace')) {
             $this->backtrace = debug_backtrace();
@@ -875,7 +865,7 @@ class PEAR_Error
                 unset($this->backtrace[0]['object']);
             }
         }
-        if ($mode & PEAR_ERROR_CALLBACK) {
+        if ($effectiveMode & PEAR_ERROR_CALLBACK) {
             $this->level = E_USER_NOTICE;
             $this->callback = $options;
         } else {

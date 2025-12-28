@@ -12,9 +12,9 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Authors: Bernd Römer <berndr@bonn.edu>                               |
+// | Authors: Bernd Rï¿½mer <berndr@bonn.edu>                               |
 // |          Sebastian Bergmann <sb@sebastian-bergmann.de>               |
-// |          Christian Kühn <ck@chkuehn.de> (escape xml entities)        |
+// |          Christian Kï¿½hn <ck@chkuehn.de> (escape xml entities)        |
 // |          Michele Manzato <michele.manzato@verona.miz.it>             |
 // +----------------------------------------------------------------------+
 //
@@ -24,7 +24,7 @@
 /**
  * PEAR::XML_Tree_Node
  *
- * @author  Bernd Römer <berndr@bonn.edu>
+ * @author  Bernd Rï¿½mer <berndr@bonn.edu>
  * @package XML_Tree
  * @version 1.0  16-Aug-2001
  */
@@ -519,9 +519,9 @@ class XML_Tree_Node {
 
     function encodeXmlEntities($xml)
     {
-        $xml = str_replace(array('ü', 'Ü', 'ö',
-                                 'Ö', 'ä', 'Ä',
-                                 'ß', '<', '>',
+        $xml = str_replace(array('ï¿½', 'ï¿½', 'ï¿½',
+                                 'ï¿½', 'ï¿½', 'ï¿½',
+                                 'ï¿½', '<', '>',
                                  '"', '\''
                                 ),
                            array('&#252;', '&#220;', '&#246;',
@@ -534,15 +534,18 @@ class XML_Tree_Node {
 
         $xml = preg_replace(array("/\&([a-z\d\#]+)\;/i",
                                   "/\&/",
-                                  "/\#\|\|([a-z\d\#]+)\|\|\#/i",
-                                  "/([^a-zA-Z\d\s\<\>\&\;\.\:\=\"\-\/\%\?\!\'\(\)\[\]\{\}\$\#\+\,\@_])/e"
+                                  "/\#\|\|([a-z\d\#]+)\|\|\#/i"
                                  ),
                             array("#||\\1||#",
                                   "&amp;",
-                                  "&\\1;",
-                                  "'&#'.ord('\\1').';'"
+                                  "&\\1;"
                                  ),
                             $xml
+                           );
+        $xml = preg_replace_callback(
+                "/([^a-zA-Z\d\s\<\>\&\;\.\:\=\"\-\/\%\?\!\'\(\)\[\]\{\}\$\#\+\,\@_])/",
+                function($matches) { return '&#'.ord($matches[1]).';'; },
+                $xml
                            );
 
         return $xml;
