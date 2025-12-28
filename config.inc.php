@@ -99,15 +99,9 @@ if (version_compare(PHP_VERSION, '7.4') < 0 and get_magic_quotes_gpc()) {
    $_FILES = stripslashes_array(@$_FILES);
    $_ENV = stripslashes_array(@$_ENV);
    $_REQUEST = stripslashes_array(@$_REQUEST);
-   $HTTP_SERVER_VARS = stripslashes_array(@$HTTP_SERVER_VARS);
-   $HTTP_GET_VARS = stripslashes_array(@$HTTP_GET_VARS);
-   $HTTP_POST_VARS = stripslashes_array(@$HTTP_POST_VARS);
-   $HTTP_COOKIE_VARS = stripslashes_array(@$HTTP_COOKIE_VARS);
-   $HTTP_POST_FILES = stripslashes_array(@$HTTP_POST_FILES);
-   $HTTP_ENV_VARS = stripslashes_array(@$HTTP_ENV_VARS);
+   // Old HTTP_*_VARS variables removed - use $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES, $_ENV, $_SESSION instead
    if (isset($_SESSION)) {    #These are unconfirmed (?)
        $_SESSION = stripslashes_array($_SESSION, '');
-       $HTTP_SESSION_VARS = stripslashes_array(@$HTTP_SESSION_VARS, '');
    }
    /*
    The $GLOBALS array is also slash-encoded, but when all the above are

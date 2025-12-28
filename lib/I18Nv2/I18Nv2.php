@@ -238,9 +238,15 @@ class I18Nv2
             }
         }
         
-        iconv_set_encoding('internal_encoding', $ie);
-        iconv_set_encoding('output_encoding', $oe);
-        iconv_set_encoding('input_encoding', $oe);
+        // PHP 8.0+ removed iconv_set_encoding() and the INI settings entirely.
+        // For PHP < 8.0, use iconv_set_encoding() with suppressed warnings.
+        // For PHP 8.0+, skip these calls (PHP 8 uses UTF-8 as internal encoding by default).
+        if (PHP_VERSION_ID < 80000) {
+            @iconv_set_encoding('internal_encoding', $ie);
+            @iconv_set_encoding('output_encoding', $oe);
+            @iconv_set_encoding('input_encoding', $oe);
+        }
+        // In PHP 8.0+, ob_iconv_handler() will use default encoding behavior.
         
         $buffer = '';
         if ($refetchOB && $level = ob_get_level()) {

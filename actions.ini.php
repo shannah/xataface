@@ -643,7 +643,7 @@
 [history_restore_record]
 	category=history_record_actions
 	label = "Restore"
-	url = "javascript: historyToolClient.restoreRecord('{$context['history__id']}')"
+	url = "javascript: historyToolClient.restoreRecord('[$context['history__id']]')"
 	onmouseover = "window.status = 'hello';"
 	description = "Restore the current record to the contents of this history snapshot"
 	permission = edit_history

@@ -46,9 +46,9 @@ class Dataface_LanguageTool {
 	 * isn't already loaded.
 	 */
 	public static function loadRealm($name){
-		return self::getInstance($this->app->_conf['default_language'])->loadRealm($name);
-		
-		
+		return self::getInstance()->loadRealm($name);
+
+
 	}
 	
 	public static function addRealm($name, $dictionary=null){

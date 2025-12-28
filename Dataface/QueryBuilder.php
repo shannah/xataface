@@ -1203,7 +1203,7 @@ class Dataface_QueryBuilder {
 	 * @returns string Match clause for an SQL query.
 	 */
 	function _match($queryStr){
-		$version = mysql_get_server_info();
+		$version = mysqli_get_server_info(df_db());
 		$matches = array();
 		preg_match('/(\d+)\.(\d)+\.(\d)+/', $version, $matches);
 		$majorVersion = intval($matches[1]);

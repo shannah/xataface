@@ -102,7 +102,7 @@ if (count($argv) < 2) {
     exit(1);
 }
 $repoUrl = $argv[1];
-if ($repoUrl{-1} == '/') {
+if ($repoUrl[-1] == '/') {
     $repoUrl = substr($repoUrl, 0, -1);
 }
 $dest = substr($repoUrl, strrpos($repoUrl, '/')+1);

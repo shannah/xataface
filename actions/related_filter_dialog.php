@@ -392,7 +392,7 @@ class dataface_actions_related_filter_dialog {
                             if (strpos($currentValue, '~%') === 0) {
                                 $searchPrefix = '~%';
                                 $currentValue = substr($currentValue, 2);
-                            } else if ($currentValue{strlen($currentValue)-1} == '%') {
+                            } else if ($currentValue[strlen($currentValue)-1] == '%') {
                                 $searchPrefix = '~';
                                 $searchSuffix = '%';
                                 $currentValue = substr($currentValue, 1, strlen($currentValue)-2);

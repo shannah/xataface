@@ -480,7 +480,7 @@ class Binding {
 			unset(self::$bindingsCache[$table.'.'.$column]);
 		}
 		$db = new Database(df_db());
-		$db->deleteObject($this->table->tablename, array(
+		$db->deleteObject('xf_db_bindings', array(
 			'table_name' => $table,
 			'column_name' => $column
 		));
@@ -550,32 +550,32 @@ class Binding {
 		if ($type == 'UPDATE') {
 			$bvars = $this->parseBinding('NEW', 'NEW');
 		
-			$sql = <<<END
+			$sql = <<<SQL
 				IF {$bvars['reverse_if']} AND NOT(NEW.`{$bvars['field']}` <=> OLD.`{$bvars['field']}`) THEN
 					IF EXISTS(SELECT `{$this->fieldName}` FROM `{$this->table->tablename}` WHERE {$bvars['reverse_where']} AND NOT(`{$this->fieldName}` <=> NEW.`{$bvars['field']}`) ) THEN
 						UPDATE `{$this->table->tablename}` SET `{$this->fieldName}` = NEW.`{$bvars['field']}` WHERE {$bvars['reverse_where']};
 					END IF;
 				END IF;
-END;
+SQL;
 			self::$triggers[$bvars['table'].'.after.update'][] = $sql;
 		} else if ($type == 'INSERT') {
 			$bvars = $this->parseBinding('NEW', 'NEW');
 		
-			$sql = <<<END
+			$sql = <<<SQL
 				IF {$bvars['reverse_if']} AND EXISTS(SELECT `{$this->fieldName}` FROM `{$this->table->tablename}` WHERE {$bvars['reverse_where']} AND NOT(`{$this->fieldName}` <=> NEW.`{$bvars['field']}`)) THEN
 					UPDATE `{$this->table->tablename}` SET `{$this->fieldName}` = NEW.`{$bvars['field']}` WHERE {$bvars['reverse_where']};
 				END IF;
 
-END;
+SQL;
 			self::$triggers[$bvars['table'].'.after.insert'][] = $sql;
 		} else if ($type == 'DELETE') {
 			$bvars = $this->parseBinding('OLD', 'OLD');
-			$sql = <<<END
+			$sql = <<<SQL
 				IF {$bvars['reverse_if']} AND EXISTS(SELECT `{$this->fieldName}` FROM `{$this->table->tablename}` WHERE {$bvars['reverse_where']} AND `{$this->fieldName}` <=> OLD.`{$bvars['field']}`) THEN
 					UPDATE `{$this->table->tablename}` SET `{$this->fieldName}` = NULL WHERE {$bvars['reverse_where']};
 				END IF;
 	
-END;
+SQL;
 			self::$triggers[$bvars['table'].'.after.delete'][] = $sql;
 		} else {
 			throw new \Exception("Unsupported trigger type $type");
@@ -593,12 +593,12 @@ END;
 		$bvars = $this->parseBinding('NEW');
 		$field =& $this->table->getField($this->fieldName);
 		self::$triggerDeclarations[$this->table->tablename.'.before.insert'][] = "DECLARE tmp_{$this->fieldName} {$field['Type']};\n";
-		$sql = <<<END
+		$sql = <<<SQL
 			IF NEW.`{$this->fieldName}` <=> NULL THEN
 				SELECT `{$bvars['field']}` INTO tmp_{$this->fieldName} FROM `{$bvars['table']}` WHERE {$bvars['where']};
 				SET NEW.`{$this->fieldName}` = tmp_{$this->fieldName};
 			END IF;
-END;
+SQL;
 		self::$triggers[$this->table->tablename.'.before.insert'][] = $sql;
 	}
 	
@@ -607,7 +607,7 @@ END;
 		if ($type == 'UPDATE') {
 			$bvars = $this->parseBinding('NEW');
 			
-			$sql = <<<END
+			$sql = <<<SQL
 				IF NOT(NEW.`{$this->fieldName}` <=> OLD.`{$this->fieldName}`) THEN
 					IF EXISTS(SELECT `{$bvars['field']}` FROM `{$bvars['table']}` WHERE {$bvars['where']}) THEN
 						IF EXISTS(SELECT `{$bvars['field']}` FROM `{$bvars['table']}` WHERE {$bvars['where']} AND NOT(`{$bvars['field']}` <=> NEW.`{$this->fieldName}`)) THEN
@@ -617,12 +617,12 @@ END;
 						{$bvars['insert']}
 					END IF;
 				END IF;
-END;
+SQL;
 			self::$triggers[$this->table->tablename.'.after.update'][] = $sql;
 		} else if ($type == 'INSERT') {
 			$bvars = $this->parseBinding('NEW');
 		
-			$sql = <<<END
+			$sql = <<<SQL
 				IF EXISTS(SELECT `{$bvars['field']}` FROM `{$bvars['table']}` WHERE {$bvars['where']}) THEN
 					IF EXISTS(SELECT `{$bvars['field']}` FROM `{$bvars['table']}` WHERE {$bvars['where']} AND NOT(`{$bvars['field']}` <=> NEW.`{$this->fieldName}`)) THEN
 						UPDATE `{$bvars['table']}` SET `{$bvars['field']}` = NEW.`{$this->fieldName}` WHERE {$bvars['where']};
@@ -631,15 +631,15 @@ END;
 					{$bvars['insert']}
 
 				END IF;
-END;
+SQL;
 			self::$triggers[$this->table->tablename.'.after.insert'][] = $sql;
 		}  else if ($type == 'DELETE') {
 			$bvars = $this->parseBinding('OLD');
-			$sql = <<<END
+			$sql = <<<SQL
 				IF EXISTS(SELECT `{$bvars['field']}` FROM `{$bvars['table']}` WHERE {$bvars['where']}) THEN
 						{$bvars['delete']}
 				END IF;
-END;
+SQL;
 			self::$triggers[$this->table->tablename.'.after.delete'][] = $sql;
 		} else {
 			throw new \Exception("Unsupported trigger type $type");

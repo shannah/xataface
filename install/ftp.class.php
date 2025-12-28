@@ -197,7 +197,7 @@
 			if ($lr!=FTP_FILE_STATUS) return FALSE;
 			$subject = trim(substr($this->lastLine,4));
 			$lucifer = array();
-			if (preg_match("/([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])/",$subject,$lucifer)) return mktime($lucifer[4],$lucifer[5],$lucifer[6],$lucifer[2],$lucifer[3],$lucifer[1],0);
+			if (preg_match("/([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])/",$subject,$lucifer)) return mktime($lucifer[4],$lucifer[5],$lucifer[6],$lucifer[2],$lucifer[3],$lucifer[1]);
 			return FALSE;
 		}
 

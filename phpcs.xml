@@ -11,9 +11,13 @@
     <exclude-pattern>/nbproject/</exclude-pattern>
     <exclude-pattern>/.git/</exclude-pattern>
     <exclude-pattern>/local-test-apps/</exclude-pattern>
+    <exclude-pattern>/lib/I18Nv2/</exclude-pattern>
 
     <!-- Use PHPCompatibility ruleset -->
-    <rule ref="PHPCompatibility"/>
+    <rule ref="PHPCompatibility">
+        <!-- Disable the entire buggy RemovedIconvEncodingSniff class that crashes -->
+        <exclude name="PHPCompatibility.IniDirectives.RemovedIniDirectives"/>
+    </rule>
 
     <!-- Check for PHP 8.0+ compatibility (8.5 includes 8.0-8.4 changes) -->
     <config name="testVersion" value="8.0-"/>

@@ -197,7 +197,7 @@ class Dataface_Installer {
 				if ( isComment($line) ) continue;
 				$queries[$ctr] .= $line;
 				$trimmed = trim($line);
-				if ( $trimmed{strlen($trimmed)-1} == ';' ) $ctr++;
+				if ( $trimmed[strlen($trimmed)-1] == ';' ) $ctr++;
 				
 			}
 			
