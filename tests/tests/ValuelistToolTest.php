@@ -30,7 +30,7 @@ class ValuelistToolTest extends BaseTest {
 
 	
 	
-	function ValuelistToolTest($name = 'ValuelistToolTest'){
+	function __construct($name = 'ValuelistToolTest'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 	}

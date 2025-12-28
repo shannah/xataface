@@ -9,7 +9,7 @@ class RecordTest2 extends BaseTest {
 
 	
 	
-	function RecordTest2($name = 'RecordTest2'){
+	function __construct($name = 'RecordTest2'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 	}

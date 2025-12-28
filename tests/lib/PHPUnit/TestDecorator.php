@@ -58,7 +58,7 @@ class PHPUnit_TestDecorator {
      * @param  object
      * @access public
      */
-    function PHPUnit_TestDecorator(&$test) {
+    function __construct(&$test) {
         if (is_object($test) &&
             (is_a($test, 'PHPUnit_TestCase') ||
              is_a($test, 'PHPUnit_TestSuite'))) {

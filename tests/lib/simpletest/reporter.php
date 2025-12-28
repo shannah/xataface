@@ -27,7 +27,7 @@
          *    by a web browser.
          *    @access public
          */
-        function HtmlReporter($character_set = 'ISO-8859-1') {
+        function __construct($character_set = 'ISO-8859-1') {
             $this->SimpleReporter();
             $this->_character_set = $character_set;
         }
@@ -165,7 +165,7 @@
          *    be sent on the first test start.
          *    @access public
          */
-        function TextReporter() {
+        function __construct() {
             $this->SimpleReporter();
         }
 
@@ -256,7 +256,7 @@
          *    @param string $just_this_case    Only this case or group will run.
          *    @param string $just_this_test    Only this test method will run.
          */
-        function SelectiveReporter(&$reporter, $just_this_case = false, $just_this_test = false) {
+        function __construct(&$reporter, $just_this_case = false, $just_this_test = false) {
             if (isset($just_this_case) && $just_this_case) {
                 $this->_just_this_case = strtolower($just_this_case);
                 $this->_within_test_case = false;

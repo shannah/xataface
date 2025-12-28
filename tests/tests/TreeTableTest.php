@@ -8,7 +8,7 @@ class TreeTableTest extends BaseTest {
 	var $t;
 	var $indexpage;
 
-	function TreeTableTest($name = "TreeTableTest"){
+	function __construct($name = "TreeTableTest"){
 		$this->BaseTest($name);
 	}
 	

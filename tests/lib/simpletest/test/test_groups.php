@@ -8,7 +8,7 @@
     require_once(dirname(__FILE__) . '/../extensions/phpunit_test_case.php');
     
     class UnitTests extends GroupTest {
-        function UnitTests() {
+        function __construct() {
             $this->GroupTest('Unit tests');
             $path = dirname(__FILE__);
             $this->addTestFile($path . '/errors_test.php');
@@ -53,7 +53,7 @@
     // SimpleTest::useProxy('http://my-proxy', 'optional username', 'optional password');
         
     class AllTests extends GroupTest {
-        function AllTests() {
+        function __construct() {
             $this->GroupTest('All tests for SimpleTest ' . SimpleTest::getVersion());
             $this->addTestCase(new UnitTests());
             $this->addTestFile(dirname(__FILE__) . '/shell_test.php');

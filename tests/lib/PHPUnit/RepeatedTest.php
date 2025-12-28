@@ -36,7 +36,7 @@ require_once 'PHPUnit/TestDecorator.php';
  *     var $fValue1;
  *     var $fValue2;
  *
- *     function MathTest($name) {
+ *     function __construct($name) {
  *         $this->PHPUnit_TestCase($name);
  *     }
  *
@@ -87,7 +87,7 @@ class PHPUnit_RepeatedTest extends PHPUnit_TestDecorator {
      * @param  integer
      * @access public
      */
-    function PHPUnit_RepeatedTest(&$test, $timesRepeat = 1) {
+    function __construct(&$test, $timesRepeat = 1) {
         $this->PHPUnit_TestDecorator($test);
         $this->_timesRepeat = $timesRepeat;
     }

@@ -27,7 +27,7 @@ require_once 'Dataface/Record.php';
 require_once 'Dataface/RelatedRecord.php';
 
 class QueryBuilderTest extends BaseTest {
-	function QueryBuilderTest($name='QueryBuilderTest'){
+	function __construct($name='QueryBuilderTest'){
 		$this->BaseTest($name);
 	}
 	

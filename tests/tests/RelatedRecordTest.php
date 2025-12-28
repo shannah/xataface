@@ -33,7 +33,7 @@ class RelatedRecordTest extends BaseTest {
 
 	
 	
-	function RelatedRecordTest($name = 'RelatedRecordTest'){
+	function __construct($name = 'RelatedRecordTest'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 	}

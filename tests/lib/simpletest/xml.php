@@ -26,7 +26,7 @@
          *    Does nothing yet.
          *    @access public
          */
-        function XmlReporter($namespace = false, $indent = '  ') {
+        function __construct($namespace = false, $indent = '  ') {
             $this->SimpleReporter();
             $this->_namespace = ($namespace ? $namespace . ':' : '');
             $this->_indent = $indent;
@@ -268,7 +268,7 @@
          *    @param hash $attributes   Name value pairs.
          *    @access public
          */
-        function NestingXmlTag($attributes) {
+        function __construct($attributes) {
             $this->_name = false;
             $this->_attributes = $attributes;
         }
@@ -316,7 +316,7 @@
          *    @param hash $attributes   Name value pairs.
          *    @access public
          */
-        function NestingMethodTag($attributes) {
+        function __construct($attributes) {
             $this->NestingXmlTag($attributes);
         }
 
@@ -356,7 +356,7 @@
          *    @param hash $attributes   Name value pairs.
          *    @access public
          */
-        function NestingCaseTag($attributes) {
+        function __construct($attributes) {
             $this->NestingXmlTag($attributes);
         }
 
@@ -396,7 +396,7 @@
          *    @param hash $attributes   Name value pairs.
          *    @access public
          */
-        function NestingGroupTag($attributes) {
+        function __construct($attributes) {
             $this->NestingXmlTag($attributes);
         }
 
@@ -454,7 +454,7 @@
          *    @param SimpleReporter $listener   Listener of tag events.
          *    @access public
          */
-        function SimpleTestXmlParser(&$listener) {
+        function __construct(&$listener) {
             $this->_listener = &$listener;
             $this->_expat = &$this->_createParser();
             $this->_tag_stack = array();

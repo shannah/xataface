@@ -10,7 +10,7 @@ class Parser_wrapperTest extends BaseTest {
 	var $tests;
 	
 	
-	function Parser_wrapperTest($name = 'Parser_wrapperTest'){
+	function __construct($name = 'Parser_wrapperTest'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 		

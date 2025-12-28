@@ -27,7 +27,7 @@ require_once 'Dataface/Record.php';
 
 class ImportFilterTest extends BaseTest {
 
-	function ImportFilterTest($name = 'ImportFilterTest'){
+	function __construct($name = 'ImportFilterTest'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 	}

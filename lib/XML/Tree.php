@@ -97,7 +97,7 @@ class XML_Tree extends XML_Parser
      * @param  string  filename  Filename where to read the XML
      * @param  string  version   XML Version to apply
      */
-    function XML_Tree($filename = '', $version = '1.0')
+    function __construct($filename = '', $version = '1.0')
     {
         $this->filename = $filename;
         $this->version  = $version;

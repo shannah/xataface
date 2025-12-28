@@ -6,7 +6,7 @@ require_once 'Dataface/LinkTool.php';
 class LinkToolTest extends BaseTest {
 
 	
-	function LinkToolTest($name = 'LinkToolTest'){
+	function __construct($name = 'LinkToolTest'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 	}

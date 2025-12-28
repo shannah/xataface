@@ -7,7 +7,7 @@ class dhtmlxGridTest extends BaseTest {
 
 
 
-	function dhtmlxGridTest($name = "dhtmlxGridTest"){
+	function __construct($name = "dhtmlxGridTest"){
 		$this->BaseTest($name);
 	}
 	

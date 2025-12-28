@@ -32,7 +32,7 @@ class RelationshipTest extends BaseTest {
 
 	
 	
-	function RelationshipTest($name = 'RelationshipTest'){
+	function __construct($name = 'RelationshipTest'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 	}

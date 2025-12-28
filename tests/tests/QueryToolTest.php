@@ -26,7 +26,7 @@ require_once 'Dataface/QueryTool.php';
 
 class QueryToolTest extends BaseTest {
 
-	function QueryToolTest($name="QueryToolTest"){
+	function __construct($name="QueryToolTest"){
 		$this->BaseTest($name);
 	}
 	

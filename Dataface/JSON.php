@@ -1,18 +1,20 @@
 <?php
 class JSON {
+	// Explicit constructor to avoid PHP4 constructor warning
+	public function __construct() {}
 
 	public static function notice($msg){
 		return self::json(array('notice'=>$msg, 'success'=>0, 'msg'=>$msg));
 	}
-	
+
 	public static function warning($msg){
 		return self::json(array('warning'=>$msg, 'success'=>0, 'msg'=>$msg));
 	}
-	
+
 	public static function error($msg){
 		return self::json(array('error'=>$msg, 'success'=>0, 'msg'=>$msg));
 	}
-	
+
 	public static function json($arr){
 		import(XFLIB.'Services/JSON.php');
 		$json = new Services_JSON();

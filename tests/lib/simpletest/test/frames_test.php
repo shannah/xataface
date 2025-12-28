@@ -243,7 +243,7 @@
         var $_page_interface;
         var $_frameset_interface;
 
-        function TestOfFramesetPageInterface() {
+        function __construct() {
             $this->UnitTestCase();
             $this->_page_interface = $this->_getPageMethods();
             $this->_frameset_interface = $this->_getFramesetMethods();

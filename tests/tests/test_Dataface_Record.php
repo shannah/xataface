@@ -5,7 +5,7 @@ class xataface_Dataface_RecordTest extends PHPUnit_TestCase {
 
 	private static $TABLES = array('fragrances','formulas','ingredients','formula_ingredients', 'units', 'test683', 'test841','test841_join','test_versions');
 	
-	function xataface_Dataface_RecordTest( $name = 'xataface_Dataface_RecordTest'){
+	function __construct( $name = 'xataface_Dataface_RecordTest'){
 		$this->PHPUnit_TestCase($name);
 		
 	}

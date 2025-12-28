@@ -105,7 +105,7 @@ class PHPUnit_Skeleton {
      * @param  boolean $includeParents Wheter to include the parent's methods in the test.
      * @return void
      */
-    function PHPUnit_Skeleton($className, $classPath, $includeParents = FALSE, $includePrivate = TRUE) {
+    function __construct($className, $classPath, $includeParents = FALSE, $includePrivate = TRUE) {
         // Set up the members.
         if (@is_readable($classPath)) {
             $this->className = $className;

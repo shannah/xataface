@@ -28,7 +28,7 @@ class Table_builderTest extends BaseTest {
 
 	var $mytable = 'my_table';
 	
-	function Table_builderTest($name = 'Table_builderTest'){
+	function __construct($name = 'Table_builderTest'){
 		//$this->PHPUnit_TestCase($name);
 		//parent::BaseTest();
 		$this->BaseTest($name);

@@ -13,7 +13,7 @@ class BaseTest2 extends PHPUnit_TestCase {
 	var $fieldnames_control;
 	var $types_control;
 	
-	function BaseTest2( $name = 'BaseTest'){
+	function __construct( $name = 'BaseTest'){
 		$this->PHPUnit_TestCase($name);
 	}
 

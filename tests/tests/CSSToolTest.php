@@ -18,7 +18,7 @@ define('DATAFACE_SITE_PATH', dirname(__FILE__));
 define('DATAFACE_SITE_URL', 'http://example.com/site');
 
 class CSSToolTest extends PHPUnit_TestCase {
-	function CSSToolTest($name = 'CSSToolTest'){
+	function __construct($name = 'CSSToolTest'){
 		$this->PHPUnit_TestCase($name);
 		$cachedir = dirname(__FILE__).DIRECTORY_SEPARATOR.'templates_c';
 		if ( !file_exists($cachedir) ) mkdir($cachedir);

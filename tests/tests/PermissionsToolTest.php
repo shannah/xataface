@@ -3,7 +3,7 @@ require_once 'BaseTest.php';
 require_once 'Dataface/PermissionsTool.php';
 
 class PermissionsToolTest extends BaseTest {
-	function PermissionsToolTest($name='PermissionsToolTest'){
+	function __construct($name='PermissionsToolTest'){
 		$this->BaseTest($name);
 	}
 	

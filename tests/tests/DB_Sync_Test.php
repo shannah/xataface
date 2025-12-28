@@ -9,7 +9,7 @@ class DB_Sync_Test extends BaseTest {
 
 	
 	
-	function DB_Sync_Test($name = 'DB_Sync_Test'){
+	function __construct($name = 'DB_Sync_Test'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 	}

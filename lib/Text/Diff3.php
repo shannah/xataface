@@ -37,7 +37,7 @@ class Text_Diff3 extends Text_Diff {
         $this->_edits = $this->_diff3($engine->diff($orig, $final1),
                                       $engine->diff($orig, $final2));
     }
-        function Text_Diff3($orig, $final1, $final2) { self::__construct($orig, $final1, $final2); }
+        function __construct($orig, $final1, $final2) { self::__construct($orig, $final1, $final2); }
 
     function mergedOutput($label1 = false, $label2 = false)
     {
@@ -148,7 +148,7 @@ class Text_Diff3_Op {
         $this->final1 = $final1 ? $final1 : array();
         $this->final2 = $final2 ? $final2 : array();
     }
-        function Text_Diff3_Op($orig=false, $final1=false, $final2=false) { self::__construct($orig, $final1, $final2); }
+        function __construct($orig=false, $final1=false, $final2=false) { self::__construct($orig, $final1, $final2); }
 
     function merged()
     {
@@ -182,7 +182,7 @@ class Text_Diff3_Op {
  */
 class Text_Diff3_Op_copy extends Text_Diff3_Op {
 
-    function Text_Diff3_Op_Copy($lines = false)
+    function __construct($lines = false)
     {
         $this->orig = $lines ? $lines : array();
         $this->final1 = &$this->orig;
@@ -213,7 +213,7 @@ class Text_Diff3_BlockBuilder {
     {
         $this->_init();
     }
-        function Text_Diff3_BlockBuilder() { self::__construct(); }
+        function __construct() { self::__construct(); }
 
     function input($lines)
     {

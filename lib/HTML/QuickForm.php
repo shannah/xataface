@@ -293,21 +293,10 @@ class HTML_QuickForm extends HTML_Common {
 
 
     function _setSubmitValues($vals, $files){
-    	if (version_compare(PHP_VERSION, '7.4') < 0 and 1 == get_magic_quotes_gpc() and !defined('MAGIC_QUOTES_STRIPPED_SLASHES')) {
-			$this->_submitValues = $this->_recursiveFilter('stripslashes', $vals);
-			foreach ($files as $keyFirst => $valFirst) {
-				foreach ($valFirst as $keySecond => $valSecond) {
-					if ('name' == $keySecond) {
-						$this->_submitFiles[$keyFirst][$keySecond] = $this->_recursiveFilter('stripslashes', $valSecond);
-					} else {
-						$this->_submitFiles[$keyFirst][$keySecond] = $valSecond;
-					}
-				}
-			}
-		} else {
-			$this->_submitValues = $vals;
-			$this->_submitFiles  = $files;
-		}
+    	// Magic quotes handling removed for PHP 8+ compatibility
+    	// get_magic_quotes_gpc() was deprecated in PHP 7.4 and removed in PHP 8.0
+		$this->_submitValues = $vals;
+		$this->_submitFiles  = $files;
 		$this->_flagSubmitted = count($this->_submitValues) > 0 || count($this->_submitFiles) > 0;
 
 		foreach (array_keys($this->_elements) as $key) {

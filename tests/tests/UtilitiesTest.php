@@ -9,7 +9,7 @@ class UtilitiesTest extends BaseTest {
 
 	
 	
-	function UtilitiesTest($name = 'UtilitiesTest'){
+	function __construct($name = 'UtilitiesTest'){
 		$this->BaseTest($name);
 		//parent::BaseTest();
 	}

@@ -26,7 +26,7 @@ require_once 'Dataface/TranslationTool.php';
 
 class TranslationToolTest extends BaseTest {
 
-	function TranslationToolTest($name="TranslationToolTest"){
+	function __construct($name="TranslationToolTest"){
 		$this->BaseTest($name);
 	}
 	

@@ -7,7 +7,7 @@ class RelatedListTest extends BaseTest {
 
 
 
-	function RelatedListTest($name = "RelatedListTest"){
+	function __construct($name = "RelatedListTest"){
 		$this->BaseTest($name);
 	}
 	

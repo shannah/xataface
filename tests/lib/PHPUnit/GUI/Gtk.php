@@ -135,7 +135,7 @@ class PHPUnit_GUI_Gtk {
      * @param  none
      * @return void
      */
-    function PHPUnit_GUI_Gtk()
+    function __construct()
     {
         // Check for php-gtk extension.
         if (!extension_loaded('gtk')) {

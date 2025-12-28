@@ -85,31 +85,9 @@ function stripslashes_array($data) {
    }
 }
 
-if (version_compare(PHP_VERSION, '7.4') < 0 and get_magic_quotes_gpc()) {
-	define('MAGIC_QUOTES_STRIPPED_SLASHES',1);
-   /*
-   All these global variables are slash-encoded by default,
-   because    magic_quotes_gpc is set by default!
-   (And magic_quotes_gpc affects more than just $_GET, $_POST, and $_COOKIE)
-   */
-   $_SERVER = stripslashes_array(@$_SERVER);
-   $_GET = stripslashes_array(@$_GET);
-   $_POST = stripslashes_array(@$_POST);
-   $_COOKIE = stripslashes_array(@$_COOKIE);
-   $_FILES = stripslashes_array(@$_FILES);
-   $_ENV = stripslashes_array(@$_ENV);
-   $_REQUEST = stripslashes_array(@$_REQUEST);
-   // Old HTTP_*_VARS variables removed - use $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES, $_ENV, $_SESSION instead
-   if (isset($_SESSION)) {    #These are unconfirmed (?)
-       $_SESSION = stripslashes_array($_SESSION, '');
-   }
-   /*
-   The $GLOBALS array is also slash-encoded, but when all the above are
-   changed, $GLOBALS is updated to reflect those changes.  (Therefore
-   $GLOBALS should never be modified directly).  $GLOBALS also contains
-   infinite recursion, so it's dangerous...
-   */
-}
+// Magic quotes handling removed for PHP 8+ compatibility
+// get_magic_quotes_gpc() was deprecated in PHP 7.4 and removed in PHP 8.0
+// This code previously handled magic quotes for PHP < 7.4
 
 
 if ( defined('DATAFACE_DEBUG') and DATAFACE_DEBUG){

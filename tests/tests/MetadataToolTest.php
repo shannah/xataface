@@ -26,7 +26,7 @@ require_once 'Dataface/MetadataTool.php';
 
 class MetadataToolTest extends BaseTest {
 
-	function MetadataToolTest($name="MetadataToolTest"){
+	function __construct($name="MetadataToolTest"){
 		$this->BaseTest($name);
 	}
 	

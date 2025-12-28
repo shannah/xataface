@@ -20,7 +20,7 @@ define('DATAFACE_SITE_HREF', DATAFACE_SITE_URL.'/index.php');
 define('DATAFACE_PATH', '..');
 
 class JavascriptToolTest extends PHPUnit_TestCase {
-	function JavascriptToolTest($name = 'JavscriptToolTest'){
+	function __construct($name = 'JavscriptToolTest'){
 		$this->PHPUnit_TestCase($name);
 		$cachedir = dirname(__FILE__).DIRECTORY_SEPARATOR.'templates_c';
 		if ( !file_exists($cachedir) ) mkdir($cachedir);

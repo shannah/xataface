@@ -125,7 +125,7 @@
          *    Sets the builder up empty.
          *    @access public
          */
-        function SimplePageBuilder() {
+        function __construct() {
             $this->SimpleSaxListener();
         }
         
@@ -355,7 +355,7 @@
          *    @param SimpleHttpResponse $response     Result of HTTP fetch.
          *    @access public
          */
-        function SimplePage($response = false) {
+        function __construct($response = false) {
             $this->_links = array();
             $this->_title = false;
             $this->_left_over_labels = array();

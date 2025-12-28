@@ -12,7 +12,7 @@ class DB_Test extends BaseTest {
 
 	
 	
-	function DB_Test($name = 'DB_Test'){
+	function __construct($name = 'DB_Test'){
 		$this->BaseTest($name);
 		Dataface_Application::getInstance();
 		$this->DB =& Dataface_DB::getInstance();

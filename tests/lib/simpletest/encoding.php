@@ -26,7 +26,7 @@
          *    @param string $key       Form element name.
          *    @param string $value     Data to send.
          */
-        function SimpleEncodedPair($key, $value) {
+        function __construct($key, $value) {
             $this->_key = $key;
             $this->_value = $value;
         }
@@ -97,7 +97,7 @@
          *    @param string $content      Raw data.
          *    @param hash $filename       Original filename.
          */
-        function SimpleAttachment($key, $content, $filename) {
+        function __construct($key, $content, $filename) {
             $this->_key = $key;
             $this->_content = $content;
             $this->_filename = $filename;
@@ -198,7 +198,7 @@
          *                              as lists on a single key.
          *    @access public
          */
-        function SimpleEncoding($query = false) {
+        function __construct($query = false) {
             if (! $query) {
                 $query = array();
             }
@@ -335,7 +335,7 @@
          *                              as lists on a single key.
          *    @access public
          */
-        function SimpleGetEncoding($query = false) {
+        function __construct($query = false) {
             $this->SimpleEncoding($query);
         }
         
@@ -390,7 +390,7 @@
          *                              as lists on a single key.
          *    @access public
          */
-        function SimpleHeadEncoding($query = false) {
+        function __construct($query = false) {
             $this->SimpleGetEncoding($query);
         }
         
@@ -419,7 +419,7 @@
          *                              as lists on a single key.
          *    @access public
          */
-        function SimplePostEncoding($query = false) {
+        function __construct($query = false) {
             $this->SimpleEncoding($query);
         }
         
@@ -478,7 +478,7 @@
          *                              as lists on a single key.
          *    @access public
          */
-        function SimpleMultipartEncoding($query = false, $boundary = false) {
+        function __construct($query = false, $boundary = false) {
             $this->SimplePostEncoding($query);
             $this->_boundary = ($boundary === false ? uniqid('st') : $boundary);
         }
