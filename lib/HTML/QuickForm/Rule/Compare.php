@@ -71,13 +71,14 @@ class HTML_QuickForm_Rule_Compare extends HTML_QuickForm_Rule
     function validate($values, $operator = null)
     {
         $operator = $this->_findOperator($operator);
-        if ('==' != $operator && '!=' != $operator) {
-            $compareFn = create_function('$a, $b', 'return floatval($a) ' . $operator . ' floatval($b);');
-        } else {
-            $compareFn = create_function('$a, $b', 'return $a ' . $operator . ' $b;');
+        switch ($operator) {
+            case '>'  : return floatval($values[0]) >  floatval($values[1]);
+            case '>=' : return floatval($values[0]) >= floatval($values[1]);
+            case '<'  : return floatval($values[0]) <  floatval($values[1]);
+            case '<=' : return floatval($values[0]) <= floatval($values[1]);
+            case '!=' : return $values[0] != $values[1];
+            default   : return $values[0] == $values[1];
         }
-        
-        return $compareFn($values[0], $values[1]);
     }
 
 

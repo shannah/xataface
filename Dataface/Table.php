@@ -5520,7 +5520,19 @@ class Dataface_Table
                         setlocale(LC_MONETARY, $fieldLocale);
                     }
                 }
-                $out = money_format($field['money_format'], floatval($out));
+                if (function_exists('money_format')) {
+                    $out = money_format($field['money_format'], floatval($out));
+                } else {
+                    $fmt = $field['money_format'];
+                    $amount = floatval($out);
+                    if (class_exists('NumberFormatter')) {
+                        $locale = isset($fieldLocale) ? $fieldLocale : (setlocale(LC_MONETARY, '0') ?: 'en_US');
+                        $nf = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+                        $out = $nf->formatCurrency($amount, $nf->getTextAttribute(NumberFormatter::CURRENCY_CODE) ?: 'USD');
+                    } else {
+                        $out = sprintf('%.2f', $amount);
+                    }
+                }
                 if (isset($fieldLocale)) {
                     setlocale(LC_MONETARY, $oldLocale);
                 }
@@ -5564,7 +5576,7 @@ class Dataface_Table
             }
 
             if (!strtotime($out)) return '';
-            $out = strftime($fmt, strtotime($out));
+            $out = xf_strftime($fmt, strtotime($out));
 
             if (isset($fieldLocale)) {
                 setlocale(LC_TIME, $oldLocale);

@@ -58,15 +58,15 @@ class FTPExtractor {
 				$res = ftp_put($this->ftp, $item['filename'], $fpath, FTP_BINARY);
 				if ( !$res ){
 					$dirname = dirname($item['filename']);
-					if ( $dirname and $dirname{strlen($dirname)-1} == '/' ) $dirname = substr($dirname,0,strlen($dirname)-1);
-					
+					if ( $dirname and $dirname[strlen($dirname)-1] == '/' ) $dirname = substr($dirname,0,strlen($dirname)-1);
+
 					$dirstack = array();
-					
+
 					while ( !($ls = ftp_nlist($this->ftp, $dirname)) or (is_array($ls) and count($ls) < 2) ){
-	
+
 						$dirstack[] = $dirname;
 						$dirname = dirname($dirname);
-						if ( $dirname and $dirname{strlen($dirname)-1} == '/' ) $dirname = substr($dirname,0,strlen($dirname)-1);
+						if ( $dirname and $dirname[strlen($dirname)-1] == '/' ) $dirname = substr($dirname,0,strlen($dirname)-1);
 						if ( dirname($dirname) == $dirname) break;
 					}
 					

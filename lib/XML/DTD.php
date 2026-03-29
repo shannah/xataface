@@ -130,17 +130,17 @@ class XML_DTD_Parser
                 // Manual split the parts of the elements
                 // take care of netsted lists (a|(c|d)|b)
                 for ($i = 0; $i < strlen($tag); $i++) {
-                    if ($tag{$i} == ' ' && !$in && $buff) {
+                    if ($tag[$i] == ' ' && !$in && $buff) {
                         $fields[] = $buff;
                         $buff = '';
                         continue;
                     }
-                    if ($tag{$i} == '(') {
+                    if ($tag[$i] == '(') {
                         $in++;
-                    } elseif ($tag{$i} == ')') {
+                    } elseif ($tag[$i] == ')') {
                         $in--;
                     }
-                    $buff .= $tag{$i};
+                    $buff .= $tag[$i];
                 }
                 if ($buff) {
                     $fields[] = $buff;
@@ -227,7 +227,7 @@ class XML_DTD_Parser
             $a = array();
             $att = $data[$i];
             $opts = $data[$i+1];
-            if ($opts[0] == '(' && $opts{strlen($opts)-1} == ')') {
+            if ($opts[0] == '(' && $opts[strlen($opts)-1] == ')') {
                 $a['opts'] = preg_split('/\||,/',
                                         preg_replace('|\s+|',
                                                      '',

@@ -249,7 +249,7 @@ class Var_Dump
         // Loop through the matches of the previously defined regexp.
 
         reset($matches);
-        while (list($key, $match) = each($matches)) {
+        foreach ($matches as $key => $match) {
 
             $count = count($match) - 1;
 
@@ -408,7 +408,8 @@ class Var_Dump
                             $type[] = 'object(' . $class_name . ')';
                             $value[] = 'Not parsed.';
                             while ($parse) {
-                                list($dummy, $each) = each($matches);
+                                $each = next($matches);
+                                if ($each === false) break;
                                 if (
                                     $match[VAR_DUMP_PREG_SPACES] == $each[VAR_DUMP_PREG_SPACES]
                                         and

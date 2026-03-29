@@ -13,7 +13,7 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Authors: Bernd Römer <berndr@bonn.edu>                               |
+// | Authors: Bernd Rï¿½mer <berndr@bonn.edu>                               |
 // |          Sebastian Bergmann <sb@sebastian-bergmann.de>               |
 // |          Tomas V.V.Cox <cox@idecnet.com>                             |
 // |          Michele Manzato <michele.manzato@verona.miz.it>             |
@@ -42,7 +42,7 @@ require_once 'XML/Tree/Node.php';
  *
  *    $tree->dump(true);
  *
- * @author  Bernd Römer <berndr@bonn.edu>
+ * @author  Bernd Rï¿½mer <berndr@bonn.edu>
  * @package XML
  * @version $Version$ - 1.0
  */
@@ -543,7 +543,7 @@ class XML_Tree extends XML_Parser
         }
         
         //  check for invalid starting character
-        if (!preg_match("/[[:alpha:]_]/", $name{0})) {
+        if (!preg_match("/[[:alpha:]_]/", $name[0])) {
             return new PEAR_Error( ucfirst($type) . " ('$name') has an invalid name, an XML name may only start with a letter or underscore");
         }
 

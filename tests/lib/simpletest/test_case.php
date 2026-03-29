@@ -478,8 +478,10 @@
          */
         function _requireWithError($file) {
             $this->_enableErrorReporting();
+            error_clear_last();
             include($file);
-            $error = isset($php_errormsg) ? $php_errormsg : false;
+            $lastError = error_get_last();
+            $error = $lastError ? $lastError['message'] : false;
             $this->_disableErrorReporting();
             $self_inflicted_errors = array(
                     'Assigning the return value of new by reference is deprecated',

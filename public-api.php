@@ -789,16 +789,16 @@ function df_offset($date, $long=true){
 	$aWeekAgoStr = df_translate("a week ago", "a week ago");
 	
 	$date = strtotime($date);
-	$offset = (strftime("%j")+strftime("%Y")*365)-
-	(strftime("%j",$date)+strftime("%Y",$date)*365);
+	$offset = (xf_strftime("%j")+xf_strftime("%Y")*365)-
+	(xf_strftime("%j",$date)+xf_strftime("%Y",$date)*365);
 	if ($offset>7){
-	$offset = (strftime("%W")+strftime("%Y")*52)-
-	(strftime("%W",$date)+strftime("%Y",$date)*52);
+	$offset = (xf_strftime("%W")+xf_strftime("%Y")*52)-
+	(xf_strftime("%W",$date)+xf_strftime("%Y",$date)*52);
 	$end=($offset!=0?($offset>1?sprintf($xWeeksAgoStr, $offset):$aWeekAgoStr):$todayStr);
 	} else
 	$end=($offset!=0?($offset>1?sprintf($xDaysAgoStr, $offset):$yesterdayStr):$todayStr);
     if ($long) {
-        return strftime("%A, %B %d, %Y",$date)." - ". $end;
+        return xf_strftime("%A, %B %d, %Y",$date)." - ". $end;
     } else {
         return $end;
     }

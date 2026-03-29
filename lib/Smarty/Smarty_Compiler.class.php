@@ -263,17 +263,9 @@ class Smarty_Compiler extends Smarty {
         reset($this->_folded_blocks);
 
         /* replace special blocks by "{php}" */
-        if (version_compare(PHP_VERSION, '5.4') >= 0) {
-            $callback = function($matches) {
-                return $this->_quote_replace($this->left_delimiter) . 'php' . str_repeat("\n", substr_count('$matches[1]', "\n")) . $this->_quote_replace($this->right_delimiter);
-            };
-        } else {
-            $callback = create_function ('$matches', "return '" 
-                                       . $this->_quote_replace($this->left_delimiter) . 'php' 
-                                       . "' . str_repeat(\"\n\", substr_count('\$matches[1]', \"\n\")) .'" 
-                                       . $this->_quote_replace($this->right_delimiter) 
-                                       . "';");
-        }
+        $callback = function($matches) {
+            return $this->_quote_replace($this->left_delimiter) . 'php' . str_repeat("\n", substr_count('$matches[1]', "\n")) . $this->_quote_replace($this->right_delimiter);
+        };
         $source_content = preg_replace_callback($search, $callback, $source_content); 
 
         /* Gather all template tags. */
@@ -404,7 +396,7 @@ class Smarty_Compiler extends Smarty {
         }
 
         // put header at the top of the compiled template
-        $template_header = "<?php /* Smarty version ".$this->_version.", created on ".strftime("%Y-%m-%d %H:%M:%S")."\n";
+        $template_header = "<?php /* Smarty version ".$this->_version.", created on ".date("Y-m-d H:i:s")."\n";
         $template_header .= "         compiled from ".strtr(urlencode($resource_name), array('%2F'=>'/', '%3A'=>':'))." */ ?>\n";
 
         /* Emit code to load needed plugins. */
