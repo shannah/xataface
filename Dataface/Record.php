@@ -178,6 +178,8 @@ class Dataface_Record {
 	 *			]
 	 * @private
 	 */
+	var $_valCache = array();
+
 	var $_relatedValues = array();
 
 	/**

@@ -143,17 +143,19 @@ FAILED=0
 TOTAL_PHASES=0
 
 # --------------------------------------------------
-# PHASE 1: E2E Tests (syntax + standalone + DB)
+# PHASE 1: E2E Tests (syntax + standalone, no DB)
 # --------------------------------------------------
 echo "========================================"
-echo "PHASE 1: E2E Test Suite"
+echo "PHASE 1: Syntax & Standalone Function Tests"
 echo "========================================"
 TOTAL_PHASES=$((TOTAL_PHASES + 1))
 
-export MYSQL_HOST=localhost
-export MYSQL_USER=root
-export MYSQL_PASSWORD=
-export MYSQL_DB=xf_php8_e2e_test
+# Run e2e WITHOUT MYSQL_HOST so it skips integration tests that use create.php
+# (create.php tries to launch its own MySQL, conflicting with container's MariaDB)
+unset MYSQL_HOST
+unset MYSQL_USER
+unset MYSQL_PASSWORD
+unset MYSQL_DB
 
 if bash "$XATAFACE/tests/php8_e2e_test.sh"; then
     echo "PHASE 1: PASSED"
@@ -165,43 +167,121 @@ fi
 echo ""
 
 # --------------------------------------------------
-# PHASE 2: Full Composer Test Suite (existing tests)
+# PHASE 2: PHP8 Unit + Integration Tests (direct DB)
 # --------------------------------------------------
 echo "========================================"
-echo "PHASE 2: Composer Test Suite (TableTest, IOTest, HistoryToolTest)"
+echo "PHASE 2: PHP8 Unit & Integration Tests"
 echo "========================================"
 TOTAL_PHASES=$((TOTAL_PHASES + 1))
 
-# The composer test creates a full app scaffold and runs all tests
-# First ensure we have the DB config ready
+# Run PHP8 compatibility tests directly against the container's MariaDB
+# without going through create.php (which tries to start its own MySQL)
 cd "$XATAFACE"
 
-# Create the conf.db.ini that runtests.sh expects
-cat > "$XATAFACE/tests/tests/conf.db.ini" <<DBCONF
+PHASE2_OK=true
+
+# Create a minimal test app directory
+TEST_APP_DIR="/tmp/xf_php8_direct_test"
+rm -rf "$TEST_APP_DIR"
+mkdir -p "$TEST_APP_DIR"
+
+cat > "$TEST_APP_DIR/conf.ini" <<CONF
+__include__=conf.db.ini
+[_tables]
+PHP8Test = PHP8Test
+CONF
+
+cat > "$TEST_APP_DIR/conf.db.ini" <<DBCONF
 [_database]
 host = localhost
 user = root
 password =
-name = ContentManager_test
+name = xf_php8_test
 DBCONF
 
-# Run the test suite
-TIMESTAMP=$(date +"%s")
-TEMP=/tmp/
-TEST_OUTPUT_DIR="${TEMP}xf_test_out"
-if [ -d "$TEST_OUTPUT_DIR" ]; then
-    rm -rf "$TEST_OUTPUT_DIR"
-fi
-mkdir -p "$TEST_OUTPUT_DIR"
-cd "$TEST_OUTPUT_DIR"
+cat > "$TEST_APP_DIR/index.php" <<'INDEXPHP'
+<?php
+$dataface_url = '/xataface';
+require_once 'xataface/public-api.php';
+df_init(__FILE__, $dataface_url);
+require_once 'Dataface/Application.php';
+$app = Dataface_Application::getInstance();
+$app->display();
+INDEXPHP
 
-if bash "$XATAFACE/tests/runtests.sh" 2>&1; then
+# Symlink xataface into the test app
+ln -s "$XATAFACE" "$TEST_APP_DIR/xataface"
+
+# Set up database and run tests
+php -d "include_path=$XATAFACE:$XATAFACE/lib:$XATAFACE/tests/lib:." -r '
+chdir("'$TEST_APP_DIR'");
+define("XFAPPROOT", "'$TEST_APP_DIR'/");
+
+require_once "'$XATAFACE'/public-api.php";
+df_init("'$TEST_APP_DIR'/index.php", "'$TEST_APP_DIR'/xataface");
+require_once "Dataface/Application.php";
+
+$app = Dataface_Application::getInstance();
+$db = df_db();
+
+// Set up test database
+@xf_db_query("DROP DATABASE IF EXISTS xf_php8_test", $db);
+xf_db_query("CREATE DATABASE xf_php8_test", $db);
+xf_db_select_db("xf_php8_test");
+
+xf_db_query("CREATE TABLE PHP8Test (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    price DECIMAL(10,2),
+    event_date DATE,
+    event_datetime DATETIME,
+    event_time TIME,
+    description TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB", $db);
+
+xf_db_query("INSERT INTO PHP8Test (name, price, event_date, event_datetime, event_time, description)
+    VALUES (\"Widget A\", 19.99, \"2023-06-15\", \"2023-06-15 14:30:00\", \"14:30:00\", \"A test widget\")", $db);
+
+echo "Database setup OK\n";
+
+// Run unit tests
+require_once "PHPUnit.php";
+require_once "'$XATAFACE'/tests/tests/PHP8CompatibilityUnitTest.php";
+$test = new PHPUnit_TestSuite("PHP8CompatibilityUnitTest");
+$result = new PHPUnit_TestResult;
+$test->run($result);
+print $result->toString();
+if (!$result->wasSuccessful()) {
+    fwrite(STDERR, "Unit tests FAILED\n");
+    exit(1);
+}
+
+// Run integration tests
+require_once "'$XATAFACE'/tests/tests/PHP8CompatibilityIntegrationTest.php";
+$test2 = new PHPUnit_TestSuite("PHP8CompatibilityIntegrationTest");
+$result2 = new PHPUnit_TestResult;
+$test2->run($result2);
+print $result2->toString();
+if (!$result2->wasSuccessful()) {
+    fwrite(STDERR, "Integration tests FAILED\n");
+    exit(1);
+}
+
+// Cleanup
+@xf_db_query("DROP DATABASE IF EXISTS xf_php8_test", $db);
+echo "All PHP8 compatibility tests passed\n";
+' 2>&1
+
+if [ $? -eq 0 ]; then
     echo "PHASE 2: PASSED"
     PASSED=$((PASSED + 1))
 else
-    echo "PHASE 2: FAILED (non-fatal — existing tests may have pre-existing issues)"
+    echo "PHASE 2: FAILED"
     FAILED=$((FAILED + 1))
 fi
+
+rm -rf "$TEST_APP_DIR"
 echo ""
 
 # --------------------------------------------------
@@ -340,7 +420,7 @@ docker run \
     -v "${TEST_RUNNER}:/run-tests.sh:ro" \
     --tmpfs /tmp:exec \
     "${IMAGE_NAME}" \
-    bash -c "cp -a /xataface-src /xataface && bash /run-tests.sh"
+    bash -c "cp -a /xataface-src/. /xataface/ && bash /run-tests.sh"
 
 EXIT_CODE=$?
 

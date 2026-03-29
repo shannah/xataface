@@ -74,6 +74,14 @@ class Smarty_Compiler extends Smarty {
     var $_strip_depth           =   0;
     var $_additional_newline    =   "\n";
 
+    // PHP 8.2: declare dynamic properties
+    var $_dvar_math_regexp      =   null;
+    var $_dvar_math_var_regexp  =   null;
+    var $_obj_restricted_param_regexp = null;
+    var $_obj_single_param_regexp = null;
+    var $_param_regexp          =   null;
+    var $_plugins_code          =   '';
+
     /**#@-*/
     /**
      * The class constructor.
@@ -1529,7 +1537,7 @@ class Smarty_Compiler extends Smarty {
         preg_match_all('~(?:' . $this->_obj_call_regexp . '|' . $this->_qstr_regexp . ' | (?>[^"\'=\s]+)
                          )+ |
                          [=]
-                        ~x', $tag_args, $match);
+                        ~x', (string)$tag_args, $match);
         $tokens       = $match[0];
 
         $attrs = array();

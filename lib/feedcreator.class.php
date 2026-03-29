@@ -467,7 +467,7 @@ class FeedCreator extends HtmlDescribable {
 	/**
 	 * Optional attributes of a feed.
 	 */
-	var $syndicationURL, $image, $language, $copyright, $pubDate, $lastBuildDate, $editor, $editorEmail, $webmaster, $category, $docs, $ttl, $rating, $skipHours, $skipDays, $itunes;
+	var $syndicationURL, $image, $language, $copyright, $pubDate, $lastBuildDate, $editor, $editorEmail, $webmaster, $category, $docs, $ttl, $rating, $skipHours, $skipDays, $itunes, $author;
 
 	/**
 	* The url of the external xsl stylesheet used to format the naked rss feed.

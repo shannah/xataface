@@ -743,7 +743,7 @@ class HTML_QuickForm extends HTML_Common {
     {
         static $anonGroups = 1;
 
-        if (0 == strlen($name)) {
+        if (0 == strlen((string)$name)) {
             $name       = 'qf_group_' . $anonGroups++;
             $appendName = false;
         }

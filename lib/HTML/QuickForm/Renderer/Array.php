@@ -139,8 +139,17 @@ class HTML_QuickForm_Renderer_Array extends HTML_QuickForm_Renderer
     * @var bool
     */
     var $staticLabels = false;
-    
-    
+
+    /**
+     * @var bool
+     */
+    var $_staticLabels = false;
+
+    /**
+     * @var integer
+     */
+    var $_elementIdx = 0;
+
     /**
      * true: Elements and Sections arrays should be associative arrays.
      * false: Elements and Sections arrays should be normal arrays (numerical indices).

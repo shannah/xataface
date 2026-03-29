@@ -41,7 +41,7 @@ class Dataface_PreferencesTool {
 		} else {
 			$username = '*';
 		}
-		$sql = "select * from `dataface__preferences` where `username` in ('*','".addslashes($username)."') and `table` in ('*','".addslashes($table)."')";
+		$sql = "select * from `dataface__preferences` where `username` in ('*','".addslashes((string)$username)."') and `table` in ('*','".addslashes((string)$table)."')";
 		
 		$res = xf_db_query($sql, df_db());
 		if ( !$res ){

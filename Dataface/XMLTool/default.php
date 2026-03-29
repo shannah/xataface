@@ -2,7 +2,7 @@
 import(XFROOT.'Dataface/XMLTool.php');
 class Dataface_XMLTool_default extends Dataface_XMLTool {
 	var $expanded = false;
-	function toXML(&$arg){
+	function toXML($arg){
 		$out = array();
 		if (  is_a($arg, 'Dataface_Record') ){
 			$del = $arg->_table->getDelegate();

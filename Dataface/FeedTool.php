@@ -320,7 +320,7 @@ class Dataface_FeedTool {
 		//$rss->descriptionHtmlSyndicated = true;
 		
 		$rss->link = htmlentities($feed_data['link']);
-		$rss->syndicationURL = htmlentities($feed_data['syndicationURL']);
+		$rss->syndicationURL = htmlentities((string)$feed_data['syndicationURL']);
         if (!empty($feed_data['image'])) {
             $rss->image = (object)$feed_data['image'];
         }
