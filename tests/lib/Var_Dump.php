@@ -156,7 +156,7 @@ class Var_Dump
      */
     function & factory($options = array(), $rendererOptions = array())
     {
-        $obj = & new Var_Dump($options, $rendererOptions);
+        $obj = new Var_Dump($options, $rendererOptions);
         return $obj;
     }
 

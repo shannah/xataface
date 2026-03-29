@@ -67,13 +67,13 @@ class XML_DTD_XmlValidator
      **/
     function isValid($dtd_file, $xml_file)
     {
-        $xml_tree =& new XML_Tree($xml_file);
+        $xml_tree = new XML_Tree($xml_file);
         $nodes = $xml_tree->getTreeFromFile();
         if (PEAR::isError($nodes)) {
             $this->_errors($nodes->getMessage());
             return false;
         }
-        $dtd_parser =& new XML_DTD_Parser;
+        $dtd_parser = new XML_DTD_Parser;
         $this->dtd = @$dtd_parser->parse($dtd_file);
         $this->_runTree($nodes);
         return ($this->_errors) ? false : true;

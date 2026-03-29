@@ -43,7 +43,7 @@ class Var_Dump_Renderer
         @include_once 'Var_Dump/Renderer/' . $mode . '.php';
         $className = 'Var_Dump_Renderer_' . $mode;
         if (class_exists($className)) {
-            $obj = & new $className($options);
+            $obj = new $className($options);
         } else {
             include_once 'PEAR.php';
             PEAR::raiseError('Var_Dump: renderer "' . $mode . '" not found', TRUE);

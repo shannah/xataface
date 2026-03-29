@@ -199,11 +199,7 @@ class Text_Highlighter_Generator extends  XML_Parser
     * @access public
     */
 
-    function __construct($syntaxFile = '')
-    {
-        return $this->__construct($syntaxFile);
-    }
-        function Text_Highlighter_Generator($syntaxFile='') { self::__construct($syntaxFile); }
+        function Text_Highlighter_Generator($syntaxFile='') { $this->__construct($syntaxFile); }
 
     /**
     * Constructor
