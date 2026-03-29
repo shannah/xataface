@@ -47,7 +47,7 @@ class HTML_QuickForm_webcam extends HTML_QuickForm_file {
     	
 //get ray directory
 $ray_dir = "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
-if ( $ray_dir{strlen($ray_dir)-1} != '/' ) $ray_dir .= '/';
+if ( $ray_dir[strlen($ray_dir)-1] != '/' ) $ray_dir .= '/';
 $ray_xml = $ray_dir."get_xml.php";
     	$out = <<<END
    

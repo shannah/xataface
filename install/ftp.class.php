@@ -296,7 +296,7 @@
 			$systype = $this->systype();
 			$is_windows = stristr($systype,"WIN")!==FALSE;
 			$b = array();
-			while (list($i,$line) = each($a)) {
+			foreach ($a as $i => $line) {
 				if ($is_windows && preg_match("/([0-9]{2})-([0-9]{2})-([0-9]{2}) +([0-9]{2}):([0-9]{2})(AM|PM) +([0-9]+|<DIR>) +(.+)/",$line,$lucifer)) {
 					$b[$i] = array();
 					if ($lucifer[3]<70) { $lucifer[3]+=2000; } else { $lucifer[3]+=1900; } // 4digit year fix

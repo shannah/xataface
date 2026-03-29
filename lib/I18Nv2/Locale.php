@@ -273,53 +273,53 @@ class I18Nv2_Locale
         
         if (!$this->loadCache($this->usedLocale)) {
             $this->days = array(
-                strftime('%A', $sun),
-                strftime('%A', $mon),
-                strftime('%A', $tue),
-                strftime('%A', $wed),
-                strftime('%A', $thu),
-                strftime('%A', $fri),
-                strftime('%A', $sat),
+                xf_strftime('%A', $sun),
+                xf_strftime('%A', $mon),
+                xf_strftime('%A', $tue),
+                xf_strftime('%A', $wed),
+                xf_strftime('%A', $thu),
+                xf_strftime('%A', $fri),
+                xf_strftime('%A', $sat),
             );
             
             $this->abbrDays = array(
-                strftime('%a', $sun),
-                strftime('%a', $mon),
-                strftime('%a', $tue),
-                strftime('%a', $wed),
-                strftime('%a', $thu),
-                strftime('%a', $fri),
-                strftime('%a', $sat),
+                xf_strftime('%a', $sun),
+                xf_strftime('%a', $mon),
+                xf_strftime('%a', $tue),
+                xf_strftime('%a', $wed),
+                xf_strftime('%a', $thu),
+                xf_strftime('%a', $fri),
+                xf_strftime('%a', $sat),
             );
     
             $this->months = array(
-                strftime('%B', $jan),
-                strftime('%B', $feb),
-                strftime('%B', $mar),
-                strftime('%B', $apr),
-                strftime('%B', $may),
-                strftime('%B', $jun),
-                strftime('%B', $jul),
-                strftime('%B', $aug),
-                strftime('%B', $sep),
-                strftime('%B', $oct),
-                strftime('%B', $nov),
-                strftime('%B', $dec),
+                xf_strftime('%B', $jan),
+                xf_strftime('%B', $feb),
+                xf_strftime('%B', $mar),
+                xf_strftime('%B', $apr),
+                xf_strftime('%B', $may),
+                xf_strftime('%B', $jun),
+                xf_strftime('%B', $jul),
+                xf_strftime('%B', $aug),
+                xf_strftime('%B', $sep),
+                xf_strftime('%B', $oct),
+                xf_strftime('%B', $nov),
+                xf_strftime('%B', $dec),
             );
             
             $this->abbrMonths = array(
-                strftime('%b', $jan),
-                strftime('%b', $feb),
-                strftime('%b', $mar),
-                strftime('%b', $apr),
-                strftime('%b', $may),
-                strftime('%b', $jun),
-                strftime('%b', $jul),
-                strftime('%b', $aug),
-                strftime('%b', $sep),
-                strftime('%b', $oct),
-                strftime('%b', $nov),
-                strftime('%b', $dec),
+                xf_strftime('%b', $jan),
+                xf_strftime('%b', $feb),
+                xf_strftime('%b', $mar),
+                xf_strftime('%b', $apr),
+                xf_strftime('%b', $may),
+                xf_strftime('%b', $jun),
+                xf_strftime('%b', $jul),
+                xf_strftime('%b', $aug),
+                xf_strftime('%b', $sep),
+                xf_strftime('%b', $oct),
+                xf_strftime('%b', $nov),
+                xf_strftime('%b', $dec),
             );
             
             $info = I18Nv2::getInfo();
@@ -733,7 +733,7 @@ class I18Nv2_Locale
         $format = isset($overrideFormat) ? 
             $this->dateFormats[$overrideFormat] : $this->currentDateFormat;
         $this->paranoid and setLocale(LC_ALL, $this->usedLocale);
-        $date = strftime($format, isset($timestamp) ? $timestamp : time());
+        $date = xf_strftime($format, isset($timestamp) ? $timestamp : time());
         $this->paranoid and setLocale(LC_ALL, 'C');
         return $date;
     }
@@ -751,7 +751,7 @@ class I18Nv2_Locale
         $format = isset($overrideFormat) ? 
             $this->timeFormats[$overrideFormat] : $this->currentTimeFormat;
         $this->paranoid and setLocale(LC_ALL, $this->usedLocale);
-        $time = strftime($format, isset($timestamp) ? $timestamp : time());
+        $time = xf_strftime($format, isset($timestamp) ? $timestamp : time());
         $this->paranoid and setLocale(LC_ALL, 'C');
         return $time;
     }
@@ -770,7 +770,7 @@ class I18Nv2_Locale
             $this->dateTimeFormats[$overrideFormat] : 
             $this->currentDateTimeFormat;
         $this->paranoid and setLocale(LC_ALL, $this->usedLocale);
-        $date = strftime($format, isset($timestamp) ? $timestamp : time());
+        $date = xf_strftime($format, isset($timestamp) ? $timestamp : time());
         $this->paranoid and setLocale(LC_ALL, 'C');
         return $date;
     }
@@ -785,7 +785,7 @@ class I18Nv2_Locale
     function time($timestamp = null)
     {
         $this->paranoid and setLocale(LC_ALL, $this->usedLocale);
-        $time = strftime('%X', isset($timestamp) ? $timestamp : time());
+        $time = xf_strftime('%X', isset($timestamp) ? $timestamp : time());
         $this->paranoid and setLocale(LC_ALL, 'C');
         return $time;
     }
@@ -800,7 +800,7 @@ class I18Nv2_Locale
     function date($timestamp = null)
     {
         $this->paranoid and setLocale(LC_ALL, $this->usedLocale);
-        $date = strftime('%x', isset($timestamp) ? $timestamp : time());
+        $date = xf_strftime('%x', isset($timestamp) ? $timestamp : time());
         $this->paranoid and setLocale(LC_ALL, 'C');
         return $date;
     }

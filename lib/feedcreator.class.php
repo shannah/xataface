@@ -467,7 +467,7 @@ class FeedCreator extends HtmlDescribable {
 	/**
 	 * Optional attributes of a feed.
 	 */
-	var $syndicationURL, $image, $language, $copyright, $pubDate, $lastBuildDate, $editor, $editorEmail, $webmaster, $category, $docs, $ttl, $rating, $skipHours, $skipDays, $itunes;
+	var $syndicationURL, $image, $language, $copyright, $pubDate, $lastBuildDate, $editor, $editorEmail, $webmaster, $category, $docs, $ttl, $rating, $skipHours, $skipDays, $itunes, $author;
 
 	/**
 	* The url of the external xsl stylesheet used to format the naked rss feed.
@@ -1291,7 +1291,7 @@ class MBOXCreator extends FeedCreator {
 		$eol = "\r\n"; 
 		$escape = "="; 
 		$output = ""; 
-		while( list(, $line) = each($lines) ) { 
+		foreach ($lines as $line) {
 			//$line = rtrim($line); // remove trailing white space -> no =20\r\n necessary 
 			$linlen = strlen($line); 
 			$newline = ""; 

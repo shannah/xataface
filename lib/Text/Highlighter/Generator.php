@@ -199,11 +199,7 @@ class Text_Highlighter_Generator extends  XML_Parser
     * @access public
     */
 
-    function __construct($syntaxFile = '')
-    {
-        return $this->__construct($syntaxFile);
-    }
-        function Text_Highlighter_Generator($syntaxFile='') { self::__construct($syntaxFile); }
+        function Text_Highlighter_Generator($syntaxFile='') { $this->__construct($syntaxFile); }
 
     /**
     * Constructor
@@ -446,10 +442,11 @@ class Text_Highlighter_Generator extends  XML_Parser
         if (!$case) {
             $text .= 'i';
         }
-        $php_errormsg = '';
+        error_clear_last();
         @preg_match($text, '');
-        if ($php_errormsg) {
-            $this->_error(TEXT_HIGHLIGHTER_INVALID_RE, $php_errormsg);
+        $lastError = error_get_last();
+        if ($lastError) {
+            $this->_error(TEXT_HIGHLIGHTER_INVALID_RE, $lastError['message']);
         }
         preg_match ('#^/(.+)/(.*)$#', $text, $m);
         if (@$m[2]) {

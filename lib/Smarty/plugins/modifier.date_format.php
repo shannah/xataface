@@ -50,7 +50,7 @@ function smarty_modifier_date_format($string, $format = '%b %e, %Y', $default_da
         }
         $format = str_replace($_win_from, $_win_to, $format);
     }
-    return strftime($format, $timestamp);
+    return function_exists('xf_strftime') ? xf_strftime($format, $timestamp) : (function_exists('strftime') ? @strftime($format, $timestamp) : date('Y-m-d H:i:s', $timestamp));
 }
 
 /* vim: set expandtab: */

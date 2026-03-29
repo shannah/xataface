@@ -65,7 +65,7 @@ class Dataface_XMLTool {
 	}
 	
 	
-	function toXML(&$arg){
+	function toXML($arg){
 		$class = get_class($arg);
 		if ( is_array($arg) ){
 			return toXML_array($arg);

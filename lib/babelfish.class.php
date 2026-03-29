@@ -15,7 +15,7 @@ if (!function_exists('http_build_query')) {
        $arr = array();
        foreach ($formdata as $key => $val)
          $arr[] = urlencode($numeric_prefix.$key)."=".urlencode($val);
-       return implode($arr, "&");
+       return implode("&", $arr);
    }
 }
 /* translate text using altavista babelfish */

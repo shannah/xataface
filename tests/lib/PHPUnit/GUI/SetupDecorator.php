@@ -92,7 +92,7 @@ class PHPUnit_GUI_SetupDecorator
     */
     function getSuitesFromDir($dir, $filenamePattern = '', $exclude = array())
     {
-        if ($dir{strlen($dir)-1} == DIRECTORY_SEPARATOR) {
+        if ($dir[strlen($dir)-1] == DIRECTORY_SEPARATOR) {
             $dir = substr($dir, 0, -1);
         }
 

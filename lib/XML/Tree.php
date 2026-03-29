@@ -13,7 +13,7 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Authors: Bernd Römer <berndr@bonn.edu>                               |
+// | Authors: Bernd Rï¿½mer <berndr@bonn.edu>                               |
 // |          Sebastian Bergmann <sb@sebastian-bergmann.de>               |
 // |          Tomas V.V.Cox <cox@idecnet.com>                             |
 // |          Michele Manzato <michele.manzato@verona.miz.it>             |
@@ -42,7 +42,7 @@ require_once 'XML/Tree/Node.php';
  *
  *    $tree->dump(true);
  *
- * @author  Bernd Römer <berndr@bonn.edu>
+ * @author  Bernd Rï¿½mer <berndr@bonn.edu>
  * @package XML
  * @version $Version$ - 1.0
  */
@@ -286,10 +286,10 @@ class XML_Tree extends XML_Parser
             if (!empty($this->cdata)) {
                 $parent_id = 'obj' . ($this->i - 1);
                 $parent    =& $this->$parent_id;
-                $parent->children[] = &new XML_Tree_Node(null, $this->cdata, null, $lineno);
+                $parent->children[] = new XML_Tree_Node(null, $this->cdata, null, $lineno);
             }
             $obj_id = 'obj' . $this->i++;
-            $this->$obj_id = &new XML_Tree_Node($elem, null, $attribs, $lineno);
+            $this->$obj_id = new XML_Tree_Node($elem, null, $attribs, $lineno);
         }
         $this->cdata = null;
         return null;
@@ -314,7 +314,7 @@ class XML_Tree extends XML_Parser
             // mixed contents
             if (count($node->children) > 0) {
                 if (trim($this->cdata) != '') {
-                    $node->children[] = &new XML_Tree_Node(null, $this->cdata);
+                    $node->children[] = new XML_Tree_Node(null, $this->cdata);
                 }
             } else {
                 $node->setContent($this->cdata);
@@ -327,7 +327,7 @@ class XML_Tree extends XML_Parser
             $node =& $this->obj1;
             if (count($node->children) > 0) {
                 if (trim($this->cdata)) {
-                    $node->children[] = &new XML_Tree_Node(null, $this->cdata);
+                    $node->children[] = new XML_Tree_Node(null, $this->cdata);
                 }
             } else {
                 $node->setContent($this->cdata);
@@ -543,7 +543,7 @@ class XML_Tree extends XML_Parser
         }
         
         //  check for invalid starting character
-        if (!preg_match("/[[:alpha:]_]/", $name{0})) {
+        if (!preg_match("/[[:alpha:]_]/", $name[0])) {
             return new PEAR_Error( ucfirst($type) . " ('$name') has an invalid name, an XML name may only start with a letter or underscore");
         }
 

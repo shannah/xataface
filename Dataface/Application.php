@@ -1145,7 +1145,7 @@ END;
 			if (php_sapi_name() === 'cli') {
 				//fwrite(STDERR, "\nNOTICE: Running in CLI mode so not setting the lang cookie.\n");
 			} else {
-				setcookie($prefix.'lang', $this->_conf['lang'], null, '/');
+				setcookie($prefix.'lang', $this->_conf['lang'], 0, '/');
 			}
 		}
 
@@ -3050,7 +3050,7 @@ END
 	 *
 	 */
 	function getMessages(){
-		if ( trim(@$_SESSION['msg']) ){
+		if ( trim((string)@$_SESSION['msg']) ){
 			array_push($this->messages, $_SESSION['msg']);
 			unset($_SESSION['msg']);
 		}

@@ -358,7 +358,7 @@ class Dataface_SkinTool extends Smarty{
     	$name = $this->_parse_resource_name($params);
     	$template_dir = dirname($params['resource_name']);
     	$skin = @$this->skins[$template_dir];
-    	if ( strlen($skin) > 0 and preg_match('/^[0-9a-zA-Z_]+$/', $skin) ){
+    	if ( strlen((string)$skin) > 0 and preg_match('/^[0-9a-zA-Z_]+$/', $skin) ){
     		$compile_dir = $this->compile_dir.'/'.$skin;
     		if ( !file_exists($compile_dir) ){
     			$res = @mkdir($compile_dir);

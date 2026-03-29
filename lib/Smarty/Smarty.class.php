@@ -554,6 +554,13 @@ class Smarty
     var $_cache_include = null;
 
     /**
+     * information about the current cache include
+     *
+     * @var array|null
+     */
+    var $_cache_include_info = null;
+
+    /**
      * indicate if the current code is used in a compiled
      * include
      *

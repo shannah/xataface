@@ -108,7 +108,7 @@ class Dataface_FormTool_calendar {
 		if ( !trim($val) ) return '';
 		$query = Dataface_Application::getInstance()->getQuery();
 		if (!@$query['--date-format'] && @$field['widget']['ifFormat'] ){
-			return strftime($field['widget']['ifFormat'], strtotime($val));
+			return xf_strftime($field['widget']['ifFormat'], strtotime($val));
 		} else if (@$query['--date-format']) {
 			if ($query['--date-format'] == 'server') {
 				return $val;

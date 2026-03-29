@@ -30,6 +30,59 @@
 if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
     define('XF_PHP8', true);
 }
+
+if (!function_exists('xf_strftime')) {
+    function xf_strftime($format, $timestamp = null) {
+        if ($timestamp === null) {
+            $timestamp = time();
+        }
+        if (function_exists('strftime')) {
+            return @strftime($format, $timestamp);
+        }
+        $map = array(
+            '%A' => 'l', '%a' => 'D', '%B' => 'F', '%b' => 'M', '%h' => 'M',
+            '%C' => function($ts) { return (int)(date('Y', $ts) / 100); },
+            '%D' => 'm/d/y', '%d' => 'd', '%e' => 'j',
+            '%G' => 'o', '%g' => function($ts) { return substr(date('o', $ts), -2); },
+            '%H' => 'H', '%I' => 'h',
+            '%j' => function($ts) { return sprintf('%03d', date('z', $ts) + 1); },
+            '%k' => 'G', '%l' => 'g',
+            '%M' => 'i', '%m' => 'm',
+            '%n' => "\n", '%p' => 'A', '%P' => function($ts) { return strtolower(date('A', $ts)); },
+            '%R' => 'H:i', '%r' => 'h:i:s A',
+            '%S' => 's', '%s' => 'U',
+            '%T' => 'H:i:s', '%t' => "\t",
+            '%U' => function($ts) { return sprintf('%02d', (int)((date('z', $ts)) / 7)); },
+            '%u' => 'N', '%V' => 'W', '%W' => function($ts) { return sprintf('%02d', (int)((date('z', $ts) + 7 - ((date('N', $ts) + 6) % 7)) / 7)); },
+            '%w' => 'w',
+            '%X' => 'H:i:s', '%x' => 'm/d/y',
+            '%Y' => 'Y', '%y' => 'y',
+            '%Z' => 'T', '%z' => 'O',
+            '%%' => '%',
+        );
+        $result = '';
+        $len = strlen($format);
+        for ($i = 0; $i < $len; $i++) {
+            if ($format[$i] === '%' && $i + 1 < $len) {
+                $code = '%' . $format[$i + 1];
+                $i++;
+                if (isset($map[$code])) {
+                    if (is_callable($map[$code])) {
+                        $result .= call_user_func($map[$code], $timestamp);
+                    } else {
+                        $result .= date($map[$code], $timestamp);
+                    }
+                } else {
+                    $result .= $code;
+                }
+            } else {
+                $result .= $format[$i];
+            }
+        }
+        return $result;
+    }
+}
+
 if ( !defined('XATAFACE_INI_EXTENSION') ){
 	define('XATAFACE_INI_EXTENSION', '');
 }

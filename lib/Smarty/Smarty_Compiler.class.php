@@ -74,6 +74,14 @@ class Smarty_Compiler extends Smarty {
     var $_strip_depth           =   0;
     var $_additional_newline    =   "\n";
 
+    // PHP 8.2: declare dynamic properties
+    var $_dvar_math_regexp      =   null;
+    var $_dvar_math_var_regexp  =   null;
+    var $_obj_restricted_param_regexp = null;
+    var $_obj_single_param_regexp = null;
+    var $_param_regexp          =   null;
+    var $_plugins_code          =   '';
+
     /**#@-*/
     /**
      * The class constructor.
@@ -263,17 +271,9 @@ class Smarty_Compiler extends Smarty {
         reset($this->_folded_blocks);
 
         /* replace special blocks by "{php}" */
-        if (version_compare(PHP_VERSION, '5.4') >= 0) {
-            $callback = function($matches) {
-                return $this->_quote_replace($this->left_delimiter) . 'php' . str_repeat("\n", substr_count('$matches[1]', "\n")) . $this->_quote_replace($this->right_delimiter);
-            };
-        } else {
-            $callback = create_function ('$matches', "return '" 
-                                       . $this->_quote_replace($this->left_delimiter) . 'php' 
-                                       . "' . str_repeat(\"\n\", substr_count('\$matches[1]', \"\n\")) .'" 
-                                       . $this->_quote_replace($this->right_delimiter) 
-                                       . "';");
-        }
+        $callback = function($matches) {
+            return $this->_quote_replace($this->left_delimiter) . 'php' . str_repeat("\n", substr_count('$matches[1]', "\n")) . $this->_quote_replace($this->right_delimiter);
+        };
         $source_content = preg_replace_callback($search, $callback, $source_content); 
 
         /* Gather all template tags. */
@@ -404,7 +404,7 @@ class Smarty_Compiler extends Smarty {
         }
 
         // put header at the top of the compiled template
-        $template_header = "<?php /* Smarty version ".$this->_version.", created on ".strftime("%Y-%m-%d %H:%M:%S")."\n";
+        $template_header = "<?php /* Smarty version ".$this->_version.", created on ".date("Y-m-d H:i:s")."\n";
         $template_header .= "         compiled from ".strtr(urlencode($resource_name), array('%2F'=>'/', '%3A'=>':'))." */ ?>\n";
 
         /* Emit code to load needed plugins. */
@@ -1537,7 +1537,7 @@ class Smarty_Compiler extends Smarty {
         preg_match_all('~(?:' . $this->_obj_call_regexp . '|' . $this->_qstr_regexp . ' | (?>[^"\'=\s]+)
                          )+ |
                          [=]
-                        ~x', $tag_args, $match);
+                        ~x', (string)$tag_args, $match);
         $tokens       = $match[0];
 
         $attrs = array();

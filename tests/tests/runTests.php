@@ -5,6 +5,8 @@ $tests = array(
     'TableTest',
     'IOTest',
     'HistoryToolTest',
+    'PHP8CompatibilityUnitTest',
+    'PHP8CompatibilityIntegrationTest',
 	//'ServicesTest',
 	//'CLIServerTest'
 );
