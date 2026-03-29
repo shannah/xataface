@@ -9,9 +9,14 @@
  * Run via framework: Include in runTests.php test list as 'PHP8CompatibilityUnitTest'
  */
 
-// Minimal bootstrap - just enough to load the compatibility functions
-$xataface = getenv('XATAFACE') ?: dirname(dirname(__DIR__));
-require_once $xataface . '/config.inc.php';
+// Minimal bootstrap - just enough to load the compatibility functions.
+// When running inside the full test runner (runTests.php), testconfig.php
+// will handle initialization. Only load config.inc.php directly when
+// running standalone (i.e. xf_strftime not yet defined).
+if (!function_exists('xf_strftime')) {
+    $xataface = getenv('XATAFACE') ?: dirname(dirname(__DIR__));
+    require_once $xataface . '/config.inc.php';
+}
 
 // Load the test framework
 require_once 'PHPUnit.php';

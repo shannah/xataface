@@ -2,11 +2,11 @@
 ini_set('display_errors', 'on');
 
 $tests = array(
-    'PHP8CompatibilityUnitTest',
-    'PHP8CompatibilityIntegrationTest',
     'TableTest',
     'IOTest',
     'HistoryToolTest',
+    'PHP8CompatibilityUnitTest',
+    'PHP8CompatibilityIntegrationTest',
 	//'ServicesTest',
 	//'CLIServerTest'
 );
