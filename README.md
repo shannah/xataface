@@ -4,8 +4,6 @@ A framework for building rich, data-driven applications in PHP and MySQL
 
 [![Build Status](https://travis-ci.org/shannah/xataface.svg?branch=master)](https://travis-ci.org/shannah/xataface)
 
-
-
 ## License
 
 GPL
@@ -30,4 +28,5 @@ GPL
 4. [Getting Started Tutorial](http://xataface.com/documentation/tutorial/getting_started)
 
 ## Support
+
 [Forum](http://xataface.com/forum)
