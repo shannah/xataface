@@ -267,10 +267,16 @@ if ( preg_match('/^\.'.PATH_SEPARATOR.'/', $include_path) ){
 
 $includePathArr = explode(PATH_SEPARATOR, $include_path);
 
-if ( DATAFACE_SITE_PATH != DATAFACE_PATH and !in_array(DATAFACE_PATH,$includePathArr)){
-	$include_path = DATAFACE_PATH.PATH_SEPARATOR.DATAFACE_PATH.'/lib'.PATH_SEPARATOR.$include_path;
-} else if ( !in_array(DATAFACE_PATH.'/lib', $includePathArr)) {
+if ( !in_array(DATAFACE_PATH.'/lib', $includePathArr)) {
 	$include_path = DATAFACE_PATH.'/lib'.PATH_SEPARATOR.$include_path;
+}
+
+if ( DATAFACE_SITE_PATH != DATAFACE_PATH and !in_array(DATAFACE_PATH,$includePathArr)){
+	$include_path = DATAFACE_PATH.PATH_SEPARATOR.$include_path;
+}
+
+if ( !in_array(DATAFACE_SITE_PATH,$includePathArr)){
+	$include_path = DATAFACE_SITE_PATH.PATH_SEPARATOR.$include_path;
 }
 
 if ( $curr_dir_first ){
