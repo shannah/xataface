@@ -102,24 +102,35 @@ class Dataface_SkinTool extends Smarty{
 		} else if ( is_writable($GLOBALS['Dataface_Globals_Templates_c'])){
 			$this->compile_dir = $GLOBALS['Dataface_Globals_Templates_c'];
 		} else {
-			throw new Exception("<h1>No appropriate directory could be found to save
-			Dataface's compiled templates.</h1>
+			// Fall back to a temp directory for serverless environments
+			// where the application directory is read-only.
+			$tmpCompileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR
+				. 'xf_templates_c_' . md5(defined('DATAFACE_SITE_PATH') ? DATAFACE_SITE_PATH : __DIR__);
+			if ( !is_dir($tmpCompileDir) ) {
+				@mkdir($tmpCompileDir, 0777, true);
+			}
+			if ( is_writable($tmpCompileDir) ) {
+				$this->compile_dir = $tmpCompileDir;
+			} else {
+				throw new Exception("<h1>No appropriate directory could be found to save
+				Dataface's compiled templates.</h1>
 
-			<p>Dataface uses the Smarty Template engine for its templates, which compiles
-			templates and stores them on the server for improved performance.  You can
-			either store these templates in the Dataface directory or your application's
-			directory.</p>
+				<p>Dataface uses the Smarty Template engine for its templates, which compiles
+				templates and stores them on the server for improved performance.  You can
+				either store these templates in the Dataface directory or your application's
+				directory.</p>
 
-			<p>To store the templates in the Dataface directory, please ensure that the
-			<pre>$GLOBALS[Dataface_Globals_Templates_c]</pre> directory exists and is writable by the
-			web server. </p>
-			<p>You can make it writable by the web server on most unix and linux systems,
-			by issuing the following command in the shell:
-			<code><pre>chmod 777 $GLOBALS[Dataface_Globals_Templates_c] </pre></code>.</p>
+				<p>To store the templates in the Dataface directory, please ensure that the
+				<pre>$GLOBALS[Dataface_Globals_Templates_c]</pre> directory exists and is writable by the
+				web server. </p>
+				<p>You can make it writable by the web server on most unix and linux systems,
+				by issuing the following command in the shell:
+				<code><pre>chmod 777 $GLOBALS[Dataface_Globals_Templates_c] </pre></code>.</p>
 
-			<p>To store the templates in your application's directory, please ensure
-			that the <pre>$GLOBALS[Dataface_Globals_Local_Templates_c]</pre> directory exists and is
-			writable by the web server.</p>", E_USER_ERROR);
+				<p>To store the templates in your application's directory, please ensure
+				that the <pre>$GLOBALS[Dataface_Globals_Local_Templates_c]</pre> directory exists and is
+				writable by the web server.</p>", E_USER_ERROR);
+			}
 		}
 		if ( !file_exists($this->compile_dir.DIRECTORY_SEPARATOR.'.htaccess') ){
 			file_put_contents($this->compile_dir.DIRECTORY_SEPARATOR.'.htaccess', Dataface_Application::$DENY_HTACCESS_CONTENTS);

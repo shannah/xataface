@@ -156,12 +156,24 @@ function init($site_path, $dataface_url){
 	}
 	
 	if ( !is_writable(DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'templates_c') ){
-		die(
-			sprintf(
-				'As of Xataface 1.3 all applications are now required to have its own templates_c directory to house its compiled templates.  Please create the directory "%s" and ensure that it is writable by the web server.',
-				DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'templates_c'
-			)
-		);
+		// In serverless environments the app directory may be read-only.
+		// Fall back to a temp directory for compiled templates.
+		$tmpTemplatesC = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'xf_templates_c_' . md5(DATAFACE_SITE_PATH);
+		if ( !is_dir($tmpTemplatesC) ) {
+			@mkdir($tmpTemplatesC, 0777, true);
+		}
+		if ( is_writable($tmpTemplatesC) ) {
+			if ( !defined('XFTEMPLATES_C') ) {
+				define('XFTEMPLATES_C', $tmpTemplatesC . DIRECTORY_SEPARATOR);
+			}
+		} else {
+			die(
+				sprintf(
+					'As of Xataface 1.3 all applications are now required to have its own templates_c directory to house its compiled templates.  Please create the directory "%s" and ensure that it is writable by the web server.',
+					DATAFACE_SITE_PATH.DIRECTORY_SEPARATOR.'templates_c'
+				)
+			);
+		}
 	}
         if (preg_match('/[\'"<>]/', DATAFACE_SITE_HREF)) {
             
