@@ -30,8 +30,6 @@ MYSQL_PORT="${MYSQL_PORT:-3306}"
 TEST_DB="xf_serverless_test_$$"
 PASSED=0
 FAILED=0
-PHASE_PASSED=0
-PHASE_FAILED=0
 
 echo "============================================="
 echo "Serverless Compatibility Integration Tests"
@@ -46,24 +44,35 @@ echo ""
 pass() {
     echo "  PASS: $1"
     PASSED=$((PASSED + 1))
-    PHASE_PASSED=$((PHASE_PASSED + 1))
 }
 
 fail() {
     echo "  FAIL: $1"
     FAILED=$((FAILED + 1))
-    PHASE_FAILED=$((PHASE_FAILED + 1))
 }
 
-reset_phase() {
-    PHASE_PASSED=0
-    PHASE_FAILED=0
+# Helper to boot a Xataface app in a subprocess and run inline PHP.
+# Usage: run_in_app "PHP_CODE" [extra_env_vars...]
+# The app is booted via df_init() and has $app available.
+# Outputs whatever the PHP code echoes. Exit code 0 on success.
+run_in_app() {
+    local php_code="$1"
+    shift
+    env "$@" php -d include_path=".:$XATAFACE:$TEST_APP_DIR" -r "
+\$_SERVER['PHP_SELF'] = '/index.php';
+\$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+\$_SERVER['HTTP_HOST'] = 'localhost';
+\$_SERVER['REQUEST_URI'] = '/index.php';
+\$_SERVER['DOCUMENT_ROOT'] = '$TEST_APP_DIR';
+require_once 'xataface/public-api.php';
+\$app = df_init('$TEST_APP_DIR/index.php', 'xataface');
+$php_code
+" 2>&1
 }
 
-# --- Phase 1: Syntax validation of new/changed files ---
+# --- Phase 1: Syntax validation of serverless files ---
 
 echo "--- Phase 1: Syntax validation ---"
-reset_phase
 
 SERVERLESS_FILES=(
     "Dataface/DatabaseSessionHandler.php"
@@ -83,10 +92,9 @@ done
 
 echo ""
 
-# --- Phase 2: Standalone unit tests (no database required) ---
+# --- Phase 2: Standalone tests (no database required) ---
 
 echo "--- Phase 2: Standalone tests ---"
-reset_phase
 
 # Test 2.1: DatabaseSessionHandler class implements SessionHandlerInterface
 php -r "
@@ -131,7 +139,6 @@ echo XFTEMPLATES_C;
 " 2>&1)
 if echo "$RESULT" | grep -q "/tmp/xf_test_envvar_"; then
     pass "XF_TEMPLATES_C env var sets XFTEMPLATES_C constant"
-    # Clean up
     rmdir "/tmp/xf_test_envvar_$$" 2>/dev/null || true
 else
     fail "XF_TEMPLATES_C env var not respected (got: $RESULT)"
@@ -156,8 +163,7 @@ echo ""
 
 # --- Phase 3: Integration tests with real database ---
 
-echo "--- Phase 3: Full app integration tests ---"
-reset_phase
+echo "--- Phase 3: Database integration tests ---"
 
 # Check MySQL connectivity
 MYSQL_CONN_HOST="$MYSQL_HOST"
@@ -178,7 +184,7 @@ if [ "$MYSQL_CHECK" != "OK" ]; then
     echo "  SKIP: MySQL not available at $MYSQL_HOST:$MYSQL_PORT"
     echo ""
     echo "============================================="
-    echo "Results: $PASSED passed, $FAILED failed, Phase 3 skipped"
+    echo "Results: $PASSED passed, $FAILED failed, DB tests skipped"
     echo "============================================="
     if [ $FAILED -gt 0 ]; then exit 1; fi
     exit 0
@@ -219,36 +225,7 @@ INDEXEOF
 # Symlink xataface
 ln -s "$XATAFACE" "$TEST_APP_DIR/xataface"
 
-# Copy test infrastructure
-cp "$XATAFACE/tests/lib/PHPUnit.php" "$TEST_APP_DIR/"
-cp "$XATAFACE/tests/lib/PHPUnit/TestCase.php" "$TEST_APP_DIR/"
-cp "$XATAFACE/tests/lib/PHPUnit/TestSuite.php" "$TEST_APP_DIR/"
-cp "$XATAFACE/tests/lib/PHPUnit/TestResult.php" "$TEST_APP_DIR/"
-cp "$XATAFACE/tests/lib/PHPUnit/TestFailure.php" "$TEST_APP_DIR/"
-cp "$XATAFACE/tests/lib/PHPUnit/TestListener.php" "$TEST_APP_DIR/"
-cp "$XATAFACE/tests/lib/PHPUnit/Assert.php" "$TEST_APP_DIR/"
-mkdir -p "$TEST_APP_DIR/PHPUnit"
-for f in TestCase TestSuite TestResult TestFailure TestListener Assert; do
-    if [ -f "$TEST_APP_DIR/$f.php" ]; then
-        mv "$TEST_APP_DIR/$f.php" "$TEST_APP_DIR/PHPUnit/$f.php"
-    fi
-done
-cp "$XATAFACE/tests/lib/PHPUnit.php" "$TEST_APP_DIR/"
-# Copy required test libs
-cp "$XATAFACE/tests/lib/mysql_functions.php" "$TEST_APP_DIR/" 2>/dev/null || true
-
-# Copy BaseTest and the serverless test
-cp "$XATAFACE/tests/tests/BaseTest.php" "$TEST_APP_DIR/"
-cp "$XATAFACE/tests/tests/testconfig.php" "$TEST_APP_DIR/"
-cp "$XATAFACE/tests/tests/ServerlessCompatibilityTest.php" "$TEST_APP_DIR/"
-
-# Copy Profiles table definition if it exists
-if [ -d "$XATAFACE/tests/tables/Profiles" ]; then
-    mkdir -p "$TEST_APP_DIR/tables/Profiles"
-    cp -r "$XATAFACE/tests/tables/Profiles/"* "$TEST_APP_DIR/tables/Profiles/"
-fi
-
-# Create the test database and bootstrap table
+# Create the test database
 php -r "
 \$link = mysqli_connect('$MYSQL_HOST', '$MYSQL_USER', '$MYSQL_PASSWORD', '', $MYSQL_PORT);
 mysqli_query(\$link, 'DROP DATABASE IF EXISTS \`$TEST_DB\`');
@@ -264,73 +241,88 @@ echo 'OK';
 
 if [ $? -ne 0 ]; then
     fail "Database setup"
+    rm -rf "$TEST_APP_DIR"
     echo ""
     echo "============================================="
     echo "Results: $PASSED passed, $FAILED failed"
     echo "============================================="
-    # Cleanup
-    rm -rf "$TEST_APP_DIR"
     exit 1
 fi
-pass "Database and test app created"
-
-# Run the serverless compatibility test suite
-echo ""
-echo "  Running ServerlessCompatibilityTest suite..."
-echo ""
-
-TEST_OUTPUT=$(cd "$TEST_APP_DIR" && php -d include_path=".:$XATAFACE:$TEST_APP_DIR" -r "
-\$_SERVER['PHP_SELF'] = '/index.php';
-\$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-\$_SERVER['HTTP_HOST'] = 'localhost';
-\$_SERVER['REQUEST_URI'] = '/index.php';
-\$_SERVER['DOCUMENT_ROOT'] = '$TEST_APP_DIR';
-
-require_once 'testconfig.php';
-require_once 'PHPUnit.php';
-require_once 'ServerlessCompatibilityTest.php';
-
-\$test = new PHPUnit_TestSuite('ServerlessCompatibilityTest');
-\$result = new PHPUnit_TestResult;
-\$test->run(\$result);
-print \$result->toString();
-if (!\$result->wasSuccessful()) {
-    exit(1);
-}
-" 2>&1)
-TEST_EXIT=$?
-
-echo "$TEST_OUTPUT"
-echo ""
-
-if [ $TEST_EXIT -eq 0 ]; then
-    # Count tests from PHPUnit output
-    SUITE_COUNT=$(echo "$TEST_OUTPUT" | grep -oP '\d+ run' | grep -oP '\d+' || echo "0")
-    SUITE_FAILURES=$(echo "$TEST_OUTPUT" | grep -oP '\d+ failure' | grep -oP '\d+' || echo "0")
-    if [ -z "$SUITE_COUNT" ]; then SUITE_COUNT=0; fi
-    if [ -z "$SUITE_FAILURES" ]; then SUITE_FAILURES=0; fi
-    pass "ServerlessCompatibilityTest suite ($SUITE_COUNT tests, $SUITE_FAILURES failures)"
-else
-    fail "ServerlessCompatibilityTest suite"
-fi
-
-# --- Phase 4: Real app boot with serverless config ---
+pass "Test database and app created"
 
 echo ""
-echo "--- Phase 4: Real app smoke tests ---"
-reset_phase
 
-# Test 4.1: App boots with session_handler=database
-BOOT_OUTPUT=$(cd "$TEST_APP_DIR" && php -d include_path=".:$XATAFACE:$TEST_APP_DIR" -r "
-\$_SERVER['PHP_SELF'] = '/index.php';
-\$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-\$_SERVER['HTTP_HOST'] = 'localhost';
-\$_SERVER['REQUEST_URI'] = '/index.php';
-\$_SERVER['DOCUMENT_ROOT'] = '$TEST_APP_DIR';
+# -------------------------------------------------------------------
+# Test 3.1: DatabaseSessionHandler CRUD via real database connection
+# -------------------------------------------------------------------
+CRUD_OUTPUT=$(run_in_app "
+require_once 'Dataface/DatabaseSessionHandler.php';
+\$db = \$app->db();
+\$handler = new Dataface_DatabaseSessionHandler(\$db);
 
-require_once 'xataface/public-api.php';
-\$app = df_init('$TEST_APP_DIR/index.php', 'xataface');
+// Drop table if leftover from previous run
+xf_db_query('DROP TABLE IF EXISTS __xf_sessions', \$db);
 
+// open() should create table
+\$handler->open('', 'PHPSESSID');
+\$res = xf_db_query(\"SHOW TABLES LIKE '__xf_sessions'\", \$db);
+if (xf_db_num_rows(\$res) !== 1) { echo 'FAIL_CREATE'; exit(1); }
+echo 'TABLE_OK ';
+
+// write + read
+\$sid = 'test_' . md5(uniqid('', true));
+\$handler->write(\$sid, 'UserName|s:5:\"admin\";');
+\$data = \$handler->read(\$sid);
+if (\$data !== 'UserName|s:5:\"admin\";') { echo 'FAIL_READ'; exit(1); }
+echo 'WRITE_READ_OK ';
+
+// update
+\$handler->write(\$sid, 'UserName|s:6:\"admin2\";');
+\$data = \$handler->read(\$sid);
+if (\$data !== 'UserName|s:6:\"admin2\";') { echo 'FAIL_UPDATE'; exit(1); }
+echo 'UPDATE_OK ';
+
+// destroy
+\$handler->destroy(\$sid);
+\$data = \$handler->read(\$sid);
+if (\$data !== '') { echo 'FAIL_DESTROY'; exit(1); }
+echo 'DESTROY_OK ';
+
+// gc
+\$sid2 = 'old_' . md5(uniqid('', true));
+\$handler->write(\$sid2, 'old_data');
+\$esc = xf_db_real_escape_string(\$sid2, \$db);
+xf_db_query(\"UPDATE __xf_sessions SET last_access = \" . (time() - 7200) . \" WHERE session_id = '\$esc'\", \$db);
+\$removed = \$handler->gc(3600);
+if (\$removed < 1) { echo 'FAIL_GC'; exit(1); }
+if (\$handler->read(\$sid2) !== '') { echo 'FAIL_GC_VERIFY'; exit(1); }
+echo 'GC_OK ';
+
+// special characters
+\$sid3 = 'special_' . md5(uniqid('', true));
+\$specialData = \"quotes'and\\\"backslash\\\\\";
+\$handler->write(\$sid3, \$specialData);
+if (\$handler->read(\$sid3) !== \$specialData) { echo 'FAIL_SPECIAL'; exit(1); }
+echo 'SPECIAL_OK';
+")
+
+echo "  CRUD output: $CRUD_OUTPUT"
+
+for check in TABLE_OK WRITE_READ_OK UPDATE_OK DESTROY_OK GC_OK SPECIAL_OK; do
+    if echo "$CRUD_OUTPUT" | grep -q "$check"; then
+        pass "DatabaseSessionHandler $check"
+    else
+        fail "DatabaseSessionHandler $check"
+    fi
+done
+
+echo ""
+
+# -------------------------------------------------------------------
+# Test 3.2: App boots with session_handler=database and sessions
+#           are stored in MySQL
+# -------------------------------------------------------------------
+BOOT_OUTPUT=$(run_in_app "
 // Verify the auth config has session_handler=database
 if (@\$app->_conf['_auth']['session_handler'] === 'database') {
     echo 'CONFIG_OK ';
@@ -364,7 +356,7 @@ if (\$res && xf_db_num_rows(\$res) > 0) {
 } else {
     echo 'DB_SESSION_FAIL';
 }
-" 2>&1)
+")
 
 echo "  Boot output: $BOOT_OUTPUT"
 
@@ -386,24 +378,19 @@ else
     fail "Session data persisted to __xf_sessions table"
 fi
 
-# Test 4.2: App boots with XF_TEMPLATES_C pointing to custom /tmp path
+echo ""
+
+# -------------------------------------------------------------------
+# Test 3.3: XF_TEMPLATES_C env var overrides the constant
+# -------------------------------------------------------------------
 CUSTOM_TC=$(mktemp -d)
-TC_OUTPUT=$(cd "$TEST_APP_DIR" && XF_TEMPLATES_C="$CUSTOM_TC" php -d include_path=".:$XATAFACE:$TEST_APP_DIR" -r "
-\$_SERVER['PHP_SELF'] = '/index.php';
-\$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-\$_SERVER['HTTP_HOST'] = 'localhost';
-\$_SERVER['REQUEST_URI'] = '/index.php';
-\$_SERVER['DOCUMENT_ROOT'] = '$TEST_APP_DIR';
-
-require_once 'xataface/public-api.php';
-\$app = df_init('$TEST_APP_DIR/index.php', 'xataface');
-
+TC_OUTPUT=$(run_in_app "
 if (strpos(XFTEMPLATES_C, '$CUSTOM_TC') === 0) {
     echo 'ENV_TC_OK';
 } else {
     echo 'ENV_TC_FAIL: ' . XFTEMPLATES_C;
 }
-" 2>&1)
+" "XF_TEMPLATES_C=$CUSTOM_TC")
 
 if echo "$TC_OUTPUT" | grep -q "ENV_TC_OK"; then
     pass "XF_TEMPLATES_C env var overrides XFTEMPLATES_C constant"
@@ -412,24 +399,23 @@ else
 fi
 rm -rf "$CUSTOM_TC"
 
-# Test 4.3: App boots with read-only templates_c (falls back to /tmp)
+# -------------------------------------------------------------------
+# Test 3.4: App boots without templates_c dir (falls back to /tmp)
+# -------------------------------------------------------------------
 RO_APP_DIR=$(mktemp -d)
 cp "$TEST_APP_DIR/conf.ini.php" "$RO_APP_DIR/"
 cp "$TEST_APP_DIR/index.php" "$RO_APP_DIR/"
 ln -s "$XATAFACE" "$RO_APP_DIR/xataface"
 # Do NOT create templates_c — simulating read-only app directory
 
-RO_OUTPUT=$(cd "$RO_APP_DIR" && php -d include_path=".:$XATAFACE:$RO_APP_DIR" -r "
+RO_OUTPUT=$(php -d include_path=".:$XATAFACE:$RO_APP_DIR" -r "
 \$_SERVER['PHP_SELF'] = '/index.php';
 \$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 \$_SERVER['HTTP_HOST'] = 'localhost';
 \$_SERVER['REQUEST_URI'] = '/index.php';
 \$_SERVER['DOCUMENT_ROOT'] = '$RO_APP_DIR';
-
 require_once 'xataface/public-api.php';
 \$app = df_init('$RO_APP_DIR/index.php', 'xataface');
-
-// If we got here without dying, the fallback worked
 if (defined('XFTEMPLATES_C') && is_writable(rtrim(XFTEMPLATES_C, '/'))) {
     echo 'FALLBACK_OK';
 } else {
@@ -444,14 +430,17 @@ else
 fi
 rm -rf "$RO_APP_DIR"
 
-# Test 4.4: getClientIp() works in real app with trust_proxy_headers
+echo ""
+
+# -------------------------------------------------------------------
+# Test 3.5: getClientIp() resolves X-Forwarded-For in real app
+# -------------------------------------------------------------------
 IP_OUTPUT=$(cd "$TEST_APP_DIR" && php -d include_path=".:$XATAFACE:$TEST_APP_DIR" -r "
 \$_SERVER['PHP_SELF'] = '/index.php';
 \$_SERVER['REMOTE_ADDR'] = '10.128.0.5';
 \$_SERVER['HTTP_HOST'] = 'localhost';
 \$_SERVER['REQUEST_URI'] = '/index.php';
 \$_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.42, 10.128.0.5';
-
 require_once 'xataface/public-api.php';
 \$app = df_init('$TEST_APP_DIR/index.php', 'xataface');
 
@@ -465,9 +454,116 @@ if (\$ip === '203.0.113.42') {
 " 2>&1)
 
 if echo "$IP_OUTPUT" | grep -q "PROXY_IP_OK"; then
-    pass "getClientIp() resolves X-Forwarded-For in real app context"
+    pass "getClientIp() resolves X-Forwarded-For in real app"
 else
     fail "getClientIp() proxy resolution ($IP_OUTPUT)"
+fi
+
+# -------------------------------------------------------------------
+# Test 3.6: getClientIp() returns REMOTE_ADDR when trust disabled
+# -------------------------------------------------------------------
+# Create a second app without trust_proxy_headers
+NOTRUST_APP_DIR=$(mktemp -d)
+mkdir -p "$NOTRUST_APP_DIR/templates_c"
+chmod 777 "$NOTRUST_APP_DIR/templates_c"
+cat > "$NOTRUST_APP_DIR/conf.ini.php" << NTCONFEOF
+;<?php exit;
+[_database]
+    host=$MYSQL_CONN_HOST
+    user=$MYSQL_USER
+    password=$MYSQL_PASSWORD
+    name=$TEST_DB
+    driver=mysqli
+
+[_tables]
+    ServerlessTest=ServerlessTest
+NTCONFEOF
+cp "$TEST_APP_DIR/index.php" "$NOTRUST_APP_DIR/"
+ln -s "$XATAFACE" "$NOTRUST_APP_DIR/xataface"
+
+NOTRUST_OUTPUT=$(cd "$NOTRUST_APP_DIR" && php -d include_path=".:$XATAFACE:$NOTRUST_APP_DIR" -r "
+\$_SERVER['PHP_SELF'] = '/index.php';
+\$_SERVER['REMOTE_ADDR'] = '10.128.0.5';
+\$_SERVER['HTTP_HOST'] = 'localhost';
+\$_SERVER['REQUEST_URI'] = '/index.php';
+\$_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.42, 10.128.0.5';
+require_once 'xataface/public-api.php';
+\$app = df_init('$NOTRUST_APP_DIR/index.php', 'xataface');
+\$ip = \$app->getClientIp();
+if (\$ip === '10.128.0.5') {
+    echo 'NOTRUST_OK';
+} else {
+    echo 'NOTRUST_FAIL: ' . \$ip;
+}
+" 2>&1)
+
+if echo "$NOTRUST_OUTPUT" | grep -q "NOTRUST_OK"; then
+    pass "getClientIp() ignores X-Forwarded-For without trust_proxy_headers"
+else
+    fail "getClientIp() without trust ($NOTRUST_OUTPUT)"
+fi
+rm -rf "$NOTRUST_APP_DIR"
+
+# -------------------------------------------------------------------
+# Test 3.7: getClientIp() handles IPv6 in X-Forwarded-For
+# -------------------------------------------------------------------
+IPV6_OUTPUT=$(run_in_app "
+\$_SERVER['REMOTE_ADDR'] = '::1';
+\$_SERVER['HTTP_X_FORWARDED_FOR'] = '2001:db8::1, ::1';
+\$ip = \$app->getClientIp();
+if (\$ip === '2001:db8::1') {
+    echo 'IPV6_OK';
+} else {
+    echo 'IPV6_FAIL: ' . \$ip;
+}
+")
+
+if echo "$IPV6_OUTPUT" | grep -q "IPV6_OK"; then
+    pass "getClientIp() handles IPv6 addresses"
+else
+    fail "getClientIp() IPv6 ($IPV6_OUTPUT)"
+fi
+
+# -------------------------------------------------------------------
+# Test 3.8: getClientIp() rejects invalid IPs in X-Forwarded-For
+# -------------------------------------------------------------------
+INVALID_OUTPUT=$(run_in_app "
+\$_SERVER['REMOTE_ADDR'] = '10.128.0.1';
+\$_SERVER['HTTP_X_FORWARDED_FOR'] = 'not-a-valid-ip';
+unset(\$_SERVER['HTTP_X_REAL_IP']);
+\$ip = \$app->getClientIp();
+if (\$ip === '10.128.0.1') {
+    echo 'INVALID_REJECT_OK';
+} else {
+    echo 'INVALID_REJECT_FAIL: ' . \$ip;
+}
+")
+
+if echo "$INVALID_OUTPUT" | grep -q "INVALID_REJECT_OK"; then
+    pass "getClientIp() rejects invalid IPs, falls back to REMOTE_ADDR"
+else
+    fail "getClientIp() invalid IP rejection ($INVALID_OUTPUT)"
+fi
+
+# -------------------------------------------------------------------
+# Test 3.9: getClientIp() falls back to X-Real-IP
+# -------------------------------------------------------------------
+REALIP_OUTPUT=$(run_in_app "
+\$_SERVER['REMOTE_ADDR'] = '10.128.0.1';
+unset(\$_SERVER['HTTP_X_FORWARDED_FOR']);
+\$_SERVER['HTTP_X_REAL_IP'] = '198.51.100.25';
+\$ip = \$app->getClientIp();
+if (\$ip === '198.51.100.25') {
+    echo 'REALIP_OK';
+} else {
+    echo 'REALIP_FAIL: ' . \$ip;
+}
+")
+
+if echo "$REALIP_OUTPUT" | grep -q "REALIP_OK"; then
+    pass "getClientIp() falls back to X-Real-IP header"
+else
+    fail "getClientIp() X-Real-IP fallback ($REALIP_OUTPUT)"
 fi
 
 # --- Cleanup ---
