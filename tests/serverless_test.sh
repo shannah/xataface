@@ -353,20 +353,17 @@ echo ""
 #           are stored in MySQL
 # -------------------------------------------------------------------
 BOOT_OUTPUT=$(run_in_app <<'PHPCODE'
+// Use output buffering so echo doesn't trigger "headers already sent"
+// for setcookie/session_start calls in startSession().
+ob_start();
+$results = [];
+
 // Verify the auth config has session_handler=database
-if (@$app->_conf['_auth']['session_handler'] === 'database') {
-    echo 'CONFIG_OK ';
-} else {
-    echo 'CONFIG_FAIL ';
-}
+$results[] = (@$app->_conf['_auth']['session_handler'] === 'database') ? 'CONFIG_OK' : 'CONFIG_FAIL';
 
 // Start session - this should use the database handler
 $app->startSession();
-if (session_id() !== '') {
-    echo 'SESSION_OK ';
-} else {
-    echo 'SESSION_FAIL ';
-}
+$results[] = (session_id() !== '') ? 'SESSION_OK' : 'SESSION_FAIL';
 
 // Verify session data persists through database
 $_SESSION['__serverless_test'] = 'hello_cloud';
@@ -379,13 +376,16 @@ $res = xf_db_query("SELECT session_data FROM __xf_sessions WHERE session_id = '$
 if ($res && xf_db_num_rows($res) > 0) {
     $row = xf_db_fetch_assoc($res);
     if (strpos($row['session_data'], 'hello_cloud') !== false) {
-        echo 'DB_SESSION_OK';
+        $results[] = 'DB_SESSION_OK';
     } else {
-        echo 'DB_SESSION_DATA_FAIL';
+        $results[] = 'DB_SESSION_DATA_FAIL';
     }
 } else {
-    echo 'DB_SESSION_FAIL';
+    $results[] = 'DB_SESSION_FAIL';
 }
+
+ob_end_clean();
+echo implode(' ', $results);
 PHPCODE
 )
 
