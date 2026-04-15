@@ -51,14 +51,19 @@ fail() {
     FAILED=$((FAILED + 1))
 }
 
-# Helper to boot a Xataface app in a subprocess and run inline PHP.
-# Usage: run_in_app "PHP_CODE" [extra_env_vars...]
-# The app is booted via df_init() and has $app available.
-# Outputs whatever the PHP code echoes. Exit code 0 on success.
+# Helper to run PHP code in the context of a booted Xataface app.
+# Writes PHP to a temp file to avoid all shell quoting issues with php -r.
+# Usage: run_in_app <<'PHPCODE'
+#   echo $app->_conf['_database']['name'];
+# PHPCODE
+# Or with env vars: XF_TEMPLATES_C=/tmp/foo run_in_app <<'PHPCODE' ...
 run_in_app() {
-    local php_code="$1"
-    shift
-    env "$@" php -d include_path=".:$XATAFACE:$TEST_APP_DIR" -r "
+    local tmp_php
+    tmp_php=$(mktemp /tmp/xf_serverless_test_XXXXXX.php)
+    # Write bootstrap header (needs shell vars for paths)
+    cat > "$tmp_php" << BOOTSTRAP
+<?php
+error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
 \$_SERVER['PHP_SELF'] = '/index.php';
 \$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 \$_SERVER['HTTP_HOST'] = 'localhost';
@@ -66,8 +71,37 @@ run_in_app() {
 \$_SERVER['DOCUMENT_ROOT'] = '$TEST_APP_DIR';
 require_once 'xataface/public-api.php';
 \$app = df_init('$TEST_APP_DIR/index.php', 'xataface');
-$php_code
-" 2>&1
+BOOTSTRAP
+    # Append test code from stdin (no shell expansion — literal PHP)
+    cat >> "$tmp_php"
+    local result
+    result=$(cd "$TEST_APP_DIR" && php -d include_path=".:$XATAFACE:$TEST_APP_DIR" -d display_errors=stderr "$tmp_php" 2>/dev/null) || true
+    rm -f "$tmp_php"
+    echo "$result"
+}
+
+# Helper to run PHP in the context of a specific app directory.
+# Usage: run_in_dir /path/to/appdir <<'PHPCODE' ...
+run_in_dir() {
+    local app_dir="$1"
+    local tmp_php
+    tmp_php=$(mktemp /tmp/xf_serverless_test_XXXXXX.php)
+    cat > "$tmp_php" << BOOTSTRAP
+<?php
+error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+\$_SERVER['PHP_SELF'] = '/index.php';
+\$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+\$_SERVER['HTTP_HOST'] = 'localhost';
+\$_SERVER['REQUEST_URI'] = '/index.php';
+\$_SERVER['DOCUMENT_ROOT'] = '$app_dir';
+require_once 'xataface/public-api.php';
+\$app = df_init('$app_dir/index.php', 'xataface');
+BOOTSTRAP
+    cat >> "$tmp_php"
+    local result
+    result=$(cd "$app_dir" && php -d include_path=".:$XATAFACE:$app_dir" -d display_errors=stderr "$tmp_php" 2>/dev/null) || true
+    rm -f "$tmp_php"
+    echo "$result"
 }
 
 # --- Phase 1: Syntax validation of serverless files ---
@@ -97,46 +131,44 @@ echo ""
 echo "--- Phase 2: Standalone tests ---"
 
 # Test 2.1: DatabaseSessionHandler class implements SessionHandlerInterface
-php -r "
+RESULT=$(php -d display_errors=stderr -r "
 define('XFAPPROOT', '$XATAFACE/');
 require_once '$XATAFACE/config.inc.php';
 require_once '$XATAFACE/Dataface/DatabaseSessionHandler.php';
-
 \$ref = new ReflectionClass('Dataface_DatabaseSessionHandler');
-if (\$ref->implementsInterface('SessionHandlerInterface')) {
-    echo 'OK';
-} else {
-    echo 'FAIL: does not implement SessionHandlerInterface';
-    exit(1);
-}
-" 2>&1 && pass "DatabaseSessionHandler implements SessionHandlerInterface" || fail "DatabaseSessionHandler interface check"
+echo \$ref->implementsInterface('SessionHandlerInterface') ? 'OK' : 'FAIL';
+" 2>/dev/null)
+if [ "$RESULT" = "OK" ]; then
+    pass "DatabaseSessionHandler implements SessionHandlerInterface"
+else
+    fail "DatabaseSessionHandler interface check ($RESULT)"
+fi
 
 # Test 2.2: DatabaseSessionHandler has all required methods
-php -r "
+RESULT=$(php -d display_errors=stderr -r "
 define('XFAPPROOT', '$XATAFACE/');
 require_once '$XATAFACE/config.inc.php';
 require_once '$XATAFACE/Dataface/DatabaseSessionHandler.php';
-
 \$ref = new ReflectionClass('Dataface_DatabaseSessionHandler');
 \$required = ['open','close','read','write','destroy','gc'];
 \$missing = [];
 foreach (\$required as \$m) {
     if (!\$ref->hasMethod(\$m)) \$missing[] = \$m;
 }
-if (empty(\$missing)) {
-    echo 'OK';
-} else {
-    echo 'FAIL: missing methods: ' . implode(', ', \$missing);
-    exit(1);
-}
-" 2>&1 && pass "DatabaseSessionHandler has all required methods" || fail "DatabaseSessionHandler methods check"
+echo empty(\$missing) ? 'OK' : 'FAIL:' . implode(',', \$missing);
+" 2>/dev/null)
+if [ "$RESULT" = "OK" ]; then
+    pass "DatabaseSessionHandler has all required methods"
+else
+    fail "DatabaseSessionHandler methods check ($RESULT)"
+fi
 
 # Test 2.3: XF_TEMPLATES_C env var is respected
-RESULT=$(XF_TEMPLATES_C=/tmp/xf_test_envvar_$$ php -r "
+RESULT=$(XF_TEMPLATES_C=/tmp/xf_test_envvar_$$ php -d display_errors=stderr -r "
 define('XFAPPROOT', '$XATAFACE/');
 require_once '$XATAFACE/config.inc.php';
 echo XFTEMPLATES_C;
-" 2>&1)
+" 2>/dev/null)
 if echo "$RESULT" | grep -q "/tmp/xf_test_envvar_"; then
     pass "XF_TEMPLATES_C env var sets XFTEMPLATES_C constant"
     rmdir "/tmp/xf_test_envvar_$$" 2>/dev/null || true
@@ -171,15 +203,11 @@ if [ -n "$MYSQL_PORT" ] && [ "$MYSQL_PORT" != "3306" ]; then
     MYSQL_CONN_HOST="${MYSQL_HOST}:${MYSQL_PORT}"
 fi
 
-MYSQL_CHECK=$(php -r "
+MYSQL_CHECK=$(php -d display_errors=stderr -r "
 mysqli_report(MYSQLI_REPORT_OFF);
 \$link = @mysqli_connect('$MYSQL_HOST', '$MYSQL_USER', '$MYSQL_PASSWORD', '', $MYSQL_PORT);
-if (!\$link) {
-    echo 'UNAVAILABLE';
-    exit(0);
-}
-echo 'OK';
-" 2>&1)
+echo \$link ? 'OK' : 'UNAVAILABLE';
+" 2>/dev/null)
 if [ "$MYSQL_CHECK" != "OK" ]; then
     echo "  SKIP: MySQL not available at $MYSQL_HOST:$MYSQL_PORT"
     echo ""
@@ -197,8 +225,11 @@ mkdir -p "$TEST_TEMPLATES_C"
 chmod 777 "$TEST_TEMPLATES_C"
 
 # Create the conf.ini.php
+# NOTE: trust_proxy_headers MUST be before any [section] to be a root-level config
 cat > "$TEST_APP_DIR/conf.ini.php" << CONFEOF
 ;<?php exit;
+trust_proxy_headers=1
+
 [_database]
     host=$MYSQL_CONN_HOST
     user=$MYSQL_USER
@@ -211,8 +242,6 @@ cat > "$TEST_APP_DIR/conf.ini.php" << CONFEOF
 
 [_auth]
     session_handler=database
-
-trust_proxy_headers=1
 CONFEOF
 
 # Create index.php
@@ -255,56 +284,57 @@ echo ""
 # -------------------------------------------------------------------
 # Test 3.1: DatabaseSessionHandler CRUD via real database connection
 # -------------------------------------------------------------------
-CRUD_OUTPUT=$(run_in_app "
+CRUD_OUTPUT=$(run_in_app <<'PHPCODE'
 require_once 'Dataface/DatabaseSessionHandler.php';
-\$db = \$app->db();
-\$handler = new Dataface_DatabaseSessionHandler(\$db);
+$db = $app->db();
+$handler = new Dataface_DatabaseSessionHandler($db);
 
 // Drop table if leftover from previous run
-xf_db_query('DROP TABLE IF EXISTS __xf_sessions', \$db);
+xf_db_query('DROP TABLE IF EXISTS __xf_sessions', $db);
 
 // open() should create table
-\$handler->open('', 'PHPSESSID');
-\$res = xf_db_query(\"SHOW TABLES LIKE '__xf_sessions'\", \$db);
-if (xf_db_num_rows(\$res) !== 1) { echo 'FAIL_CREATE'; exit(1); }
+$handler->open('', 'PHPSESSID');
+$res = xf_db_query("SHOW TABLES LIKE '__xf_sessions'", $db);
+if (xf_db_num_rows($res) !== 1) { echo 'FAIL_CREATE'; exit(1); }
 echo 'TABLE_OK ';
 
 // write + read
-\$sid = 'test_' . md5(uniqid('', true));
-\$handler->write(\$sid, 'UserName|s:5:\"admin\";');
-\$data = \$handler->read(\$sid);
-if (\$data !== 'UserName|s:5:\"admin\";') { echo 'FAIL_READ'; exit(1); }
+$sid = 'test_' . md5(uniqid('', true));
+$handler->write($sid, 'UserName|s:5:"admin";');
+$data = $handler->read($sid);
+if ($data !== 'UserName|s:5:"admin";') { echo 'FAIL_READ:' . $data; exit(1); }
 echo 'WRITE_READ_OK ';
 
 // update
-\$handler->write(\$sid, 'UserName|s:6:\"admin2\";');
-\$data = \$handler->read(\$sid);
-if (\$data !== 'UserName|s:6:\"admin2\";') { echo 'FAIL_UPDATE'; exit(1); }
+$handler->write($sid, 'UserName|s:6:"admin2";');
+$data = $handler->read($sid);
+if ($data !== 'UserName|s:6:"admin2";') { echo 'FAIL_UPDATE'; exit(1); }
 echo 'UPDATE_OK ';
 
 // destroy
-\$handler->destroy(\$sid);
-\$data = \$handler->read(\$sid);
-if (\$data !== '') { echo 'FAIL_DESTROY'; exit(1); }
+$handler->destroy($sid);
+$data = $handler->read($sid);
+if ($data !== '') { echo 'FAIL_DESTROY'; exit(1); }
 echo 'DESTROY_OK ';
 
 // gc
-\$sid2 = 'old_' . md5(uniqid('', true));
-\$handler->write(\$sid2, 'old_data');
-\$esc = xf_db_real_escape_string(\$sid2, \$db);
-xf_db_query(\"UPDATE __xf_sessions SET last_access = \" . (time() - 7200) . \" WHERE session_id = '\$esc'\", \$db);
-\$removed = \$handler->gc(3600);
-if (\$removed < 1) { echo 'FAIL_GC'; exit(1); }
-if (\$handler->read(\$sid2) !== '') { echo 'FAIL_GC_VERIFY'; exit(1); }
+$sid2 = 'old_' . md5(uniqid('', true));
+$handler->write($sid2, 'old_data');
+$esc = xf_db_real_escape_string($sid2, $db);
+xf_db_query("UPDATE __xf_sessions SET last_access = " . (time() - 7200) . " WHERE session_id = '$esc'", $db);
+$removed = $handler->gc(3600);
+if ($removed < 1) { echo 'FAIL_GC'; exit(1); }
+if ($handler->read($sid2) !== '') { echo 'FAIL_GC_VERIFY'; exit(1); }
 echo 'GC_OK ';
 
 // special characters
-\$sid3 = 'special_' . md5(uniqid('', true));
-\$specialData = \"quotes'and\\\"backslash\\\\\";
-\$handler->write(\$sid3, \$specialData);
-if (\$handler->read(\$sid3) !== \$specialData) { echo 'FAIL_SPECIAL'; exit(1); }
+$sid3 = 'special_' . md5(uniqid('', true));
+$specialData = "quotes'and\"backslash\\";
+$handler->write($sid3, $specialData);
+if ($handler->read($sid3) !== $specialData) { echo 'FAIL_SPECIAL'; exit(1); }
 echo 'SPECIAL_OK';
-")
+PHPCODE
+)
 
 echo "  CRUD output: $CRUD_OUTPUT"
 
@@ -322,16 +352,16 @@ echo ""
 # Test 3.2: App boots with session_handler=database and sessions
 #           are stored in MySQL
 # -------------------------------------------------------------------
-BOOT_OUTPUT=$(run_in_app "
+BOOT_OUTPUT=$(run_in_app <<'PHPCODE'
 // Verify the auth config has session_handler=database
-if (@\$app->_conf['_auth']['session_handler'] === 'database') {
+if (@$app->_conf['_auth']['session_handler'] === 'database') {
     echo 'CONFIG_OK ';
 } else {
     echo 'CONFIG_FAIL ';
 }
 
 // Start session - this should use the database handler
-\$app->startSession();
+$app->startSession();
 if (session_id() !== '') {
     echo 'SESSION_OK ';
 } else {
@@ -339,16 +369,16 @@ if (session_id() !== '') {
 }
 
 // Verify session data persists through database
-\$_SESSION['__serverless_test'] = 'hello_cloud';
+$_SESSION['__serverless_test'] = 'hello_cloud';
 session_write_close();
 
 // Check the database for our session
-\$sid = session_id();
-\$escaped = xf_db_real_escape_string(\$sid, \$app->db());
-\$res = xf_db_query(\"SELECT session_data FROM __xf_sessions WHERE session_id = '\$escaped'\", \$app->db());
-if (\$res && xf_db_num_rows(\$res) > 0) {
-    \$row = xf_db_fetch_assoc(\$res);
-    if (strpos(\$row['session_data'], 'hello_cloud') !== false) {
+$sid = session_id();
+$escaped = xf_db_real_escape_string($sid, $app->db());
+$res = xf_db_query("SELECT session_data FROM __xf_sessions WHERE session_id = '$escaped'", $app->db());
+if ($res && xf_db_num_rows($res) > 0) {
+    $row = xf_db_fetch_assoc($res);
+    if (strpos($row['session_data'], 'hello_cloud') !== false) {
         echo 'DB_SESSION_OK';
     } else {
         echo 'DB_SESSION_DATA_FAIL';
@@ -356,7 +386,8 @@ if (\$res && xf_db_num_rows(\$res) > 0) {
 } else {
     echo 'DB_SESSION_FAIL';
 }
-")
+PHPCODE
+)
 
 echo "  Boot output: $BOOT_OUTPUT"
 
@@ -384,13 +415,14 @@ echo ""
 # Test 3.3: XF_TEMPLATES_C env var overrides the constant
 # -------------------------------------------------------------------
 CUSTOM_TC=$(mktemp -d)
-TC_OUTPUT=$(run_in_app "
-if (strpos(XFTEMPLATES_C, '$CUSTOM_TC') === 0) {
+TC_OUTPUT=$(XF_TEMPLATES_C="$CUSTOM_TC" run_in_app <<'PHPCODE'
+if (strpos(XFTEMPLATES_C, getenv('XF_TEMPLATES_C')) === 0) {
     echo 'ENV_TC_OK';
 } else {
     echo 'ENV_TC_FAIL: ' . XFTEMPLATES_C;
 }
-" "XF_TEMPLATES_C=$CUSTOM_TC")
+PHPCODE
+)
 
 if echo "$TC_OUTPUT" | grep -q "ENV_TC_OK"; then
     pass "XF_TEMPLATES_C env var overrides XFTEMPLATES_C constant"
@@ -408,20 +440,14 @@ cp "$TEST_APP_DIR/index.php" "$RO_APP_DIR/"
 ln -s "$XATAFACE" "$RO_APP_DIR/xataface"
 # Do NOT create templates_c — simulating read-only app directory
 
-RO_OUTPUT=$(php -d include_path=".:$XATAFACE:$RO_APP_DIR" -r "
-\$_SERVER['PHP_SELF'] = '/index.php';
-\$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-\$_SERVER['HTTP_HOST'] = 'localhost';
-\$_SERVER['REQUEST_URI'] = '/index.php';
-\$_SERVER['DOCUMENT_ROOT'] = '$RO_APP_DIR';
-require_once 'xataface/public-api.php';
-\$app = df_init('$RO_APP_DIR/index.php', 'xataface');
-if (defined('XFTEMPLATES_C') && is_writable(rtrim(XFTEMPLATES_C, '/'))) {
+RO_OUTPUT=$(run_in_dir "$RO_APP_DIR" <<'PHPCODE'
+if (defined('XFTEMPLATES_C') && is_writable(rtrim(XFTEMPLATES_C, DIRECTORY_SEPARATOR))) {
     echo 'FALLBACK_OK';
 } else {
-    echo 'FALLBACK_FAIL';
+    echo 'FALLBACK_FAIL: ' . (defined('XFTEMPLATES_C') ? XFTEMPLATES_C : 'undefined');
 }
-" 2>&1)
+PHPCODE
+)
 
 if echo "$RO_OUTPUT" | grep -q "FALLBACK_OK"; then
     pass "App boots without templates_c dir (uses /tmp fallback)"
@@ -435,23 +461,21 @@ echo ""
 # -------------------------------------------------------------------
 # Test 3.5: getClientIp() resolves X-Forwarded-For in real app
 # -------------------------------------------------------------------
-IP_OUTPUT=$(cd "$TEST_APP_DIR" && php -d include_path=".:$XATAFACE:$TEST_APP_DIR" -r "
-\$_SERVER['PHP_SELF'] = '/index.php';
-\$_SERVER['REMOTE_ADDR'] = '10.128.0.5';
-\$_SERVER['HTTP_HOST'] = 'localhost';
-\$_SERVER['REQUEST_URI'] = '/index.php';
-\$_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.42, 10.128.0.5';
-require_once 'xataface/public-api.php';
-\$app = df_init('$TEST_APP_DIR/index.php', 'xataface');
+IP_OUTPUT=$(run_in_app <<'PHPCODE'
+// Override server vars after boot — getClientIp reads them live
+$_SERVER['REMOTE_ADDR'] = '10.128.0.5';
+$_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.42, 10.128.0.5';
 
-// trust_proxy_headers=1 is in conf.ini
-\$ip = \$app->getClientIp();
-if (\$ip === '203.0.113.42') {
+// trust_proxy_headers=1 is in conf.ini at root level
+$ip = $app->getClientIp();
+if ($ip === '203.0.113.42') {
     echo 'PROXY_IP_OK';
 } else {
-    echo 'PROXY_IP_FAIL: ' . \$ip;
+    echo 'PROXY_IP_FAIL: ' . $ip;
+    echo ' trust=' . var_export(@$app->_conf['trust_proxy_headers'], true);
 }
-" 2>&1)
+PHPCODE
+)
 
 if echo "$IP_OUTPUT" | grep -q "PROXY_IP_OK"; then
     pass "getClientIp() resolves X-Forwarded-For in real app"
@@ -481,21 +505,17 @@ NTCONFEOF
 cp "$TEST_APP_DIR/index.php" "$NOTRUST_APP_DIR/"
 ln -s "$XATAFACE" "$NOTRUST_APP_DIR/xataface"
 
-NOTRUST_OUTPUT=$(cd "$NOTRUST_APP_DIR" && php -d include_path=".:$XATAFACE:$NOTRUST_APP_DIR" -r "
-\$_SERVER['PHP_SELF'] = '/index.php';
-\$_SERVER['REMOTE_ADDR'] = '10.128.0.5';
-\$_SERVER['HTTP_HOST'] = 'localhost';
-\$_SERVER['REQUEST_URI'] = '/index.php';
-\$_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.42, 10.128.0.5';
-require_once 'xataface/public-api.php';
-\$app = df_init('$NOTRUST_APP_DIR/index.php', 'xataface');
-\$ip = \$app->getClientIp();
-if (\$ip === '10.128.0.5') {
+NOTRUST_OUTPUT=$(run_in_dir "$NOTRUST_APP_DIR" <<'PHPCODE'
+$_SERVER['REMOTE_ADDR'] = '10.128.0.5';
+$_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.42, 10.128.0.5';
+$ip = $app->getClientIp();
+if ($ip === '10.128.0.5') {
     echo 'NOTRUST_OK';
 } else {
-    echo 'NOTRUST_FAIL: ' . \$ip;
+    echo 'NOTRUST_FAIL: ' . $ip;
 }
-" 2>&1)
+PHPCODE
+)
 
 if echo "$NOTRUST_OUTPUT" | grep -q "NOTRUST_OK"; then
     pass "getClientIp() ignores X-Forwarded-For without trust_proxy_headers"
@@ -507,16 +527,17 @@ rm -rf "$NOTRUST_APP_DIR"
 # -------------------------------------------------------------------
 # Test 3.7: getClientIp() handles IPv6 in X-Forwarded-For
 # -------------------------------------------------------------------
-IPV6_OUTPUT=$(run_in_app "
-\$_SERVER['REMOTE_ADDR'] = '::1';
-\$_SERVER['HTTP_X_FORWARDED_FOR'] = '2001:db8::1, ::1';
-\$ip = \$app->getClientIp();
-if (\$ip === '2001:db8::1') {
+IPV6_OUTPUT=$(run_in_app <<'PHPCODE'
+$_SERVER['REMOTE_ADDR'] = '::1';
+$_SERVER['HTTP_X_FORWARDED_FOR'] = '2001:db8::1, ::1';
+$ip = $app->getClientIp();
+if ($ip === '2001:db8::1') {
     echo 'IPV6_OK';
 } else {
-    echo 'IPV6_FAIL: ' . \$ip;
+    echo 'IPV6_FAIL: ' . $ip;
 }
-")
+PHPCODE
+)
 
 if echo "$IPV6_OUTPUT" | grep -q "IPV6_OK"; then
     pass "getClientIp() handles IPv6 addresses"
@@ -527,17 +548,18 @@ fi
 # -------------------------------------------------------------------
 # Test 3.8: getClientIp() rejects invalid IPs in X-Forwarded-For
 # -------------------------------------------------------------------
-INVALID_OUTPUT=$(run_in_app "
-\$_SERVER['REMOTE_ADDR'] = '10.128.0.1';
-\$_SERVER['HTTP_X_FORWARDED_FOR'] = 'not-a-valid-ip';
-unset(\$_SERVER['HTTP_X_REAL_IP']);
-\$ip = \$app->getClientIp();
-if (\$ip === '10.128.0.1') {
+INVALID_OUTPUT=$(run_in_app <<'PHPCODE'
+$_SERVER['REMOTE_ADDR'] = '10.128.0.1';
+$_SERVER['HTTP_X_FORWARDED_FOR'] = 'not-a-valid-ip';
+unset($_SERVER['HTTP_X_REAL_IP']);
+$ip = $app->getClientIp();
+if ($ip === '10.128.0.1') {
     echo 'INVALID_REJECT_OK';
 } else {
-    echo 'INVALID_REJECT_FAIL: ' . \$ip;
+    echo 'INVALID_REJECT_FAIL: ' . $ip;
 }
-")
+PHPCODE
+)
 
 if echo "$INVALID_OUTPUT" | grep -q "INVALID_REJECT_OK"; then
     pass "getClientIp() rejects invalid IPs, falls back to REMOTE_ADDR"
@@ -548,17 +570,18 @@ fi
 # -------------------------------------------------------------------
 # Test 3.9: getClientIp() falls back to X-Real-IP
 # -------------------------------------------------------------------
-REALIP_OUTPUT=$(run_in_app "
-\$_SERVER['REMOTE_ADDR'] = '10.128.0.1';
-unset(\$_SERVER['HTTP_X_FORWARDED_FOR']);
-\$_SERVER['HTTP_X_REAL_IP'] = '198.51.100.25';
-\$ip = \$app->getClientIp();
-if (\$ip === '198.51.100.25') {
+REALIP_OUTPUT=$(run_in_app <<'PHPCODE'
+$_SERVER['REMOTE_ADDR'] = '10.128.0.1';
+unset($_SERVER['HTTP_X_FORWARDED_FOR']);
+$_SERVER['HTTP_X_REAL_IP'] = '198.51.100.25';
+$ip = $app->getClientIp();
+if ($ip === '198.51.100.25') {
     echo 'REALIP_OK';
 } else {
-    echo 'REALIP_FAIL: ' . \$ip;
+    echo 'REALIP_FAIL: ' . $ip;
 }
-")
+PHPCODE
+)
 
 if echo "$REALIP_OUTPUT" | grep -q "REALIP_OK"; then
     pass "getClientIp() falls back to X-Real-IP header"

@@ -109,7 +109,10 @@ if (!defined('XFTEMPLATES_C')) {
                 $templates_c = dirname($entryScript) . DIRECTORY_SEPARATOR . 'templates_c';
                 if (!is_dir($templates_c)) {
                     $templates_c = $tmpDir . $templates_c;
-                    if (mkdir($templates_c, 0777, true)) {
+                    if (!is_dir($templates_c)) {
+                        @mkdir($templates_c, 0777, true);
+                    }
+                    if (is_dir($templates_c)) {
                         define('XFTEMPLATES_C', $templates_c.DIRECTORY_SEPARATOR);
                     } else {
                         define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
