@@ -7,6 +7,7 @@ $tests = array(
     'HistoryToolTest',
     'PHP8CompatibilityUnitTest',
     'PHP8CompatibilityIntegrationTest',
+    'ServerlessCompatibilityTest',
 	//'ServicesTest',
 	//'CLIServerTest'
 );
