@@ -87,28 +87,45 @@ if ( !defined('XATAFACE_INI_EXTENSION') ){
 	define('XATAFACE_INI_EXTENSION', '');
 }
 if (!defined('XFTEMPLATES_C')) {
-    $tmpDir = sys_get_temp_dir();
-    if ($tmpDir) {
-        $included_files = get_included_files();
-        if (!empty($included_files)) {
-            $entryScript = $included_files[0];
-            
-            $templates_c = dirname($entryScript) . DIRECTORY_SEPARATOR . 'templates_c';
-            if (!is_dir($templates_c)) {
-                $templates_c = $tmpDir . $templates_c;
-                if (mkdir($templates_c, 0777, true)) {
-                    define('XFTEMPLATES_C', $templates_c.DIRECTORY_SEPARATOR);
+    // Allow overriding the templates_c directory via environment variable.
+    // This is essential for serverless environments (Cloud Run, Lambda)
+    // where the application directory is read-only.
+    $envTemplatesC = getenv('XF_TEMPLATES_C');
+    if ($envTemplatesC) {
+        if (substr($envTemplatesC, -1) !== DIRECTORY_SEPARATOR) {
+            $envTemplatesC .= DIRECTORY_SEPARATOR;
+        }
+        if (!is_dir($envTemplatesC)) {
+            @mkdir($envTemplatesC, 0777, true);
+        }
+        define('XFTEMPLATES_C', $envTemplatesC);
+    } else {
+        $tmpDir = sys_get_temp_dir();
+        if ($tmpDir) {
+            $included_files = get_included_files();
+            if (!empty($included_files)) {
+                $entryScript = $included_files[0];
+
+                $templates_c = dirname($entryScript) . DIRECTORY_SEPARATOR . 'templates_c';
+                if (!is_dir($templates_c)) {
+                    $templates_c = $tmpDir . $templates_c;
+                    if (!is_dir($templates_c)) {
+                        @mkdir($templates_c, 0777, true);
+                    }
+                    if (is_dir($templates_c)) {
+                        define('XFTEMPLATES_C', $templates_c.DIRECTORY_SEPARATOR);
+                    } else {
+                        define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
+                    }
                 } else {
-                    define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
+                    define('XFTEMPLATES_C', $templates_c.DIRECTORY_SEPARATOR);
                 }
             } else {
-                define('XFTEMPLATES_C', $templates_c.DIRECTORY_SEPARATOR);
-            }    
+                define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
+            }
         } else {
             define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
         }
-    } else {
-        define('XFTEMPLATES_C', XFAPPROOT.'templates_c'.DIRECTORY_SEPARATOR);
     }
 }
 

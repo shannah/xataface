@@ -1,0 +1,57 @@
+name: Serverless Compatibility Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: read
+
+jobs:
+  serverless-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: xf_serverless_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mysqli, pdo_mysql, intl, xml, zip
+        coverage: none
+
+    - name: Wait for MySQL
+      run: |
+        for i in $(seq 1 30); do
+          if mysqladmin ping -h 127.0.0.1 -uroot -proot --silent 2>/dev/null; then
+            echo "MySQL is ready"
+            break
+          fi
+          echo "Waiting for MySQL... ($i/30)"
+          sleep 2
+        done
+
+    - name: Run serverless compatibility tests
+      env:
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_USER: root
+        MYSQL_PASSWORD: root
+        MYSQL_PORT: 3306
+      run: bash tests/serverless_test.sh

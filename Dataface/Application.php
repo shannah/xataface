@@ -2719,7 +2719,14 @@ END
 				    //   to our custom timeout
 				    ini_set('session.gc_maxlifetime', $garbage_timeout);
 				}
-				if ( isset($conf['session_timeout']) and ini_get('session.save_handler') == 'files' ){
+				// Check if a database-backed session handler is configured.
+				// This is required for serverless environments (Cloud Run, Lambda)
+				// where the filesystem is ephemeral and not shared across instances.
+				if ( @$conf['session_handler'] === 'database' ) {
+					require_once dirname(__FILE__) . '/DatabaseSessionHandler.php';
+					$handler = new Dataface_DatabaseSessionHandler($this->_db);
+					session_set_save_handler($handler, true);
+				} else if ( isset($conf['session_timeout']) and ini_get('session.save_handler') == 'files' ){
 					// we need a distinct directory for the session files,
 					//   otherwise another garbage collector with a lower gc_maxlifetime
 					//   will clean our files aswell - but in an own directory, we only
@@ -3813,22 +3820,23 @@ END
 			$this->startSession();
 		}
 		if ( isset($this->_conf['disable_session_ip_check']) and !@$this->_conf['disable_session_ip_check'] ){
+			$clientIp = $this->getClientIp();
 			if ( !@$_SESSION['XATAFACE_REMOTE_ADDR'] ){
-				$_SESSION['XATAFACE_REMOTE_ADDR'] = df_IPv4To6($_SERVER['REMOTE_ADDR']);
+				$_SESSION['XATAFACE_REMOTE_ADDR'] = df_IPv4To6($clientIp);
 			}
 			$ipAddressError = null;
-			if ( df_IPv4To6($_SESSION['XATAFACE_REMOTE_ADDR']) != df_IPv4To6($_SERVER['REMOTE_ADDR']) ){
+			if ( df_IPv4To6($_SESSION['XATAFACE_REMOTE_ADDR']) != df_IPv4To6($clientIp) ){
 				$msg = sprintf(
 					"Session address does not match the remote address.  Possible hacking attempt.  Session address was '%s', User address was '%s'",
 					df_escape(df_IPv4To6($_SESSION['XATAFACE_REMOTE_ADDR'])),
-					df_escape(df_IPv4To6($_SERVER['REMOTE_ADDR']))
+					df_escape(df_IPv4To6($clientIp))
 				);
 				error_log($msg);
 				//die('Your IP address doesn\'t match the session address.  To continue, please clear your cookies or restart your browser and try again.');
 				session_destroy();
 				$this->startSession();
 				if ( !@$_SESSION['XATAFACE_REMOTE_ADDR'] ){
-					$_SESSION['XATAFACE_REMOTE_ADDR'] = df_IPv4To6($_SERVER['REMOTE_ADDR']);
+					$_SESSION['XATAFACE_REMOTE_ADDR'] = df_IPv4To6($clientIp);
 				}
 
 			}
@@ -4643,6 +4651,40 @@ END
 		echo '<ul class="debug-info"><li>
 		'; echo implode('</li><li>', $this->debugLog);
 		echo '</li></ul>';
+	}
+
+	/**
+	 * Returns the client's IP address, respecting X-Forwarded-For when
+	 * the application is behind a reverse proxy or load balancer.
+	 *
+	 * Enable trust_proxy_headers in conf.ini to use X-Forwarded-For:
+	 *   trust_proxy_headers=1
+	 *
+	 * This is necessary for serverless environments (Cloud Run, Lambda)
+	 * where REMOTE_ADDR is always the load balancer's IP.
+	 *
+	 * @return string The client IP address.
+	 * @since 3.0
+	 */
+	function getClientIp() {
+		if ( @$this->_conf['trust_proxy_headers'] ) {
+			if ( !empty($_SERVER['HTTP_X_FORWARDED_FOR']) ) {
+				// X-Forwarded-For may contain a chain: "client, proxy1, proxy2"
+				// The leftmost entry is the original client IP.
+				$ips = array_map('trim', explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']));
+				$clientIp = $ips[0];
+				if ( filter_var($clientIp, FILTER_VALIDATE_IP) ) {
+					return $clientIp;
+				}
+			}
+			if ( !empty($_SERVER['HTTP_X_REAL_IP']) ) {
+				$clientIp = trim($_SERVER['HTTP_X_REAL_IP']);
+				if ( filter_var($clientIp, FILTER_VALIDATE_IP) ) {
+					return $clientIp;
+				}
+			}
+		}
+		return @$_SERVER['REMOTE_ADDR'] ?: '0.0.0.0';
 	}
 
 	/**
