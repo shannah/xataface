@@ -179,8 +179,7 @@ class HTML_QuickForm_file extends HTML_QuickForm_input
                 return $this->onQuickFormEvent('updateValue', null, $caller);
                 break;
             case 'createElement':
-                $className = get_class($this);
-                $this->$className($arg[0], $arg[1], $arg[2]);
+                $this->__construct($arg[0], $arg[1], $arg[2]);
                 break;
         }
         return true;
