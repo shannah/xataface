@@ -90,6 +90,7 @@ class Dataface_Relationship {
 	
 	var $addNew;
 	var $addExisting;
+	var $domainTable;
 	
 	
 	

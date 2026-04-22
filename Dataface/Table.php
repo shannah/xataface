@@ -3062,7 +3062,7 @@ class Dataface_Table
         return $this->getPermissions($params);
     }
 
-    function getGroupRecordRoles(Dataface_Record $record = null)
+    function getGroupRecordRoles(?Dataface_Record $record = null)
     {
         if (!isset($record)) {
             return null;
