@@ -747,7 +747,7 @@ class Dataface_IO {
 	}
 
 
-	static function touchRecord(Dataface_Record $record=null){
+	static function touchRecord(?Dataface_Record $record=null){
 		if ( !isset($record) ) return;
 		$id = $record->getId();
 		$hash = md5($id);

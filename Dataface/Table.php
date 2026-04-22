@@ -3062,7 +3062,7 @@ class Dataface_Table
         return $this->getPermissions($params);
     }
 
-    function getGroupRecordRoles(Dataface_Record $record = null)
+    function getGroupRecordRoles(?Dataface_Record $record = null)
     {
         if (!isset($record)) {
             return null;
@@ -5527,6 +5527,9 @@ class Dataface_Table
                     $amount = floatval($out);
                     if (class_exists('NumberFormatter')) {
                         $locale = isset($fieldLocale) ? $fieldLocale : (setlocale(LC_MONETARY, '0') ?: 'en_US');
+                        if ($locale === 'C' || $locale === 'POSIX') {
+                            $locale = 'en_US';
+                        }
                         $nf = new NumberFormatter($locale, NumberFormatter::CURRENCY);
                         $out = $nf->formatCurrency($amount, $nf->getTextAttribute(NumberFormatter::CURRENCY_CODE) ?: 'USD');
                     } else {

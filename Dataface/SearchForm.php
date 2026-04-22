@@ -95,7 +95,7 @@ class Dataface_SearchForm extends HTML_QuickForm {
 			$fields = array_keys($this->_table->fields(false,true));
 			
 			foreach ($this->_table->relationships() as $relationship){
-				if ( @$relationship->_schema['visibility'] and @$relationship->_schema['visibility']['find'] == 'hidden' ){
+				if ( @$relationship->_schema['visibility'] and (is_array(@$relationship->_schema['visibility']) ? @$relationship->_schema['visibility']['find'] == 'hidden' : @$relationship->_schema['visibility'] == 'hidden') ){
 					continue;
 				}
 				$rfields = $relationship->fields(true);
@@ -165,7 +165,7 @@ class Dataface_SearchForm extends HTML_QuickForm {
 		foreach ( $this->_fields as $name => $field ){
 			$table =& $this->_table;
 			if ( $this->_table->isPassword($name) ) continue;
-			if ( @$field['visibility']['find'] == 'hidden') continue;
+			if ( is_array(@$field['visibility']) ? @$field['visibility']['find'] == 'hidden' : @$field['visibility'] == 'hidden') continue;
 			// add the field to the form
 			$widget = $field['widget'];
 			if ( isset($widget['find']) ){

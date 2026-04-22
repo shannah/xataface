@@ -4947,7 +4947,7 @@ class Dataface_Record {
 	    if (@$field['image'] or @$field['logo']) {
 	        return true;
 	    }
-		return preg_match('/^image/', $this->getMimetype($fieldname,$index,$where,$sort));
+		return preg_match('/^image/', $this->getMimetype($fieldname,$index,$where,$sort) ?? '');
 
 	}
     

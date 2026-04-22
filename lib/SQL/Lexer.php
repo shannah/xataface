@@ -258,7 +258,7 @@ function nextToken()
                     break;
                 }
 
-                if (ctype_alpha(ord($c))) { // keyword or ident
+                if (ctype_alpha($c ?? '')) { // keyword or ident
                     $state = 1;
                     $quote = '';
                     break;
@@ -270,7 +270,7 @@ function nextToken()
                 	break;
                 }
 
-                if (ctype_digit(ord($c))) { // real or int number
+                if (ctype_digit($c ?? '')) { // real or int number
                     $state = 5;
                     break;
                 }
@@ -286,7 +286,7 @@ function nextToken()
                             $state = 999;
                             break;
                         }
-                    } else if (ctype_digit(ord($t))) { // real number
+                    } else if (ctype_digit($t ?? '')) { // real number
                         $this->unget();
                         $state = 7;
                         break;
@@ -343,7 +343,7 @@ function nextToken()
                		} 
                	}
 
-                if (ctype_alnum(ord($c)) || ($c == '_') || ($c == '.') || ($quote == '`' and $c != '`') ) {
+                if (ctype_alnum($c ?? '') || ($c == '_') || ($c == '.') || ($quote == '`' and $c != '`') ) {
                     $state = 1;
                     break;
                 }
@@ -384,7 +384,7 @@ function nextToken()
             // {{{ State 5: Incomplete real or int number
             case 5:
                 $c = $this->get();
-                if (ctype_digit(ord($c))) {
+                if (ctype_digit($c ?? '')) {
                     $state = 5;
                     break;
                 } else if ($c == '.') {
@@ -395,7 +395,7 @@ function nextToken()
                         $state = 7;
                         break;
                     }
-                } else if(ctype_alpha(ord($c))) { // number must end with non-alpha character
+                } else if(ctype_alpha($c ?? '')) { // number must end with non-alpha character
                     $state = 999;
                     break;
                 } else {
@@ -428,7 +428,7 @@ function nextToken()
                 }
                 /* Analogy End   */
 
-                if (ctype_digit(ord($c))) {
+                if (ctype_digit($c ?? '')) {
                     $state = 7;
                     break;
                 }
@@ -556,7 +556,7 @@ function nextToken()
             // {{{ state 16: Exponent Value-first digit in Scientific Notation
             case 16:
                     $c = $this->get();
-                    if (ctype_digit(ord($c))) {
+                    if (ctype_digit($c ?? '')) {
                             $state = 17;
                             break;
                     }
@@ -567,7 +567,7 @@ function nextToken()
             // {{{ State 17: Exponent Value in Scientific Notation
             case 17:
                     $c = $this->get();
-                    if (ctype_digit(ord($c))) {
+                    if (ctype_digit($c ?? '')) {
                             $state = 17;
                             break;
                     }
@@ -578,7 +578,7 @@ function nextToken()
             // {{{ State 18 : Incomplete System Variable
             case 18:
                 $c = $this->get();
-                if (ctype_alnum(ord($c)) || $c == '_') {
+                if (ctype_alnum($c ?? '') || $c == '_') {
                     $state = 18;
                     break;
                 }

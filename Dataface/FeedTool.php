@@ -202,7 +202,7 @@ class Dataface_FeedTool {
 			$out .= '<tbody>';
 			foreach ( $record->_table->fields() as $field){
 				if ( !$record->checkPermission('view') ) continue;
-				if ( @$field['visibility']['feed'] == 'hidden' ) continue;
+				if ( is_array(@$field['visibility']) ? @$field['visibility']['feed'] == 'hidden' : @$field['visibility'] == 'hidden' ) continue;
 				if ( $disp = @$record->val($field['name']) ){
 					$out .= '<tr><td valign="top">'.df_escape($field['widget']['label']).'</td>';
 					$out .= '<td valign="top">'.@$record->htmlValue($field['name']).'</td></tr>';

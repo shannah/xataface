@@ -178,7 +178,6 @@ class Dataface_RelatedList {
         $query = & $app->getQuery();
         
  	    if ($all) {
-            
             ob_start();
             
             $at = Dataface_ActionTool::getInstance();
@@ -186,7 +185,7 @@ class Dataface_RelatedList {
                 'category'=>'related_list_settings',
                 'table' => $this->_tablename,
                 'relationship' => $this->_relationship_name,
-                'record' => $rthis->_record
+                'record' => $this->_record
             ]);
 
             if (@$actions['related_list_filter']) {
@@ -209,9 +208,9 @@ class Dataface_RelatedList {
                     $actions['related_list_filter']['label'] .= ' • '.$filterCount;
                 }
             }
-        
-            
-        
+
+            $cls = (@$app->prefs['use_xataface2_result_filters'] ? 'mobile' : '');
+
 		    echo '<div class="mobile-list-settings-wrapper '.$cls.'">';
 	
             if ( count($actions)>0){
@@ -454,7 +453,7 @@ class Dataface_RelatedList {
                                 $field =&  $this->_relationship->getField($key);
                                 if (isset($this->_relationship->_schema['visibility'][$key]) and $this->_relationship->_schema['visibility'][$key] == 'hidden')
                                     continue;
-                                if ($field['visibility']['list'] != 'visible')
+                                if (is_array($field['visibility']) ? $field['visibility']['list'] != 'visible' : $field['visibility'] != 'visible')
                                     continue;
                                 if ($s->isBlob($fullpath) or $s->isPassword($fullpath))
                                     continue;

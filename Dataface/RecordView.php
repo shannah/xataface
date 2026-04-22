@@ -59,6 +59,9 @@ class Dataface_RecordView {
 			foreach ($delegate_fields as $dfield){
 				$dfieldname = substr($dfield,7);
 				$fields[$dfieldname] = $this->record->_table->_newSchema('varchar(32)', $dfieldname);
+				if (!is_array($fields[$dfieldname]['visibility'])) {
+					$fields[$dfieldname]['visibility'] = ['list' => 'visible', 'browse' => 'visible', 'find' => 'visible'];
+				}
 				$fields[$dfieldname]['visibility']['browse'] = 'hidden';
 				if ( isset($this->record->_table->_atts[$dfieldname]) and 
 					 is_array($this->record->_table->_atts[$dfieldname]) ){
@@ -137,7 +140,7 @@ class Dataface_RecordView {
 					$this->showLogo = true;
 				}
 			}
-			if ( $field['visibility']['browse'] == 'hidden' ) continue;
+			if ( is_array($field['visibility']) ? $field['visibility']['browse'] == 'hidden' : $field['visibility'] == 'hidden' ) continue;
 			
 			if ( isset($field['viewgroup']) ){
 				$group = $field['viewgroup'];
