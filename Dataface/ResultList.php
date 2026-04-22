@@ -70,7 +70,7 @@ import(XFROOT.'Dataface/QueryTool.php');
  			
  			foreach ($fieldnames as $field){
  				if ( @$fields[$field]['filter'] ) $this->_filterCols[] = $field;
- 				if ( $fields[$field]['visibility']['list'] != 'visible') continue;
+ 				if ( is_array($fields[$field]['visibility']) ? $fields[$field]['visibility']['list'] != 'visible' : $fields[$field]['visibility'] != 'visible') continue;
  					if ( $this->_table->isPassword($field) ) continue;
  				if ( isset( $fields[$field] ) and !preg_match('/blob/i', $fields[$field]['Type']) ){
  					$this->_columns[] = $field;

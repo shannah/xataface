@@ -63,13 +63,14 @@ class Dataface_SummaryList {
 		$count= 0;
 		foreach ($record->_table->fields(false,true) as $field){
 			//print_r($field);
+			$vis = is_array(@$field['visibility']) ? $field['visibility'] : [];
 			if ( ( $record->_table->isContainer($field['name']) or
 					$record->_table->isBlob($field['name']) or
 					$field['widget']['type'] == 'htmlarea' or
 					$record->_table->isPassword($field['name']) or
-					$record->_table->isMetaField($field['name'])) and (@$field['visibility']['summary'] != 'visible')) continue;
-			if ( @$field['visibility']['summary'] == 'hidden' ) continue;
-			if ( @$field['visibility']['list'] == 'hidden' and @$field['visibility']['summary'] != 'visible' ) continue;
+					$record->_table->isMetaField($field['name'])) and (@$vis['summary'] != 'visible')) continue;
+			if ( @$vis['summary'] == 'hidden' ) continue;
+			if ( @$vis['list'] == 'hidden' and @$vis['summary'] != 'visible' ) continue;
 			//if ( (@$field['visibility']['summary'] == 'visible') or !isset($field['visibility']['summary']) ){
 				$count++;
 				$cols[] = $field['name'];
