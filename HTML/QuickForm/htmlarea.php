@@ -30,7 +30,7 @@ class HTML_QuickForm_htmlarea extends HTML_QuickForm_textarea {
 	var $_basePath = '.';
 	
 	// added to support multiple types of editors
-	var $editorName = 'nicedit';
+	var $editorName = 'FCKEditor';
 	var $tinyMCE_atts = array(
 		'theme','plugins','language','ask','docs_language','debug','focus_alert','directionality','auto_resize','browsers','dialog_type','accessibility_warnings','accessibility_focus','event_elements','table_inline_editing','object_resizing','custom_shortcuts','convert_urls','relative_urls','remove_script_host','document_base_url','content_css','popups_css','editor_css','width','height','visual','visual_table_class','cleanup','valid_elements','extended_valid_elements','invalid_elements','verify_css_classes','verify_html','preformatted','encoding','cleanup_on_startup','fix_content_duplication','inline_styles','convert_newlines_to_brs','force_br_newlines','force_p_newlines','entities','entity_encoding','remove_linebreaks','convert_fonts_to_spans','font_size_classes','font_size_style_values','merge_styles_invalid_parents','force_hex_style_colors','apply_source_formatting','trim_span_elements','doctype','fix_list_elements','fix_table_elements','theme_advanced_toolbar_location','theme_advanced_resizing','theme_advanced_buttons1_add_before','theme_advanced_buttons1_add','theme_advanced_buttons2_add','theme_advanced_buttons2_add_before','theme_advanced_buttons3_add_before','theme_advanced_buttons3_add','theme_advanced_toolbar_location','theme_advanced_toolbar_align','theme_advanced_path_location'
 		);
