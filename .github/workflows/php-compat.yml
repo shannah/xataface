@@ -113,13 +113,9 @@ jobs:
         continue-on-error: true
         run: vendor/bin/phpstan analyse --error-format=github --memory-limit=1G
 
-  runtime-php84:
-    name: Runtime tests on PHP 8.4 (Docker)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run docker-based PHP 8.4 test suite
-        env:
-          PHP_VERSION: '8.4'
-        run: bash tests/docker_php8_test.sh
+  # Runtime coverage on PHP 8.4 is provided by the matrix in tests.yml, which
+  # runs `composer test` across PHP 7.4 / 8.0 / 8.2 / 8.4. That path exercises
+  # PHP8CompatibilityUnitTest and PHP8CompatibilityIntegrationTest via
+  # tests/runTests.php, so we don't duplicate it here. The standalone Docker
+  # harness `tests/docker_php8_test.sh` is intended for local development
+  # (driven by the /test-php8 skill) and is not wired into CI.
