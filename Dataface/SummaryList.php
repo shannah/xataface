@@ -1,4 +1,5 @@
 <?php
+#[AllowDynamicProperties]
 class Dataface_SummaryList {
 	var $records;
 	var $table;

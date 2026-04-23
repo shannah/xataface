@@ -108,8 +108,8 @@ class dataface_actions_commit {
 		header('Content-type: text/json; charset="'.$app->_conf['oe'].'"');
 		
 		$out = array(
-			'code' => ($numFailures == 0 and $numSuccesses > 0) ? 200 : 
-				($numSuccesses > 0) ? 201 : 202,
+			'code' => ($numFailures == 0 and $numSuccesses > 0) ? 200 :
+				(($numSuccesses > 0) ? 201 : 202),
 			'message' => $numSuccesses . ' successes. '. $numFailures.' failures.',
 			'numSuccesses' => $numSuccesses,
 			'numFailures' => $numFailures,

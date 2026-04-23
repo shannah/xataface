@@ -14,8 +14,20 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['7.4', '8.0', '8.2', '8.4']
+
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    - name: Set up PHP ${{ matrix.php-version }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mysqli, pdo_mysql, intl, xml, zip, mbstring
+        coverage: none
+        tools: composer:v2
     - uses: shogo82148/actions-setup-mysql@v1
       with:
         mysql-version: '8.0'

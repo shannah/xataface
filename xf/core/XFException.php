@@ -8,7 +8,7 @@ namespace xf\core;
 class XFException extends \Exception {
     private $clientErrorCode;
     private $clientErrorMessage;
-    public function __construct($message, $code, \Exception $cause = null) {
+    public function __construct($message, $code, ?\Exception $cause = null) {
         if (!isset($cause)) {
             $cause = new \Exception($message, $code);
         }

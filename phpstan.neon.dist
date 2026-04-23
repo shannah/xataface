@@ -1,0 +1,24 @@
+parameters:
+    level: 0
+    phpVersion: 80400
+    paths:
+        - Dataface
+        - xf
+        - actions
+        - modules
+    excludePaths:
+        - */PEAR/*
+        - lib/*
+        - lib/Smarty/*
+        - lib/htmLawed.php
+        - lib/Text/generate*
+        - modules/g2/inc/simple_html_dom.php
+        - lib/mysql_functions.php
+        - xf/db/drivers/mysql.php
+        - tests/*
+        - install/*
+        - tools/*
+        - vendor/*
+        - '*.ini.php'
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false

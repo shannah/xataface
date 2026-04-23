@@ -1,0 +1,125 @@
+name: PHP Compatibility
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    name: Syntax (php -l) on PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.0', '8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          tools: none
+
+      - name: Lint all PHP files (excluding .ini.php data files)
+        run: |
+          set -eo pipefail
+          # Lint Xataface-authored PHP across the tree. *.ini.php files are
+          # INI data files with a `;<?php exit;` magic header and are not
+          # valid PHP source, so they're excluded.
+          fail=0
+          while IFS= read -r -d '' f; do
+            if ! out=$(php -l "$f" 2>&1); then
+              echo "::error file=$f::$(echo "$out" | grep -E 'error' | head -1)"
+              fail=1
+            fi
+          done < <(find Dataface xf actions modules \
+                     -name '*.php' ! -name '*.ini.php' -print0)
+
+          # Top-level entry-point files
+          for f in public-api.php dataface-public-api.php dataface_info.php \
+                   index.php init.php setup.php config.inc.php css.php js.php; do
+            if [ -f "$f" ]; then
+              if ! out=$(php -l "$f" 2>&1); then
+                echo "::error file=$f::$(echo "$out" | grep -E 'error' | head -1)"
+                fail=1
+              fi
+            fi
+          done
+
+          exit $fail
+
+  phpcompatibility:
+    name: PHPCompatibility (PHP 8.4)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.json') }}
+
+      - name: Install composer dev dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHPCompatibility scan
+        # Currently informational while the legacy baseline is being established.
+        # Flip `continue-on-error` to false (or add a phpcs baseline file) to
+        # gate merges on PHPCompatibility findings.
+        continue-on-error: true
+        run: vendor/bin/phpcs --report=full --report-summary
+
+  phpstan:
+    name: PHPStan (phpVersion 8.4, level 0)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.json') }}
+
+      - name: Install composer dev dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHPStan
+        # Informational while the legacy baseline is being established.
+        # Run `vendor/bin/phpstan analyse --generate-baseline` locally and
+        # commit `phpstan-baseline.neon`, then flip `continue-on-error` off.
+        continue-on-error: true
+        run: vendor/bin/phpstan analyse --error-format=github --memory-limit=1G
+
+  runtime-php84:
+    name: Runtime tests on PHP 8.4 (Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run docker-based PHP 8.4 test suite
+        env:
+          PHP_VERSION: '8.4'
+        run: bash tests/docker_php8_test.sh

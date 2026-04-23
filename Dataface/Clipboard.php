@@ -149,7 +149,7 @@ class Dataface_Clipboard {
 			VALUES
 			('".addslashes($this->id)."',
 			0,'".addslashes(implode("\n",$recordids))."', NOW()
-			)", $app->db();
+			)", $app->db());
 		if ( !$res ){
 			return PEAR::raiseError(xf_db_error($app->db()));
 		}
@@ -175,7 +175,7 @@ class Dataface_Clipboard {
 			VALUES
 			('".addslashes($this->id)."',
 			1,'".addslashes(implode("\n",$recordids))."', NOW()
-			)", $app->db();
+			)", $app->db());
 		if ( !$res ){
 			return PEAR::raiseError(xf_db_error($app->db()));
 		}

@@ -5,6 +5,12 @@
   "require": {
     "php": ">=7.0.0"
   },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.10",
+    "phpcompatibility/php-compatibility": "^9.3",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpstan/phpstan": "^1.12"
+  },
   "license": "GPL-2.0-or-later",
   "authors": [
     {
@@ -13,7 +19,15 @@
     }
   ],
   "minimum-stability": "dev",
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
   "scripts": {
-    "test": "bash ./tests/runtests_composer.sh"
+    "test": "bash ./tests/runtests_composer.sh",
+    "lint:syntax": "find Dataface xf actions modules -name '*.php' ! -name '*.ini.php' -print0 | xargs -0 -n1 -P4 php -l",
+    "lint:compat": "phpcs",
+    "lint:phpstan": "phpstan analyse --memory-limit=1G"
   }
 }

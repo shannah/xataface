@@ -43,6 +43,7 @@ $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['htmlarea'] = array('HTML/QuickForm/htm
 /**
  * @ingroup formsAPI
  */
+#[AllowDynamicProperties]
 class Dataface_SearchForm extends HTML_QuickForm {
 
 	var $tablename;

@@ -33,6 +33,7 @@ import( XFROOT.'Dataface/DB.php');
 
 $GLOBALS['Dataface_QueryTool_limit'] = 30;
 $GLOBALS['Dataface_QueryTool_skip'] = 0;
+#[AllowDynamicProperties]
 class Dataface_QueryTool {
     /**
      * @var Dataface_QueryTool
@@ -664,6 +665,7 @@ class Dataface_QueryTool {
 }
 
 
+#[AllowDynamicProperties]
 class Dataface_QueryTool_Null extends Dataface_QueryTool {
 
 	function &staticCache(){
