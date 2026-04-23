@@ -33,6 +33,7 @@ import(XFROOT.'Dataface/Table.php');
 import(XFROOT.'Dataface/QueryBuilder.php');
 import(XFROOT.'Dataface/LinkTool.php');
 
+#[AllowDynamicProperties]
 class Dataface_RelatedList {
 
     var $_tablename;

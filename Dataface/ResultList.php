@@ -35,6 +35,7 @@ import(XFROOT.'Dataface/QueryTool.php');
 /**
  *  Handles the creation and display of a result list from the Database.
  **/
+ #[AllowDynamicProperties]
  class Dataface_ResultList {
  	
  	var $_tablename;

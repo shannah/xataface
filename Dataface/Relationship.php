@@ -33,8 +33,9 @@
  * Encapsulates a relationship between two tables.
  *
  */
- 
- 
+
+
+#[AllowDynamicProperties]
 class Dataface_Relationship {
 
 	/*
@@ -2153,6 +2154,7 @@ class Dataface_Relationship {
  * that haven't been filled in.  We use a class so that we don't get it confused
  * with another valid scalar value.
  */
+#[AllowDynamicProperties]
 class Dataface_Relationship_ForeignKey {
 	var $fields = array();
 	var $relationship = null;

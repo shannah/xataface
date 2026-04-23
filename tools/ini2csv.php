@@ -21,7 +21,7 @@ function is_utf8($str) {
 }
 
 function encode_if_necessary($str){
-	if ( !is_utf8($str) ) return utf8_encode($str);
+	if ( !is_utf8($str) ) return mb_convert_encoding($str, 'UTF-8', 'ISO-8859-1');
 	else return $str;
 }
 

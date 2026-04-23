@@ -132,6 +132,7 @@ define('DATAFACE_STRICT_PERMISSIONS', 100);
  * @author Steve Hannah (shannah@sfu.ca)
  * @since 0.6
  */
+#[AllowDynamicProperties]
 class Dataface_Application {
 
     public static $DENY_HTACCESS_CONTENTS = <<<END

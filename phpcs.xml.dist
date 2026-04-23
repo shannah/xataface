@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<ruleset name="Xataface PHP 8.4 Compatibility">
+    <description>
+        Cross-version PHP compatibility checks for Xataface, targeting PHP 8.4.
+        Run with `composer lint:compat` or `vendor/bin/phpcs`.
+    </description>
+
+    <config name="testVersion" value="8.4-"/>
+    <rule ref="PHPCompatibility"/>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg name="parallel" value="4"/>
+    <arg value="ps"/>
+
+    <file>Dataface</file>
+    <file>xf</file>
+    <file>actions</file>
+    <file>modules</file>
+    <file>public-api.php</file>
+    <file>dataface-public-api.php</file>
+    <file>dataface_info.php</file>
+    <file>index.php</file>
+    <file>init.php</file>
+    <file>setup.php</file>
+    <file>config.inc.php</file>
+    <file>css.php</file>
+    <file>js.php</file>
+
+    <!-- INI data files that start with `;<?php exit;` magic header -->
+    <exclude-pattern>*.ini.php</exclude-pattern>
+
+    <!-- Vendored / third-party libraries bundled in tree -->
+    <exclude-pattern>*/PEAR/*</exclude-pattern>
+    <exclude-pattern>lib/PEAR/*</exclude-pattern>
+    <exclude-pattern>lib/Smarty/*</exclude-pattern>
+    <exclude-pattern>lib/htmLawed.php</exclude-pattern>
+    <exclude-pattern>lib/Text/generate*</exclude-pattern>
+    <exclude-pattern>lib/feedcreator.class.php</exclude-pattern>
+    <exclude-pattern>lib/Cache/*</exclude-pattern>
+    <exclude-pattern>lib/Net/*</exclude-pattern>
+    <exclude-pattern>lib/HTML/*</exclude-pattern>
+    <exclude-pattern>lib/Mail/*</exclude-pattern>
+    <exclude-pattern>lib/XML/*</exclude-pattern>
+    <exclude-pattern>lib/Image/*</exclude-pattern>
+    <exclude-pattern>lib/Archive/*</exclude-pattern>
+    <exclude-pattern>lib/Date/*</exclude-pattern>
+    <exclude-pattern>lib/Log/*</exclude-pattern>
+    <exclude-pattern>lib/jscalendar/*</exclude-pattern>
+    <exclude-pattern>modules/g2/inc/simple_html_dom.php</exclude-pattern>
+
+    <!-- Obsolete mysql_* code paths, only loaded by legacy driver opt-in -->
+    <exclude-pattern>lib/mysql_functions.php</exclude-pattern>
+    <exclude-pattern>xf/db/drivers/mysql.php</exclude-pattern>
+
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>tests/*</exclude-pattern>
+    <exclude-pattern>install/*</exclude-pattern>
+    <exclude-pattern>tools/*</exclude-pattern>
+</ruleset>

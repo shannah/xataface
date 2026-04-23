@@ -53,6 +53,7 @@ define('MYSQL_ER_NO_REFERENCED_ROW', 1216);
 define('MYSQL_ER_NO_REFERENCED_ROW_2', 1452);
 
 
+#[AllowDynamicProperties]
 class Dataface_IO {
 	var $_table;
 	var $_serializer;

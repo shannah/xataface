@@ -1,5 +1,6 @@
 <?php
 import(XFROOT.'Dataface/GlanceList.php');
+#[AllowDynamicProperties]
 class Dataface_RecordView {
 	var $record;
 	

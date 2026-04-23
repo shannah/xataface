@@ -34,6 +34,7 @@ import(XFROOT.'Dataface/LinkTool.php');
 $GLOBALS['Dataface_ResultController_limit'] = 20;
 $GLOBALS['Dataface_ResultController_skip'] = 0;
 
+#[AllowDynamicProperties]
 class Dataface_ResultController {
 
     var $_baseUrl;

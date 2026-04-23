@@ -57,7 +57,8 @@
  * $bookRec = $book->toRecord();
  * @endcode
  *
- */ 
+ */
+#[AllowDynamicProperties]
 class Dataface_RelatedRecord {
 
 	/**

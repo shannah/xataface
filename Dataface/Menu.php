@@ -1,4 +1,5 @@
 <?php
+#[AllowDynamicProperties]
 class Dataface_Menu {
 	private $nextID=0;
 	private $items;
@@ -318,6 +319,7 @@ class Dataface_Menu_URLMap {
 	
 }
 
+#[AllowDynamicProperties]
 class Dataface_Menu_Item {
 	private $menu;
 	private $url;
@@ -338,7 +340,7 @@ class Dataface_Menu_Item {
 	private $_loadChildIDs = array();
 	private $_loadParent = null;
 	
-	public function __construct($label, $url, Dataface_Menu_Item $parent=null, Dataface_Menu $menu=null){
+	public function __construct($label, $url, ?Dataface_Menu_Item $parent=null, ?Dataface_Menu $menu=null){
 		$this->children = array();
 		$this->label = $label;
 		$this->parent = $parent;

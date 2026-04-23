@@ -97,6 +97,7 @@ define('DATAFACE_RECORD_RELATED_RECORD_BLOCKSIZE', 30);
  * @see Dataface_RelatedRecord : A class the represents a record in a relationship.
  *
  */
+#[AllowDynamicProperties]
 class Dataface_Record {
 
 	/**
@@ -5215,6 +5216,7 @@ class Dataface_Record {
 /**
  * An iterator for iterating through Record objects.
  */
+#[AllowDynamicProperties]
 class Dataface_RecordIterator {
 
 	var $_records;
@@ -5256,6 +5258,7 @@ class Dataface_RecordIterator {
 /**
  * An iterator for iterating through related records.
  */
+#[AllowDynamicProperties]
 class Dataface_RelationshipIterator{
 	var $_record;
 	var $_relationshipName;

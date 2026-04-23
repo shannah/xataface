@@ -20,7 +20,7 @@ class Database {
         }
     }
 
-    public function translator(QueryTranslator $translator = null) {
+    public function translator(?QueryTranslator $translator = null) {
         if (isset($translator)) {
             $this->translator = $translator;
             return $this;

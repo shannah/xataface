@@ -36,6 +36,7 @@ import( XFROOT.'Dataface/DB.php'); // for Blob registry.
 
 define('QUERYBUILDER_ERROR_EMPTY_SELECT', 1);
 
+#[AllowDynamicProperties]
 class Dataface_QueryBuilder {
     
     private $alwaysAddOrderBy = true;

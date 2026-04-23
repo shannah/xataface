@@ -110,6 +110,7 @@ define('SCHEMA_TABLE_NOT_FOUND', 12);
  * @see Dataface_Table::fields()
  *
  */
+#[AllowDynamicProperties]
 class Dataface_Table
 {
     /**
