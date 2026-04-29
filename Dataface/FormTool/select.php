@@ -145,12 +145,10 @@ class Dataface_FormTool_select {
 
 			$val = $element->getValue();
 
-			if ( @count($val)>0 ){
-				return $val[0];
-
+			if ( is_array($val) ){
+				return count($val) > 0 ? $val[0] : null;
 			} else {
-				return null;
-
+				return ($val === null || $val === '') ? null : $val;
 			}
 		} else {
 			return $element->getValue();
