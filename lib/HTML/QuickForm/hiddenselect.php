@@ -98,7 +98,7 @@ class HTML_QuickForm_hiddenselect extends HTML_QuickForm_select
    /**
     * This is essentially a hidden element and should be rendered as one  
     */
-    function accept(&$renderer)
+    function accept(&$renderer, $required = false, $error = null)
     {
         $renderer->renderHidden($this);
     }
