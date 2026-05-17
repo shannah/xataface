@@ -5737,14 +5737,14 @@ class Dataface_Table
             if (!is_array(@$field['disallowed_extensions']) and @$field['disallowed_extensions']) {
                 $field['disallowed_extensions'] = explode(',', @$field['disallowed_extensions']);
             }
-            if (!is_array(@$field['disallowed_mimetypes']) and @$field['disallowed_extensions']) {
+            if (!is_array(@$field['disallowed_mimetypes']) and @$field['disallowed_mimetypes']) {
                 $field['disallowed_mimetypes'] = explode(',', @$field['disallowed_mimetypes']);
             }
 
-            $field['allowed_extensions'] = @array_map('strtolower', @$field['allowed_extensions']);
-            $field['allowed_mimetypes'] = @array_map('strtolower', @$field['allowed_mimetypes']);
-            $field['disallowed_extensions'] = @array_map('strtolower', @$field['disallowed_extensions']);
-            $field['disallowed_mimetypes'] = @array_map('strtolower', @$field['disallowed_mimetypes']);
+            $field['allowed_extensions'] = is_array(@$field['allowed_extensions']) ? array_map('strtolower', $field['allowed_extensions']) : array();
+            $field['allowed_mimetypes'] = is_array(@$field['allowed_mimetypes']) ? array_map('strtolower', $field['allowed_mimetypes']) : array();
+            $field['disallowed_extensions'] = is_array(@$field['disallowed_extensions']) ? array_map('strtolower', $field['disallowed_extensions']) : array();
+            $field['disallowed_mimetypes'] = is_array(@$field['disallowed_mimetypes']) ? array_map('strtolower', $field['disallowed_mimetypes']) : array();
             // We do some special validation for file uploads
             // Validate -- make sure that it is the proper mimetype and extension.
             if (is_array(@$field['allowed_mimetypes']) and count($field['allowed_mimetypes']) > 0) {
