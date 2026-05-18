@@ -239,16 +239,16 @@ class Dataface_RelatedRecord {
 	function &toRecord($tablename=null, $loadFromDb = false){
 	    if ($loadFromDb) {
 	        $outRec = $this->toRecord($tablename);
-	        return df_get_record_by_id($outRec->getId());   
+	        return df_get_record_by_id($outRec->getId());
 	    }
+		if ( !isset($tablename) ){
+			$tablename =  $this->_relationship->getDomainTable();
+
+
+		}
 		if ( isset($this->cache[__FUNCTION__][$tablename]) ){
 			return $this->cache[__FUNCTION__][$tablename];
 		}
-		if ( !isset($tablename) ){
-			$tablename =  $this->_relationship->getDomainTable();
-			
-			
-		} 
 		$domainTable = Dataface_Table::loadTable($this->_relationship->getDomainTable());
 		$table =& Dataface_Table::loadTable($tablename);
 		
