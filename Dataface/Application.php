@@ -3519,7 +3519,7 @@ END
 				);
 		} else {
 			$action = $actionTool->getAction($params);
-			if ( is_array($action)  and @$action['related'] and @$query['-relationship'] and preg_match('/relationships\.ini/', @$action['allow_override']) ){
+			if ( is_array($action)  and @$action['related'] and @$query['-relationship'] and preg_match('/relationships\.ini/', (string)@$action['allow_override']) ){
 				// This action is to be performed on the currently selected relationship.
 				$raction = $table->getRelationshipsAsActions(array(), $query['-relationship']);
 				if ( is_array($raction) ){
