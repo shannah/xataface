@@ -232,7 +232,7 @@ class HTML_QuickForm_file extends HTML_QuickForm_input
      * @access    private
      * @return    bool      true if file has been uploaded, false otherwise
      */
-    function _ruleIsUploadedFile($elementValue)
+    static function _ruleIsUploadedFile($elementValue)
     {
         if ((isset($elementValue['error']) && $elementValue['error'] == 0) ||
             (!empty($elementValue['tmp_name']) && $elementValue['tmp_name'] != 'none')) {
@@ -253,9 +253,9 @@ class HTML_QuickForm_file extends HTML_QuickForm_input
      * @access    private
      * @return    bool      true if filesize is lower than maxsize, false otherwise
      */
-    function _ruleCheckMaxFileSize($elementValue, $maxSize)
+    static function _ruleCheckMaxFileSize($elementValue, $maxSize)
     {
-        if (!empty($elementValue['error']) && 
+        if (!empty($elementValue['error']) &&
             (UPLOAD_ERR_FORM_SIZE == $elementValue['error'] || UPLOAD_ERR_INI_SIZE == $elementValue['error'])) {
             return false;
         }
@@ -276,7 +276,7 @@ class HTML_QuickForm_file extends HTML_QuickForm_input
      * @access    private
      * @return    bool      true if mimetype is correct, false otherwise
      */
-    function _ruleCheckMimeType($elementValue, $mimeType)
+    static function _ruleCheckMimeType($elementValue, $mimeType)
     {
         if (!HTML_QuickForm_file::_ruleIsUploadedFile($elementValue)) {
             return true;
@@ -298,7 +298,7 @@ class HTML_QuickForm_file extends HTML_QuickForm_input
      * @access    private
      * @return    bool      true if name matches regex, false otherwise
      */
-    function _ruleCheckFileName($elementValue, $regex)
+    static function _ruleCheckFileName($elementValue, $regex)
     {
         if (!HTML_QuickForm_file::_ruleIsUploadedFile($elementValue)) {
             return true;
