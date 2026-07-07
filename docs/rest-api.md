@@ -58,15 +58,17 @@ curl \
 ```
 
 ```json
-{ "code": 200, "token": "0f8c1e2a-....", "message": "Logged in" }
+{ "code": 200, "token": "576646...2dDRuOGUycGI=", "message": "Logged in" }
 ```
 
 A failure returns a non‑200 `code` with a message, e.g.
 `{"code":500,"message":"No UserName provided."}`.
 
+**Step 2** — include that token in the `Authorization` header of every
+subsequent request as a bearer token:
+
 ```bash
-# Step 2 — send the token as a Bearer header on each API call
-curl -H "Authorization: Bearer 0f8c1e2a-...." \
+curl -H "Authorization: Bearer 576646...2dDRuOGUycGI=" \
   "https://yourapp.example.com/index.php?-table=contacts&-action=export_json"
 ```
 
@@ -74,10 +76,15 @@ Xataface parses the `Authorization: Bearer <token>` header
 (`Dataface/Application.php`, `getBearerToken()`); the same token may also be
 supplied as a `--Bearer=<token>` request parameter if you cannot set headers.
 
-### b) Log in, then reuse the session cookie
+> **The examples throughout this document use bearer‑token auth.** They assume
+> you captured the login token into a shell variable, e.g.
+> `TOKEN=576646...2dDRuOGUycGI=`, and then pass `-H "Authorization: Bearer
+> $TOKEN"` on each request.
 
-If you prefer cookie‑based sessions, `POST` the same credentials and keep the
-returned session cookie for subsequent requests:
+### b) Alternative: session cookie
+
+If you prefer cookie‑based sessions, keep the session cookie that the `login`
+request sets and send it back on each call instead of a bearer token:
 
 ```bash
 # Log in and store the session cookie in cookies.txt
@@ -85,8 +92,9 @@ curl -c cookies.txt \
   -d "-action=login" -d "UserName=myuser" -d "Password=mypassword" -d "--no-prompt=1" \
   https://yourapp.example.com/index.php
 
-# Reuse the cookie on every API call
-curl -b cookies.txt ...
+# Reuse the cookie on every API call (replace the -H "Authorization…" in the
+# examples below with -b cookies.txt)
+curl -b cookies.txt "https://yourapp.example.com/index.php?-table=contacts&-action=export_json"
 ```
 
 Xataface reads the `UserName` and `Password` request parameters (see
@@ -103,11 +111,6 @@ To terminate a session programmatically, call
 > "Permission denied" message, the user simply isn't granted the `new`
 > permission on that table.
 
-> **Note on the `curl -b cookies.txt` examples below.** The examples in the rest
-> of this document use the session‑cookie form for brevity. To use Bearer‑token
-> auth instead, drop `-b cookies.txt` and add
-> `-H "Authorization: Bearer <token>"`.
-
 ---
 
 ## 2. Read records — `export_json`
@@ -118,7 +121,7 @@ To terminate a session programmatically, call
 
 ```bash
 # All records in the "contacts" table
-curl -b cookies.txt \
+curl -H "Authorization: Bearer $TOKEN" \
   "https://yourapp.example.com/index.php?-table=contacts&-action=export_json"
 ```
 
@@ -145,7 +148,7 @@ Useful parameters:
 Example — fetch one record by ID, only two fields, human‑readable values:
 
 ```bash
-curl -b cookies.txt \
+curl -H "Authorization: Bearer $TOKEN" \
   "https://yourapp.example.com/index.php?-table=contacts&-action=export_json&-mode=browse&-recordid=contacts%3Fcontact_id%3D1&--fields=first_name%20last_name&--displayMethod=display&--single=1"
 ```
 
@@ -160,7 +163,7 @@ The simplest way to create a record. `POST` to `-action=rest_insert` with
 `-table` and one parameter per column.
 
 ```bash
-curl -b cookies.txt \
+curl -H "Authorization: Bearer $TOKEN" \
   -d "-action=rest_insert" \
   -d "-table=contacts" \
   --data-urlencode "first_name=John" \
@@ -203,7 +206,7 @@ form controller as the UI but returns JSON. Use this if you want create and
 update to go through an identical, consistent code path.
 
 ```bash
-curl -b cookies.txt \
+curl -H "Authorization: Bearer $TOKEN" \
   -d "-action=new" \
   -d "-table=contacts" \
   -d "-response=json" \
@@ -235,7 +238,7 @@ a descriptive message.
 change.
 
 ```bash
-curl -b cookies.txt \
+curl -H "Authorization: Bearer $TOKEN" \
   -d "-action=edit" \
   -d "-table=contacts" \
   -d "-response=json" \
@@ -267,7 +270,7 @@ to specific columns.
 ID:
 
 ```bash
-curl -b cookies.txt \
+curl -H "Authorization: Bearer $TOKEN" \
   -d "-action=rest_delete" \
   --data-urlencode "--record_id=contacts?contact_id=42" \
   https://yourapp.example.com/index.php
@@ -286,7 +289,7 @@ Alternatively drive the standard delete controller, identifying the record by
 its primary key value(s):
 
 ```bash
-curl -b cookies.txt \
+curl -H "Authorization: Bearer $TOKEN" \
   -d "-action=delete" \
   -d "-table=contacts" \
   -d "-response=json" \
