@@ -36,23 +36,56 @@ normal Xataface application and obeys the same login and permission rules as the
 browser UI. A request that isn't authenticated acts as the *anonymous* user and
 will only be allowed to do what an anonymous visitor can do.
 
-There are two practical ways for an external client to authenticate:
+> This section mirrors the **"API Authentication"** section of the
+> [Xataface Definitive Guide, Security chapter](https://shannah.github.io/xataface-manual/#api-authentication).
+> See the Guide for the canonical write‑up.
 
-### a) Log in, then reuse the session cookie
+### a) Bearer token (recommended for API clients)
 
-`POST` your credentials to the `login` action and keep the returned session
-cookie for subsequent requests:
+`POST` your credentials to the `login` action with `--no-prompt=1`. On success
+it returns a JSON body containing a **token** that you then send in an
+`Authorization: Bearer` header on every subsequent request. This is stateless
+from the client's point of view — no cookie jar to manage.
 
 ```bash
-# Step 1 — log in and store the session cookie in cookies.txt
-curl -c cookies.txt \
+# Step 1 — log in and get a token
+curl \
   -d "-action=login" \
   -d "UserName=myuser" \
   -d "Password=mypassword" \
   -d "--no-prompt=1" \
   https://yourapp.example.com/index.php
+```
 
-# Step 2 — reuse the cookie on every API call
+```json
+{ "code": 200, "token": "0f8c1e2a-....", "message": "Logged in" }
+```
+
+A failure returns a non‑200 `code` with a message, e.g.
+`{"code":500,"message":"No UserName provided."}`.
+
+```bash
+# Step 2 — send the token as a Bearer header on each API call
+curl -H "Authorization: Bearer 0f8c1e2a-...." \
+  "https://yourapp.example.com/index.php?-table=contacts&-action=export_json"
+```
+
+Xataface parses the `Authorization: Bearer <token>` header
+(`Dataface/Application.php`, `getBearerToken()`); the same token may also be
+supplied as a `--Bearer=<token>` request parameter if you cannot set headers.
+
+### b) Log in, then reuse the session cookie
+
+If you prefer cookie‑based sessions, `POST` the same credentials and keep the
+returned session cookie for subsequent requests:
+
+```bash
+# Log in and store the session cookie in cookies.txt
+curl -c cookies.txt \
+  -d "-action=login" -d "UserName=myuser" -d "Password=mypassword" -d "--no-prompt=1" \
+  https://yourapp.example.com/index.php
+
+# Reuse the cookie on every API call
 curl -b cookies.txt ...
 ```
 
@@ -60,16 +93,20 @@ Xataface reads the `UserName` and `Password` request parameters (see
 `Dataface/AuthenticationTool.php`). A `401` response means the credentials were
 rejected.
 
-### b) Token login
+### Logging out
 
-If you have configured token authentication, you can pass a `--token=<token>`
-parameter instead of `UserName`/`Password`. Tokens are looked up in the
-Xataface token table and can be issued per user.
+To terminate a session programmatically, call
+`?-action=logout&--no-prompt=1`.
 
 > **Tip:** Whichever method you use, the authenticated user must have the
 > relevant table/field **permissions** (see §7). If a `create` call fails with a
 > "Permission denied" message, the user simply isn't granted the `new`
 > permission on that table.
+
+> **Note on the `curl -b cookies.txt` examples below.** The examples in the rest
+> of this document use the session‑cookie form for brevity. To use Bearer‑token
+> auth instead, drop `-b cookies.txt` and add
+> `-H "Authorization: Bearer <token>"`.
 
 ---
 
