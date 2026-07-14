@@ -1178,7 +1178,8 @@ body.cover-image .record-heading-logo {
 .listing th,
 .stx table th {
     background-color:var(--trimBgColor);
-    
+    top: 0;
+    position: sticky;
     border-top: none;
     border-bottom: none;
     border-right: none;
@@ -3688,12 +3689,10 @@ body.full-width #status-bar .responsive-content,
   }
   
   body.large #list-window {
-      overflow-x: scroll;
       width: 1000px;
   }
 
   body.full-width #list-window {
-    overflow-x: auto;
     width: 100%;
     box-sizing: border-box;
 }
@@ -4051,7 +4050,6 @@ body.full-width #status-bar .responsive-content,
       }
       
       body.large #list-window {
-          overflow-x: scroll;
           width: 768px;
       }
   }
